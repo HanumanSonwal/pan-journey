@@ -1,0 +1,36 @@
+{
+  "name": "pan-journey-backend",
+  "version": "1.0.0",
+  "description": "Pan Journey is a hotel booking platform backend API that enables users to search, view, and book hotels with features like authentication, booking management, cashback handling, and admin operations.",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "keywords": [
+    "hotel-booking",
+    "travel-platform",
+    "nodejs",
+    "express",
+    "backend-api",
+    "pan-journey",
+    "booking-system",
+    "jwt-authentication",
+    "rest-api"
+  ],
+  "author": "Hanuman Sonwal",
+  "license": "ISC",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "build": "echo \"No build step required for Express\"",
+    "lint": "echo \"Add ESLint later\""
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
