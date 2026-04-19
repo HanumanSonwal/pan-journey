@@ -1,9 +1,5 @@
-import React from 'react'
-
 function index() {
-  return (
-    <div>index</div>
-  )
+  return <div>main page</div>;
 }
 
-export default index
+export default index;
