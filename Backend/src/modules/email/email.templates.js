@@ -23,3 +23,11 @@ export const verifyEmailTemplate = (name, verifyLink) => {
     </div>
   `;
 };
+export const otpEmailTemplate = (otp) => `
+  <div style="font-family:sans-serif">
+    <h2>Your Login OTP</h2>
+    <p>Use this OTP to login:</p>
+    <h1 style="letter-spacing:5px">${otp}</h1>
+    <p>This OTP will expire in 5 minutes.</p>
+  </div>
+`;
