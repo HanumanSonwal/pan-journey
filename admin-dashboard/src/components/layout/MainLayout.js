@@ -2,7 +2,7 @@
 
 import { useTheme } from "@/context/ThemeContext";
 import { ConfigProvider, Layout, theme } from "antd";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import HeaderBar from "./HeaderBar";
 import Sidebar from "./Sidebar";
 
@@ -12,12 +12,15 @@ const MainLayout = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const { isDark } = useTheme();
 
-  // 🔥 IMPORTANT: memoize theme (prevent re-render flicker)
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const antdTheme = useMemo(() => {
     return {
-      algorithm: isDark
-        ? theme.darkAlgorithm
-        : theme.defaultAlgorithm,
+      algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
       token: {
         colorPrimary: "#e53935",
         borderRadius: 8,
@@ -27,28 +30,27 @@ const MainLayout = ({ children }) => {
 
   return (
     <ConfigProvider theme={antdTheme}>
-      <Layout style={{ minHeight: "100vh" }}>
-        <Sidebar collapsed={collapsed} />
+      {mounted ? (
+        <Layout style={{ minHeight: "100vh" }}>
+          <Sidebar collapsed={collapsed} />
 
-        <Layout>
-          <HeaderBar
-            collapsed={collapsed}
-            setCollapsed={setCollapsed}
-          />
+          <Layout>
+            <HeaderBar collapsed={collapsed} setCollapsed={setCollapsed} />
 
-          <Content
-            style={{
-              margin: "8px",
-              padding: "20px",
-              borderRadius: "12px",
-              flex: 1,
-              overflow: "auto",
-            }}
-          >
-            {children}
-          </Content>
+            <Content
+              style={{
+                margin: "8px",
+                padding: "20px",
+                borderRadius: "12px",
+                flex: 1,
+                overflow: "auto",
+              }}
+            >
+              {children}
+            </Content>
+          </Layout>
         </Layout>
-      </Layout>
+      ) : null}
     </ConfigProvider>
   );
 };

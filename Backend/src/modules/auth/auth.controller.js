@@ -218,9 +218,8 @@ export const refreshToken = asyncHandler(async (req, res) => {
 // 👤 GET CURRENT USER PROFILE
 ////////////////////////////////////////////////////////////
 export const getMe = asyncHandler(async (req, res) => {
-  sendSuccess(res, "Profile fetched", req.user);
+  sendSuccess(res, "Profile fetched", { user: req.user });
 });
-
 ////////////////////////////////////////////////////////////
 // 🚪 LOGOUT
 ////////////////////////////////////////////////////////////

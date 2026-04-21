@@ -1,16 +1,13 @@
 "use client";
 
-import {
-  Button,
-  Card,
-  Checkbox,
-  Form,
-  Input,
-  theme,
-  Typography,
-} from "antd";
+import { Button, Card, Checkbox, Form, Input, theme, Typography } from "antd";
 
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { useRouter } from "next/navigation";
+
+import { useApiMutation } from "@/hooks/useApiMutation";
+import { loginUser } from "@/services/auth.service";
+import { useAuthStore } from "@/store/auth.store";
 
 const { Title, Text } = Typography;
 
@@ -19,8 +16,22 @@ const LoginPage = () => {
     token: { colorBgContainer },
   } = theme.useToken();
 
+  const router = useRouter();
+  const setUser = useAuthStore((s) => s.setUser);
+
+  const { mutate, isPending } = useApiMutation(loginUser, {
+    onSuccess: (res) => {
+      if (res.success) {
+        console.log("📦 loginUser:", res);
+        const userData = res.data?.user;
+        setUser(userData);
+        router.replace("/dashboard");
+      }
+    },
+  });
+
   const onFinish = (values) => {
-    console.log("Login:", values);
+    mutate(values);
   };
 
   return (
@@ -29,10 +40,7 @@ const LoginPage = () => {
       <div className="login-left">
         <div className="login-left-content">
           <h1>Pan Admin</h1>
-
-          <p>
-            Manage bookings, users and analytics in one place.
-          </p>
+          <p>Manage bookings, users and analytics in one place.</p>
 
           <ul>
             <li>✔ Booking Management</li>
@@ -54,9 +62,7 @@ const LoginPage = () => {
             boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
           }}
           styles={{
-            body: {
-              padding: 20,
-            },
+            body: { padding: 20 },
           }}
         >
           <Title level={3} style={{ marginBottom: 0 }}>
@@ -100,6 +106,7 @@ const LoginPage = () => {
               htmlType="submit"
               block
               size="large"
+              loading={isPending}
               style={{
                 background: "#e53935",
                 borderColor: "#e53935",
@@ -109,9 +116,7 @@ const LoginPage = () => {
               Login
             </Button>
 
-            <Text className="login-footer">
-              Admin • Staff Access
-            </Text>
+            <Text className="login-footer">Admin • Staff Access</Text>
           </Form>
         </Card>
       </div>
