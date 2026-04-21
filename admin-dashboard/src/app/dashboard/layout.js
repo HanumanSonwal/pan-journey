@@ -3,42 +3,25 @@
 import { useEffect } from "react";
 import { useAuthStore } from "@/store/auth.store";
 import { useRouter } from "next/navigation";
-import { getMe } from "@/services/auth.service";
 import MainLayout from "../../components/layout/MainLayout";
 
 export default function DashboardLayout({ children }) {
-  const { isAuthenticated, loading, setUser, clearUser } = useAuthStore();
+  const { isAuthenticated, loading } = useAuthStore();
   const router = useRouter();
 
-  // ✅ API call yahi hogi
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await getMe();
-
-        if (res?.success && res?.data?.user) {
-          setUser(res.data.user);
-        } else {
-          clearUser();
-        }
-      } catch {
-        clearUser();
-      }
-    };
-
-    fetchUser();
-  }, []);
-
-  // ✅ redirect control
+  // ✅ only redirect logic
   useEffect(() => {
     if (!loading && !isAuthenticated) {
       router.replace("/");
     }
-  }, [loading, isAuthenticated, router]);
+  }, [loading, isAuthenticated]);
 
-  if (loading) return <div>Loading...</div>;
+  // ⏳ wait for auth check
+  if (loading) return <div>Checking auth...</div>;
 
+  // ❌ block if not logged in
   if (!isAuthenticated) return null;
 
+  // ✅ allow dashboard
   return <MainLayout>{children}</MainLayout>;
 }

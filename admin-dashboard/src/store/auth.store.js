@@ -6,7 +6,7 @@ export const useAuthStore = create((set) => ({
   loading: true,
 
 setUser: (user) => {
-  console.log("✅ setUser", user);
+  console.log("✅ Zustand me user set hua:", user);
   set({
     user,
     isAuthenticated: true,
@@ -14,21 +14,17 @@ setUser: (user) => {
   });
 },
 
-clearUser: () => {
-  console.log("❌ clearUser");
-  set({
-    user: null,
-    isAuthenticated: false,
-    loading: false,
-  });
-},
-
-  logout: () => {
-    console.log("🚪 logout called");
+  clearUser: () =>
     set({
       user: null,
       isAuthenticated: false,
       loading: false,
-    });
-  },
+    }),
+
+  logout: () =>
+    set({
+      user: null,
+      isAuthenticated: false,
+      loading: false,
+    }),
 }));

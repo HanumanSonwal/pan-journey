@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useApiMutation } from "@/hooks/useApiMutation";
 import { loginUser } from "@/services/auth.service";
 import { useAuthStore } from "@/store/auth.store";
+import { useEffect } from "react";
 
 const { Title, Text } = Typography;
 
@@ -18,7 +19,9 @@ const LoginPage = () => {
 
   const router = useRouter();
   const setUser = useAuthStore((s) => s.setUser);
+  const { isAuthenticated, loading } = useAuthStore();
 
+  console.log("📦 isAuthenticated:", isAuthenticated);
   const { mutate, isPending } = useApiMutation(loginUser, {
     onSuccess: (res) => {
       if (res.success) {
@@ -33,6 +36,15 @@ const LoginPage = () => {
   const onFinish = (values) => {
     mutate(values);
   };
+
+    useEffect(() => {
+    // ✅ only after loading
+    if (!loading && isAuthenticated) {
+      router.replace("/dashboard");
+    }
+  }, [loading, isAuthenticated]);
+
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="login-container">
