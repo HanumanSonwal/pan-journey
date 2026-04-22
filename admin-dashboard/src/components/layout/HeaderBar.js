@@ -3,34 +3,57 @@
 import {
   Avatar,
   Button,
+  Dropdown,
+  Input,
   Layout,
   Space,
   Switch,
-  Dropdown,
-  Input,
   theme,
 } from "antd";
 
 import {
   BellOutlined,
+  LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  UserOutlined,
-  LogoutOutlined,
-  SettingOutlined,
   SearchOutlined,
+  SettingOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 
 import { useTheme } from "@/context/ThemeContext";
+import { logoutUser } from "@/services/auth.service";
+import { useAuthStore } from "@/store/auth.store";
+import { useRouter } from "next/navigation";
 
 const { Header } = Layout;
 
 const HeaderBar = ({ collapsed, setCollapsed }) => {
   const { isDark, toggleTheme } = useTheme();
+  const router = useRouter();
+
+  const { user, clearUser } = useAuthStore();
 
   const {
     token: { colorBgContainer, colorText, colorTextSecondary },
   } = theme.useToken();
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+    } catch (e) {
+      // ignore error (logout anyway)
+    } finally {
+      clearUser();
+      router.replace("/");
+    }
+  };
+
+  const handleMenuClick = ({ key }) => {
+    if (key === "logout") handleLogout();
+    if (key === "profile") router.push("/profile");
+    if (key === "settings") router.push("/settings");
+  };
 
   const menuItems = [
     { key: "profile", icon: <UserOutlined />, label: "Profile" },
@@ -52,7 +75,6 @@ const HeaderBar = ({ collapsed, setCollapsed }) => {
           : "0 2px 6px rgba(0,0,0,0.05)",
       }}
     >
-      {/* LEFT */}
       <Space size="middle">
         <Button
           type="text"
@@ -72,8 +94,7 @@ const HeaderBar = ({ collapsed, setCollapsed }) => {
         </span>
       </Space>
 
-      {/* CENTER */}
-      <div className="header-search">
+      <div>
         <Input
           placeholder="Search..."
           prefix={<SearchOutlined />}
@@ -84,9 +105,7 @@ const HeaderBar = ({ collapsed, setCollapsed }) => {
         />
       </div>
 
-      {/* RIGHT */}
       <Space size="large">
-        {/* THEME SWITCH */}
         <Switch
           checked={isDark}
           onChange={toggleTheme}
@@ -94,7 +113,6 @@ const HeaderBar = ({ collapsed, setCollapsed }) => {
           unCheckedChildren="☀️"
         />
 
-        {/* NOTIFICATION */}
         <BellOutlined
           style={{
             fontSize: 18,
@@ -103,17 +121,23 @@ const HeaderBar = ({ collapsed, setCollapsed }) => {
           }}
         />
 
-        {/* USER */}
-        <Dropdown menu={{ items: menuItems }} placement="bottomRight">
+        <Dropdown
+          menu={{
+            items: menuItems,
+            onClick: handleMenuClick,
+          }}
+          placement="bottomRight"
+        >
           <Space style={{ cursor: "pointer" }}>
             <Avatar
               style={{
-                background: "linear-gradient(135deg, #e53935, #1677ff)",
+                background: "linear-gradient(135deg, #FF3B30, #0B5FFF)",
               }}
-              icon={<UserOutlined />}
-            />
+            >
+              {user?.name?.charAt(0)?.toUpperCase() || "U"}
+            </Avatar>
 
-            {/* 🔥 USER INFO */}
+            {/* USER INFO */}
             <div style={{ lineHeight: 1.2 }}>
               <div
                 style={{
@@ -122,7 +146,7 @@ const HeaderBar = ({ collapsed, setCollapsed }) => {
                   color: colorText,
                 }}
               >
-                Aditya
+                {user?.name || "User"}
               </div>
 
               <div
@@ -131,7 +155,7 @@ const HeaderBar = ({ collapsed, setCollapsed }) => {
                   color: colorTextSecondary,
                 }}
               >
-                Admin
+                {user?.role || "User"}
               </div>
             </div>
           </Space>

@@ -1,0 +1,47 @@
+.loader-wrapper {
+  height: 100vh;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at top, #ff000015, #000000);
+}
+
+.loader-container {
+  text-align: center;
+}
+
+/* 🔥 Premium spinning ring */
+.spinner {
+  width: 70px;
+  height: 70px;
+  border: 6px solid rgba(255, 0, 0, 0.15);
+  border-top: 6px solid #ff0000;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: auto;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+}
+
+/* Text */
+.loader-text {
+  margin-top: 20px;
+  font-weight: 500;
+  color: #ff4d4f;
+  letter-spacing: 0.5px;
+  animation: fade 1.5s ease-in-out infinite;
+}
+
+/* Animations */
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fade {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}

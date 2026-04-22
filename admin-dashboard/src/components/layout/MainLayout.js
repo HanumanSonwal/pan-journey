@@ -31,10 +31,10 @@ const MainLayout = ({ children }) => {
   return (
     <ConfigProvider theme={antdTheme}>
       {mounted ? (
-        <Layout style={{ minHeight: "100vh" }}>
+        <Layout style={{ minHeight: "100vh", overflow: "hidden"  }}>
           <Sidebar collapsed={collapsed} />
 
-          <Layout>
+          <Layout style={{ height: "100vh" }}>
             <HeaderBar collapsed={collapsed} setCollapsed={setCollapsed} />
 
             <Content
@@ -43,7 +43,8 @@ const MainLayout = ({ children }) => {
                 padding: "20px",
                 borderRadius: "12px",
                 flex: 1,
-                overflow: "auto",
+                overflowY: "auto",
+                height: "calc(100vh - 64px)",
               }}
             >
               {children}

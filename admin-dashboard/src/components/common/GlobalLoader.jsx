@@ -1,29 +1,13 @@
 "use client";
-
-import { Spin } from "antd";
+import "./loader.css";
 
 export default function GlobalLoader() {
   return (
-    <div
-      style={{
-        height: "100vh",
-        display: "grid",
-        placeItems: "center",
-        background: "linear-gradient(135deg, #0B5FFF10, #FF3B3010)",
-      }}
-    >
-      <div style={{ textAlign: "center" }}>
-        <Spin size="large" />
+    <div className="loader-wrapper">
+      <div className="loader-container">
+        <div className="spinner"></div>
 
-        <p
-          style={{
-            marginTop: 16,
-            fontWeight: 500,
-            color: "#0B5FFF",
-          }}
-        >
-          Checking authentication...
-        </p>
+        <p className="loader-text">Checking authentication...</p>
       </div>
     </div>
   );
