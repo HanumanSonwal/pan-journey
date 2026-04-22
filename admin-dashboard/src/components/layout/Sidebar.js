@@ -51,7 +51,6 @@ const Sidebar = ({ collapsed, role = "admin" }) => {
           height: "100vh", // 🔥 IMPORTANT
         }}
       >
-        {/* 🔥 FULL FLEX WRAPPER */}
         <div
           style={{
             display: "flex",
@@ -60,9 +59,7 @@ const Sidebar = ({ collapsed, role = "admin" }) => {
             padding: "16px 12px",
           }}
         >
-          {/* 🔝 TOP */}
           <div>
-            {/* LOGO */}
             <div
               style={{
                 height: 72,
@@ -88,7 +85,6 @@ const Sidebar = ({ collapsed, role = "admin" }) => {
               </div>
             </div>
 
-            {/* MAIN MENU */}
             <Menu
               mode="inline"
               selectedKeys={[pathname]}
@@ -102,7 +98,6 @@ const Sidebar = ({ collapsed, role = "admin" }) => {
             />
           </div>
 
-          {/* 🔥 PUSH TO BOTTOM */}
           <div style={{ marginTop: "auto" }}>
             <Menu
               mode="inline"

@@ -1,4 +1,3 @@
-// services/auth.service.js
 import api from "./api";
 
 export const loginUser = async (payload) => {

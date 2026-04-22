@@ -3,28 +3,22 @@ import { create } from "zustand";
 export const useAuthStore = create((set) => ({
   user: null,
   isAuthenticated: false,
-  loading: true,
+  isLoading: true, 
 
-setUser: (user) => {
-  console.log("✅ Zustand me user set hua:", user);
-  set({
-    user,
-    isAuthenticated: true,
-    loading: false,
-  });
-},
+  setUser: (user) =>
+    set({
+      user,
+      isAuthenticated: true,
+    }),
 
   clearUser: () =>
     set({
       user: null,
       isAuthenticated: false,
-      loading: false,
     }),
 
-  logout: () =>
+  setLoading: (loading) =>
     set({
-      user: null,
-      isAuthenticated: false,
-      loading: false,
+      isLoading: loading,
     }),
 }));

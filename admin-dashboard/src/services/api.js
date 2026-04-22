@@ -1,3 +1,4 @@
+import { useLoaderStore } from "@/store/loader.store";
 import { message } from "antd";
 import axios from "axios";
 
@@ -6,10 +7,16 @@ const api = axios.create({
   withCredentials: true,
 });
 
-// ✅ RESPONSE SUCCESS
+api.interceptors.request.use((config) => {
+  useLoaderStore.getState().start();
+  return config;
+});
+
 api.interceptors.response.use(
   (response) => {
     const data = response.data;
+
+    useLoaderStore.getState().stop(); // ⭐ loader OFF
 
     if (data?.success && response.config.method !== "get") {
       message.success(data.message || "Success");
@@ -21,18 +28,11 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    const msg = error?.response?.data?.message || "Something went wrong";
+    useLoaderStore.getState().stop(); 
 
-    // ❗ show error
+    const msg = error?.response?.data?.message || "Something went wrong";
     message.error(msg);
 
-    // ❗ skip /auth/me
-    if (originalRequest.url?.includes("/auth/me")) {
-      window.location.replace("/");
-      return Promise.reject(error);
-    }
-
-    // 🔄 refresh token
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
@@ -45,7 +45,7 @@ api.interceptors.response.use(
 
         return api(originalRequest);
       } catch {
-        window.location.replace("/");
+        window.location.href = "/";
       }
     }
 

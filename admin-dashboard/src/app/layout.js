@@ -1,9 +1,10 @@
+import LoaderWrapper from "@/components/common/LoaderWrapper";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import "antd/dist/reset.css";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import { AuthProvider } from "../components/provider/authProvider";
 import Providers from "../components/provider/providers";
+import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,7 +26,10 @@ export default function RootLayout({ children }) {
       <body className="min-h-full flex flex-col">
         <AntdRegistry>
           <AuthProvider>
-            <Providers>{children}</Providers>
+            <Providers>
+              <LoaderWrapper />
+              {children}
+            </Providers>
           </AuthProvider>
         </AntdRegistry>
       </body>

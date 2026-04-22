@@ -1,20 +1,17 @@
 "use client";
 
-import { Card, Row, Col, Table, theme, Select } from "antd";
-import {
-  ArrowUpOutlined,
-  ArrowDownOutlined,
-} from "@ant-design/icons";
+import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
+import { Card, Col, Row, Select, Table, theme } from "antd";
 
 import {
-  AreaChart,
   Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  BarChart,
-  Bar,
 } from "recharts";
 
 const DashboardPage = () => {
@@ -41,13 +38,7 @@ const DashboardPage = () => {
     { name: "Fri", bookings: 230 },
   ];
 
-  const miniData = [
-    { v: 10 },
-    { v: 20 },
-    { v: 15 },
-    { v: 30 },
-    { v: 25 },
-  ];
+  const miniData = [{ v: 10 }, { v: 20 }, { v: 15 }, { v: 30 }, { v: 25 }];
 
   const tableData = [
     { key: 1, hotel: "Hotel Royal", bookings: 120, revenue: "₹12,000" },
@@ -64,15 +55,8 @@ const DashboardPage = () => {
   return (
     <>
       {/* 🔥 HEADER */}
-      <Row
-        justify="space-between"
-        align="middle"
-        wrap
-        style={{ gap: 10 }}
-      >
-        <h2 style={{ color: colorText, margin: 0 }}>
-          Dashboard
-        </h2>
+      <Row justify="space-between" align="middle" wrap style={{ gap: 10 }}>
+        <h2 style={{ color: colorText, margin: 0 }}>Dashboard</h2>
 
         <Select
           defaultValue="month"
@@ -126,9 +110,7 @@ const DashboardPage = () => {
               }}
             >
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <p style={{ color: "#6b7280", fontSize: 13 }}>
-                  {item.title}
-                </p>
+                <p style={{ color: "#6b7280", fontSize: 13 }}>{item.title}</p>
 
                 <span
                   style={{
@@ -145,9 +127,7 @@ const DashboardPage = () => {
                 {item.value}
               </h2>
 
-              <p style={{ fontSize: 12, color: "#9ca3af" }}>
-                {item.today}
-              </p>
+              <p style={{ fontSize: 12, color: "#9ca3af" }}>{item.today}</p>
 
               {/* MINI CHART */}
               <div style={{ height: 40, marginTop: 8 }}>
@@ -206,11 +186,7 @@ const DashboardPage = () => {
                 <XAxis stroke={axisColor} dataKey="name" />
                 <YAxis stroke={axisColor} />
                 <Tooltip />
-                <Bar
-                  dataKey="bookings"
-                  fill="#dc2626"
-                  radius={[6, 6, 0, 0]}
-                />
+                <Bar dataKey="bookings" fill="#dc2626" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </Card>

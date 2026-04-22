@@ -1,13 +1,11 @@
 "use client";
 
-import { Button, Card, Checkbox, Form, Input, theme, Typography } from "antd";
-
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { useRouter } from "next/navigation";
-
 import { useApiMutation } from "@/hooks/useApiMutation";
 import { loginUser } from "@/services/auth.service";
 import { useAuthStore } from "@/store/auth.store";
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { Button, Card, Checkbox, Form, Input, theme, Typography } from "antd";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 const { Title, Text } = Typography;
@@ -18,14 +16,12 @@ const LoginPage = () => {
   } = theme.useToken();
 
   const router = useRouter();
-  const setUser = useAuthStore((s) => s.setUser);
-  const { isAuthenticated, loading } = useAuthStore();
 
-  console.log("📦 isAuthenticated:", isAuthenticated);
+  const { user, isAuthenticated, isLoading, setUser } = useAuthStore();
+
   const { mutate, isPending } = useApiMutation(loginUser, {
     onSuccess: (res) => {
       if (res.success) {
-        console.log("📦 loginUser:", res);
         const userData = res.data?.user;
         setUser(userData);
         router.replace("/dashboard");
@@ -37,15 +33,14 @@ const LoginPage = () => {
     mutate(values);
   };
 
-    useEffect(() => {
-    // ✅ only after loading
-    if (!loading && isAuthenticated) {
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
       router.replace("/dashboard");
     }
-  }, [loading, isAuthenticated]);
+  }, [isAuthenticated, isLoading, router]);
 
-  if (loading) return <div>Loading...</div>;
-
+  if (isLoading) return null;
+  if (isAuthenticated) return null;
   return (
     <div className="login-container">
       {/* LEFT SIDE */}
@@ -62,7 +57,6 @@ const LoginPage = () => {
         </div>
       </div>
 
-      {/* RIGHT SIDE */}
       <div className="login-right">
         <Card
           variant="borderless"
