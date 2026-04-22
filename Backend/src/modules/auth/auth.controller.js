@@ -60,10 +60,28 @@ export const refreshToken = asyncHandler(async (req, res) => {
 
   sendSuccess(res, "Access token refreshed", {});
 });
-
+//import { mapUserResponse } from "../../utils/user.mapper.js";
+const mapUserResponse = (user, permissions = []) => {
+  return {
+    id: user._id,
+    name: user.name,
+    email: user.email,
+    mobile: user.mobile,
+    role: user.role?.name || null,
+    permissions,
+  };
+};
 export const getMe = asyncHandler(async (req, res) => {
-  sendSuccess(res, "Profile fetched", { user: req.user });
+  const permissions =
+    req.user?.role?.permissions?.map((p) => p.name) || [];
+
+  sendSuccess(res, "Profile fetched", {
+    user: mapUserResponse(req.user, permissions),
+  });
 });
+// export const getMe = asyncHandler(async (req, res) => {
+//   sendSuccess(res, "Profile fetched", { user: req.user });
+// });
 
 export const logout = asyncHandler(async (req, res) => {
   const token = req.cookies?.refreshToken;
