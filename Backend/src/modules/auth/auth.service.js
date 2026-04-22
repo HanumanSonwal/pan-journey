@@ -21,11 +21,21 @@ export const loginUser = async ({ email, password }) => {
     throw new ApiError(400, "Email and password are required");
   }
 
-  const user = await User.findOne({ email }).select("+password");
+  const user = await User.findOne({ email })
+    .select("+password")
+    .populate({
+      path: "role",
+      populate: {
+        path: "permissions",
+      },
+    });
 
   if (!user) throw new ApiError(401, "Invalid credentials");
 
-  if (["admin", "sub-admin"].includes(user.role) && !user.isEmailVerified) {
+  if (
+    ["admin", "sub-admin"].includes(user.role?.name) &&
+    !user.isEmailVerified
+  ) {
     throw new ApiError(403, "Please verify your email first");
   }
 
@@ -33,16 +43,28 @@ export const loginUser = async ({ email, password }) => {
 
   if (!isMatch) throw new ApiError(401, "Invalid credentials");
 
+  // 🔥 TOKEN GENERATION
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
 
   await saveRefreshToken(user._id, refreshToken);
 
+  // 🔥 FLATTEN PERMISSIONS
+  const permissions = user.role?.permissions?.map((p) => p.name) || [];
+
+  // 🔥 CLEAN USER OBJECT
   const userObj = user.toObject();
   delete userObj.password;
 
   return {
-    user: userObj,
+    user: {
+      id: userObj._id,
+      name: userObj.name,
+      email: userObj.email,
+      mobile: userObj.mobile,
+    },
+    role: user.role?.name || null,
+    permissions,
     accessToken,
     refreshToken,
   };

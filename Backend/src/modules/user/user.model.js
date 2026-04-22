@@ -20,18 +20,20 @@ const userSchema = new mongoose.Schema(
       sparse: true,
       trim: true,
     },
-
+isSystemRole: {
+  type: Boolean,
+  default: false,
+},
     password: {
       type: String,
       select: false,
     },
-
-    role: {
-      type: String,
-      enum: ["admin", "sub-admin", "customer", "vendor"],
-      default: "customer",
-    },
-
+  role: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Role",
+  required: true,
+},
+   
     permissions: {
       type: Object,
       default: {},

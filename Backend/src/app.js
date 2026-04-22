@@ -2,6 +2,9 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRoutes from "./modules/auth/auth.routes.js";
+import hotelRoutes from "./modules/hotels/hotelRoutes.js";
+import permissionRoutes from "./modules/permissions/permission.routes.js";
+import roleRoutes from "./modules/roles/role.routes.js";
 
 import { errorHandler } from "./middleware/error.middleware.js";
 import subAdminRoutes from "./modules/user/subAdmin.routes.js";
@@ -21,9 +24,12 @@ app.use(express.json());
 
 app.use("/api/v1/auth", authRoutes);
 
-app.use("/api/v1/sub-admins", subAdminRoutes);
+app.use("/api/v1/s", subAdminRoutes);
 app.use("/api/v1/customers", customerRoutes);
 
+app.use("/api/v1/hotels", hotelRoutes);
+app.use("/api/v1/permissions", permissionRoutes);
+app.use("/api/v1/roles", roleRoutes);
 
 app.use(errorHandler);
 

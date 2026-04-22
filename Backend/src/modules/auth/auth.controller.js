@@ -7,7 +7,6 @@ import {
 
 import { asyncHandler } from "../../middleware/asyncHandler.js";
 import { sendSuccess } from "../../utils/ApiResponse.js";
-
 export const login = asyncHandler(async (req, res) => {
   const data = await loginUser(req.body);
 
@@ -27,15 +26,9 @@ export const login = asyncHandler(async (req, res) => {
 
   sendSuccess(res, "Login successful", {
     user: {
-      id: data.user._id,
-      name: data.user.name,
-      email: data.user.email,
-      role: data.user.role,
-      Permissions: data.user.permissions,
-      ismobileverified: data.user.isMobileVerified,
-      isEmailVerified: data.user.isEmailVerified,
-      createdAt: data.user.createdAt,
-      updatedAt: data.user.updatedAt,
+      ...data.user,
+      role: data.role,
+      permissions: data.permissions,
     },
   });
 });

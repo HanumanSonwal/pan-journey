@@ -1,15 +1,16 @@
 import bcrypt from "bcryptjs";
-import User from "./user.model.js";
-import { sendVerificationEmail } from "../email/email.service.js";
+import mongoose from "mongoose";
 import ApiError from "../../utils/ApiError.js";
 import {
+  deleteByPattern,
+  deleteCache,
   getCache,
   setCache,
-  deleteCache,
-  deleteByPattern,
 } from "../../utils/cache.js";
+import User from "./user.model.js";
 
-// 🔥 DEFAULT PERMISSIONS
+// ---------------- DEFAULT ----------------
+
 const defaultPermissions = {
   station: {
     read: false,
@@ -19,7 +20,7 @@ const defaultPermissions = {
   },
 };
 
-// ---------------- COMMON UTILS ----------------
+// ---------------- COMMON ----------------
 
 const buildSearchQuery = (role, search, extraFields = []) => {
   const fields = ["name", "email", ...extraFields];
@@ -95,18 +96,9 @@ export const createSubAdmin = async (data) => {
     email: data.email,
     mobile: data.mobile,
     password: hashedPassword,
-    role: "sub-admin", // 🔒 force role
-    permissions: {
-      ...defaultPermissions,
-      ...(data.permissions || {}),
-    },
-    isEmailVerified: false,
-  });
-
-  await deleteByPattern("subadmins:*");
-
-  setImmediate(() => {
-    sendVerificationEmail(subAdmin);
+    role: "sub-admin", // fixed role
+    permissions: defaultPermissions,
+    isEmailVerified: true,
   });
 
   subAdmin.password = undefined;
@@ -135,6 +127,11 @@ export const getAllSubAdmins = async (query) => {
 export const getSingleSubAdmin = async (id) => {
   const cacheKey = `subadmin:${id}`;
 
+  // ✅ ID validation
+  if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+    throw new ApiError(400, "Invalid ID format");
+  }
+
   const cached = await getCache(cacheKey);
   if (cached) return cached;
 
@@ -149,8 +146,6 @@ export const getSingleSubAdmin = async (id) => {
 
   return user;
 };
-
-
 
 // ---------------- UPDATE ----------------
 
@@ -177,7 +172,6 @@ export const updateSubAdmin = async (id, data) => {
     user.password = await bcrypt.hash(data.password, 10);
   }
 
-  // 🔥 SAFE PERMISSION UPDATE
   if (data.permissions) {
     user.permissions = {
       ...defaultPermissions,
@@ -214,7 +208,7 @@ export const deleteSubAdmin = async (id, currentAdminId) => {
   await deleteCache(`subadmin:${id}`);
 };
 
-// ---------------- CUSTOMER ----------------
+// ---------------- CUSTOMERS ----------------
 
 export const getAllCustomers = async (query) => {
   const cacheKey = `customers:${JSON.stringify(query)}`;
