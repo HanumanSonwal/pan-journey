@@ -1,17 +1,15 @@
-
 import express from "express";
 import { protect } from "../../middleware/auth.middleware.js";
- import permit from "../../middleware/permit.middleware.js";
+import { checkPermission } from "../../middleware/checkPermission.js";
 import * as hotel from "./hotel.controller.js";
-import { PERMISSION } from "../../utils/permission.util.js";
 
 const router = express.Router();
 
 // CREATE
 router.post(
-  "/Create",
+  "/create",
   protect,
-  permit(PERMISSION("hotel", "create")),
+  checkPermission("hotel", "write"),
   hotel.createHotel
 );
 
@@ -19,7 +17,7 @@ router.post(
 router.get(
   "/",
   protect,
-  permit(PERMISSION("hotel", "read")),
+  checkPermission("hotel", "read"),
   hotel.getHotels
 );
 
@@ -27,7 +25,7 @@ router.get(
 router.put(
   "/:id",
   protect,
-  permit(PERMISSION("hotel", "update")),
+  checkPermission("hotel", "update"),
   hotel.updateHotel
 );
 
@@ -35,7 +33,7 @@ router.put(
 router.delete(
   "/:id",
   protect,
-  permit(PERMISSION("hotel", "delete")),
+  checkPermission("hotel", "delete"),
   hotel.deleteHotel
 );
 

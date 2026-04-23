@@ -3,12 +3,29 @@ export const moduleConfig = {
     label: "Dashboard",
     actions: ["read"],
   },
-  hotel: {
-    label: "Hotel",
-    actions: ["read", "write", "update", "delete"],
-  },
+
   bookings: {
     label: "Bookings",
     actions: ["read", "write", "update", "delete"],
+  },
+
+  staff: {
+    label: "Staff",
+    actions: ["read", "write", "update", "delete"],
+  },
+
+  users: {
+    label: "Users",
+    actions: ["read", "write", "update", "delete"],
+  },
+
+  calendar: {
+    label: "Calendar",
+    actions: ["read"],
+  },
+
+  revenue: {
+    label: "Revenue",
+    actions: ["read"],
   },
 };

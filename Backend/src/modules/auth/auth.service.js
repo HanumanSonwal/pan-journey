@@ -24,7 +24,7 @@ export const loginUser = async ({ email, password }) => {
 
   const user = await User.findOne({ email })
     .select("+password")
-    .populate("role"); // ✅ ONLY THIS
+    .populate("role"); 
 
   if (!user) throw new Error("Invalid credentials");
 
@@ -44,7 +44,7 @@ export const loginUser = async ({ email, password }) => {
       mobile: user.mobile,
     },
     role: user.role?.name,
-    permissions: user.role?.permissions || {}, // ✅ object now
+    permissions: user.role?.permissions || {}, 
     accessToken,
     refreshToken,
   };

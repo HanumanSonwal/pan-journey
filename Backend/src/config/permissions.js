@@ -1,6 +1,15 @@
 export const PERMISSIONS = {
-  station: ["read", "create", "update", "delete"],
-  vendor: ["read", "create", "update", "delete"],
-  // future:
-  // menu: ["read", "create", "update", "delete"]
+  dashboard: ["read"],
+
+  bookings: ["read", "write", "update", "delete"],
+
+  users: ["read", "write", "update", "delete"],
+
+  role: ["read", "write", "update", "delete"],
+
+  staff: ["read", "write", "update", "delete"],
+
+  calendar: ["read"],
+
+  revenue: ["read"],
 };

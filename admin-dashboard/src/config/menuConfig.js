@@ -28,15 +28,15 @@ export const menuItems = [
     key: "/dashboard/staff",
     icon: <UserAddOutlined />,
     label: "Staff Management",
-    module: "dashboard",
+    module: "staff", // ✅ FIX
     children: [
       {
         key: "/dashboard/staff/roles",
-        label: <Link href="/dashboard/staff/roles">Create Role</Link>,
+        label: <Link href="/dashboard/staff/roles">Roles</Link>,
       },
       {
         key: "/dashboard/staff/users",
-        label: <Link href="/dashboard/staff/users">Create User</Link>,
+        label: <Link href="/dashboard/staff/users">Users</Link>,
       },
     ],
   },
@@ -45,20 +45,20 @@ export const menuItems = [
     key: "/dashboard/calendar",
     icon: <CalendarOutlined />,
     label: <Link href="/dashboard/calendar">Calendar</Link>,
-    module: "dashboard",
+    module: "calendar", // ✅ FIX
   },
 
   {
     key: "/dashboard/users",
     icon: <UserOutlined />,
     label: <Link href="/dashboard/users">Users</Link>,
-    module: "dashboard",
+    module: "users", // ✅ FIX
   },
 
   {
     key: "/dashboard/revenue",
     icon: <DollarOutlined />,
     label: <Link href="/dashboard/revenue">Revenue</Link>,
-    module: "dashboard",
+    module: "revenue", // ✅ FIX
   },
 ];

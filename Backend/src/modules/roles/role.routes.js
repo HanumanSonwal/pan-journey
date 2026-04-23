@@ -1,36 +1,39 @@
 import express from "express";
-import { updateRole } from "./role.controller.js";
-import { checkPermission } from "../../middleware/checkPermission.js";
-const router = express.Router();
-
 import {
   createRole,
   getRoles,
+  getRoleById,
+  updateRole,
   deleteRole,
 } from "./role.controller.js";
 
 import { protect } from "../../middleware/auth.middleware.js";
+import { checkPermission } from "../../middleware/checkPermission.js";
 
-// routes
-// router.post("/", protect, createRole);
-// router.get("/", protect, getRoles);
-// router.delete("/:id", protect, deleteRole);
-// router.put("/:id", protect, updateRole);
+const router = express.Router();
 
-export default router;
-
+// 🔹 Role Routes
 router.post(
-  "/",
+  "/create",
   protect,
   checkPermission("role", "write"),
   createRole
 );
+
 router.get(
-  "/",
+  "/all",
   protect,
   checkPermission("role", "read"),
   getRoles
 );
+
+router.get(
+  "/:id",
+  protect,
+  checkPermission("role", "read"),
+  getRoleById
+);
+
 router.put(
   "/:id",
   protect,
@@ -44,3 +47,5 @@ router.delete(
   checkPermission("role", "delete"),
   deleteRole
 );
+
+export default router;

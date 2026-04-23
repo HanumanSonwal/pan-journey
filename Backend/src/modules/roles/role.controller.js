@@ -1,62 +1,15 @@
-// import { asyncHandler } from "../../middleware/asyncHandler.js";
-// import {
-//   createRoleService,
-//   getAllRolesService,
-//   deleteRoleService,
-// } from "./role.service.js";
-
-// // CREATE ROLE
-// export const createRole = asyncHandler(async (req, res) => {
-//   const role = await createRoleService(req.body);
-
-//   res.status(201).json({
-//     success: true,
-//     data: role,
-//   });
-// });
-
-// // GET ALL ROLES
-// export const getRoles = asyncHandler(async (req, res) => {
-//   const roles = await getAllRolesService();
-
-//   res.json({
-//     success: true,
-//     data: roles,
-//   });
-// });
-
-// // DELETE ROLE
-// export const deleteRole = asyncHandler(async (req, res) => {
-//   await deleteRoleService(req.params.id);
-
-//   res.json({
-//     success: true,
-//     message: "Role deleted successfully",
-//   });
-// });
-
-
 import { asyncHandler } from "../../middleware/asyncHandler.js";
-import Role from "./role.model.js";
-import ApiError from "../../utils/ApiError.js";
+import {
+  createRoleService,
+  getRolesService,
+  getRoleByIdService,
+  updateRoleService,
+  deleteRoleService,
+} from "./role.service.js";
+
+// 🔹 Create
 export const createRole = asyncHandler(async (req, res) => {
-  const { name, description, permissions } = req.body;
-
-  if (!name) {
-    throw new ApiError(400, "Role name is required");
-  }
-
-  const existingRole = await Role.findOne({ name });
-
-  if (existingRole) {
-    throw new ApiError(400, "Role already exists");
-  }
-
-  const role = await Role.create({
-    name,
-    description,
-    permissions, // ⭐ your matrix object
-  });
+  const role = await createRoleService(req.body);
 
   res.status(201).json({
     success: true,
@@ -64,8 +17,10 @@ export const createRole = asyncHandler(async (req, res) => {
     data: role,
   });
 });
+
+// 🔹 Get All
 export const getRoles = asyncHandler(async (req, res) => {
-  const roles = await Role.find().sort({ createdAt: -1 });
+  const roles = await getRolesService();
 
   res.json({
     success: true,
@@ -73,12 +28,9 @@ export const getRoles = asyncHandler(async (req, res) => {
   });
 });
 
+// 🔹 Get By ID
 export const getRoleById = asyncHandler(async (req, res) => {
-  const role = await Role.findById(req.params.id);
-
-  if (!role) {
-    throw new ApiError(404, "Role not found");
-  }
+  const role = await getRoleByIdService(req.params.id);
 
   res.json({
     success: true,
@@ -86,20 +38,9 @@ export const getRoleById = asyncHandler(async (req, res) => {
   });
 });
 
+// 🔹 Update
 export const updateRole = asyncHandler(async (req, res) => {
-  const { name, description, permissions } = req.body;
-
-  const role = await Role.findById(req.params.id);
-
-  if (!role) {
-    throw new ApiError(404, "Role not found");
-  }
-
-  role.name = name || role.name;
-  role.description = description || role.description;
-  role.permissions = permissions || role.permissions;
-
-  await role.save();
+  const role = await updateRoleService(req.params.id, req.body);
 
   res.json({
     success: true,
@@ -107,14 +48,10 @@ export const updateRole = asyncHandler(async (req, res) => {
     data: role,
   });
 });
+
+// 🔹 Delete
 export const deleteRole = asyncHandler(async (req, res) => {
-  const role = await Role.findById(req.params.id);
-
-  if (!role) {
-    throw new ApiError(404, "Role not found");
-  }
-
-  await role.deleteOne();
+  await deleteRoleService(req.params.id);
 
   res.json({
     success: true,

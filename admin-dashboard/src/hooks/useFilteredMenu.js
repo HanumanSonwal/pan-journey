@@ -34,9 +34,9 @@ export const useFilteredMenu = () => {
   const { permissions, user } = useAuthStore();
 
   // 🔥 ADMIN BYPASS
-  if (user?.role === "admin") {
-    return menuItems;
-  }
+if (!user?.role || user?.role === "admin") {
+  return menuItems;
+}
 
   return menuItems
     .map((item) => {

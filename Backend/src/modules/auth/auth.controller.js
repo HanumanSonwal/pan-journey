@@ -74,16 +74,17 @@ const mapUserResponse = (user, permissions = []) => {
   };
 };
 export const getMe = asyncHandler(async (req, res) => {
-  const permissions =
-    req.user?.role?.permissions?.map((p) => p.name) || [];
-
   sendSuccess(res, "Profile fetched", {
-    user: mapUserResponse(req.user, permissions),
+    user: {
+      id: req.user._id,
+      name: req.user.name,
+      email: req.user.email,
+      mobile: req.user.mobile,
+      role: req.user.role?.name || null,
+      permissions: req.user.role?.permissions || {}, // 🔥 FIX
+    },
   });
 });
-// export const getMe = asyncHandler(async (req, res) => {
-//   sendSuccess(res, "Profile fetched", { user: req.user });
-// });
 
 export const logout = asyncHandler(async (req, res) => {
   const token = req.cookies?.refreshToken;

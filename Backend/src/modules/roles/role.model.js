@@ -2,7 +2,17 @@ import mongoose from "mongoose";
 
 const roleSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true, unique: true },
+    name: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
+
+    description: {
+      type: String,
+      default: "",
+    },
 
     permissions: {
       type: Object,
@@ -17,6 +27,4 @@ const roleSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Role = mongoose.model("Role", roleSchema);
-
-export default Role;
+export default mongoose.model("Role", roleSchema);
