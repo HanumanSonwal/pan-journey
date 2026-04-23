@@ -28,12 +28,10 @@ isSystemRole: {
       type: String,
       select: false,
     },
-  role: {
+role: {
   type: mongoose.Schema.Types.ObjectId,
-  ref: "Role",
-  required: true,
+  ref: "Role"
 },
-   
     permissions: {
       type: Object,
       default: {},

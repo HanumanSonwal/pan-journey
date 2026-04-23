@@ -16,59 +16,7 @@ import {
   saveRefreshToken,
 } from "../../utils/authCache.js";
 
-// export const loginUser = async ({ email, password }) => {
-//   if (!email || !password) {
-//     throw new ApiError(400, "Email and password are required");
-//   }
 
-//   const user = await User.findOne({ email })
-//     .select("+password")
-//     .populate({
-//       path: "role",
-//       populate: {
-//         path: "permissions",
-//       },
-//     });
-
-//   if (!user) throw new ApiError(401, "Invalid credentials");
-
-//   if (
-//     ["admin", "sub-admin"].includes(user.role?.name) &&
-//     !user.isEmailVerified
-//   ) {
-//     throw new ApiError(403, "Please verify your email first");
-//   }
-
-//   const isMatch = await bcrypt.compare(password, user.password);
-
-//   if (!isMatch) throw new ApiError(401, "Invalid credentials");
-
-//   // 🔥 TOKEN GENERATION
-//   const accessToken = generateAccessToken(user);
-//   const refreshToken = generateRefreshToken(user);
-
-//   await saveRefreshToken(user._id, refreshToken);
-
-//   // 🔥 FLATTEN PERMISSIONS
-//   const permissions = user.role?.permissions?.map((p) => p.name) || [];
-
-//   // 🔥 CLEAN USER OBJECT
-//   const userObj = user.toObject();
-//   delete userObj.password;
-
-//   return {
-//     user: {
-//       id: userObj._id,
-//       name: userObj.name,
-//       email: userObj.email,
-//       mobile: userObj.mobile,
-//     },
-//     role: user.role?.name || null,
-//     permissions,
-//     accessToken,
-//     refreshToken,
-//   };
-// };
 export const loginUser = async ({ email, password }) => {
   if (!email || !password) {
     throw new Error("Email & password required");
@@ -76,10 +24,7 @@ export const loginUser = async ({ email, password }) => {
 
   const user = await User.findOne({ email })
     .select("+password")
-    .populate({
-      path: "role",
-      populate: { path: "permissions" },
-    });
+    .populate("role"); // ✅ ONLY THIS
 
   if (!user) throw new Error("Invalid credentials");
 
@@ -91,9 +36,6 @@ export const loginUser = async ({ email, password }) => {
 
   await saveRefreshToken(user._id, refreshToken);
 
-  const permissions =
-    user.role?.permissions?.map((p) => p.name) || [];
-
   return {
     user: {
       id: user._id,
@@ -102,12 +44,11 @@ export const loginUser = async ({ email, password }) => {
       mobile: user.mobile,
     },
     role: user.role?.name,
-    permissions,
+    permissions: user.role?.permissions || {}, // ✅ object now
     accessToken,
     refreshToken,
   };
 };
-
 export const refreshAccessToken = async (token) => {
   if (!token) throw new ApiError(401, "Refresh token missing");
 

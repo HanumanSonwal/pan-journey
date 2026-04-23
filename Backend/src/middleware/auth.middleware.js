@@ -23,28 +23,60 @@ export const protect = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+    // const user = await User.findById(decoded.id)
+    //   .select("-password")
+    //   .populate({
+    //     path: "role",
+    //     populate: { path: "permissions" },
+    //   });
+
+    // if (!user) {
+    //   return res.status(401).json({
+    //     success: false,
+    //     message: "User not found",
+    //   });
+    // }
+
+    // // 🔥 STANDARD OUTPUT FORMAT
+    // req.user = user;
+    // req.role = user.role?.name || null;
+
+    // req.permissions =
+    //   user.role?.permissions?.map((p) => p.name) || [];
+
+    // next();
     const user = await User.findById(decoded.id)
-      .select("-password")
-      .populate({
-        path: "role",
-        populate: { path: "permissions" },
-      });
+  .select("-password")
+  .populate("role");
 
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "User not found",
-      });
+if (!user) {
+  return res.status(401).json({
+    success: false,
+    message: "User not found",
+  });
+}
+
+req.user = user;
+req.role = user.role?.name || null;
+
+// 🔥 SAFE MATRIX HANDLING
+const permissions = user.role?.permissions || {};
+
+const flatPermissions = [];
+
+for (const module in permissions) {
+  const actions = permissions[module];
+
+  for (const action in actions) {
+    if (actions[action] === true) {
+      flatPermissions.push(`${module}.${action}`);
     }
+  }
+}
 
-    // 🔥 STANDARD OUTPUT FORMAT
-    req.user = user;
-    req.role = user.role?.name || null;
+req.permissions = flatPermissions;
 
-    req.permissions =
-      user.role?.permissions?.map((p) => p.name) || [];
-
-    next();
+next();
   } catch (err) {
     return res.status(401).json({
       success: false,
