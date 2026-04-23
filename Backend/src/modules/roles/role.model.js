@@ -2,20 +2,12 @@ import mongoose from "mongoose";
 
 const roleSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-      unique: true,
+    name: { type: String, required: true, unique: true },
+
+    permissions: {
+      type: Object,
+      default: {},
     },
-
-    description: String,
-
-    permissions: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Permission",
-      },
-    ],
 
     isSystemRole: {
       type: Boolean,
@@ -25,8 +17,6 @@ const roleSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// 👇 IMPORTANT FIX
-const Role =
-  mongoose.models.Role || mongoose.model("Role", roleSchema);
+const Role = mongoose.model("Role", roleSchema);
 
 export default Role;
