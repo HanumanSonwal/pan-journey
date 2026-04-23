@@ -3,7 +3,6 @@ import {
   CalendarOutlined,
   DashboardOutlined,
   DollarOutlined,
-  SettingOutlined,
   UserAddOutlined,
   UserOutlined,
 } from "@ant-design/icons";
@@ -15,21 +14,21 @@ export const menuItems = [
     key: "/dashboard",
     icon: <DashboardOutlined />,
     label: <Link href="/dashboard">Dashboard</Link>,
-    roles: ["admin", "staff"],
+    module: "dashboard",
   },
 
   {
     key: "/dashboard/bookings",
     icon: <BookOutlined />,
     label: <Link href="/dashboard/bookings">Bookings</Link>,
-    roles: ["admin", "staff"],
+    module: "bookings",
   },
 
   {
     key: "/dashboard/staff",
     icon: <UserAddOutlined />,
     label: "Staff Management",
-    roles: ["admin"], // 👈 important
+    module: "dashboard",
     children: [
       {
         key: "/dashboard/staff/roles",
@@ -46,20 +45,20 @@ export const menuItems = [
     key: "/dashboard/calendar",
     icon: <CalendarOutlined />,
     label: <Link href="/dashboard/calendar">Calendar</Link>,
-    roles: ["admin"],
+    module: "dashboard",
   },
 
   {
     key: "/dashboard/users",
     icon: <UserOutlined />,
     label: <Link href="/dashboard/users">Users</Link>,
-    roles: ["admin"],
+    module: "dashboard",
   },
 
   {
     key: "/dashboard/revenue",
     icon: <DollarOutlined />,
     label: <Link href="/dashboard/revenue">Revenue</Link>,
-    roles: ["admin"],
+    module: "dashboard",
   },
 ];
