@@ -1,20 +1,82 @@
+// import express from "express";
+// import { protect } from "../../middleware/auth.middleware.js";
+// import permit from "../../middleware/permit.middleware.js";
+// import * as hotel from "./hotel.controller.js";
+// import { PERMISSION } from "../../utils/permission.util.js";
+
+// const router = express.Router();
+
+// // CREATE
+// router.post(
+//   "/",
+//   protect,
+//   permit(PERMISSION("hotel", "create")),
+//   hotel.createHotel
+// );
+
+// // READ
+// router.get(
+//   "/",
+//   protect,
+//   permit(PERMISSION("hotel", "read")),
+//   hotel.getHotels
+// );
+
+// // UPDATE
+// router.put(
+//   "/:id",
+//   protect,
+//   permit(PERMISSION("hotel", "update")),
+//   hotel.updateHotel
+// );
+
+// // DELETE
+// router.delete(
+//   "/:id",
+//   protect,
+//   permit(PERMISSION("hotel", "delete")),
+//   hotel.deleteHotel
+// );
+
+// export default router;
 import express from "express";
 import { protect } from "../../middleware/auth.middleware.js";
-import permit from "../../middleware/checkPermission.js";
-import * as hotel from "./hotelController.js";
+ import permit from "../../middleware/permit.middleware.js";
+import * as hotel from "./hotel.controller.js";
+import { PERMISSION } from "../../utils/permission.util.js";
 
 const router = express.Router();
 
-// CREATE HOTEL
-router.post("/", protect, permit("create_hotel"), hotel.createHotel);
+// CREATE
+router.post(
+  "/",
+  protect,
+  permit(PERMISSION("hotel", "create")),
+  hotel.createHotel
+);
 
-// READ HOTELS
-router.get("/", protect, permit("read_hotel"), hotel.getHotels);
+// READ
+router.get(
+  "/",
+  protect,
+  permit(PERMISSION("hotel", "read")),
+  hotel.getHotels
+);
 
-// UPDATE HOTEL
-router.put("/:id", protect, permit("update_hotel"), hotel.updateHotel);
+// UPDATE
+router.put(
+  "/:id",
+  protect,
+  permit(PERMISSION("hotel", "update")),
+  hotel.updateHotel
+);
 
-// DELETE HOTEL
-router.delete("/:id", protect, permit("delete_hotel"), hotel.deleteHotel);
+// DELETE
+router.delete(
+  "/:id",
+  protect,
+  permit(PERMISSION("hotel", "delete")),
+  hotel.deleteHotel
+);
 
 export default router;

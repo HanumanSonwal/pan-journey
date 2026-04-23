@@ -16,54 +16,92 @@ import {
   saveRefreshToken,
 } from "../../utils/authCache.js";
 
+// export const loginUser = async ({ email, password }) => {
+//   if (!email || !password) {
+//     throw new ApiError(400, "Email and password are required");
+//   }
+
+//   const user = await User.findOne({ email })
+//     .select("+password")
+//     .populate({
+//       path: "role",
+//       populate: {
+//         path: "permissions",
+//       },
+//     });
+
+//   if (!user) throw new ApiError(401, "Invalid credentials");
+
+//   if (
+//     ["admin", "sub-admin"].includes(user.role?.name) &&
+//     !user.isEmailVerified
+//   ) {
+//     throw new ApiError(403, "Please verify your email first");
+//   }
+
+//   const isMatch = await bcrypt.compare(password, user.password);
+
+//   if (!isMatch) throw new ApiError(401, "Invalid credentials");
+
+//   // 🔥 TOKEN GENERATION
+//   const accessToken = generateAccessToken(user);
+//   const refreshToken = generateRefreshToken(user);
+
+//   await saveRefreshToken(user._id, refreshToken);
+
+//   // 🔥 FLATTEN PERMISSIONS
+//   const permissions = user.role?.permissions?.map((p) => p.name) || [];
+
+//   // 🔥 CLEAN USER OBJECT
+//   const userObj = user.toObject();
+//   delete userObj.password;
+
+//   return {
+//     user: {
+//       id: userObj._id,
+//       name: userObj.name,
+//       email: userObj.email,
+//       mobile: userObj.mobile,
+//     },
+//     role: user.role?.name || null,
+//     permissions,
+//     accessToken,
+//     refreshToken,
+//   };
+// };
 export const loginUser = async ({ email, password }) => {
   if (!email || !password) {
-    throw new ApiError(400, "Email and password are required");
+    throw new Error("Email & password required");
   }
 
   const user = await User.findOne({ email })
     .select("+password")
     .populate({
       path: "role",
-      populate: {
-        path: "permissions",
-      },
+      populate: { path: "permissions" },
     });
 
-  if (!user) throw new ApiError(401, "Invalid credentials");
-
-  if (
-    ["admin", "sub-admin"].includes(user.role?.name) &&
-    !user.isEmailVerified
-  ) {
-    throw new ApiError(403, "Please verify your email first");
-  }
+  if (!user) throw new Error("Invalid credentials");
 
   const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) throw new Error("Invalid credentials");
 
-  if (!isMatch) throw new ApiError(401, "Invalid credentials");
-
-  // 🔥 TOKEN GENERATION
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
 
   await saveRefreshToken(user._id, refreshToken);
 
-  // 🔥 FLATTEN PERMISSIONS
-  const permissions = user.role?.permissions?.map((p) => p.name) || [];
-
-  // 🔥 CLEAN USER OBJECT
-  const userObj = user.toObject();
-  delete userObj.password;
+  const permissions =
+    user.role?.permissions?.map((p) => p.name) || [];
 
   return {
     user: {
-      id: userObj._id,
-      name: userObj.name,
-      email: userObj.email,
-      mobile: userObj.mobile,
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      mobile: user.mobile,
     },
-    role: user.role?.name || null,
+    role: user.role?.name,
     permissions,
     accessToken,
     refreshToken,
