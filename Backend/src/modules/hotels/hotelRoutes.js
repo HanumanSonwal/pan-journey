@@ -9,7 +9,7 @@ const router = express.Router();
 
 // CREATE
 router.post(
-  "/",
+  "/Create",
   protect,
   permit(PERMISSION("hotel", "create")),
   hotel.createHotel

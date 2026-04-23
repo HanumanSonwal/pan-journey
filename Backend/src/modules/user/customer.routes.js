@@ -1,33 +1,41 @@
 import express from "express";
+
 import {
-  deleteCustomerController,
   getAllCustomersController,
   getSingleCustomerController,
+  deleteCustomerController,
 } from "./user.controller.js";
 
 import { protect } from "../../middleware/auth.middleware.js";
-import { authorizeRoles } from "../../middleware/role.middleware.js";
+import { checkPermission } from "../../middleware/checkPermission.js";
 
 const router = express.Router();
 
+//////////////////////////////////////////////////////
+// CUSTOMER ROUTES (RBAC CONTROLLED)
+//////////////////////////////////////////////////////
+
+// GET ALL CUSTOMERS
 router.get(
   "/",
   protect,
-  authorizeRoles("admin", "sub-admin"),
+  checkPermission("users", "read"),
   getAllCustomersController
 );
 
+// GET SINGLE CUSTOMER
 router.get(
   "/:id",
   protect,
-  authorizeRoles("admin", "sub-admin"),
+  checkPermission("users", "read"),
   getSingleCustomerController
 );
 
+// DELETE CUSTOMER
 router.delete(
   "/:id",
   protect,
-  authorizeRoles("admin", "sub-admin"),
+  checkPermission("users", "delete"),
   deleteCustomerController
 );
 
