@@ -1,46 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import {
-  Table,
-  Button,
-  Card,
-  Space,
-  Tag,
-  Popconfirm,
-  Tooltip,
-} from "antd";
-import {
-  EditOutlined,
-  DeleteOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { Button, Card, Popconfirm, Space, Table, Tag, Tooltip } from "antd";
+import { useState } from "react";
 
-import {
-  getRoles,
-  deleteRole,
-} from "@/services/role.service";
+import { deleteRole } from "@/services/role.service";
 
 import RoleFormModal from "@/components/staff-managment/RoleFormModal";
+import { useRoles } from "@/hooks/Role-module/useRoles";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function RolesPage() {
-  const [roles, setRoles] = useState([]);
   const [open, setOpen] = useState(false);
   const [editData, setEditData] = useState(null);
 
-  const fetchRoles = async () => {
-    const res = await getRoles();
-    setRoles(res.data);
-  };
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    fetchRoles();
-  }, []);
+  const { data, isLoading } = useRoles();
 
-  // 🔥 DELETE
+  const roles = data?.data || [];
+
   const handleDelete = async (id) => {
     await deleteRole(id);
-    fetchRoles();
+    queryClient.invalidateQueries(["roles"]);
   };
 
   // 🔥 EDIT
@@ -49,7 +31,6 @@ export default function RolesPage() {
     setOpen(true);
   };
 
-  // 🔥 PERMISSION RENDER
   const renderPermissions = (permissions) => {
     if (!permissions || Object.keys(permissions).length === 0) {
       return <Tag color="default">No Permissions</Tag>;
@@ -149,12 +130,7 @@ export default function RolesPage() {
         pagination={{ pageSize: 8 }}
       />
 
-      <RoleFormModal
-        open={open}
-        setOpen={setOpen}
-        refresh={fetchRoles}
-        editData={editData} // 🔥 important for edit
-      />
+      <RoleFormModal open={open} setOpen={setOpen} editData={editData} />
     </Card>
   );
 }

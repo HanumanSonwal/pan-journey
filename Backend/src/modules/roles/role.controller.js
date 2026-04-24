@@ -1,34 +1,27 @@
 import { asyncHandler } from "../../middleware/asyncHandler.js";
+import { sendSuccess } from "../../utils/ApiResponse.js";
 import {
   createRoleService,
-  getRolesService,
-  getRoleByIdService,
-  updateRoleService,
   deleteRoleService,
+  getRoleByIdService,
+  getRolesService,
+  updateRoleService,
 } from "./role.service.js";
 
 // 🔹 Create
 export const createRole = asyncHandler(async (req, res) => {
   const role = await createRoleService(req.body);
 
-  res.status(201).json({
-    success: true,
-    message: "Role created successfully",
-    data: role,
-  });
+  sendSuccess(res, "Role created successfully", role, null, 201);
 });
 
 // 🔹 Get All
 export const getRoles = asyncHandler(async (req, res) => {
   const roles = await getRolesService();
 
-  res.json({
-    success: true,
-    data: roles,
-  });
+  sendSuccess(res, "Get All Roles", roles);
 });
 
-// 🔹 Get By ID
 export const getRoleById = asyncHandler(async (req, res) => {
   const role = await getRoleByIdService(req.params.id);
 
@@ -41,20 +34,11 @@ export const getRoleById = asyncHandler(async (req, res) => {
 // 🔹 Update
 export const updateRole = asyncHandler(async (req, res) => {
   const role = await updateRoleService(req.params.id, req.body);
-
-  res.json({
-    success: true,
-    message: "Role updated successfully",
-    data: role,
-  });
+  sendSuccess(res, "Role updated successfully", role);
 });
 
 // 🔹 Delete
 export const deleteRole = asyncHandler(async (req, res) => {
   await deleteRoleService(req.params.id);
-
-  res.json({
-    success: true,
-    message: "Role deleted successfully",
-  });
+  sendSuccess(res, "Role deleted successfully");
 });

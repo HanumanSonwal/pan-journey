@@ -18,6 +18,5 @@ export default function DashboardLayout({ children }) {
   if (loading) return <div>Checking auth...</div>;
 
   if (!isAuthenticated) return null;
-
   return <MainLayout>{children}</MainLayout>;
 }

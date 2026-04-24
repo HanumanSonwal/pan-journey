@@ -13,6 +13,26 @@ const api = axios.create({
   withCredentials: true,
 });
 
+/* ===============================
+   🔥 REFRESH CONTROL (IMPORTANT)
+================================ */
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve();
+    }
+  });
+  failedQueue = [];
+};
+
+/* ===============================
+   REQUEST INTERCEPTOR
+================================ */
 api.interceptors.request.use((config) => {
   if (!config.skipLoader && !config.url?.includes("/auth/refresh-token")) {
     useLoaderStore.getState().start();
@@ -20,6 +40,9 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+/* ===============================
+   RESPONSE INTERCEPTOR
+================================ */
 api.interceptors.response.use(
   (response) => {
     if (
@@ -53,23 +76,49 @@ api.interceptors.response.use(
       useLoaderStore.getState().stop();
     }
 
+    // ❌ अगर refresh API खुद fail हो गई → logout
     if (originalRequest.url?.includes("/auth/refresh-token")) {
       useAuthStore.getState().clearUser();
       return Promise.reject(error);
     }
 
+    /* ===============================
+       🔥 HANDLE 401 (MAIN FIX)
+    ============================== */
     if (status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
+      // 🔥 अगर refresh already चल रहा है → wait करो
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({
+            resolve: () => resolve(api(originalRequest)),
+            reject: (err) => reject(err),
+          });
+        });
+      }
+
+      isRefreshing = true;
+
       try {
         await refreshApi.post("/auth/refresh-token");
-        return api(originalRequest); // retry original
-      } catch {
-        useAuthStore.getState().clearUser();
-        return Promise.reject(error);
+
+        isRefreshing = false;
+        processQueue(); // 🔥 सभी pending requests resume
+
+        return api(originalRequest); // retry original request
+      } catch (err) {
+        isRefreshing = false;
+        processQueue(err);
+
+        useAuthStore.getState().clearUser(); // logout only here
+        return Promise.reject(err);
       }
     }
 
+    /* ===============================
+       🔥 NORMAL ERROR HANDLING
+    ============================== */
     if (
       !originalRequest.url?.includes("/auth/me") &&
       !originalRequest.skipToast
@@ -81,4 +130,5 @@ api.interceptors.response.use(
     return Promise.reject(error);
   },
 );
+
 export default api;

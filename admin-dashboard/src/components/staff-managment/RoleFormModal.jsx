@@ -15,12 +15,14 @@ import { useEffect } from "react";
 import { menuItems } from "@/config/menuConfig";
 import { createRole, updateRole } from "@/services/role.service";
 import { getModulesFromMenu } from "@/utils/module.util";
+import { useQueryClient } from "@tanstack/react-query";
 
 const { Text } = Typography;
 const { TextArea } = Input;
 
-export default function RoleFormModal({ open, setOpen, refresh, editData }) {
+export default function RoleFormModal({ open, setOpen, editData }) {
   const [form] = Form.useForm();
+  const queryClient = useQueryClient();
 
   const {
     token: { colorBgContainer, colorBorder, borderRadiusLG },
@@ -50,9 +52,10 @@ export default function RoleFormModal({ open, setOpen, refresh, editData }) {
         await createRole(values);
       }
 
+      queryClient.invalidateQueries(["roles"]);
+
       form.resetFields();
       setOpen(false);
-      refresh();
     } catch (err) {
       console.log("Error:", err);
     }
@@ -97,10 +100,7 @@ export default function RoleFormModal({ open, setOpen, refresh, editData }) {
             label="Description"
             rules={[{ max: 200, message: "Max 200 characters allowed" }]}
           >
-            <TextArea
-              rows={3}
-              placeholder="Enter role description (optional)"
-            />
+            <TextArea rows={3} placeholder="Enter role description" />
           </Form.Item>
 
           <Divider>Permissions</Divider>
@@ -116,9 +116,7 @@ export default function RoleFormModal({ open, setOpen, refresh, editData }) {
                 background: colorBgContainer,
               }}
             >
-              <Text strong style={{ textTransform: "capitalize" }}>
-                {module.label}
-              </Text>
+              <Text strong>{module.label}</Text>
 
               <div
                 style={{
