@@ -23,28 +23,28 @@ router.post(
 router.get(
   "/all",
   protect,
-  checkPermission("role", "read"),
+  checkPermission("roles", "read"),
   getRoles
 );
 
 router.get(
   "/:id",
   protect,
-  checkPermission("role", "read"),
+  checkPermission("roles", "read"),
   getRoleById
 );
 
 router.put(
   "/:id",
   protect,
-  checkPermission("role", "update"),
+  checkPermission("roles", "update"),
   updateRole
 );
 
 router.delete(
   "/:id",
   protect,
-  checkPermission("role", "delete"),
+  checkPermission("roles", "delete"),
   deleteRole
 );
 

@@ -5,7 +5,7 @@ export const PERMISSIONS = {
 
   users: ["read", "write", "update", "delete"],
 
-  role: ["read", "write", "update", "delete"],
+  roles: ["read", "write", "update", "delete"],
 
   staff: ["read", "write", "update", "delete"],
 
