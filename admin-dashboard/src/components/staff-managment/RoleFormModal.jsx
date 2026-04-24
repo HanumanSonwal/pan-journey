@@ -14,8 +14,9 @@ import { useEffect } from "react";
 
 import { menuItems } from "@/config/menuConfig";
 import { createRole, updateRole } from "@/services/role.service";
-import { getModulesFromMenu } from "@/utils/module.util";
+import { getModulesFromMenu } from "@/utils/filterMenu";
 import { useQueryClient } from "@tanstack/react-query";
+import { moduleConfig } from "@/config/module.config";
 
 const { Text } = Typography;
 const { TextArea } = Input;
@@ -28,8 +29,21 @@ export default function RoleFormModal({ open, setOpen, editData }) {
     token: { colorBgContainer, colorBorder, borderRadiusLG },
   } = theme.useToken();
 
-  const modules = getModulesFromMenu(menuItems);
+const extractModules = (items, result = new Set()) => {
+  items.forEach((item) => {
+    if (item.module) result.add(item.module);
+    if (item.children) extractModules(item.children, result);
+  });
+  return result;
+};
 
+const menuModules = Array.from(extractModules(menuItems));
+
+const modules = menuModules.map((key) => ({
+  key,
+  label: moduleConfig[key]?.label || key,
+  actions: moduleConfig[key]?.actions || ["read"],
+}));
   useEffect(() => {
     if (open) {
       if (editData) {

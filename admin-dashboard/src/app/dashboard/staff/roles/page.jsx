@@ -1,14 +1,27 @@
 "use client";
 
-import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Card, Popconfirm, Space, Table, Tag, Tooltip } from "antd";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
+import {
+  Button,
+  Card,
+  Popconfirm,
+  Space,
+  Table,
+  Tag,
+  Tooltip,
+} from "antd";
 import { useState } from "react";
 
 import { deleteRole } from "@/services/role.service";
-
 import RoleFormModal from "@/components/staff-managment/RoleFormModal";
 import { useRoles } from "@/hooks/Role-module/useRoles";
+import { can } from "@/utils/hasPermission";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAuthStore } from "@/store/auth.store";
 
 export default function RolesPage() {
   const [open, setOpen] = useState(false);
@@ -16,10 +29,13 @@ export default function RolesPage() {
 
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useRoles();
+  // 🔥 IMPORTANT (FIX)
+  const { permissions = {}, user } = useAuthStore();
 
+  const { data, isLoading } = useRoles();
   const roles = data?.data || [];
 
+  // 🔥 DELETE
   const handleDelete = async (id) => {
     await deleteRole(id);
     queryClient.invalidateQueries(["roles"]);
@@ -31,6 +47,7 @@ export default function RolesPage() {
     setOpen(true);
   };
 
+  // 🔥 PERMISSIONS RENDER
   const renderPermissions = (permissions) => {
     if (!permissions || Object.keys(permissions).length === 0) {
       return <Tag color="default">No Permissions</Tag>;
@@ -44,6 +61,7 @@ export default function RolesPage() {
       return (
         <div key={module} style={{ marginBottom: 6 }}>
           <Tag color="blue">{module}</Tag>
+
           {enabledActions.length > 0 ? (
             enabledActions.map((act) => (
               <Tag key={act} color="green">
@@ -57,6 +75,11 @@ export default function RolesPage() {
       );
     });
   };
+
+  // 🔥 PERMISSION CHECKS
+  const canCreate = can(permissions, "roles", "write", user);
+  const canEdit = can(permissions, "roles", "update", user);
+  const canDelete = can(permissions, "roles", "delete", user);
 
   const columns = [
     {
@@ -80,52 +103,79 @@ export default function RolesPage() {
       dataIndex: "createdAt",
       render: (val) => new Date(val).toLocaleString(),
     },
-    {
-      title: "Actions",
-      render: (_, record) => (
-        <Space>
-          <Tooltip title="Edit Role">
-            <Button
-              icon={<EditOutlined />}
-              onClick={() => handleEdit(record)}
-            />
-          </Tooltip>
 
-          {!record.isSystemRole && (
-            <Popconfirm
-              title="Are you sure delete this role?"
-              onConfirm={() => handleDelete(record._id)}
-            >
-              <Tooltip title="Delete Role">
-                <Button danger icon={<DeleteOutlined />} />
-              </Tooltip>
-            </Popconfirm>
-          )}
-        </Space>
-      ),
-    },
+    // 🔥 ACTION COLUMN (FULLY CONTROLLED)
+    ...(canEdit || canDelete
+      ? [
+          {
+            title: "Actions",
+            render: (_, record) => {
+              // 👉 अगर कोई permission नहीं
+              if (!canEdit && !canDelete) {
+                return <Tag color="default">No Access</Tag>;
+              }
+
+              return (
+                <Space>
+                  {/* ✏️ EDIT */}
+                  {canEdit && (
+                    <Tooltip title="Edit Role">
+                      <Button
+                        icon={<EditOutlined />}
+                        onClick={() => handleEdit(record)}
+                      />
+                    </Tooltip>
+                  )}
+
+                  {/* 🗑 DELETE */}
+                  {canDelete && !record.isSystemRole && (
+                    <Popconfirm
+                      title="Are you sure delete this role?"
+                      onConfirm={() => handleDelete(record._id)}
+                    >
+                      <Tooltip title="Delete Role">
+                        <Button danger icon={<DeleteOutlined />} />
+                      </Tooltip>
+                    </Popconfirm>
+                  )}
+
+                  {/* 🔒 SYSTEM ROLE BLOCK */}
+                  {canDelete && record.isSystemRole && (
+                    <Tooltip title="System roles cannot be deleted">
+                      <Button danger icon={<DeleteOutlined />} disabled />
+                    </Tooltip>
+                  )}
+                </Space>
+              );
+            },
+          },
+        ]
+      : []),
   ];
 
   return (
     <Card
       title="Role Management"
       extra={
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => {
-            setEditData(null);
-            setOpen(true);
-          }}
-        >
-          Create Role
-        </Button>
+        canCreate && (
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => {
+              setEditData(null);
+              setOpen(true);
+            }}
+          >
+            Create Role
+          </Button>
+        )
       }
     >
       <Table
         columns={columns}
         dataSource={roles}
         rowKey="_id"
+        loading={isLoading}
         bordered
         pagination={{ pageSize: 8 }}
       />

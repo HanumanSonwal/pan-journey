@@ -116,7 +116,7 @@ export const getAllSubAdmins = async (query) => {
   if (cached) return cached;
 
   const result = await getUsersByRole({
-    roleName: "sub-admin",
+    roleName: "",
     query,
   });
 
@@ -132,7 +132,7 @@ export const getSingleSubAdmin = async (id) => {
     throw new ApiError(400, "Invalid ID");
   }
 
-  const roleDoc = await Role.findOne({ name: "sub-admin" });
+  const roleDoc = await Role.findOne({ name: "user" });
   if (!roleDoc) throw new ApiError(400, "Role not found");
 
   const user = await User.findOne({
@@ -238,3 +238,4 @@ export const deleteCustomer = async (id) => {
 
   await user.deleteOne();
 };
+
