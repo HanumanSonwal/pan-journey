@@ -36,7 +36,10 @@ export const protect = async (req, res, next) => {
     // 🔥 SINGLE SOURCE OF TRUTH
     req.user = {
       ...user.toObject(),
-      roleName: user.role?.name,
+
+      role: user.role?.name,
+      type: user.role?.type, // 🔥 ADD THIS
+
       permissions: user.role?.permissions || {},
     };
 

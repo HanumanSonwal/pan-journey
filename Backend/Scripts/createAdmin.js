@@ -1,21 +1,40 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
+import path from "path"; // ✅ ADD THIS
+import { fileURLToPath } from "url"; // ✅ ADD THIS
 
 import User from "../src/modules/user/user.model.js";
 import Role from "../src/modules/roles/role.model.js";
 
-dotenv.config({ path: "../.env" });
+// 🔥 correct path resolve
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// 🔥 load env
+dotenv.config({
+  path: path.resolve(__dirname, "../.env"),
+});
+
+// 🧪 DEBUG
+console.log("MONGO_URI:", process.env.MONGO_URI);
 
 const createAdmin = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log("MongoDB connected");
+    if (!process.env.MONGO_URI) {
+      throw new Error("MONGO_URI not found in .env");
+    }
 
-    const adminRole = await Role.findOne({ name: "admin" });
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("✅ MongoDB connected");
+
+    const adminRole = await Role.findOne({
+      name: "admin",
+      type: "admin",
+    });
 
     if (!adminRole) {
-      console.log("❌ ADMIN role not found. Create role first.");
+      console.log("❌ Admin role not found. Create role first.");
       process.exit(1);
     }
 
@@ -30,18 +49,19 @@ const createAdmin = async () => {
 
     const hashedPassword = await bcrypt.hash("Admin@123", 10);
 
-    const admin = await User.create({
+    await User.create({
       name: "Super Admin",
       email: "admin@trainscafe.com",
       password: hashedPassword,
-      role: adminRole._id,   // ⭐ FIXED
+      role: adminRole._id,
+      provider: "local",
       isEmailVerified: true,
     });
 
-    console.log("✅ Admin created successfully");
+    console.log("🎉 Admin created successfully");
     process.exit();
   } catch (error) {
-    console.log("❌ Error:", error.message);
+    console.error("❌ Error:", error.message);
     process.exit(1);
   }
 };

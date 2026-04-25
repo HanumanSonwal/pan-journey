@@ -3,10 +3,10 @@ import Joi from "joi";
 // MongoDB ObjectId validator
 const objectId = Joi.string().hex().length(24);
 
-// ===============================
-// CREATE SUB ADMIN VALIDATION
-// ===============================
-export const createSubAdminValidation = Joi.object({
+//////////////////////////////////////////////////////////////
+// CREATE STAFF VALIDATION
+//////////////////////////////////////////////////////////////
+export const createStaffValidation = Joi.object({
   name: Joi.string().min(2).max(50).required(),
 
   email: Joi.string().email().required(),
@@ -20,15 +20,14 @@ export const createSubAdminValidation = Joi.object({
 
   password: Joi.string().min(6).required(),
 
-  // ⭐ NEW → role id instead of permissions
+  // 🔥 role id required
   role: objectId.required(),
 });
 
-
-// ===============================
-// UPDATE SUB ADMIN VALIDATION
-// ===============================
-export const updateSubAdminValidation = Joi.object({
+//////////////////////////////////////////////////////////////
+// UPDATE USER VALIDATION
+//////////////////////////////////////////////////////////////
+export const updateUserValidation = Joi.object({
   name: Joi.string().min(2).max(50),
 
   email: Joi.string().email(),

@@ -15,7 +15,7 @@ export const login = asyncHandler(async (req, res) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
-    maxAge: 60 * 1000,
+    maxAge: 15 * 60 * 1000,
   });
 
   res.cookie("refreshToken", data.refreshToken, {
@@ -27,9 +27,14 @@ export const login = asyncHandler(async (req, res) => {
 
   sendSuccess(res, "Login successful", {
     user: {
-      ...data.user,
-      role: data.role,
-      permissions: data.permissions,
+      id: data.user.id,
+      name: data.user.name,
+      email: data.user.email,
+      mobile: data.user.mobile,
+
+      role: data.user.role,        // ✅ role name
+      type: data.user.type,        // 🔥 ADD THIS
+      permissions: data.user.permissions || {}, // ✅ always from role
     },
   });
 });
@@ -62,16 +67,7 @@ export const refreshToken = asyncHandler(async (req, res) => {
   sendSuccess(res, "Access token refreshed", {});
 });
 
-const mapUserResponse = (user, permissions = []) => {
-  return {
-    id: user._id,
-    name: user.name,
-    email: user.email,
-    mobile: user.mobile,
-    role: user.role?.name || null,
-    permissions,
-  };
-};
+
 export const getMe = asyncHandler(async (req, res) => {
   sendSuccess(res, "Profile fetched", {
     user: {

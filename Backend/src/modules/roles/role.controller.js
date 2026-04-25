@@ -10,6 +10,11 @@ import {
 
 // 🔹 Create
 export const createRole = asyncHandler(async (req, res) => {
+  const { name, type } = req.body;
+
+  if (!name) throw new Error("Role name is required");
+  if (!type) throw new Error("Role type is required");
+
   const role = await createRoleService(req.body);
 
   sendSuccess(res, "Role created successfully", role, null, 201);
@@ -24,16 +29,19 @@ export const getRoles = asyncHandler(async (req, res) => {
 
 export const getRoleById = asyncHandler(async (req, res) => {
   const role = await getRoleByIdService(req.params.id);
-
-  res.json({
-    success: true,
-    data: role,
-  });
+  sendSuccess(res, "Role fetched", role);
 });
 
 // 🔹 Update
 export const updateRole = asyncHandler(async (req, res) => {
+  const { type } = req.body;
+
+  if (type && !["admin", "staff", "customer"].includes(type)) {
+    throw new Error("Invalid role type");
+  }
+
   const role = await updateRoleService(req.params.id, req.body);
+
   sendSuccess(res, "Role updated successfully", role);
 });
 

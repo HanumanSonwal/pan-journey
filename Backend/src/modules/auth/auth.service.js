@@ -18,41 +18,25 @@ import {
 
 export const loginUser = async ({ email, password }) => {
   if (!email || !password) {
-    throw new Error("Email & password required");
+    throw new ApiError(400, "Email & password required");
   }
 
-  const user = await User.findOne({ email }).select("+password").populate({
-    path: "role",
-    select: "name permissions",
-  });
+  const user = await User.findOne({ email })
+    .select("+password")
+    .populate({
+      path: "role",
+      select: "name permissions type", // 🔥 ADD type
+    });
 
-  if (!user) throw new Error("Invalid credentials");
+  if (!user) throw new ApiError(401, "Invalid credentials");
 
   const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) throw new Error("Invalid credentials");
+  if (!isMatch) throw new ApiError(401, "Invalid credentials");
 
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
+
   await saveRefreshToken(user._id, refreshToken);
-
-  const roles = user.role
-    ? Array.isArray(user.role)
-      ? user.role
-      : [user.role]
-    : [];
-
-  let mergedPermissions = {};
-
-  roles.forEach((role) => {
-    const perms = role?.permissions || {};
-
-    for (const module in perms) {
-      mergedPermissions[module] = {
-        ...(mergedPermissions[module] || {}),
-        ...perms[module],
-      };
-    }
-  });
 
   return {
     accessToken,
@@ -63,10 +47,11 @@ export const loginUser = async ({ email, password }) => {
       name: user.name,
       email: user.email,
       mobile: user.mobile,
-    },
 
-    roles: roles.map((r) => r.name),
-    permissions: mergedPermissions,
+      role: user.role?.name || null,     // ✅ role name
+      type: user.role?.type || null,     // 🔥 IMPORTANT
+      permissions: user.role?.permissions || {}, // ✅ FIXED
+    },
   };
 };
 export const refreshAccessToken = async (token) => {

@@ -13,9 +13,14 @@ const roleSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    type: {
+      type: String,
+      enum: ["admin", "staff", "customer"],
+      required: true,
+    },
 
     permissions: {
-      type: Object,
+      type: mongoose.Schema.Types.Mixed,
       default: {},
     },
 
@@ -24,7 +29,7 @@ const roleSchema = new mongoose.Schema(
       default: false,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("Role", roleSchema);
