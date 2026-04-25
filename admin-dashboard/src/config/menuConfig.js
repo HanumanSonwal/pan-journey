@@ -24,22 +24,23 @@ export const menuItems = [
     module: "bookings",
   },
 
-  {
-    key: "/dashboard/staff",
-    icon: <UserAddOutlined />,
-    label: "Staff Management",
-    module: "staff", // ✅ FIX
-    children: [
-      {
-        key: "/dashboard/staff/roles",
-        label: <Link href="/dashboard/staff/roles">Roles</Link>,
-      },
-      {
-        key: "/dashboard/staff/users",
-        label: <Link href="/dashboard/staff/users">Users</Link>,
-      },
-    ],
-  },
+{
+  key: "/dashboard/staff",
+  icon: <UserAddOutlined />,
+  label: "Staff Management",
+  children: [
+    {
+      key: "/dashboard/staff/roles",
+      label: <Link href="/dashboard/staff/roles">Roles</Link>,
+      module: "roles", // ✅ ADD
+    },
+    {
+      key: "/dashboard/staff/users",
+      label: <Link href="/dashboard/staff/users">Users</Link>,
+      module: "users", // ✅ ADD
+    },
+  ],
+},
 
   {
     key: "/dashboard/calendar",

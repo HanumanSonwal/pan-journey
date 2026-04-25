@@ -26,21 +26,31 @@
 //     .filter(Boolean);
 // };
 
-import { useMemo } from "react";
 import { useAuthStore } from "@/store/auth.store";
 import { menuItems } from "@/config/menuConfig";
-import { filterMenu } from "@/utils/filterMenu";
+import { canAccessModule } from "@/utils/permission.util";
 
 export const useFilteredMenu = () => {
-  const { permissions, user } = useAuthStore();
+  const permissions = useAuthStore((s) => s.permissions);
+  const user = useAuthStore((s) => s.user);
 
-  return useMemo(() => {
-    // 🔥 ADMIN BYPASS
-    if (!user?.role || user?.role === "admin") {
-      return menuItems;
-    }
+  return menuItems
+    .map((item) => {
+      if (item.children) {
+        const children = item.children.filter((child) =>
+          canAccessModule(permissions, child.module, user)
+        );
 
-    // ✅ IMPORTANT: use filterMenu (child logic yahi hai)
-    return filterMenu(menuItems, permissions || {});
-  }, [permissions, user]);
+        if (children.length > 0) {
+          return { ...item, children };
+        }
+
+        return null;
+      }
+
+      return canAccessModule(permissions, item.module, user)
+        ? item
+        : null;
+    })
+    .filter(Boolean);
 };

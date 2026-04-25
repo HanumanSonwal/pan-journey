@@ -16,7 +16,7 @@ const router = express.Router();
 router.post(
   "/create",
   protect,
-  checkPermission("role", "write"),
+checkPermission("roles", "write"),
   createRole
 );
 

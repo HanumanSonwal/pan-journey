@@ -9,8 +9,8 @@ export const moduleConfig = {
     actions: ["read", "write", "update", "delete"],
   },
 
-  staff: {
-    label: "Staff",
+  roles: {
+    label: "roles",
     actions: ["read", "write", "update", "delete"],
   },
 

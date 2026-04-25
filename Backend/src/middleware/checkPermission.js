@@ -1,23 +1,18 @@
 import { hasPermission } from "../utils/permission.util.js";
-import { sendError } from "../utils/ApiResponse.js";
-
-const actionMap = {
-  read: "view",
-  write: "create",
-  update: "edit",
-  delete: "delete",
-};
-
 export const checkPermission = (module, action) => {
   return (req, res, next) => {
+    const user = req.user;
 
-    if (req.role === "admin" || req.user?.isSystemRole) {
+    if (!user) {
+      return sendError(res, "Unauthorized", 401);
+    }
+
+    // 🔥 ADMIN BYPASS
+    if (user.roleName === "admin" || user.isSystemRole) {
       return next();
     }
 
-    const permissions = req.permissions;
-
-    if (!hasPermission(permissions, module, action)) {
+    if (!hasPermission(user.permissions, module, action)) {
       const actionText = actionMap[action] || action;
 
       return sendError(

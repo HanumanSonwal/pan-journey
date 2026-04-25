@@ -17,7 +17,6 @@ export const filterMenu = (menuItems, permissions = {}) => {
           };
         }
 
-        // ❌ koi child nahi → parent hide
         return null;
       }
 

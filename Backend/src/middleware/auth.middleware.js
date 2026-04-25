@@ -33,11 +33,12 @@ export const protect = async (req, res, next) => {
       });
     }
 
-    req.user = user;
-
-    req.permissions = user.role?.permissions || {};
-
-    req.role = user.role?.name || null;
+    // 🔥 SINGLE SOURCE OF TRUTH
+    req.user = {
+      ...user.toObject(),
+      roleName: user.role?.name,
+      permissions: user.role?.permissions || {},
+    };
 
     next();
   } catch (err) {

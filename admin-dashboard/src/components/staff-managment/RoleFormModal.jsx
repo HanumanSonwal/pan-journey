@@ -13,10 +13,9 @@ import {
 import { useEffect } from "react";
 
 import { menuItems } from "@/config/menuConfig";
-import { createRole, updateRole } from "@/services/role.service";
-import { getModulesFromMenu } from "@/utils/filterMenu";
-import { useQueryClient } from "@tanstack/react-query";
 import { moduleConfig } from "@/config/module.config";
+import { createRole, updateRole } from "@/services/role.service";
+import { useQueryClient } from "@tanstack/react-query";
 
 const { Text } = Typography;
 const { TextArea } = Input;
@@ -29,21 +28,24 @@ export default function RoleFormModal({ open, setOpen, editData }) {
     token: { colorBgContainer, colorBorder, borderRadiusLG },
   } = theme.useToken();
 
-const extractModules = (items, result = new Set()) => {
-  items.forEach((item) => {
-    if (item.module) result.add(item.module);
-    if (item.children) extractModules(item.children, result);
-  });
-  return result;
-};
+  const extractModules = (items, result = new Set()) => {
+    items.forEach((item) => {
+      if (item.module) result.add(item.module);
+      if (item.children) extractModules(item.children, result);
+    });
+    return result;
+  };
 
-const menuModules = Array.from(extractModules(menuItems));
+  const menuModules = Array.from(extractModules(menuItems));
 
-const modules = menuModules.map((key) => ({
-  key,
-  label: moduleConfig[key]?.label || key,
-  actions: moduleConfig[key]?.actions || ["read"],
-}));
+  const modules = menuModules.map((key) => ({
+    key,
+    label: moduleConfig[key]?.label || key,
+    actions: moduleConfig[key]?.actions || ["read"],
+  }));
+
+  const permissions = Form.useWatch("permissions", form);
+
   useEffect(() => {
     if (open) {
       if (editData) {
@@ -67,7 +69,6 @@ const modules = menuModules.map((key) => ({
       }
 
       queryClient.invalidateQueries(["roles"]);
-
       form.resetFields();
       setOpen(false);
     } catch (err) {
@@ -83,7 +84,6 @@ const modules = menuModules.map((key) => ({
       footer={null}
       width={720}
       destroyOnHidden
-      forceRender
     >
       <Form
         layout="vertical"
@@ -91,30 +91,17 @@ const modules = menuModules.map((key) => ({
         onFinish={onFinish}
         initialValues={{ permissions: {} }}
       >
-        <div
-          style={{
-            maxHeight: "60vh",
-            overflowY: "auto",
-            paddingRight: 6,
-          }}
-        >
+        <div style={{ maxHeight: "60vh", overflowY: "auto" }}>
           <Form.Item
             name="name"
             label="Role Name"
-            rules={[
-              { required: true, message: "Role name is required" },
-              { min: 3, message: "Minimum 3 characters required" },
-            ]}
+            rules={[{ required: true, message: "Role name is required" }]}
           >
             <Input placeholder="Enter role name" />
           </Form.Item>
 
-          <Form.Item
-            name="description"
-            label="Description"
-            rules={[{ max: 200, message: "Max 200 characters allowed" }]}
-          >
-            <TextArea rows={3} placeholder="Enter role description" />
+          <Form.Item name="description" label="Description">
+            <TextArea rows={3} placeholder="Enter description" />
           </Form.Item>
 
           <Divider>Permissions</Divider>
@@ -124,22 +111,15 @@ const modules = menuModules.map((key) => ({
               key={module.key}
               style={{
                 marginBottom: 16,
-                padding: 14,
-                borderRadius: borderRadiusLG,
+                padding: 12,
                 border: `1px solid ${colorBorder}`,
+                borderRadius: borderRadiusLG,
                 background: colorBgContainer,
               }}
             >
               <Text strong>{module.label}</Text>
 
-              <div
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: 10,
-                  marginTop: 10,
-                }}
-              >
+              <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
                 {module.actions.map((action) => (
                   <Form.Item
                     key={action}
@@ -147,7 +127,37 @@ const modules = menuModules.map((key) => ({
                     valuePropName="checked"
                     style={{ marginBottom: 0 }}
                   >
-                    <Checkbox>{action}</Checkbox>
+                    <Checkbox
+                      checked={permissions?.[module.key]?.[action] || false}
+                      disabled={
+                        action !== "read" && !permissions?.[module.key]?.read
+                      }
+                      onChange={(e) => {
+                        const checked = e.target.checked;
+
+                        const current = form.getFieldValue("permissions") || {};
+
+                        const modulePerm = current[module.key] || {};
+
+                        const updated = {
+                          ...current,
+                          [module.key]: {
+                            ...modulePerm,
+                            [action]: checked,
+                          },
+                        };
+
+                        // 🔥 read OFF → update/delete OFF
+                        if (action === "read" && !checked) {
+                          updated[module.key].update = false;
+                          updated[module.key].delete = false;
+                        }
+
+                        form.setFieldsValue({ permissions: updated });
+                      }}
+                    >
+                      {action}
+                    </Checkbox>
                   </Form.Item>
                 ))}
               </div>
@@ -155,18 +165,9 @@ const modules = menuModules.map((key) => ({
           ))}
         </div>
 
-        <div
-          style={{
-            position: "sticky",
-            bottom: 0,
-            paddingTop: 12,
-            background: colorBgContainer,
-          }}
-        >
-          <Button type="primary" htmlType="submit" block size="large">
-            {editData ? "Update Role" : "Create Role"}
-          </Button>
-        </div>
+        <Button type="primary" htmlType="submit" block>
+          {editData ? "Update Role" : "Create Role"}
+        </Button>
       </Form>
     </Modal>
   );
