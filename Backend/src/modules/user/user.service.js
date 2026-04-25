@@ -1,15 +1,9 @@
-
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 import ApiError from "../../utils/ApiError.js";
-import {
-  deleteByPattern,
-  deleteCache,
-  getCache,
-  setCache,
-} from "../../utils/cache.js";
-import User from "./user.model.js";
+import { deleteByPattern, getCache, setCache } from "../../utils/cache.js";
 import Role from "../roles/role.model.js";
+import User from "./user.model.js";
 
 //////////////////////////////////////////////////////////////
 // PAGINATION
@@ -28,20 +22,14 @@ const getPagination = (query) => {
 //////////////////////////////////////////////////////////////
 // GET USERS BY ROLE (SAFE)
 //////////////////////////////////////////////////////////////
-const getUsersByRole = async ({ roleName, query, extraSearchFields = [] }) => {
-  const roleDoc = await Role.findOne({ name: roleName });
-
-  if (!roleDoc) {
-    throw new ApiError(400, `${roleName} role not found`);
-  }
-
-  const { skip, sortBy, order } = getPagination(query);
+const getUsersByRole = async ({ roleId, query, extraSearchFields = [] }) => {
+  const { skip, sortBy, order, limit } = getPagination(query);
   const search = query.search || "";
 
   const fields = ["name", "email", ...extraSearchFields];
 
   const searchQuery = {
-    role: roleDoc._id,
+    role: roleId,
     ...(search
       ? {
           $or: fields.map((field) => ({
@@ -57,7 +45,7 @@ const getUsersByRole = async ({ roleName, query, extraSearchFields = [] }) => {
       .populate("role", "name permissions")
       .sort({ [sortBy]: order })
       .skip(skip)
-      .limit(10)
+      .limit(limit)
       .lean(),
 
     User.countDocuments(searchQuery),
@@ -68,8 +56,8 @@ const getUsersByRole = async ({ roleName, query, extraSearchFields = [] }) => {
     pagination: {
       total,
       page: getPagination(query).page,
-      limit: getPagination(query).limit,
-      totalPages: Math.ceil(total / getPagination(query).limit),
+      limit,
+      totalPages: Math.ceil(total / limit),
     },
   };
 };
@@ -110,20 +98,45 @@ export const createSubAdmin = async (data) => {
 //////////////////////////////////////////////////////////////
 // GET ALL SUB ADMINS
 //////////////////////////////////////////////////////////////
-export const getAllSubAdmins = async (query) => {
-  const cacheKey = `subadmins:${JSON.stringify(query)}`;
-  const cached = await getCache(cacheKey);
-  if (cached) return cached;
+export const getAllUsers = async (query) => {
+  const { skip, sortBy, order, limit } = getPagination(query);
 
-  const result = await getUsersByRole({
-    roleName: "",
-    query,
-  });
+  const search = query.search || "";
+  const roleId = query.roleId || null;
 
-  await setCache(cacheKey, result, 300);
-  return result;
+  const searchQuery = {
+    ...(roleId && { role: roleId }),
+
+    ...(search && {
+      $or: [
+        { name: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+      ],
+    }),
+  };
+
+  const [data, total] = await Promise.all([
+    User.find(searchQuery)
+      .select("-password -refreshToken")
+      .populate("role", "name permissions")
+      .sort({ [sortBy]: order })
+      .skip(skip)
+      .limit(limit)
+      .lean(),
+
+    User.countDocuments(searchQuery),
+  ]);
+
+  return {
+    data,
+    pagination: {
+      total,
+      page: getPagination(query).page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
 };
-
 //////////////////////////////////////////////////////////////
 // GET SINGLE SUB ADMIN
 //////////////////////////////////////////////////////////////
@@ -132,13 +145,7 @@ export const getSingleSubAdmin = async (id) => {
     throw new ApiError(400, "Invalid ID");
   }
 
-  const roleDoc = await Role.findOne({ name: "user" });
-  if (!roleDoc) throw new ApiError(400, "Role not found");
-
-  const user = await User.findOne({
-    _id: id,
-    role: roleDoc._id,
-  })
+  const user = await User.findById(id)
     .select("-password -refreshToken")
     .populate("role", "name permissions");
 
@@ -194,13 +201,13 @@ export const deleteSubAdmin = async (id, currentAdminId) => {
 //////////////////////////////////////////////////////////////
 // CUSTOMERS
 //////////////////////////////////////////////////////////////
-export const getAllCustomers = async (query) => {
-  const cacheKey = `customers:${JSON.stringify(query)}`;
+export const getAllCustomers = async (query, roleId) => {
+  const cacheKey = `customers:${JSON.stringify(query)}:${roleId}`;
   const cached = await getCache(cacheKey);
   if (cached) return cached;
 
   const result = await getUsersByRole({
-    roleName: "customer",
+    roleId,
     query,
     extraSearchFields: ["mobile"],
   });
@@ -238,4 +245,3 @@ export const deleteCustomer = async (id) => {
 
   await user.deleteOne();
 };
-

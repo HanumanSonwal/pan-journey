@@ -2,7 +2,7 @@ import express from "express";
 import {
   createSubAdminController,
   deleteSubAdminController,
-  getAllSubAdminsController,
+  getAllUsersController,
   getSingleSubAdminController,
   updateSubAdminController,
 } from "./user.controller.js";
@@ -32,7 +32,7 @@ router.get(
   "/",
   protect,
   checkPermission("users", "read"),
-  getAllSubAdminsController,
+  getAllUsersController,
 );
 
 // 🔐 GET SINGLE SUB ADMIN

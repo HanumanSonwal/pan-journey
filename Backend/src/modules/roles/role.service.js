@@ -24,7 +24,6 @@ export const getRolesService = async () => {
   return await Role.find().sort({ createdAt: -1 });
 };
 
-// 🔹 Get Role By ID
 export const getRoleByIdService = async (id) => {
   const role = await Role.findById(id);
   if (!role) throw new ApiError(404, "Role not found");

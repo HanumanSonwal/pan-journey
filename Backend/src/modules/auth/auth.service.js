@@ -16,15 +16,15 @@ import {
   saveRefreshToken,
 } from "../../utils/authCache.js";
 
-
 export const loginUser = async ({ email, password }) => {
   if (!email || !password) {
     throw new Error("Email & password required");
   }
 
-  const user = await User.findOne({ email })
-    .select("+password")
-    .populate("role"); 
+  const user = await User.findOne({ email }).select("+password").populate({
+    path: "role",
+    select: "name permissions",
+  });
 
   if (!user) throw new Error("Invalid credentials");
 
@@ -33,20 +33,40 @@ export const loginUser = async ({ email, password }) => {
 
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
-
   await saveRefreshToken(user._id, refreshToken);
 
+  const roles = user.role
+    ? Array.isArray(user.role)
+      ? user.role
+      : [user.role]
+    : [];
+
+  let mergedPermissions = {};
+
+  roles.forEach((role) => {
+    const perms = role?.permissions || {};
+
+    for (const module in perms) {
+      mergedPermissions[module] = {
+        ...(mergedPermissions[module] || {}),
+        ...perms[module],
+      };
+    }
+  });
+
   return {
+    accessToken,
+    refreshToken,
+
     user: {
       id: user._id,
       name: user.name,
       email: user.email,
       mobile: user.mobile,
     },
-    role: user.role?.name,
-    permissions: user.role?.permissions || {}, 
-    accessToken,
-    refreshToken,
+
+    roles: roles.map((r) => r.name),
+    permissions: mergedPermissions,
   };
 };
 export const refreshAccessToken = async (token) => {

@@ -8,7 +8,6 @@ import {
 import { asyncHandler } from "../../middleware/asyncHandler.js";
 import { sendSuccess } from "../../utils/ApiResponse.js";
 
-
 export const login = asyncHandler(async (req, res) => {
   const data = await loginUser(req.body);
 
@@ -16,7 +15,7 @@ export const login = asyncHandler(async (req, res) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
-    maxAge:  60 * 1000,
+    maxAge: 60 * 1000,
   });
 
   res.cookie("refreshToken", data.refreshToken, {
@@ -62,7 +61,7 @@ export const refreshToken = asyncHandler(async (req, res) => {
 
   sendSuccess(res, "Access token refreshed", {});
 });
-//import { mapUserResponse } from "../../utils/user.mapper.js";
+
 const mapUserResponse = (user, permissions = []) => {
   return {
     id: user._id,
