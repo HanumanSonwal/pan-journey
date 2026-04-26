@@ -24,7 +24,7 @@ export const protect = async (req, res, next) => {
 
     const user = await User.findById(decoded.id).select("-password").populate({
       path: "role",
-      select: "name permissions type", // 🔥 MUST
+      select: "name permissions type isActive",
     });
 
     if (!user) {
@@ -40,6 +40,12 @@ export const protect = async (req, res, next) => {
       });
     }
 
+    if (!user.role?.isActive) {
+      return res.status(403).json({
+        success: false,
+        message: "Role is inactive",
+      });
+    }
     // 🔥 SINGLE SOURCE OF TRUTH
     req.user = {
       id: user._id,

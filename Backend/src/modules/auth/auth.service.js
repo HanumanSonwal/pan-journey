@@ -21,14 +21,22 @@ export const loginUser = async ({ email, password }) => {
     throw new ApiError(400, "Email & password required");
   }
 
-  const user = await User.findOne({ email })
-    .select("+password")
-    .populate({
-      path: "role",
-      select: "name permissions type", // 🔥 ADD type
-    });
+  const user = await User.findOne({ email }).select("+password").populate({
+    path: "role",
+    select: "name permissions type isActive", // ✅ FIX
+  });
 
   if (!user) throw new ApiError(401, "Invalid credentials");
+
+  // 🔥 USER ACTIVE CHECK
+  if (!user.isActive) {
+    throw new ApiError(403, "Your account is deactivated");
+  }
+
+  // 🔥 ROLE ACTIVE CHECK
+  if (!user.role?.isActive) {
+    throw new ApiError(403, "Your role is inactive");
+  }
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) throw new ApiError(401, "Invalid credentials");
@@ -48,9 +56,9 @@ export const loginUser = async ({ email, password }) => {
       email: user.email,
       mobile: user.mobile,
 
-      role: user.role?.name || null,     // ✅ role name
-      type: user.role?.type || null,     // 🔥 IMPORTANT
-      permissions: user.role?.permissions || {}, // ✅ FIXED
+      role: user.role?.name || null, //
+      type: user.role?.type || null,
+      permissions: user.role?.permissions || {},
     },
   };
 };

@@ -1,4 +1,4 @@
-import { sendError } from "../utils/ApiResponse.js"; // ensure import
+import { sendError } from "../utils/ApiResponse.js";
 import { hasPermission } from "../utils/permission.util.js";
 
 const actionMap = {
@@ -16,8 +16,14 @@ export const checkPermission = (module, action) => {
       return sendError(res, "Unauthorized", 401);
     }
 
-    // 🔥 ADMIN BYPASS
-    if (user.roleName === "admin" || user.isSystemRole) {
+    if (!user.isActive) {
+      return sendError(res, "Account is inactive", 403);
+    }
+
+    if (!user.roleIsActive) {
+      return sendError(res, "Role is inactive", 403);
+    }
+    if (user.role === "admin" || user.isSystemRole) {
       return next();
     }
 

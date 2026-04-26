@@ -5,7 +5,8 @@ import express from "express";
 import authRoutes from "./modules/auth/auth.routes.js";
 import roleRoutes from "./modules/roles/role.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
-
+import otpRoutes from "./modules/customer-auth/otp.routes.js";
+import testRoutes from "./test.routes.js";
 import { errorHandler } from "./middleware/error.middleware.js";
 
 const app = express();
@@ -33,6 +34,9 @@ app.use("/api/v1/users", userRoutes);
 // Role & permission management
 app.use("/api/v1/roles", roleRoutes);
 
+app.use("/api/v1/customer/auth/otp", otpRoutes);
+
+app.use("/api/v1", testRoutes);
 // Handles all errors in one place
 app.use(errorHandler);
 

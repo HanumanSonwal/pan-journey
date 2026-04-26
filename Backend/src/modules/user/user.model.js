@@ -5,7 +5,9 @@ const userSchema = new mongoose.Schema(
     name: {
       type: String,
       trim: true,
-      required: true,
+    required: function () {
+    return this.type !== "customer"; // 🔥 only admin/staff require
+  },
       index: true,
     },
 
@@ -23,6 +25,11 @@ const userSchema = new mongoose.Schema(
       sparse: true,
       trim: true,
     },
+    type: {
+      type: String,
+      enum: ["admin", "staff", "customer"],
+      required: true,
+    },
 
     password: {
       type: String,
@@ -33,7 +40,9 @@ const userSchema = new mongoose.Schema(
     role: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Role",
-      required: true,
+       required: function () {
+    return this.type !== "customer"; 
+  },
     },
 
     // 🔥 AUTH PROVIDER
