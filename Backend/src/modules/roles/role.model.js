@@ -23,6 +23,10 @@ const roleSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.Mixed,
       default: {},
     },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
 
     isSystemRole: {
       type: Boolean,

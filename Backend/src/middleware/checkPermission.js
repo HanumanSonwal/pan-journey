@@ -1,4 +1,13 @@
+import { sendError } from "../utils/ApiResponse.js"; // ensure import
 import { hasPermission } from "../utils/permission.util.js";
+
+const actionMap = {
+  read: "view",
+  write: "create",
+  update: "update",
+  delete: "delete",
+};
+
 export const checkPermission = (module, action) => {
   return (req, res, next) => {
     const user = req.user;
@@ -18,7 +27,7 @@ export const checkPermission = (module, action) => {
       return sendError(
         res,
         `You don’t have permission to ${actionText} ${module}`,
-        403
+        403,
       );
     }
 

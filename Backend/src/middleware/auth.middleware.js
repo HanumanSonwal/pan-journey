@@ -22,9 +22,10 @@ export const protect = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const user = await User.findById(decoded.id)
-      .select("-password")
-      .populate("role");
+    const user = await User.findById(decoded.id).select("-password").populate({
+      path: "role",
+      select: "name permissions type", // 🔥 MUST
+    });
 
     if (!user) {
       return res.status(401).json({
@@ -32,13 +33,22 @@ export const protect = async (req, res, next) => {
         message: "User not found",
       });
     }
+    if (!user.isActive) {
+      return res.status(403).json({
+        success: false,
+        message: "Account is inactive",
+      });
+    }
 
     // 🔥 SINGLE SOURCE OF TRUTH
     req.user = {
-      ...user.toObject(),
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      mobile: user.mobile,
 
       role: user.role?.name,
-      type: user.role?.type, // 🔥 ADD THIS
+      type: user.role?.type,
 
       permissions: user.role?.permissions || {},
     };

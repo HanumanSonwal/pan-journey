@@ -92,18 +92,15 @@ export const updateRoleService = async (id, data) => {
 //////////////////////////////////////////////////////////////
 // 🔹 Delete Role
 //////////////////////////////////////////////////////////////
-export const deleteRoleService = async (id) => {
+export const updateRoleStatus = async (id, isActive) => {
   const role = await Role.findById(id);
-  if (!role) throw new ApiError(404, "Role not found");
+
+  if (!role) throw new Error("Role not found");
 
   if (role.isSystemRole) {
-    throw new ApiError(400, "System role cannot be deleted");
+    throw new Error("System role cannot be modified");
   }
 
-  const usersUsingRole = await User.countDocuments({ role: id });
-  if (usersUsingRole > 0) {
-    throw new ApiError(400, "Role is assigned to users");
-  }
-
-  await role.deleteOne();
+  role.isActive = isActive;
+  return await role.save();
 };

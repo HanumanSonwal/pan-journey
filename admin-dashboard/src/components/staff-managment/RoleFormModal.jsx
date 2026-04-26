@@ -62,10 +62,15 @@ export default function RoleFormModal({ open, setOpen, editData }) {
 
   const onFinish = async (values) => {
     try {
+      const payload = {
+        ...values,
+        type: "staff", // 🔥 force type
+      };
+
       if (editData) {
-        await updateRole(editData._id, values);
+        await updateRole(editData._id, payload);
       } else {
-        await createRole(values);
+        await createRole(payload);
       }
 
       queryClient.invalidateQueries(["roles"]);

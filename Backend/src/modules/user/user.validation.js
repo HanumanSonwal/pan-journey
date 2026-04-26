@@ -3,9 +3,8 @@ import Joi from "joi";
 // MongoDB ObjectId validator
 const objectId = Joi.string().hex().length(24);
 
-//////////////////////////////////////////////////////////////
 // CREATE STAFF VALIDATION
-//////////////////////////////////////////////////////////////
+
 export const createStaffValidation = Joi.object({
   name: Joi.string().min(2).max(50).required(),
 
@@ -24,9 +23,8 @@ export const createStaffValidation = Joi.object({
   role: objectId.required(),
 });
 
-//////////////////////////////////////////////////////////////
 // UPDATE USER VALIDATION
-//////////////////////////////////////////////////////////////
+
 export const updateUserValidation = Joi.object({
   name: Joi.string().min(2).max(50),
 

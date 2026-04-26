@@ -1,12 +1,15 @@
 "use client";
 
-import { Table, Button, Card, Space, Tag, Popconfirm } from "antd";
-import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
-import { useState } from "react";
-import { deleteStaff } from "@/services/user.service";
-import { useQueryClient } from "@tanstack/react-query";
 import StaffFormModal from "@/components/staff-managment/StaffFormModal";
 import { useStaff } from "@/hooks/staff/useStaff";
+import { updateStaffStatus } from "@/services/user.service";
+import { useAuthStore } from "@/store/auth.store";
+import { can } from "@/utils/permission.util";
+import { EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { useQueryClient } from "@tanstack/react-query";
+import { Button, Card, Empty, Space, Switch, Table, Tag, Tooltip } from "antd";
+import { useState } from "react";
+import PermissionPopover from "../roles/PermissionPopover";
 
 export default function StaffPage() {
   const { data, isLoading } = useStaff();
@@ -16,10 +19,25 @@ export default function StaffPage() {
   const [editData, setEditData] = useState(null);
 
   const queryClient = useQueryClient();
+  const { permissions = {}, user } = useAuthStore();
 
-  const handleDelete = async (id) => {
-    await deleteStaff(id);
-    queryClient.invalidateQueries(["staff"]);
+  const canEdit = can(permissions, "users", "update", user);
+  const canToggle = can(permissions, "users", "update", user);
+  const canRead = can(permissions, "users", "read", user);
+
+  const handleStatusUpdate = async (id, newStatus) => {
+    queryClient.setQueryData(["staff"], (old) => {
+      if (!old) return old;
+      return {
+        ...old,
+        data: old.data.map((u) =>
+          u._id === id ? { ...u, isActive: newStatus } : u,
+        ),
+      };
+    });
+    await updateStaffStatus(id, {
+      isActive: newStatus,
+    });
   };
 
   const handleEdit = (record) => {
@@ -34,38 +52,57 @@ export default function StaffPage() {
 
     {
       title: "Role",
-      render: (_, r) => r.role?.name || "No Role",
+      render: (_, r) =>
+        r.role?.name ? (
+          <Tag color="blue">{r.role.name}</Tag>
+        ) : (
+          <Tag>No Role</Tag>
+        ),
+    },
+
+    {
+      title: "Status",
+      dataIndex: "isActive",
+      render: (val) =>
+        val ? <Tag color="green">Active</Tag> : <Tag color="red">Inactive</Tag>,
     },
 
     {
       title: "Permissions",
       render: (_, r) => {
         const perms = r.permissions || r.role?.permissions;
-
-        if (!perms) return <Tag>No Access</Tag>;
-
-        return Object.entries(perms).map(([mod, acts]) => {
-          const enabled = Object.entries(acts)
-            .filter(([_, v]) => v)
-            .map(([k]) => k);
-
-          return (
-            <Tag key={mod}>
-              {mod}:{enabled.join(",") || "none"}
-            </Tag>
-          );
-        });
+        return <PermissionPopover permissions={perms} />;
       },
     },
 
     {
       title: "Actions",
-      render: (_, r) => (
+      render: (_, record) => (
         <Space>
-          <Button icon={<EditOutlined />} onClick={() => handleEdit(r)} />
-          <Popconfirm onConfirm={() => handleDelete(r._id)}>
-            <Button danger icon={<DeleteOutlined />} />
-          </Popconfirm>
+          {/* EDIT */}
+          {canEdit && (
+            <Tooltip title="Edit Role">
+              <Button
+                icon={<EditOutlined />}
+                onClick={() => handleEdit(record)}
+              />
+            </Tooltip>
+          )}
+
+          {/* STATUS TOGGLE */}
+          {!record.isSystemRole && (
+            <Tooltip
+              title={record.isActive ? "Deactivate Role" : "Activate Role"}
+            >
+              <Switch
+                checked={!!record.isActive}
+                onChange={(checked) => {
+                  console.log("SWITCH VALUE:", checked); // अब सही आएगा
+                  handleStatusUpdate(record._id, checked);
+                }}
+              />
+            </Tooltip>
+          )}
         </Space>
       ),
     },
@@ -87,18 +124,18 @@ export default function StaffPage() {
         </Button>
       }
     >
-      <Table
-        loading={isLoading}
-        columns={columns}
-        dataSource={staff}
-        rowKey="_id"
-      />
+      {user?.role === "admin" || canRead ? (
+        <Table
+          loading={isLoading}
+          columns={columns}
+          dataSource={staff}
+          rowKey="_id"
+        />
+      ) : (
+        <Empty description="No permission to view data" />
+      )}
 
-      <StaffFormModal
-        open={open}
-        setOpen={setOpen}
-        editData={editData}
-      />
+      <StaffFormModal open={open} setOpen={setOpen} editData={editData} />
     </Card>
   );
 }

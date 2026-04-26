@@ -32,8 +32,8 @@ export const login = asyncHandler(async (req, res) => {
       email: data.user.email,
       mobile: data.user.mobile,
 
-      role: data.user.role,        // ✅ role name
-      type: data.user.type,        // 🔥 ADD THIS
+      role: data.user.role, // ✅ role name
+      type: data.user.type, // 🔥 ADD THIS
       permissions: data.user.permissions || {}, // ✅ always from role
     },
   });
@@ -54,7 +54,7 @@ export const refreshToken = asyncHandler(async (req, res) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
-    maxAge: 15 * 60 * 1000,
+    maxAge:  15 * 60 * 1000,
   });
 
   res.cookie("refreshToken", refreshToken, {
@@ -67,31 +67,26 @@ export const refreshToken = asyncHandler(async (req, res) => {
   sendSuccess(res, "Access token refreshed", {});
 });
 
-
 export const getMe = asyncHandler(async (req, res) => {
   sendSuccess(res, "Profile fetched", {
-    user: {
-      id: req.user._id,
-      name: req.user.name,
-      email: req.user.email,
-      mobile: req.user.mobile,
-      role: req.user.role?.name || null,
-      permissions: req.user.role?.permissions || {}, // 🔥 FIX
-    },
+    user: req.user, // ✅ direct return
   });
 });
 
 export const logout = asyncHandler(async (req, res) => {
-  const token = req.cookies?.refreshToken;
+  const token = req.cookies?.refreshToken || req.headers["x-refresh-token"];
 
-  await logoutUser(req.user._id, token);
+  if (!req.user?.id || !token) {
+    throw new Error("User ID and token are required");
+  }
+
+  await logoutUser(req.user.id, token);
 
   res.clearCookie("refreshToken");
   res.clearCookie("accessToken");
 
   sendSuccess(res, "Logged out successfully");
 });
-
 export const verifyEmail = asyncHandler(async (req, res) => {
   const { token } = req.query;
 

@@ -2,7 +2,7 @@ import api from "./api";
 
 // 🔹 Get All Roles
 export const getRoles = async () => {
-  const res = await api.get("/roles/all");
+  const res = await api.get("/roles");
   return res.data;
 };
 
@@ -14,7 +14,7 @@ export const getRoleById = async (id) => {
 
 // 🔹 Create Role
 export const createRole = async (data) => {
-  const res = await api.post("/roles/create", data);
+  const res = await api.post("/roles", data);
   return res.data;
 };
 
@@ -25,7 +25,7 @@ export const updateRole = async (id, data) => {
 };
 
 // 🔹 Delete Role
-export const deleteRole = async (id) => {
-  const res = await api.delete(`/roles/${id}`);
+export const statusUpdateRole = async (id, data) => {
+  const res = await api.patch(`/roles/${id}/status`, data);
   return res.data;
 };

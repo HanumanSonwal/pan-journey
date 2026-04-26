@@ -2,7 +2,7 @@ import { asyncHandler } from "../../middleware/asyncHandler.js";
 import { sendSuccess } from "../../utils/ApiResponse.js";
 import {
   createRoleService,
-  deleteRoleService,
+  updateRoleStatus,
   getRoleByIdService,
   getRolesService,
   updateRoleService,
@@ -45,8 +45,10 @@ export const updateRole = asyncHandler(async (req, res) => {
   sendSuccess(res, "Role updated successfully", role);
 });
 
-// 🔹 Delete
-export const deleteRole = asyncHandler(async (req, res) => {
-  await deleteRoleService(req.params.id);
-  sendSuccess(res, "Role deleted successfully");
+export const updateRoleStatusController = asyncHandler(async (req, res) => {
+  const { isActive } = req.body;
+
+  const role = await updateRoleStatus(req.params.id, isActive);
+
+  sendSuccess(res, "Role status updated", role);
 });

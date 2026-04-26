@@ -1,10 +1,10 @@
 import express from "express";
 import {
   createRole,
-  getRoles,
   getRoleById,
+  getRoles,
   updateRole,
-  deleteRole,
+  updateRoleStatusController,
 } from "./role.controller.js";
 
 import { protect } from "../../middleware/auth.middleware.js";
@@ -12,40 +12,23 @@ import { checkPermission } from "../../middleware/checkPermission.js";
 
 const router = express.Router();
 
-// 🔹 Role Routes
-router.post(
-  "/create",
-  protect,
-checkPermission("roles", "write"),
-  createRole
-);
+// Create a new role
+router.post("/", protect, checkPermission("roles", "write"), createRole);
 
-router.get(
-  "/all",
-  protect,
-  checkPermission("roles", "read"),
-  getRoles
-);
+// Get all roles
+router.get("/", protect, checkPermission("roles", "read"), getRoles);
 
-router.get(
-  "/:id",
-  protect,
-  checkPermission("roles", "read"),
-  getRoleById
-);
+// Get single role by ID
+router.get("/:id", protect, checkPermission("roles", "read"), getRoleById);
 
-router.put(
-  "/:id",
+// Update role by ID
+router.put("/:id", protect, checkPermission("roles", "update"), updateRole);
+
+router.patch(
+  "/:id/status",
   protect,
   checkPermission("roles", "update"),
-  updateRole
-);
-
-router.delete(
-  "/:id",
-  protect,
-  checkPermission("roles", "delete"),
-  deleteRole
+  updateRoleStatusController,
 );
 
 export default router;

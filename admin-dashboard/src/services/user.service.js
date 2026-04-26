@@ -1,21 +1,22 @@
 import api from "./api";
 
 export const getStaff = async () => {
-  const res = await api.get("/user");
+  const res = await api.get("/users");
   return res.data;
 };
 
 export const createStaff = async (data) => {
-  const res = await api.post("/user", data);
+  const res = await api.post("/users/staff", data);
   return res.data;
 };
 
 export const updateStaff = async (id, data) => {
-  const res = await api.put(`/user/${id}`, data);
+  const res = await api.put(`/users/${id}`, data);
   return res.data;
 };
 
-export const deleteStaff = async (id) => {
-  const res = await api.delete(`/users/${id}`);
+export const updateStaffStatus = async (id, data) => {
+  console.log("DATA api call fucntion:",id, data);
+  const res = await api.patch(`/users/${id}/status`, data);
   return res.data;
 };
