@@ -108,14 +108,18 @@ export default function RolesPage() {
       }
     >
       {canFetch ? (
-        <Table
-          columns={columns}
-          dataSource={roles}
-          rowKey="_id"
-          loading={isLoading}
-          bordered
-          pagination={{ pageSize: 8 }}
-        />
+        <div style={{ width: "100%", overflowX: "auto" }}>
+          <Table
+            columns={columns}
+            dataSource={roles}
+            rowKey="_id"
+            loading={isLoading}
+            bordered
+            size="middle"
+            scroll={{ x: 900 }}
+            pagination={{ pageSize: 8 }}
+          />
+        </div>
       ) : (
         <Empty description="No permission to view data" />
       )}

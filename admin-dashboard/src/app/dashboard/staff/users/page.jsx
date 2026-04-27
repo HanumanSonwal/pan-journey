@@ -123,12 +123,16 @@ export default function StaffPage() {
       }
     >
       {canFetch ? (
-        <Table
-          loading={isLoading}
-          columns={columns}
-          dataSource={staff}
-          rowKey="_id"
-        />
+        <div style={{ width: "100%", overflowX: "auto" }}>
+          <Table
+            loading={isLoading}
+            columns={columns}
+            dataSource={staff}
+            rowKey="_id"
+            size="middle"
+            scroll={{ x: 900 }}
+          />
+        </div>
       ) : (
         <Empty description="No permission to view data" />
       )}

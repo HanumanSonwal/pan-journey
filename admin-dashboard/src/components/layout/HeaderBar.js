@@ -31,7 +31,6 @@ const { Header } = Layout;
 const HeaderBar = ({ collapsed, setCollapsed }) => {
   const { isDark, toggleTheme } = useTheme();
   const router = useRouter();
-
   const { user, clearUser } = useAuthStore();
 
   const {
@@ -41,7 +40,6 @@ const HeaderBar = ({ collapsed, setCollapsed }) => {
   const handleLogout = async () => {
     try {
       await logoutUser();
-    } catch (e) {
     } finally {
       clearUser();
       router.replace("/");
@@ -63,48 +61,43 @@ const HeaderBar = ({ collapsed, setCollapsed }) => {
 
   return (
     <Header
+      className="px-3 md:px-5 py-2 flex items-center justify-between"
       style={{
-        padding: "0 20px",
         background: colorBgContainer,
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
         boxShadow: isDark
           ? "0 2px 6px rgba(0,0,0,0.5)"
           : "0 2px 6px rgba(0,0,0,0.05)",
       }}
     >
-      <Space size="middle">
+      {/* LEFT */}
+      <div className="flex items-center gap-3">
         <Button
           type="text"
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={() => setCollapsed((prev) => !prev)} // ✅ FIXED
           icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-          style={{ fontSize: 18 }}
+          className="text-lg"
         />
 
         <span
-          style={{
-            fontWeight: 600,
-            fontSize: 16,
-            color: colorText,
-          }}
+          className="font-semibold text-sm md:text-base"
+          style={{ color: colorText }}
         >
           Dashboard
         </span>
-      </Space>
+      </div>
 
-      <div>
+      {/* SEARCH (desktop only) */}
+      <div className="hidden md:block">
         <Input
           placeholder="Search..."
           prefix={<SearchOutlined />}
-          style={{
-            width: 260,
-            borderRadius: 8,
-          }}
+          className="w-64 rounded-lg"
         />
       </div>
 
-      <Space size="large">
+      {/* RIGHT */}
+      <div className="flex items-center gap-3 md:gap-6">
+        {/* Theme toggle */}
         <Switch
           checked={isDark}
           onChange={toggleTheme}
@@ -112,14 +105,10 @@ const HeaderBar = ({ collapsed, setCollapsed }) => {
           unCheckedChildren="☀️"
         />
 
-        <BellOutlined
-          style={{
-            fontSize: 18,
-            color: colorText,
-            cursor: "pointer",
-          }}
-        />
+        {/* Notifications */}
+        <BellOutlined className="text-lg cursor-pointer" />
 
+        {/* User Dropdown (Mobile + Desktop) */}
         <Dropdown
           menu={{
             items: menuItems,
@@ -127,7 +116,7 @@ const HeaderBar = ({ collapsed, setCollapsed }) => {
           }}
           placement="bottomRight"
         >
-          <Space style={{ cursor: "pointer" }}>
+          <Space className="cursor-pointer">
             <Avatar
               style={{
                 background: "linear-gradient(135deg, #FF3B30, #0B5FFF)",
@@ -136,29 +125,19 @@ const HeaderBar = ({ collapsed, setCollapsed }) => {
               {user?.name?.charAt(0)?.toUpperCase() || "U"}
             </Avatar>
 
-            <div style={{ lineHeight: 1.2 }}>
-              <div
-                style={{
-                  fontSize: 14,
-                  fontWeight: 500,
-                  color: colorText,
-                }}
-              >
+            {/* Desktop only text */}
+            <div className="hidden lg:block leading-tight">
+              <div className="text-sm font-medium" style={{ color: colorText }}>
                 {user?.name || "User"}
               </div>
 
-              <div
-                style={{
-                  fontSize: 12,
-                  color: colorTextSecondary,
-                }}
-              >
+              <div className="text-xs" style={{ color: colorTextSecondary }}>
                 {user?.role || "User"}
               </div>
             </div>
           </Space>
         </Dropdown>
-      </Space>
+      </div>
     </Header>
   );
 };
