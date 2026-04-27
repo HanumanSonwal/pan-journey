@@ -6,6 +6,12 @@ export const getRoles = async () => {
   return res.data;
 };
 
+// 🔹 Get All Roles
+export const getRolesDropdown = async () => {
+  const res = await api.get("/roles/dropdown");
+  return res.data;
+};
+
 // 🔹 Get Single Role
 export const getRoleById = async (id) => {
   const res = await api.get(`/roles/${id}`);
@@ -24,7 +30,7 @@ export const updateRole = async (id, data) => {
   return res.data;
 };
 
-// 🔹 Delete Role
+
 export const statusUpdateRole = async (id, data) => {
   const res = await api.patch(`/roles/${id}/status`, data);
   return res.data;

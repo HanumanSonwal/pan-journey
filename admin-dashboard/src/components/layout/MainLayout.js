@@ -31,7 +31,7 @@ const MainLayout = ({ children }) => {
   return (
     <ConfigProvider theme={antdTheme}>
       {mounted ? (
-        <Layout style={{ minHeight: "100vh", overflow: "hidden"  }}>
+        <Layout style={{ minHeight: "100vh", overflow: "hidden" }}>
           <Sidebar collapsed={collapsed} />
 
           <Layout style={{ height: "100vh" }}>

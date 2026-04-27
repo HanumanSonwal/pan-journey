@@ -3,6 +3,7 @@ import {
   createRole,
   getRoleById,
   getRoles,
+  getRolesDropdown,
   updateRole,
   updateRoleStatusController,
 } from "./role.controller.js";
@@ -17,6 +18,8 @@ router.post("/", protect, checkPermission("roles", "write"), createRole);
 
 // Get all roles
 router.get("/", protect, checkPermission("roles", "read"), getRoles);
+
+router.get("/dropdown", protect, getRolesDropdown);
 
 // Get single role by ID
 router.get("/:id", protect, checkPermission("roles", "read"), getRoleById);

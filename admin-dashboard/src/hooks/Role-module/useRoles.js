@@ -1,69 +1,100 @@
-// import { useQuery } from "@tanstack/react-query";
-// import { getRoles } from "@/services/role.service";
-
-// export const useRoles = (enabled) => {
-//   return useQuery({
-//     queryKey: ["roles"],
-//     queryFn: getRoles,
-
-//     enabled, // 🔥 permission control
-
-//     staleTime: 5 * 60 * 1000, // ✅ 5 min cache
-//     refetchOnWindowFocus: false, // ❌ tab switch pe call band
-//     refetchOnMount: false, // ❌ page change pe call band
-//   });
-// };
-
-
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  getRoles,
   createRole,
+  getRoles,
+  getRolesDropdown,
+  statusUpdateRole,
   updateRole,
-  statusUpdateRole, // ⬅️ तुम्हारा नाम यही है
 } from "@/services/role.service";
+import { useAuthStore } from "@/store/auth.store";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-export const useRoles = (enabled = false) => {
+export const useRoles = (enabled = false, dropdownEnabled = false) => {
   const queryClient = useQueryClient();
+  const user = useAuthStore((s) => s.user);
 
-  // 🔹 GET
-  const { data, isLoading } = useQuery({
-    queryKey: ["roles"],
-    queryFn: getRoles,          // service already res.data return कर रही है
-    enabled: !!enabled,         // 🔥 key control
-    staleTime: 5 * 60 * 1000,   // 5 min cache
+  const rolesKey = ["roles", user?.id];
+  const dropdownKey = ["roles-dropdown"];
+
+  const { data, isLoading, isFetching } = useQuery({
+    queryKey: rolesKey,
+    queryFn: getRoles,
+    enabled: !!enabled,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
-    retry: false,               // 🔥 403 पर बार-बार retry बंद
+    refetchOnReconnect: false,
+    retry: false,
   });
 
-  // 🔹 CREATE
+  const { data: dropdownData, isLoading: dropdownLoading } = useQuery({
+    queryKey: dropdownKey,
+    queryFn: getRolesDropdown,
+    enabled: !!dropdownEnabled,
+    staleTime: Infinity,
+    gcTime: 30 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    retry: false,
+  });
+
   const createMutation = useMutation({
     mutationFn: createRole,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["roles"] });
+    onSuccess: (newRole) => {
+      queryClient.setQueryData(rolesKey, (old) => {
+        if (!old) return old;
+        return {
+          ...old,
+          data: [...old.data, newRole],
+        };
+      });
+
+      queryClient.setQueryData(dropdownKey, (old) => {
+        if (!old) return old;
+        return {
+          ...old,
+          data: [...old.data, newRole],
+        };
+      });
     },
   });
 
-  // 🔹 UPDATE
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => updateRole(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["roles"] });
+    onSuccess: (updatedRole, variables) => {
+      queryClient.setQueryData(rolesKey, (old) => {
+        if (!old) return old;
+        return {
+          ...old,
+          data: old.data.map((r) =>
+            r._id === variables.id ? { ...r, ...updatedRole } : r,
+          ),
+        };
+      });
     },
   });
 
-  // 🔹 STATUS
   const statusMutation = useMutation({
     mutationFn: ({ id, data }) => statusUpdateRole(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["roles"] });
+    onSuccess: (_, variables) => {
+      queryClient.setQueryData(rolesKey, (old) => {
+        if (!old) return old;
+        return {
+          ...old,
+          data: old.data.map((r) =>
+            r._id === variables.id ? { ...r, ...variables.data } : r,
+          ),
+        };
+      });
     },
   });
 
   return {
-    roles: data?.data || [],   // तुम्हारी API shape: { data: [...] }
-    isLoading,
+    roles: enabled ? data?.data || [] : [],
+    isLoading: enabled ? isLoading : false,
+    isFetching,
+
+    roleOptions: dropdownEnabled ? dropdownData?.data || [] : [],
+    dropdownLoading,
 
     createRole: createMutation.mutateAsync,
     updateRole: updateMutation.mutateAsync,

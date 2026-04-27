@@ -7,17 +7,13 @@ import { fileURLToPath } from "url"; // ✅ ADD THIS
 import User from "../src/modules/user/user.model.js";
 import Role from "../src/modules/roles/role.model.js";
 
-// 🔥 correct path resolve
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// 🔥 load env
 dotenv.config({
   path: path.resolve(__dirname, "../.env"),
 });
 
-// 🧪 DEBUG
-console.log("MONGO_URI:", process.env.MONGO_URI);
 
 const createAdmin = async () => {
   try {

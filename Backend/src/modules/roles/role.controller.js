@@ -7,7 +7,7 @@ import {
   getRolesService,
   updateRoleService,
 } from "./role.service.js";
-
+import Role from "./role.model.js";
 // 🔹 Create
 export const createRole = asyncHandler(async (req, res) => {
   const { name, type } = req.body;
@@ -25,6 +25,25 @@ export const getRoles = asyncHandler(async (req, res) => {
   const roles = await getRolesService();
 
   sendSuccess(res, "Get All Roles", roles);
+});
+
+export const getRolesDropdown = asyncHandler(async (req, res) => {
+  const user = req.user; // ✅ FIX
+
+  // ✅ permission check (user create kar sakta hai to allow)
+  if (
+    user.role !== "admin" &&
+    !user.permissions?.users?.write
+  ) {
+    return sendError(res, "Unauthorized", 403);
+  }
+
+  // ✅ ONLY required fields
+  const roles = await Role.find({ isActive: true })
+    .select("_id name type")
+    .lean();
+
+  sendSuccess(res, "Roles dropdown fetched", roles);
 });
 
 export const getRoleById = asyncHandler(async (req, res) => {

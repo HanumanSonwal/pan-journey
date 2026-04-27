@@ -42,7 +42,6 @@ const HeaderBar = ({ collapsed, setCollapsed }) => {
     try {
       await logoutUser();
     } catch (e) {
-      // ignore error (logout anyway)
     } finally {
       clearUser();
       router.replace("/");
@@ -137,7 +136,6 @@ const HeaderBar = ({ collapsed, setCollapsed }) => {
               {user?.name?.charAt(0)?.toUpperCase() || "U"}
             </Avatar>
 
-            {/* USER INFO */}
             <div style={{ lineHeight: 1.2 }}>
               <div
                 style={{

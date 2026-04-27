@@ -4,6 +4,7 @@ import {
   Button,
   Checkbox,
   Divider,
+  Empty,
   Form,
   Input,
   Modal,
@@ -14,6 +15,7 @@ import { useEffect } from "react";
 
 import { menuItems } from "@/config/menuConfig";
 import { moduleConfig } from "@/config/module.config";
+import { usePermission } from "@/hooks/usePermission"; // ✅ NEW
 import { createRole, updateRole } from "@/services/role.service";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -27,6 +29,10 @@ export default function RoleFormModal({ open, setOpen, editData }) {
   const {
     token: { colorBgContainer, colorBorder, borderRadiusLG },
   } = theme.useToken();
+
+  const { canCreate, canEdit, isAdmin } = usePermission("roles");
+
+  const hasAccess = isAdmin || canCreate || canEdit;
 
   const extractModules = (items, result = new Set()) => {
     items.forEach((item) => {
@@ -47,7 +53,7 @@ export default function RoleFormModal({ open, setOpen, editData }) {
   const permissions = Form.useWatch("permissions", form);
 
   useEffect(() => {
-    if (open) {
+    if (open && hasAccess) {
       if (editData) {
         form.setFieldsValue({
           name: editData.name,
@@ -58,27 +64,26 @@ export default function RoleFormModal({ open, setOpen, editData }) {
         form.resetFields();
       }
     }
-  }, [editData, open, form]);
+  }, [editData, open, form, hasAccess]);
 
   const onFinish = async (values) => {
-    try {
-      const payload = {
-        ...values,
-        type: "staff", // 🔥 force type
-      };
+    if (!hasAccess) return;
 
-      if (editData) {
-        await updateRole(editData._id, payload);
-      } else {
-        await createRole(payload);
-      }
+    const payload = {
+      ...values,
+      type: "staff",
+    };
 
-      queryClient.invalidateQueries(["roles"]);
-      form.resetFields();
-      setOpen(false);
-    } catch (err) {
-      console.log("Error:", err);
+    if (editData) {
+      await updateRole(editData._id, payload);
+    } else {
+      await createRole(payload);
     }
+
+    queryClient.invalidateQueries({ queryKey: ["roles"] });
+
+    form.resetFields();
+    setOpen(false);
   };
 
   return (
@@ -90,90 +95,103 @@ export default function RoleFormModal({ open, setOpen, editData }) {
       width={720}
       destroyOnHidden
     >
-      <Form
-        layout="vertical"
-        form={form}
-        onFinish={onFinish}
-        initialValues={{ permissions: {} }}
-      >
-        <div style={{ maxHeight: "60vh", overflowY: "auto" }}>
-          <Form.Item
-            name="name"
-            label="Role Name"
-            rules={[{ required: true, message: "Role name is required" }]}
-          >
-            <Input placeholder="Enter role name" />
-          </Form.Item>
-
-          <Form.Item name="description" label="Description">
-            <TextArea rows={3} placeholder="Enter description" />
-          </Form.Item>
-
-          <Divider>Permissions</Divider>
-
-          {modules.map((module) => (
-            <div
-              key={module.key}
-              style={{
-                marginBottom: 16,
-                padding: 12,
-                border: `1px solid ${colorBorder}`,
-                borderRadius: borderRadiusLG,
-                background: colorBgContainer,
-              }}
+      {!hasAccess ? (
+        <Empty description="No permission to manage roles" />
+      ) : (
+        <Form
+          layout="vertical"
+          form={form}
+          onFinish={onFinish}
+          initialValues={{ permissions: {} }}
+        >
+          <div style={{ maxHeight: "60vh", overflowY: "auto" }}>
+            {/* NAME */}
+            <Form.Item
+              name="name"
+              label="Role Name"
+              rules={[{ required: true }]}
             >
-              <Text strong>{module.label}</Text>
+              <Input placeholder="Enter role name" />
+            </Form.Item>
 
-              <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
-                {module.actions.map((action) => (
-                  <Form.Item
-                    key={action}
-                    name={["permissions", module.key, action]}
-                    valuePropName="checked"
-                    style={{ marginBottom: 0 }}
-                  >
-                    <Checkbox
-                      checked={permissions?.[module.key]?.[action] || false}
-                      disabled={
-                        action !== "read" && !permissions?.[module.key]?.read
-                      }
-                      onChange={(e) => {
-                        const checked = e.target.checked;
+            <Form.Item name="description" label="Description">
+              <TextArea rows={3} placeholder="Enter description" />
+            </Form.Item>
 
-                        const current = form.getFieldValue("permissions") || {};
+            <Divider>Permissions</Divider>
 
-                        const modulePerm = current[module.key] || {};
+            {modules.map((module) => (
+              <div
+                key={module.key}
+                style={{
+                  marginBottom: 16,
+                  padding: 12,
+                  border: `1px solid ${colorBorder}`,
+                  borderRadius: borderRadiusLG,
+                  background: colorBgContainer,
+                }}
+              >
+                <Text strong>{module.label}</Text>
 
-                        const updated = {
-                          ...current,
-                          [module.key]: {
-                            ...modulePerm,
-                            [action]: checked,
-                          },
-                        };
-
-                        // 🔥 read OFF → update/delete OFF
-                        if (action === "read" && !checked) {
-                          updated[module.key].update = false;
-                          updated[module.key].delete = false;
-                        }
-
-                        form.setFieldsValue({ permissions: updated });
-                      }}
+                <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
+                  {module.actions.map((action) => (
+                    <Form.Item
+                      key={action}
+                      name={["permissions", module.key, action]}
+                      valuePropName="checked"
+                      style={{ marginBottom: 0 }}
                     >
-                      {action}
-                    </Checkbox>
-                  </Form.Item>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+                      <Checkbox
+                        disabled={
+                          (!canEdit && !isAdmin) ||
+                          (action !== "read" &&
+                            !permissions?.[module.key]?.read)
+                        }
+                        checked={permissions?.[module.key]?.[action] || false}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
 
-        <Button type="primary" htmlType="submit" block>
-          {editData ? "Update Role" : "Create Role"}
-        </Button>
-      </Form>
+                          const current =
+                            form.getFieldValue("permissions") || {};
+
+                          const modulePerm = current[module.key] || {};
+
+                          const updated = {
+                            ...current,
+                            [module.key]: {
+                              ...modulePerm,
+                              [action]: checked,
+                            },
+                          };
+
+                          if (action === "read" && !checked) {
+                            updated[module.key].update = false;
+                            updated[module.key].delete = false;
+                            updated[module.key].write = false;
+                          }
+
+                          form.setFieldsValue({ permissions: updated });
+                        }}
+                      >
+                        {action}
+                      </Checkbox>
+                    </Form.Item>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <Button
+            type="primary"
+            htmlType="submit"
+            block
+            disabled={!canCreate && !canEdit && !isAdmin}
+          >
+            {editData ? "Update Role" : "Create Role"}
+          </Button>
+        </Form>
+      )}
     </Modal>
   );
 }

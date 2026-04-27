@@ -1,42 +1,24 @@
 "use client";
 
 import { EditOutlined, PlusOutlined } from "@ant-design/icons";
-import {
-  Button,
-  Card,
-  Empty,
-  Popover,
-  Space,
-  Switch,
-  Table,
-  Tag,
-  Tooltip,
-} from "antd";
+import { Button, Card, Empty, Space, Switch, Table, Tag, Tooltip } from "antd";
 import { useState } from "react";
 
 import RoleFormModal from "@/components/staff-managment/RoleFormModal";
 import { useRoles } from "@/hooks/Role-module/useRoles";
-import { useAuthStore } from "@/store/auth.store";
-import { can } from "@/utils/permission.util";
+import { usePermission } from "@/hooks/usePermission";
 import PermissionPopover from "./PermissionPopover";
 
 export default function RolesPage() {
   const [open, setOpen] = useState(false);
   const [editData, setEditData] = useState(null);
 
-  const { permissions = {}, user } = useAuthStore();
+  const { canRead, canCreate, canEdit, isAdmin } = usePermission("roles");
 
-  // 🔥 PERMISSIONS
-  const canRead = can(permissions, "roles", "read", user);
-  const canCreate = can(permissions, "roles", "write", user);
-  const canEdit = can(permissions, "roles", "update", user);
+  const canFetch = canRead || isAdmin;
 
-  // 🔥 🔥 HOOK USE (MAIN PART)
-  const { roles, isLoading, updateStatus } = useRoles(
-    user?.role === "admin" || canRead,
-  );
+  const { roles, isLoading, updateStatus } = useRoles(canFetch);
 
-  // 🔥 EDIT
   const handleEdit = (record) => {
     setEditData(record);
     setOpen(true);
@@ -48,7 +30,6 @@ export default function RolesPage() {
       dataIndex: "name",
       render: (text) => <strong>{text}</strong>,
     },
-
     {
       title: "Type",
       dataIndex: "type",
@@ -60,71 +41,30 @@ export default function RolesPage() {
         </Tag>
       ),
     },
-
     {
       title: "Status",
       dataIndex: "isActive",
       render: (val) =>
         val ? <Tag color="green">Active</Tag> : <Tag color="red">Inactive</Tag>,
     },
-
-    {
-      title: "Description",
-      dataIndex: "description",
-      render: (text) =>
-        text ? (
-          <Popover
-            title="Description"
-            content={
-              <div style={{ maxWidth: 300, whiteSpace: "pre-wrap" }}>
-                {text}
-              </div>
-            }
-            trigger="click"
-          >
-            <Tag color="blue" style={{ cursor: "pointer" }}>
-              View
-            </Tag>
-          </Popover>
-        ) : (
-          "-"
-        ),
-    },
-
     {
       title: "Permissions",
       dataIndex: "permissions",
       render: (permissions) => <PermissionPopover permissions={permissions} />,
     },
-
-    {
-      title: "Created",
-      dataIndex: "createdAt",
-      render: (val) =>
-        new Date(val).toLocaleDateString("en-IN", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        }),
-    },
-
     ...(canEdit
       ? [
           {
             title: "Actions",
             render: (_, record) => (
               <Space>
-                {/* EDIT */}
-                {canEdit && (
-                  <Tooltip title="Edit Role">
-                    <Button
-                      icon={<EditOutlined />}
-                      onClick={() => handleEdit(record)}
-                    />
-                  </Tooltip>
-                )}
+                <Tooltip title="Edit Role">
+                  <Button
+                    icon={<EditOutlined />}
+                    onClick={() => handleEdit(record)}
+                  />
+                </Tooltip>
 
-                {/* STATUS TOGGLE */}
                 {!record.isSystemRole && (
                   <Tooltip
                     title={
@@ -167,7 +107,7 @@ export default function RolesPage() {
         )
       }
     >
-      {user?.role === "admin" || canRead ? (
+      {canFetch ? (
         <Table
           columns={columns}
           dataSource={roles}

@@ -76,7 +76,6 @@ api.interceptors.response.use(
       useLoaderStore.getState().stop();
     }
 
-    // ❌ अगर refresh API खुद fail हो गई → logout
     if (originalRequest.url?.includes("/auth/refresh-token")) {
       useAuthStore.getState().clearUser();
       return Promise.reject(error);
@@ -88,7 +87,6 @@ api.interceptors.response.use(
     if (status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      // 🔥 अगर refresh already चल रहा है → wait करो
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({
@@ -104,14 +102,14 @@ api.interceptors.response.use(
         await refreshApi.post("/auth/refresh-token");
 
         isRefreshing = false;
-        processQueue(); // 🔥 सभी pending requests resume
+        processQueue();
 
-        return api(originalRequest); // retry original request
+        return api(originalRequest);
       } catch (err) {
         isRefreshing = false;
         processQueue(err);
 
-        useAuthStore.getState().clearUser(); // logout only here
+        useAuthStore.getState().clearUser();
         return Promise.reject(err);
       }
     }

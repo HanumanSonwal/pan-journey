@@ -14,7 +14,7 @@ const app = express();
 // Allow frontend to access backend (CORS setup)
 app.use(
   cors({
-    origin: ["http://localhost:3000"], // change in production via ENV
+    origin: ["http://localhost:3000", "http://localhost:3001"], // change in production via ENV
     credentials: true,
   }),
 );
@@ -34,7 +34,7 @@ app.use("/api/v1/users", userRoutes);
 // Role & permission management
 app.use("/api/v1/roles", roleRoutes);
 
-app.use("/api/v1/customer/auth/otp", otpRoutes);
+app.use("/api/v1/customer/auth/", otpRoutes);
 
 app.use("/api/v1", testRoutes);
 // Handles all errors in one place

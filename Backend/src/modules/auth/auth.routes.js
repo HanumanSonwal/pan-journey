@@ -9,12 +9,11 @@ import {
   verifyEmail,
 } from "./auth.controller.js";
 import { loginValidation } from "./auth.validation.js";
-import { googleLogin } from "./google.controller.js";
 
 const router = express.Router();
 
 router.post("/login", validate(loginValidation), login);
-router.post("/google", googleLogin);
+
 router.post("/refresh-token", refreshToken);
 router.get("/me", protect, getMe);
 router.post("/logout", protect, logout);

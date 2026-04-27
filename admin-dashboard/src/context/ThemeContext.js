@@ -7,7 +7,6 @@ const ThemeContext = createContext();
 export const ThemeProviderCustom = ({ children }) => {
   const [isDark, setIsDark] = useState(false);
 
-  // Save in localStorage
   useEffect(() => {
     const saved = localStorage.getItem("theme");
     if (saved) {

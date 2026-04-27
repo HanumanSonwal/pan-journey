@@ -1,22 +1,22 @@
 "use client";
 
-import { Modal, Form, Input, Select, Button } from "antd";
-import { useEffect } from "react";
+import { useRoles } from "@/hooks/Role-module/useRoles"; // ✅ NEW
+import { usePermission } from "@/hooks/usePermission"; // ✅ NEW
 import { createStaff, updateStaff } from "@/services/user.service";
-import { getRoles } from "@/services/role.service";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+import { Button, Form, Input, Modal, Select } from "antd";
+import { useEffect } from "react";
 
 export default function StaffFormModal({ open, setOpen, editData }) {
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
 
-  // 🔥 roles dropdown
-  const { data } = useQuery({
-    queryKey: ["roles"],
-    queryFn: getRoles,
-  });
+  const { canCreate, canEdit } = usePermission("users");
 
-  const roles = data?.data || [];
+  const { roleOptions, dropdownLoading } = useRoles(
+    false,
+    canCreate || canEdit,
+  );
 
   useEffect(() => {
     if (open) {
@@ -31,7 +31,7 @@ export default function StaffFormModal({ open, setOpen, editData }) {
         form.resetFields();
       }
     }
-  }, [open, editData]);
+  }, [open, editData, form]);
 
   const onFinish = async (values) => {
     if (editData) {
@@ -40,7 +40,7 @@ export default function StaffFormModal({ open, setOpen, editData }) {
       await createStaff(values);
     }
 
-    queryClient.invalidateQueries(["staff"]);
+    queryClient.invalidateQueries({ queryKey: ["staff"] });
     setOpen(false);
   };
 
@@ -50,20 +50,25 @@ export default function StaffFormModal({ open, setOpen, editData }) {
       open={open}
       onCancel={() => setOpen(false)}
       footer={null}
+      destroyOnHidden
     >
       <Form form={form} layout="vertical" onFinish={onFinish}>
+        {/* NAME */}
         <Form.Item name="name" label="Name" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
 
+        {/* EMAIL */}
         <Form.Item name="email" label="Email" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
 
+        {/* MOBILE */}
         <Form.Item name="mobile" label="Mobile">
           <Input />
         </Form.Item>
 
+        {/* PASSWORD (only create) */}
         {!editData && (
           <Form.Item
             name="password"
@@ -74,20 +79,24 @@ export default function StaffFormModal({ open, setOpen, editData }) {
           </Form.Item>
         )}
 
-        {/* 🔥 ROLE SELECT */}
-        <Form.Item name="role" label="Role">
-          <Select placeholder="Select Role">
-            {roles.map((r) => (
-              <Select.Option key={r._id} value={r._id}>
-                {r.name}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
+        {(canCreate || canEdit) && (
+          <Form.Item name="role" label="Role">
+            <Select
+              placeholder="Select Role"
+              loading={dropdownLoading}
+              options={roleOptions.map((r) => ({
+                label: r.name,
+                value: r._id,
+              }))}
+            />
+          </Form.Item>
+        )}
 
-        <Button type="primary" htmlType="submit" block>
-          {editData ? "Update" : "Create"}
-        </Button>
+        {(canCreate || canEdit) && (
+          <Button type="primary" htmlType="submit" block>
+            {editData ? "Update" : "Create"}
+          </Button>
+        )}
       </Form>
     </Modal>
   );

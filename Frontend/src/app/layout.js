@@ -30,7 +30,10 @@ export default function RootLayout({ children }) {
       <body className="min-h-full flex flex-col">
         <AntdRegistry>
           {" "}
-          <QueryProvider> <Providers>{children}</Providers></QueryProvider>{" "}
+          <QueryProvider>
+            {" "}
+            <Providers>{children}</Providers>
+          </QueryProvider>{" "}
         </AntdRegistry>
       </body>
     </html>

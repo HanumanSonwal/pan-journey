@@ -37,7 +37,7 @@ const PermissionPopover = ({ permissions }) => {
       content={content}
       title="Permissions"
       trigger="click"
-      overlayStyle={{ width: 300 }} // 🔥 bigger
+      overlayStyle={{ width: 300 }}
     >
       <Tag color="blue" style={{ cursor: "pointer" }}>
         View Permissions

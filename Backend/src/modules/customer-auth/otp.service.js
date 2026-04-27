@@ -1,4 +1,4 @@
-const otpStore = new Map(); // 🔥 temporary store
+const otpStore = new Map(); 
 
 // 🔹 Generate OTP
 export const sendOTPService = async (mobile) => {
@@ -9,7 +9,7 @@ export const sendOTPService = async (mobile) => {
     expiresAt: Date.now() + 5 * 60 * 1000, // 5 min
   });
 
-  console.log(`OTP for ${mobile}: ${otp}`); // 🔥 dev mode
+  console.log(`OTP for ${mobile}: ${otp}`);
 
   return true;
 };

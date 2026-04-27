@@ -12,17 +12,24 @@ export const googleLogin = async (req, res) => {
       });
     }
 
-    // 🔹 find user
+    // 🔥 1. पहले email से find
     let user = await User.findOne({ email });
 
-    if (user && user.provider !== "google") {
-      user.provider = "google";
-      user.isEmailVerified = true;
-      await user.save();
+    // 🔥 2. अगर email नहीं मिला → mobile से check (merge case)
+    if (!user && req.body.mobile) {
+      user = await User.findOne({ mobile: req.body.mobile });
     }
 
-    // 🔹 new user create
-    if (!user) {
+    if (user) {
+      // 🔥 update existing user (merge)
+      user.email = email || user.email;
+      user.name = name || user.name;
+      user.provider = "google";
+      user.isEmailVerified = true;
+
+      await user.save();
+    } else {
+      // 🔥 new user
       user = await User.create({
         email,
         name: name || "",
@@ -33,7 +40,7 @@ export const googleLogin = async (req, res) => {
       });
     }
 
-    // 🔹 inactive user block
+    // 🔥 inactive user block
     if (!user.isActive) {
       return res.status(403).json({
         success: false,
@@ -48,6 +55,7 @@ export const googleLogin = async (req, res) => {
         _id: user._id,
         email: user.email,
         name: user.name,
+        mobile: user.mobile || null,
         type: user.type,
       },
     });

@@ -2,9 +2,8 @@
 
 import StaffFormModal from "@/components/staff-managment/StaffFormModal";
 import { useStaff } from "@/hooks/staff/useStaff";
+import { usePermission } from "@/hooks/usePermission"; // ✅ NEW
 import { updateStaffStatus } from "@/services/user.service";
-import { useAuthStore } from "@/store/auth.store";
-import { can } from "@/utils/permission.util";
 import { EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button, Card, Empty, Space, Switch, Table, Tag, Tooltip } from "antd";
@@ -19,11 +18,10 @@ export default function StaffPage() {
   const [editData, setEditData] = useState(null);
 
   const queryClient = useQueryClient();
-  const { permissions = {}, user } = useAuthStore();
 
-  const canEdit = can(permissions, "users", "update", user);
-  const canToggle = can(permissions, "users", "update", user);
-  const canRead = can(permissions, "users", "read", user);
+  const { canRead, canCreate, canEdit, isAdmin } = usePermission("users");
+
+  const canFetch = canRead || isAdmin;
 
   const handleStatusUpdate = async (id, newStatus) => {
     queryClient.setQueryData(["staff"], (old) => {
@@ -35,6 +33,7 @@ export default function StaffPage() {
         ),
       };
     });
+
     await updateStaffStatus(id, {
       isActive: newStatus,
     });
@@ -81,7 +80,7 @@ export default function StaffPage() {
         <Space>
           {/* EDIT */}
           {canEdit && (
-            <Tooltip title="Edit Role">
+            <Tooltip title="Edit Staff">
               <Button
                 icon={<EditOutlined />}
                 onClick={() => handleEdit(record)}
@@ -90,16 +89,13 @@ export default function StaffPage() {
           )}
 
           {/* STATUS TOGGLE */}
-          {!record.isSystemRole && (
+          {!record.isSystemRole && canEdit && (
             <Tooltip
-              title={record.isActive ? "Deactivate Role" : "Activate Role"}
+              title={record.isActive ? "Deactivate Staff" : "Activate Staff"}
             >
               <Switch
                 checked={!!record.isActive}
-                onChange={(checked) => {
-                  console.log("SWITCH VALUE:", checked); // अब सही आएगा
-                  handleStatusUpdate(record._id, checked);
-                }}
+                onChange={(checked) => handleStatusUpdate(record._id, checked)}
               />
             </Tooltip>
           )}
@@ -112,19 +108,21 @@ export default function StaffPage() {
     <Card
       title="Staff Management"
       extra={
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => {
-            setEditData(null);
-            setOpen(true);
-          }}
-        >
-          Add Staff
-        </Button>
+        canCreate && (
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => {
+              setEditData(null);
+              setOpen(true);
+            }}
+          >
+            Add Staff
+          </Button>
+        )
       }
     >
-      {user?.role === "admin" || canRead ? (
+      {canFetch ? (
         <Table
           loading={isLoading}
           columns={columns}
