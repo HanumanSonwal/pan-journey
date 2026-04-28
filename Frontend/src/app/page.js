@@ -1,17 +1,9 @@
-import Header from '@/component/Header'
-import Head from 'next/head'
-import React from 'react'
-import Footer from '@/component/Footer'
-import Hero from "@/component/Hero";
-function page() {
-  return (
-    <div>
-      <Header/>
-       <Hero/>
-      <Footer/>
-     
-    </div>
-  )
-}
+import Hero from "@/components/homepage/Hero";
 
-export default page
+export default function Page() {
+  return (
+    <>
+      <Hero />
+    </>
+  );
+}

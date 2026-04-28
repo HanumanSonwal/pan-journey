@@ -1,4 +1,4 @@
-import { api } from "@/lib/axios";
+import { api } from "@/services/axios";
 
 export const verifyOtp = async (data) => {
   const res = await api.post("/auth/verify-otp", data);

@@ -8,10 +8,9 @@ export default function Hero() {
   const toggleDropdown = (name) => {
     setDropdown(dropdown === name ? null : name);
   };
-   
+
   return (
     <div className="relative w-full min-h-[90vh]">
-
       {/* TOP IMAGE */}
       <div
         className="absolute top-0 left-0 w-full h-[50%] bg-cover bg-center"
@@ -27,7 +26,6 @@ export default function Hero() {
       {/* MAIN */}
       <div className="relative flex items-center justify-center min-h-[80vh] px-4">
         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl p-8  pb-23 ">
-
           {/* ICONS */}
           <div className="flex justify-center gap-6 -mt-16 mb-6  pb-6">
             {["hotel", "flight", "bus"].map((tab) => (
@@ -60,7 +58,6 @@ export default function Hero() {
               <Title text="Select Your Hotels" />
 
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-
                 <InputBox
                   title="City, Property name or Location"
                   main="Goa"
@@ -88,12 +85,8 @@ export default function Hero() {
                   main="1 Room • 2 Adults"
                   open={dropdown === "guest"}
                   onClick={() => toggleDropdown("guest")}
-                  data={[
-                    "1 Room • 2 Adults",
-                    "2 Rooms • 4 Adults",
-                  ]}
+                  data={["1 Room • 2 Adults", "2 Rooms • 4 Adults"]}
                 />
-
               </div>
             </div>
           )}
@@ -104,7 +97,6 @@ export default function Hero() {
               <Title text="Book Flights" />
 
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-
                 <InputBox title="From" main="Delhi" sub="India" />
                 <InputBox title="To" main="Mumbai" sub="India" />
 
@@ -123,7 +115,6 @@ export default function Hero() {
                   onClick={() => toggleDropdown("travellers")}
                   data={["1 Adult", "2 Adults", "3 Adults"]}
                 />
-
               </div>
             </div>
           )}
@@ -134,7 +125,6 @@ export default function Hero() {
               <Title text="Book Bus Tickets" />
 
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 ">
-
                 <InputBox title="From" main="Jaipur" sub="Rajasthan" />
                 <InputBox title="To" main="Delhi" sub="India" />
 
@@ -153,20 +143,16 @@ export default function Hero() {
                   onClick={() => toggleDropdown("seats")}
                   data={["1 Seat", "2 Seats", "3 Seats"]}
                 />
-
               </div>
             </div>
           )}
 
           {/* BUTTON */}
-   <div
-  className="absolute left-1/2 -translate-x-1/2 bottom-0 md:top-[80%] md:bottom-auto md:-translate-y-1/2"
->
+          <div className="absolute left-1/2 -translate-x-1/2 bottom-0 md:top-[80%] md:bottom-auto md:-translate-y-1/2">
             <button className="bg-gradient-to-r from-[#6FAED0] via-[#4A9BB5] to-[#1F6F78] text-white px-12 py-4 rounded-xl text-lg font-semibold shadow-lg hover:opacity-90 w-[350px] pt-5 pb-5 p">
               Search →
             </button>
           </div>
-
         </div>
       </div>
     </div>
@@ -189,7 +175,6 @@ function Title({ text }) {
 function InputBox({ title, main, sub }) {
   return (
     <div className="relative border border-gray-200 rounded-xl p-4 pt-6 h-[90px] flex flex-col justify-center hover:border-[#4A9BB5] transition">
-
       <span className="absolute -top-2 left-3 bg-white px-1 text-xs text-gray-400 font-medium">
         {title}
       </span>
@@ -225,7 +210,12 @@ function DropdownBox({ title, main, open, onClick, data }) {
         viewBox="0 0 24 24"
         stroke="currentColor"
       >
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M19 9l-7 7-7-7"
+        />
       </svg>
 
       {open && (
@@ -243,5 +233,3 @@ function DropdownBox({ title, main, open, onClick, data }) {
     </div>
   );
 }
-
-
