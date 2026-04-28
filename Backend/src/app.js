@@ -2,12 +2,12 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
 
-import authRoutes from "./modules/auth/auth.routes.js";
-import roleRoutes from "./modules/roles/role.routes.js";
-import userRoutes from "./modules/user/user.routes.js";
-import otpRoutes from "./modules/customer-auth/otp.routes.js";
-import testRoutes from "./test.routes.js";
 import { errorHandler } from "./middleware/error.middleware.js";
+import authRoutes from "./modules/auth/admin-auth/auth.routes.js";
+import otpRoutes from "./modules/auth/customer-auth/otp.routes.js";
+import roleRoutes from "./modules/role/role.routes.js";
+import userRoutes from "./modules/user/user.routes.js";
+import testRoutes from "./test.routes.js";
 
 const app = express();
 

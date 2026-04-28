@@ -1,9 +1,9 @@
 "use client";
 
 import { useTheme } from "@/context/ThemeContext";
-import { useFilteredMenu } from "@/hooks/useFilteredMenu";
-import { logoutUser } from "@/services/auth.service";
-import { useAuthStore } from "@/store/auth.store";
+import { useFilteredMenu } from "@/modules/shared/hooks/useFilteredMenu";
+import { logoutUser } from "@/modules/auth/api/auth.service";
+import { useAuthStore } from "@/modules/auth/store/auth.store";
 import { LogoutOutlined, SettingOutlined } from "@ant-design/icons";
 import { Avatar, Layout, Menu, theme } from "antd";
 import Image from "next/image";

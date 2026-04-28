@@ -1,6 +1,6 @@
 import User from "../modules/user/user.model.js";
-import { sendError } from "../utils/ApiResponse.js";
-import { hasPermission } from "../utils/permission.util.js";
+import { hasPermission } from "../utils/permission/permission.util.js";
+import { sendError } from "../utils/response/ApiResponse.js";
 
 const actionMap = {
   read: "view",

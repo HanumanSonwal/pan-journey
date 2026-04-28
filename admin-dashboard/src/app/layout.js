@@ -2,8 +2,8 @@ import LoaderWrapper from "@/components/common/LoaderWrapper";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import "antd/dist/reset.css";
 import { Geist, Geist_Mono } from "next/font/google";
-import { AuthProvider } from "../components/provider/authProvider";
-import Providers from "../components/provider/providers";
+import { AuthProvider } from "../provider/authProvider";
+import Providers from "../provider/providers";
 import "./globals.css";
 
 const geistSans = Geist({

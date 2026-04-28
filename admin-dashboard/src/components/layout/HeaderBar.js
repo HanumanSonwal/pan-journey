@@ -22,8 +22,8 @@ import {
 } from "@ant-design/icons";
 
 import { useTheme } from "@/context/ThemeContext";
-import { logoutUser } from "@/services/auth.service";
-import { useAuthStore } from "@/store/auth.store";
+import { logoutUser } from "@/modules/auth/api/auth.service";
+import { useAuthStore } from "@/modules/auth/store/auth.store";
 import { useRouter } from "next/navigation";
 
 const { Header } = Layout;

@@ -1,14 +1,14 @@
 "use client";
 
-import StaffFormModal from "@/components/staff-managment/StaffFormModal";
-import { useStaff } from "@/hooks/staff/useStaff";
-import { usePermission } from "@/hooks/usePermission"; // ✅ NEW
-import { updateStaffStatus } from "@/services/user.service";
+import { usePermission } from "@/modules/shared/hooks/usePermission"; // ✅ NEW
+import { updateStaffStatus } from "@/modules/staff/api/user.service";
+import StaffFormModal from "@/modules/staff/components/StaffFormModal";
+import { useStaff } from "@/modules/staff/hooks/useStaff";
 import { EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button, Card, Empty, Space, Switch, Table, Tag, Tooltip } from "antd";
 import { useState } from "react";
-import PermissionPopover from "../roles/PermissionPopover";
+import PermissionPopover from "../../../../modules/shared/components/PermissionPopover";
 
 export default function StaffPage() {
   const { data, isLoading } = useStaff();

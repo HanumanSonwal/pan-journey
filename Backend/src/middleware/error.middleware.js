@@ -1,4 +1,4 @@
-import { sendError } from "../utils/ApiResponse.js";
+import { sendError } from "../utils/response/ApiResponse.js";
 
 export const errorHandler = (err, req, res, next) => {
   console.error("❌ Error:", err);
@@ -16,6 +16,6 @@ export const errorHandler = (err, req, res, next) => {
     res,
     err.message || "Something went wrong",
     err.statusCode || 500,
-    err.details || null
+    err.details || null,
   );
 };

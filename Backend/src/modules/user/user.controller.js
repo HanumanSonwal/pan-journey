@@ -8,7 +8,7 @@ import {
 } from "./user.service.js";
 
 import { asyncHandler } from "../../middleware/asyncHandler.js";
-import { sendSuccess } from "../../utils/ApiResponse.js";
+import { sendSuccess } from "../../utils/response/ApiResponse.js";
 
 export const createStaffController = asyncHandler(async (req, res) => {
   const user = await createStaff(req.body);

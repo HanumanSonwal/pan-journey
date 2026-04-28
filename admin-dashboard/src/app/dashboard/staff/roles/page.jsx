@@ -4,10 +4,10 @@ import { EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, Card, Empty, Space, Switch, Table, Tag, Tooltip } from "antd";
 import { useState } from "react";
 
-import RoleFormModal from "@/components/staff-managment/RoleFormModal";
-import { useRoles } from "@/hooks/Role-module/useRoles";
-import { usePermission } from "@/hooks/usePermission";
-import PermissionPopover from "./PermissionPopover";
+import RoleFormModal from "@/modules/role/components/RoleFormModal";
+import { useRoles } from "@/modules/role/hooks/useRoles";
+import { usePermission } from "@/modules/shared/hooks/usePermission";
+import PermissionPopover from "../../../../modules/shared/components/PermissionPopover";
 
 export default function RolesPage() {
   const [open, setOpen] = useState(false);
