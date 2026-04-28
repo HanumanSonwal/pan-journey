@@ -5,7 +5,7 @@ export default function Tabs({ tabs, activeTab, setActiveTab }) {
         <button
           key={tab.key}
           onClick={() => setActiveTab(tab.key)}
-          className={`w-16 h-16 flex items-center justify-center rounded-xl shadow-lg transition ${
+          className={`w-20 h-20 flex items-center justify-center rounded-xl shadow-lg transition ${
             activeTab === tab.key
               ? "bg-gradient-to-b from-[#6FAED0] to-[#1F6F78] text-white scale-105"
               : "bg-gray-100 text-gray-400"

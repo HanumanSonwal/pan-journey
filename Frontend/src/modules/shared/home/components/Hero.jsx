@@ -7,7 +7,7 @@ import Tabs from "./Tabs";
 
 import BusSearchForm from "@/modules/bus/components/BusSearchForm";
 import FlightSearchForm from "@/modules/flight/components/FlightSearchForm";
-import HotelSearchForm from "@/modules/hotel/components/FlightSearchForm";
+import HotelSearchForm from "@/modules/hotel/components/HotelSearchForm";
 
 const FORM_MAP = {
   hotel: HotelSearchForm,
@@ -35,7 +35,7 @@ export default function Hero() {
             setActiveTab={setActiveTab}
           />
 
-          <h2 className="text-center text-2xl font-bold mb-6 text-gray-800">
+          <h2 className="text-center text-[#65a9c8] text-3xl font-stretch-110% mb-6 ">
             Find What You Are Looking For
           </h2>
 
