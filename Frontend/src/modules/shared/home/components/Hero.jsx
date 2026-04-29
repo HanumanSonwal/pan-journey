@@ -23,27 +23,36 @@ export default function Hero() {
 
   return (
     <div className="relative w-full min-h-[90vh]">
+      
       {/* Background */}
       <div className="absolute top-0 w-full h-[50%] bg-[url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e')] bg-cover bg-center" />
       <div className="absolute bottom-0 w-full h-[50%] bg-[#EDF7FF]" />
 
+      {/* Content */}
       <div className="relative flex items-center justify-center min-h-[80vh] px-4">
-        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl p-8 pb-24">
+        
+        {/* MAIN BOX (WIDTH INCREASED) */}
+        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-[1300px] mx-auto p-8 pb-24">
+
+          {/* Tabs */}
           <Tabs
             tabs={enabledTabs}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
           />
 
-          <h2 className="text-center text-[#65a9c8] text-3xl font-stretch-110% mb-6 ">
+          {/* Heading */}
+          <h2 className="text-center text-[#72C0F0] text-3xl font-bold mb-6">
             Find What You Are Looking For
           </h2>
 
           {/* Dynamic Form */}
           {ActiveForm && <ActiveForm />}
 
+          {/* Search Button */}
           <SearchButton />
         </div>
+
       </div>
     </div>
   );
