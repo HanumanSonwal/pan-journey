@@ -10,7 +10,7 @@ export default function Hero() {
   };
 
   return (
-    <div className="relative w-full min-h-[40vh]">
+    <div className="relative w-full min-h-[50vh]">
 
       {/* TOP IMAGE */}
       <div
@@ -29,7 +29,7 @@ export default function Hero() {
         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl p-6 pb-16">
 
           {/* ICONS */}
-          <div className="flex justify-center gap-5 -mt-12 mb-5">
+          <div className="flex justify-center gap-5 -mt-12 mb-5 ">
             {["hotel", "flight", "bus"].map((tab) => (
               <button
                 key={tab}
@@ -58,7 +58,7 @@ export default function Hero() {
           {activeTab === "hotel" && (
             <div>
               <Title text="Select Your Hotels" />
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-3 pb-6 pt-4">
                 <InputBox
                   title="City, Property name or Location"
                   main="Goa"
@@ -157,7 +157,7 @@ export default function Hero() {
 function Title({ text }) {
   return (
     <div className="flex justify-between items-center mb-4">
-      <h3 className="text-base font-bold text-gray-800">{text}</h3>
+      <h3 className=" font-bold text-black !text-[25px] !font-bold">{text}</h3>
       <p className="text-xs text-gray-400 hidden sm:block">
         Book Domestic and International Property Online.
       </p>
@@ -168,13 +168,13 @@ function Title({ text }) {
 function InputBox({ title, main, sub }) {
   return (
     <div className="relative border border-gray-200 rounded-xl p-3 pt-5 h-[76px] flex flex-col justify-center hover:border-[#4A9BB5] transition">
-      <span className="absolute -top-2 left-3 bg-white px-1 text-[10px] text-gray-400 font-medium">
+      <span className="absolute -top-2 left-3 bg-white px-1 text-[15px] text-gray-400 font-medium">
         {title}
       </span>
       <input
-        defaultValue={main}
-        className="text-xl font-bold text-gray-900 outline-none border-none bg-transparent w-full leading-tight"
-      />
+      defaultValue={main}
+className="!text-[19px] font-bold !text-black focus:outline-none border-0 bg-transparent w-full leading-tight pb-3 pt-1"/>
+
       <p className="text-xs text-gray-500">{sub}</p>
     </div>
   );

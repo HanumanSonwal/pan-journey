@@ -169,10 +169,10 @@ const [index, setIndex] = useState(0);
 
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mb-2" style={{ fontFamily: "Georgia, serif" }}>
+        <h1 className="text-5xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mb-2" style={{ fontFamily: "Georgia, serif" }}>
           Places As Per Your Vibe
         </h1>
-        <p className="text-gray-500 text-sm sm:text-base max-w-md mx-auto leading-relaxed">
+        <p className="text-gray-500 text-sm sm:text-[18px] max-w-md mx-auto leading-relaxed">
           We're committed to offering more than just products—
           <br className="hidden sm:block" />
           we provide exceptional experiences.
@@ -185,14 +185,14 @@ const [index, setIndex] = useState(0);
           <button
             key={cat}
             onClick={() => handleTabChange(cat)}
-            className={`pb-3 px-4 text-[5.875rem] font-medium whitespace-nowrap transition-all duration-200 border-b-2 ${
+            className={`pb-3 px-4  whitespace-nowrap transition-all duration-200 border-b-2 ${
               activeTab === cat
                 ? "border-sky-500 text-sky-500"
-                : "border-transparent text-gray-500 hover:text-gray-800"
+                : "border-transparent text-sm md:text-[1.25rem] lg:text-2xl hover:text-gray-800"
             }`}
           >
             {cat}
-          </button>
+          </button> 
         ))}
       </div>
 
