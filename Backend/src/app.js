@@ -1,20 +1,21 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
-
-import { errorHandler } from "./middleware/error.middleware.js";
-import authRoutes from "./modules/auth/admin-auth/auth.routes.js";
-import otpRoutes from "./modules/auth/customer-auth/otp.routes.js";
-import roleRoutes from "./modules/role/role.routes.js";
+import "./cron/hotelCache.cron.js";
+import hotelRoutes from "./modules/hotel/hotel.routes.js";
+import authRoutes from "./modules/auth/auth.routes.js";
+import roleRoutes from "./modules/roles/role.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
+import otpRoutes from "./modules/customer-auth/otp.routes.js";
 import testRoutes from "./test.routes.js";
+import { errorHandler } from "./middleware/error.middleware.js";
+import hotelModel from "./modules/hotel/hotel.model.js";
 
 const app = express();
 
-// Allow frontend to access backend (CORS setup)
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:3001"], // change in production via ENV
+    origin: ["http://localhost:3000", "http://localhost:3001"],
     credentials: true,
   }),
 );
@@ -32,7 +33,8 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
 
 // Role & permission management
-app.use("/api/v1/roles", roleRoutes);
+app.use("/api/v1/roles", roleRoutes); 
+app.use("/api/v1/hotel", hotelRoutes);
 
 app.use("/api/v1/customer/auth/", otpRoutes);
 
