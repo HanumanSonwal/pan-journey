@@ -1,8 +1,8 @@
 "use client";
 
-import { useApiMutation } from "@/hooks/useApiMutation";
-import { loginUser } from "@/services/auth.service";
-import { useAuthStore } from "@/store/auth.store";
+import { useApiMutation } from "@/modules/shared/hooks/useApiMutation";
+import { loginUser } from "@/modules/auth/api/auth.service";
+import { useAuthStore } from "@/modules/auth/store/auth.store";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Card, Checkbox, Form, Input, theme, Typography } from "antd";
 import { useRouter } from "next/navigation";

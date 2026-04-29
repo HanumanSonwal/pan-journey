@@ -1,15 +1,14 @@
 "use client";
 
-import StaffFormModal from "@/components/staff-managment/StaffFormModal";
-import { useStaff } from "@/hooks/staff/useStaff";
-import { updateStaffStatus } from "@/services/user.service";
-import { useAuthStore } from "@/store/auth.store";
-import { can } from "@/utils/permission.util";
+import { usePermission } from "@/modules/shared/hooks/usePermission"; // ✅ NEW
+import { updateStaffStatus } from "@/modules/staff/api/user.service";
+import StaffFormModal from "@/modules/staff/components/StaffFormModal";
+import { useStaff } from "@/modules/staff/hooks/useStaff";
 import { EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button, Card, Empty, Space, Switch, Table, Tag, Tooltip } from "antd";
 import { useState } from "react";
-import PermissionPopover from "../roles/PermissionPopover";
+import PermissionPopover from "../../../../modules/shared/components/PermissionPopover";
 
 export default function StaffPage() {
   const { data, isLoading } = useStaff();
@@ -19,11 +18,10 @@ export default function StaffPage() {
   const [editData, setEditData] = useState(null);
 
   const queryClient = useQueryClient();
-  const { permissions = {}, user } = useAuthStore();
 
-  const canEdit = can(permissions, "users", "update", user);
-  const canToggle = can(permissions, "users", "update", user);
-  const canRead = can(permissions, "users", "read", user);
+  const { canRead, canCreate, canEdit, isAdmin } = usePermission("users");
+
+  const canFetch = canRead || isAdmin;
 
   const handleStatusUpdate = async (id, newStatus) => {
     queryClient.setQueryData(["staff"], (old) => {
@@ -35,6 +33,7 @@ export default function StaffPage() {
         ),
       };
     });
+
     await updateStaffStatus(id, {
       isActive: newStatus,
     });
@@ -81,7 +80,7 @@ export default function StaffPage() {
         <Space>
           {/* EDIT */}
           {canEdit && (
-            <Tooltip title="Edit Role">
+            <Tooltip title="Edit Staff">
               <Button
                 icon={<EditOutlined />}
                 onClick={() => handleEdit(record)}
@@ -90,16 +89,13 @@ export default function StaffPage() {
           )}
 
           {/* STATUS TOGGLE */}
-          {!record.isSystemRole && (
+          {!record.isSystemRole && canEdit && (
             <Tooltip
-              title={record.isActive ? "Deactivate Role" : "Activate Role"}
+              title={record.isActive ? "Deactivate Staff" : "Activate Staff"}
             >
               <Switch
                 checked={!!record.isActive}
-                onChange={(checked) => {
-                  console.log("SWITCH VALUE:", checked); // अब सही आएगा
-                  handleStatusUpdate(record._id, checked);
-                }}
+                onChange={(checked) => handleStatusUpdate(record._id, checked)}
               />
             </Tooltip>
           )}
@@ -112,25 +108,31 @@ export default function StaffPage() {
     <Card
       title="Staff Management"
       extra={
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => {
-            setEditData(null);
-            setOpen(true);
-          }}
-        >
-          Add Staff
-        </Button>
+        canCreate && (
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => {
+              setEditData(null);
+              setOpen(true);
+            }}
+          >
+            Add Staff
+          </Button>
+        )
       }
     >
-      {user?.role === "admin" || canRead ? (
-        <Table
-          loading={isLoading}
-          columns={columns}
-          dataSource={staff}
-          rowKey="_id"
-        />
+      {canFetch ? (
+        <div style={{ width: "100%", overflowX: "auto" }}>
+          <Table
+            loading={isLoading}
+            columns={columns}
+            dataSource={staff}
+            rowKey="_id"
+            size="middle"
+            scroll={{ x: 900 }}
+          />
+        </div>
       ) : (
         <Empty description="No permission to view data" />
       )}

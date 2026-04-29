@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
-import ApiError from "../../utils/ApiError.js";
-import { deleteByPattern, getCache, setCache } from "../../utils/cache.js";
-import Role from "../roles/role.model.js";
+import { deleteByPattern, getCache, setCache } from "../../utils/cache/cache.js";
+import ApiError from "../../utils/response/ApiError.js";
+import Role from "../role/role.model.js";
 import User from "./user.model.js";
 
 // PAGINATION
@@ -234,5 +234,3 @@ export const updateUserStatus = async (id, isActive) => {
 };
 
 // DELETE USER
-
-

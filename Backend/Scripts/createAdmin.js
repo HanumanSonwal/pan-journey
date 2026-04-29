@@ -1,23 +1,18 @@
-import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
+import mongoose from "mongoose";
 import path from "path"; // ✅ ADD THIS
 import { fileURLToPath } from "url"; // ✅ ADD THIS
 
+import Role from "../src/modules/role/role.model.js";
 import User from "../src/modules/user/user.model.js";
-import Role from "../src/modules/roles/role.model.js";
 
-// 🔥 correct path resolve
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// 🔥 load env
 dotenv.config({
   path: path.resolve(__dirname, "../.env"),
 });
-
-// 🧪 DEBUG
-console.log("MONGO_URI:", process.env.MONGO_URI);
 
 const createAdmin = async () => {
   try {

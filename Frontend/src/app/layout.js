@@ -1,3 +1,5 @@
+import Footer from "@/components/common/Footer";
+import Header from "@/components/common/Header";
 import QueryProvider from "@/providers/QueryProvider";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import "antd/dist/reset.css";
@@ -29,8 +31,18 @@ export default function RootLayout({ children }) {
     >
       <body className="min-h-full flex flex-col">
         <AntdRegistry>
-          {" "}
-          <QueryProvider> <Providers>{children}</Providers></QueryProvider>{" "}
+          <QueryProvider>
+            <Providers>
+              {/* Header */}
+              <Header />
+
+              {/* Page Content */}
+              <main className="flex-1">{children}</main>
+
+              {/* Footer */}
+              <Footer />
+            </Providers>
+          </QueryProvider>
         </AntdRegistry>
       </body>
     </html>

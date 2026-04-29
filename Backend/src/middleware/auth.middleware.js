@@ -27,6 +27,7 @@ export const protect = async (req, res, next) => {
       select: "name permissions type isActive",
     });
 
+    console.log("user-data:", user.isActive, user.role?.isActive);
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -46,7 +47,6 @@ export const protect = async (req, res, next) => {
         message: "Role is inactive",
       });
     }
-    // 🔥 SINGLE SOURCE OF TRUTH
     req.user = {
       id: user._id,
       name: user.name,

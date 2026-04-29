@@ -4,7 +4,6 @@ import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions = {
   providers: [
-    // 🔥 OTP LOGIN
     CredentialsProvider({
       name: "OTP",
       credentials: {
@@ -12,32 +11,22 @@ export const authOptions = {
         otp: { label: "OTP", type: "text" },
       },
       async authorize(credentials) {
-        try {
-          const res = await fetch(
-            "http://localhost:8000/api/v1/customer/auth/otp/verify",
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(credentials),
-            },
-          );
+        const res = await fetch(
+          "http://localhost:8000/api/v1/customer/auth/otp/verify",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(credentials),
+          },
+        );
 
-          const data = await res.json();
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message);
 
-          if (!res.ok) throw new Error(data.message);
-
-          return {
-            _id: data.data._id,
-            mobile: data.data.mobile,
-            type: data.data.type,
-          };
-        } catch (err) {
-          throw new Error(err.message);
-        }
+        return data.data;
       },
     }),
 
-    // 🔥 GOOGLE LOGIN
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -48,7 +37,6 @@ export const authOptions = {
     strategy: "jwt",
   },
 
-  // 🔥 CUSTOM JWT (backend compatible)
   jwt: {
     async encode({ token, secret }) {
       return jwt.sign(token, secret, { algorithm: "HS256" });
@@ -59,35 +47,34 @@ export const authOptions = {
   },
 
   callbacks: {
-    // 🔥 JWT CALLBACK
     async jwt({ token, user, account }) {
       try {
-        // 🔹 OTP LOGIN
-        if (user && account?.provider === "credentials") {
+        if (user) {
           token.userId = user._id;
-          token.mobile = user.mobile;
-          token.type = user.type;
+          token.mobile = user.mobile || null;
+          token.name = user.name || token.name;
+          token.email = user.email || token.email;
+          token.type = user.type || "customer";
         }
 
-        // 🔹 GOOGLE LOGIN
         if (account?.provider === "google") {
-          const res = await fetch("http://localhost:8000/api/v1/auth/google", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              email: token.email,
-              name: token.name,
-            }),
-          });
+          const res = await fetch(
+            "http://localhost:8000/api/v1/customer/auth/google",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                email: token.email,
+                name: token.name,
+              }),
+            },
+          );
 
           const data = await res.json();
 
-          if (!res.ok) throw new Error("Google sync failed");
-
-          token.userId = data.data._id;
-          token.name = data.data.name;
-          token.email = data.data.email;
-          token.type = "customer";
+          if (res.ok && data?.data?._id) {
+            token.userId = data.data._id;
+          }
         }
 
         return token;
@@ -97,16 +84,14 @@ export const authOptions = {
       }
     },
 
-    // 🔥 SESSION CALLBACK
     async session({ session, token }) {
       session.user = {
-        id: token.userId,
+        id: token.userId || null,
         name: token.name || null,
         email: token.email || null,
         mobile: token.mobile || null,
-        type: token.type,
+        type: token.type || "customer",
       };
-
       return session;
     },
   },

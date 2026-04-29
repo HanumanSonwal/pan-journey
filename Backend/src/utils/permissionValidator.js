@@ -1,5 +1,5 @@
 import { PERMISSIONS } from "../config/permissions.js";
-import ApiError from "./ApiError.js";
+import ApiError from "./response/ApiError.js";
 
 export const validatePermissions = (permissions = {}) => {
   for (const module in permissions) {
