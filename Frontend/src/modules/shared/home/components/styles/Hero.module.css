@@ -1,35 +1,49 @@
 .heroBg {
-  background-image: url("/images/homepage/hero-bg.svg");
+  background-image: url("/images/homepage/banner-bg.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-
-  height: 60vh;
+  height: 40vh;
   position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Image control */
+.heroBg img {
+  width: 100%;
+  max-width: 1164px;
+  max-height: 440px; /* 👈 yaha 440px set kiya */
+  object-fit: contain;
 }
 
 /* Tablet */
 @media (min-width: 768px) {
   .heroBg {
-    height: 70vh;
+    height: 45vh;
+  }
+
+  .heroBg img {
+    max-height: 440px; /* same rakha for consistency */
   }
 }
 
-/* Optional overlay */
+/* Overlay */
 .heroBg::after {
   content: "";
   position: absolute;
   inset: 0;
-  /* background: linear-gradient(to bottom, transparent 60%, #EDF7FF 100%); */
 }
 
-/* Card wrapper spacing */
+/* Card wrapper */
 .cardWrapper {
-  margin-top: -120px;
+  margin-top: -90px;
 }
 
 @media (min-width: 768px) {
   .cardWrapper {
-    margin-top: -350px;
+    margin-top: -150px;
   }
 }

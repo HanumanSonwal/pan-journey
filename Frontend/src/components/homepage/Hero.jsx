@@ -13,16 +13,17 @@ export default function Hero() {
     <div className="relative w-full min-h-[50vh]">
 
       {/* TOP IMAGE */}
+    
       <div
-        className="absolute top-0 left-0 w-full h-[50%] bg-cover bg-center"
-        style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e')",
-        }}
-      ></div>
+    className="absolute top-0 left-0 w-full h-[25%] bg-cover bg-center"
+    style={{
+      backgroundImage:
+        "url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e')",
+    }}
+  ></div>
 
       {/* BOTTOM COLOR */}
-      <div className="absolute bottom-0 left-0 w-full h-[50%] bg-[#EDF7FF]"></div>
+      <div className="absolute !bottom-[29px] left-0 w-full h-[80%] bg-[#EDF7FF]"></div>
 
       {/* MAIN */}
       <div className="relative flex items-center justify-center min-h-[65vh] px-4">
