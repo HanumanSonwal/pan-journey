@@ -24,12 +24,12 @@ export default function Hero() {
   const ActiveForm = FORM_MAP[activeTab];
 
   return (
-    <section className="relative w-full">
+    <section className="relative w-full pb-60 bg-[#EDF7FF]">
       <div className={styles.heroBg} />
       <div
-        className={`absolute left-1/2 -translate-x-1/2 w-[80%] flex justify-center px-4 ${styles.cardWrapper}`}
+        className={`absolute left-1/2 -translate-x-1/2 w-[80.83%] h-[342px] top-[51%]   px-4 ${styles.cardWrapper}`}
       >
-        <div className="  bg-white rounded-2xl shadow-2xl w-full  p-5 md:p-8">
+        <div className="  bg-white rounded-[10px] shadow-2xl w-full  p-5 md:p-8">
           <Tabs
             tabs={enabledTabs}  
             activeTab={activeTab}
@@ -37,7 +37,7 @@ export default function Hero() {
           />a
            
 
-          <h2 className="text-center text-[#72C0F0] text-xl md:text-3xl font-bold mb-6">
+          <h2 className="text-center text-[#72C0F0] text-xl md:text-3xl font-bold mb-6 ">
             Find What You Are Looking For
           </h2>
 
