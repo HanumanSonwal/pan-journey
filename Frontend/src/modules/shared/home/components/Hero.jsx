@@ -36,10 +36,11 @@ export default function Hero() {
 
           {/* Tabs */}
           <Tabs
-            tabs={enabledTabs}
+            tabs={enabledTabs}  
             activeTab={activeTab}
             setActiveTab={setActiveTab}
-          />
+          />a
+           
 
           {/* Heading */}
           <h2 className="text-center text-[#72C0F0] text-3xl font-bold mb-6">
