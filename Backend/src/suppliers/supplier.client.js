@@ -1,28 +1,37 @@
-// import mockData from "./supplier.mock.json" assert { type: "json" };
+// import axios from "axios";
+// import { v4 as uuidv4 } from "uuid";
 
-// export const fetchHotelsByCity = async (city) => {
-//   console.log("📡 Fetching from SUPPLIER for city:", city);
+// const supplierClient = axios.create({
+//   baseURL: process.env.SUPPLIER_BASE_URL,
+//   headers: {
+//     "Content-Type": "application/json"
+//   },
+//   timeout: 30000
+// });
 
-//   // ❗ Abhi mock return
-//   return mockData;
-
-//   // FUTURE (real API)
-//   // const res = await axios.post(SUPPLIER_URL, payload)
-//   // return res.data
+// // 🔥 Common Auth Header Generator
+// const getAuthHeader = () => {
+//   return {
+//     UserId: process.env.SUPPLIER_USER_ID,
+//     Password: process.env.SUPPLIER_PASSWORD,
+//     IP_Address: process.env.SUPPLIER_IP,
+//     Request_Id: Date.now().toString() // unique id each request
+//   };
 // };
 
-import fs from "fs/promises";
-import path from "path";
+// // 🔥 Generic Supplier Request Function
+// export const supplierRequest = async (endpoint, payload) => {
+//   try {
+//     const body = {
+//       Auth_Header: getAuthHeader(),
+//       ...payload
+//     };
 
-export const fetchHotelsByCity = async (city) => {
-  console.log("📡 Calling SUPPLIER API for:", city);
+//     const { data } = await supplierClient.post(endpoint, body);
 
-  // fake delay
-  await new Promise(resolve => setTimeout(resolve, 2000));
-
-  // JSON read from file (best way)
-  const filePath = path.resolve("src/suppliers/supplier.mock.json");
-  const jsonData = await fs.readFile(filePath, "utf-8");
-
-  return JSON.parse(jsonData);
-};
+//     return data;
+//   } catch (err) {
+//     console.error("Supplier API Error:", err?.response?.data || err.message);
+//     throw new Error("Supplier API Failed");
+//   }
+// };

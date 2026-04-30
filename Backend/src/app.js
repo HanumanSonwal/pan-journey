@@ -5,7 +5,7 @@ import "./cron/hotelCache.cron.js";
 import { errorHandler } from "./middleware/error.middleware.js";
 import authRoutes from "./modules/auth/admin-auth/auth.routes.js";
 import otpRoutes from "./modules/auth/customer-auth/otp.routes.js";
-import hotelRoutes from "./modules/hotel/hotel.routes.js";
+//import hotelRoutes from "./modules/hotel/hotel.routes.js";
 import roleRoutes from "./modules/role/role.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
 import testRoutes from "./test.routes.js";
@@ -33,7 +33,7 @@ app.use("/api/v1/users", userRoutes);
 
 // Role & permission management
 app.use("/api/v1/roles", roleRoutes);
-app.use("/api/v1/hotel", hotelRoutes);
+//app.use("/api/v1/hotel", hotelRoutes);
 
 app.use("/api/v1/customer/auth/", otpRoutes);
 

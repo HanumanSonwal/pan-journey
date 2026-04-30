@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema(
     // 🔥 AUTH PROVIDER
     provider: {
       type: String,
-      enum: ["local", "google", "otp" , "email"],
+      enum: ["local", "google", "otp","email"],
       default: "local",
     },
 

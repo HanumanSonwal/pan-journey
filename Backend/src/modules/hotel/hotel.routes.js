@@ -1,8 +1,8 @@
-import express from "express";
-import { searchHotels } from "./hotel.controller.js";
+// import express from "express";
+// import { searchHotels } from "./hotel.controller.js";
 
-const router = express.Router();
+// const router = express.Router();
 
-router.get("/search", searchHotels);
+// router.get("/search", searchHotels);
 
-export default router;
+// export default router;
