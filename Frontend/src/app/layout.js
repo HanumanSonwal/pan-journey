@@ -3,7 +3,7 @@ import Header from "@/components/common/Header";
 import QueryProvider from "@/providers/QueryProvider";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import "antd/dist/reset.css";
-import { Geist, Geist_Mono, Roboto } from "next/font/google";
+import { Geist, Geist_Mono, Roboto, Jost  } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 
@@ -24,6 +24,12 @@ const roboto = Roboto({
   weight: ["400", "500", "700"],
 });
 
+const jost = Jost({
+  variable: "--font-jost",
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+});
+
 export const metadata = {
   title: "Pan Journey",
   description: "Booking platform",
@@ -38,6 +44,7 @@ export default function RootLayout({ children }) {
         ${geistSans.variable} 
         ${geistMono.variable} 
         ${roboto.variable}  
+        ${jost.variable}
         h-full antialiased
       `}
     >
