@@ -3,10 +3,10 @@ import cors from "cors";
 import express from "express";
 import "./cron/hotelCache.cron.js";
 import { errorHandler } from "./middleware/error.middleware.js";
-import authRoutes from "./modules/auth/auth.routes.js";
-import otpRoutes from "./modules/customer-auth/otp.routes.js";
+import authRoutes from "./modules/auth/admin-auth/auth.routes.js";
+import otpRoutes from "./modules/auth/customer-auth/otp.routes.js";
 import hotelRoutes from "./modules/hotel/hotel.routes.js";
-import roleRoutes from "./modules/roles/role.routes.js";
+import roleRoutes from "./modules/role/role.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
 import testRoutes from "./test.routes.js";
 
