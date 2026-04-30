@@ -27,9 +27,9 @@ export default function Hero() {
     <section className="relative w-full pb-60 bg-[#EDF7FF]">
       <div className={styles.heroBg} />
       <div
-        className={`absolute left-1/2 -translate-x-1/2 w-[80.83%] h-[342px] top-[51%]   px-4 ${styles.cardWrapper}`}
+        className={`absolute left-1/2 -translate-x-1/2 w-[80.83%] h-[46%] top-[53%]   px-4 ${styles.cardWrapper}`}
       >
-        <div className="  bg-white rounded-[10px] shadow-2xl w-full  p-5 md:p-8">
+        <div className="  bg-white rounded-[10px] shadow-2xl w-full  !pb-14  md:p-8">
           <Tabs
             tabs={enabledTabs}  
             activeTab={activeTab}
