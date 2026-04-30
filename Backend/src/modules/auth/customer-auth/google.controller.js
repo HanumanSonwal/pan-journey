@@ -12,10 +12,8 @@ export const googleLogin = async (req, res) => {
       });
     }
 
-    // 🔥 1. पहले email से find
     let user = await User.findOne({ email });
 
-    // 🔥 2. अगर email नहीं मिला → mobile से check (merge case)
     if (!user && req.body.mobile) {
       user = await User.findOne({ mobile: req.body.mobile });
     }

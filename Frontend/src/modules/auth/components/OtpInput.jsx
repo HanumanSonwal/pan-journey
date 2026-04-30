@@ -38,20 +38,25 @@ export default function OtpInput({ onChange }) {
 
   const updateOtp = () => {
     const otp = inputs.current.map((input) => input?.value || "").join("");
-    onChange(otp);
+    onChange?.(otp);
   };
 
   return (
-    <div className="flex gap-2 justify-center" onPaste={handlePaste}>
+    <div className="flex justify-center gap-3" onPaste={handlePaste}>
       {Array.from({ length: 6 }).map((_, i) => (
         <input
           key={i}
           type="text"
+          inputMode="numeric"
           maxLength={1}
-          className="w-10 h-10 text-center text-lg border rounded"
           ref={(el) => (inputs.current[i] = el)}
           onChange={(e) => handleChange(e.target.value, i)}
           onKeyDown={(e) => handleKeyDown(e, i)}
+          onFocus={(e) => e.target.select()}
+          className="w-12 h-12 text-center text-[18px] font-medium font-roboto 
+                     border border-gray-300 rounded-lg outline-none
+                     focus:border-[#4A9BB5] focus:ring-2 focus:ring-[#4A9BB5]/20
+                     transition-all"
         />
       ))}
     </div>
