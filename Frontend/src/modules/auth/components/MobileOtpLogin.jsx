@@ -17,10 +17,13 @@ export default function MobileOtpLogin({ onSuccess }) {
   const sendOtpMutation = useSendOtp();
   const verifyOtpMutation = useVerifyOtp();
 
+  // ✅ Only numbers allow + live validation trigger
   const handleMobileChange = (e) => {
-    let value = e.target.value.replace(/\D/g, "");
-    if (value.length > 10) value = value.slice(0, 10);
-    form.setFieldValue("mobile", value);
+    let value = e.target.value.replace(/\D/g, "").slice(0, 10);
+    form.setFieldsValue({ mobile: value });
+
+    // ✅ real-time validation hatao jab correct ho
+    form.validateFields(["mobile"]).catch(() => {});
   };
 
   const handleSendOtp = async (values) => {
@@ -38,26 +41,24 @@ export default function MobileOtpLogin({ onSuccess }) {
   };
 
   const handleVerifyOtp = async () => {
-    const otp = form.getFieldValue("otp");
-    const mobile = form.getFieldValue("mobile");
-
-    if (!otp || otp.length !== 6) {
-      return message.error("Enter valid OTP");
-    }
-
     try {
+      const values = await form.validateFields(["otp"]);
+
+      const mobile = form.getFieldValue("mobile");
+
       await verifyOtpMutation.mutateAsync({
         mobile: `91${mobile}`,
-        otp,
+        otp: values.otp,
       });
 
       message.success("Login successful");
       onSuccess?.();
     } catch {
-      message.error("Invalid OTP");
+      message.error("Enter valid OTP");
     }
   };
 
+  // ⏱ Timer
   useEffect(() => {
     if (timer <= 0) return;
     const interval = setInterval(() => {
@@ -67,14 +68,23 @@ export default function MobileOtpLogin({ onSuccess }) {
   }, [timer]);
 
   return (
-    <Form form={form} layout="vertical" onFinish={handleSendOtp}>
+    <Form
+      form={form}
+      layout="vertical"
+      onFinish={handleSendOtp}
+      validateTrigger="onBlur" // ✅ only blur pe validation trigger
+    >
       {/* MOBILE */}
       {step === "mobile" && (
         <Form.Item
           name="mobile"
+          validateTrigger={["onBlur", "onSubmit"]} // ✅ focus ke baad hi error
           rules={[
             { required: true, message: "Mobile number required" },
-            { len: 10, message: "Enter 10 digit mobile number" },
+            {
+              len: 10,
+              message: "Enter valid 10 digit mobile number",
+            },
           ]}
         >
           <FloatingAntInput
@@ -89,8 +99,22 @@ export default function MobileOtpLogin({ onSuccess }) {
       {/* OTP */}
       {step === "otp" && (
         <>
-          <Form.Item name="otp">
-            <OtpInput onChange={(val) => form.setFieldValue("otp", val)} />
+          <Form.Item
+            name="otp"
+            validateTrigger={["onBlur", "onSubmit"]}
+            rules={[
+              { required: true, message: "OTP required" },
+              { len: 6, message: "Enter 6 digit OTP" },
+            ]}
+          >
+            <OtpInput
+              onChange={(val) => {
+                form.setFieldValue("otp", val);
+
+                // ✅ live error remove
+                form.validateFields(["otp"]).catch(() => {});
+              }}
+            />
           </Form.Item>
 
           <div className="text-center mb-4">
@@ -112,7 +136,6 @@ export default function MobileOtpLogin({ onSuccess }) {
       {step === "mobile" ? (
         <AppButton
           htmlType="submit"
-          onClick={() => form.submit()}
           loading={sendOtpMutation.isPending}
         >
           Continue
