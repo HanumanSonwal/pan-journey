@@ -1,11 +1,14 @@
-import { normalizeMobile } from "../../../utils/normalizeMobile.js";
-import User from "../../user/user.model.js";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../../../../utils/authentication/token.util.js";
+import { normalizeMobile } from "../../../../utils/normalizeMobile.js";
+import User from "../../../user/user.model.js";
+
 import { sendOTPService, verifyOTPService } from "./otp.service.js";
 
 export const sendOTP = async (req, res) => {
   try {
-    console.log("RAW BODY:", req.body);
-
     let mobile = normalizeMobile(req.body.mobile);
 
     if (!mobile || mobile.length !== 10) {
@@ -23,16 +26,16 @@ export const sendOTP = async (req, res) => {
     });
   } catch (err) {
     console.error("SEND OTP ERROR:", err);
+
     return res.status(500).json({
       success: false,
       message: err.message,
     });
   }
 };
+
 export const verifyOTP = async (req, res) => {
   try {
-    console.log("RAW BODY:", req.body); // 🔍 debug
-
     let mobile = normalizeMobile(req.body.mobile);
     let otp = String(req.body.otp || "");
 
@@ -42,7 +45,6 @@ export const verifyOTP = async (req, res) => {
         message: "Invalid mobile or OTP",
       });
     }
-
     await verifyOTPService(mobile, otp);
 
     let user = await User.findOne({ mobile });
@@ -61,6 +63,16 @@ export const verifyOTP = async (req, res) => {
       });
     }
 
+    if (!user.isActive) {
+      return res.status(403).json({
+        success: false,
+        message: "Account is deactivated",
+      });
+    }
+
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+
     return res.json({
       success: true,
       message: "Login successful",
@@ -70,6 +82,8 @@ export const verifyOTP = async (req, res) => {
         email: user.email || null,
         name: user.name || null,
         type: user.type,
+        accessToken, // ✅ ADD
+        refreshToken, // ✅ ADD
       },
     });
   } catch (err) {

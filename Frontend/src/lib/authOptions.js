@@ -1,29 +1,101 @@
 import jwt from "jsonwebtoken";
+import { jwtDecode } from "jwt-decode";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+
+// 🔥 ALWAYS SAFE BASE URL
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+
+async function refreshAccessToken(token) {
+  try {
+    console.log("🔄 REFRESH API CALLED");
+
+    const res = await fetch(`${API_BASE}/customer/auth/refresh`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        refreshToken: token.refreshToken,
+      }),
+    });
+
+    let data;
+    try {
+      data = await res.json();
+    } catch {
+      throw new Error("Invalid refresh response");
+    }
+
+    if (!res.ok) throw new Error(data.message);
+
+    const decoded = jwtDecode(data.accessToken);
+
+    console.log("✅ NEW TOKEN RECEIVED");
+
+    return {
+      ...token,
+      accessToken: data.accessToken,
+      accessTokenExpires: decoded.exp * 1000,
+    };
+  } catch (err) {
+    console.log("❌ REFRESH ERROR:", err.message);
+
+    return {
+      ...token,
+      error: "RefreshAccessTokenError",
+    };
+  }
+}
 
 export const authOptions = {
   providers: [
     CredentialsProvider({
       name: "OTP",
       credentials: {
-        mobile: { label: "Mobile", type: "text" },
-        otp: { label: "OTP", type: "text" },
+        mobile: {},
+        otp: {},
       },
+
       async authorize(credentials) {
-        const res = await fetch(
-          "http://localhost:8000/api/v1/customer/auth/otp/verify",
-          {
+        try {
+          console.log("📥 LOGIN REQUEST:", credentials);
+
+          if (!credentials?.mobile || !credentials?.otp) {
+            throw new Error("Missing credentials");
+          }
+
+          const res = await fetch(`${API_BASE}/customer/auth/otp/verify`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(credentials),
-          },
-        );
+            body: JSON.stringify({
+              mobile: credentials.mobile,
+              otp: credentials.otp,
+            }),
+          });
 
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message);
+          let data;
+          try {
+            data = await res.json();
+          } catch {
+            console.log("❌ RESPONSE NOT JSON");
+            throw new Error("Server error (invalid response)");
+          }
 
-        return data.data;
+          console.log("📡 BACKEND:", data);
+
+          if (!res.ok) {
+            throw new Error(data?.message || "Login failed");
+          }
+
+          if (!data?.data?.accessToken) {
+            throw new Error("AccessToken missing");
+          }
+
+          return data.data;
+        } catch (err) {
+          console.log("❌ AUTHORIZE ERROR:", err.message);
+          throw err;
+        }
       },
     }),
 
@@ -39,7 +111,7 @@ export const authOptions = {
 
   jwt: {
     async encode({ token, secret }) {
-      return jwt.sign(token, secret, { algorithm: "HS256" });
+      return jwt.sign(token, secret);
     },
     async decode({ token, secret }) {
       return jwt.verify(token, secret);
@@ -47,51 +119,46 @@ export const authOptions = {
   },
 
   callbacks: {
-    async jwt({ token, user, account }) {
-      try {
-        if (user) {
-          token.userId = user._id;
-          token.mobile = user.mobile || null;
-          token.name = user.name || token.name;
-          token.email = user.email || token.email;
-          token.type = user.type || "customer";
-        }
+    async jwt({ token, user }) {
+      // 🔹 LOGIN
+      if (user) {
+        const decoded = jwtDecode(user.accessToken);
 
-        if (account?.provider === "google") {
-          const res = await fetch(
-            "http://localhost:8000/api/v1/customer/auth/google",
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                email: token.email,
-                name: token.name,
-              }),
-            },
-          );
+        console.log("🧠 LOGIN EXP:", new Date(decoded.exp * 1000));
 
-          const data = await res.json();
+        return {
+          ...token,
+          userId: user._id,
+          mobile: user.mobile,
+          accessToken: user.accessToken,
+          refreshToken: user.refreshToken,
+          accessTokenExpires: decoded.exp * 1000,
+        };
+      }
 
-          if (res.ok && data?.data?._id) {
-            token.userId = data.data._id;
-          }
-        }
+      // 🔹 DEBUG
+      console.log("⏱ NOW:", Date.now());
+      console.log("⏱ EXP:", token.accessTokenExpires);
 
-        return token;
-      } catch (err) {
-        console.log("JWT CALLBACK ERROR:", err.message);
+      if (Date.now() < token.accessTokenExpires) {
         return token;
       }
+
+      console.log("⚠️ TOKEN EXPIRED");
+
+      return await refreshAccessToken(token);
     },
 
     async session({ session, token }) {
       session.user = {
-        id: token.userId || null,
-        name: token.name || null,
-        email: token.email || null,
-        mobile: token.mobile || null,
-        type: token.type || "customer",
+        id: token.userId,
+        mobile: token.mobile,
       };
+
+      session.accessToken = token.accessToken;
+      session.refreshToken = token.refreshToken;
+      session.error = token.error;
+
       return session;
     },
   },

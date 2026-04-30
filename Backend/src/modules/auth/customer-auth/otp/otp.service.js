@@ -1,4 +1,4 @@
-import { normalizeMobile } from "../../../utils/normalizeMobile.js";
+import { normalizeMobile } from "../../../../utils/normalizeMobile.js";
 
 const otpStore = new Map();
 

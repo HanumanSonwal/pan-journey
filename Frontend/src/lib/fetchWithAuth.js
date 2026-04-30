@@ -1,16 +1,13 @@
-import { getToken } from "next-auth/jwt";
+import { getSession } from "next-auth/react";
 
 export const fetchWithAuth = async (url, options = {}) => {
-  const token = await getToken({
-    req: { headers: {} }, // Next.js handles internally
-    secret: process.env.NEXTAUTH_SECRET,
-  });
+  const session = await getSession();
 
   return fetch(url, {
     ...options,
     headers: {
       ...options.headers,
-      Authorization: `Bearer ${token?.sub}`, // 🔥 real token
+      Authorization: `Bearer ${session?.accessToken}`, // ✅ सही
     },
   });
 };

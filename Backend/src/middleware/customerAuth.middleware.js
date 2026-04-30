@@ -1,55 +1,66 @@
-import cookie from "cookie";
 import jwt from "jsonwebtoken";
-import User from "../modules/user/user.model.js"; // 🔥 adjust path
+import User from "../modules/user/user.model.js";
 
 export const protectCustomer = async (req, res, next) => {
   try {
-    const rawCookies = req.headers.cookie;
+    const authHeader = req.headers.authorization;
 
-    if (!rawCookies) {
-      return res.status(401).json({ message: "No cookies" });
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({
+        success: false,
+        message: "No token provided",
+      });
     }
 
-    const parsed = cookie.parse(rawCookies);
-
-    let token =
-      parsed["next-auth.session-token"] ||
-      parsed["__Secure-next-auth.session-token"];
-
-    if (!token) {
-      console.log("❌ No token in cookies:", parsed);
-      return res.status(401).json({ message: "No token" });
-    }
-
-    token = decodeURIComponent(token);
+    const token = authHeader.split(" ")[1];
 
     let decoded;
     try {
-      decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET);
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+      console.log("🧠 DECODED:", decoded);
+      console.log("⏱ EXP:", decoded.exp * 1000);
+      console.log("🕒 NOW:", Date.now());
     } catch (err) {
-      console.log("❌ JWT ERROR:", err.message);
-      return res.status(401).json({ message: "Invalid token" });
+      console.log("❌ JWT VERIFY ERROR:", err.message);
+
+      return res.status(401).json({
+        success: false,
+        message: "Invalid or expired token",
+      });
     }
 
-    if (!decoded?.userId) {
-      return res.status(401).json({ message: "Invalid token payload" });
+    if (!decoded?.id) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid token payload",
+      });
     }
 
-    const user = await User.findById(decoded.userId).select("-password");
+    const user = await User.findById(decoded.id).select("-password");
 
     if (!user) {
-      return res.status(401).json({ message: "User not found" });
+      return res.status(401).json({
+        success: false,
+        message: "User not found",
+      });
     }
 
     if (!user.isActive) {
-      return res.status(403).json({ message: "Account deactivated" });
+      return res.status(403).json({
+        success: false,
+        message: "Account deactivated",
+      });
     }
 
     req.user = user;
 
     next();
   } catch (err) {
-    console.log("❌ AUTH ERROR:", err.message);
-    return res.status(500).json({ message: "Auth middleware failed" });
+    console.log("❌ AUTH MIDDLEWARE ERROR:", err.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Auth middleware failed",
+    });
   }
 };
