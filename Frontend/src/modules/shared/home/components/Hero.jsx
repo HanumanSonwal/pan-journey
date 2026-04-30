@@ -31,10 +31,11 @@ export default function Hero() {
       >
         <div className="  bg-white rounded-2xl shadow-2xl w-full  p-5 md:p-8">
           <Tabs
-            tabs={enabledTabs}
+            tabs={enabledTabs}  
             activeTab={activeTab}
             setActiveTab={setActiveTab}
-          />
+          />a
+           
 
           <h2 className="text-center text-[#72C0F0] text-xl md:text-3xl font-bold mb-6">
             Find What You Are Looking For
