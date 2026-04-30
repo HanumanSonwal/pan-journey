@@ -1,129 +1,115 @@
 "use client";
 
-import { Form, message } from "antd";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { message } from "antd";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 import AppButton from "@/components/ui/AppButton";
-import FloatingAntInput from "@/components/ui/FloatingInput";
+import AppInput from "@/components/ui/AppInput";
 import OtpInput from "@/modules/auth/components/OtpInput";
 
 import { useSendOtp, useVerifyOtp } from "@/modules/auth/hooks/useLogin";
 
+const schema = z.object({
+  mobile: z.string().length(10, "Enter valid 10 digit mobile"),
+  otp: z.string().optional(),
+});
+
 export default function MobileOtpLogin({ onSuccess }) {
   const [step, setStep] = useState("mobile");
   const [timer, setTimer] = useState(0);
-  const [form] = Form.useForm();
 
   const sendOtpMutation = useSendOtp();
   const verifyOtpMutation = useVerifyOtp();
 
-  // ✅ Only numbers allow + live validation trigger
-  const handleMobileChange = (e) => {
-    let value = e.target.value.replace(/\D/g, "").slice(0, 10);
-    form.setFieldsValue({ mobile: value });
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      mobile: "",
+      otp: "",
+    },
+  });
 
-    // ✅ real-time validation hatao jab correct ho
-    form.validateFields(["mobile"]).catch(() => {});
-  };
+  const mobile = watch("mobile");
+  const otp = watch("otp");
 
-  const handleSendOtp = async (values) => {
+  const onSubmit = async (data) => {
+    console.log("DATA:", data);
+    console.log("MOBILE:", data.mobile);
+    console.log("TYPE:", typeof data.mobile);
     try {
-      await sendOtpMutation.mutateAsync({
-        mobile: `91${values.mobile}`,
-      });
+      if (step === "mobile") {
+        await sendOtpMutation.mutateAsync({
+          mobile: data.mobile,
+        });
 
-      message.success("OTP sent successfully");
-      setStep("otp");
-      setTimer(30);
-    } catch {
-      message.error("Failed to send OTP");
+        message.success("OTP sent");
+        setStep("otp");
+        setTimer(30);
+      } else {
+        await verifyOtpMutation.mutateAsync({
+          mobile: data.mobile,
+          otp: data.otp,
+        });
+
+        message.success("Login success");
+        onSuccess?.();
+      }
+    } catch (err) {
+      console.error(err);
+      message.error("Something went wrong");
     }
   };
 
-  const handleVerifyOtp = async () => {
-    try {
-      const values = await form.validateFields(["otp"]);
-
-      const mobile = form.getFieldValue("mobile");
-
-      await verifyOtpMutation.mutateAsync({
-        mobile: `91${mobile}`,
-        otp: values.otp,
-      });
-
-      message.success("Login successful");
-      onSuccess?.();
-    } catch {
-      message.error("Enter valid OTP");
-    }
-  };
-
-  // ⏱ Timer
   useEffect(() => {
-    if (timer <= 0) return;
-    const interval = setInterval(() => {
-      setTimer((p) => p - 1);
-    }, 1000);
-    return () => clearInterval(interval);
+    if (!timer) return;
+    const t = setInterval(() => setTimer((p) => p - 1), 1000);
+    return () => clearInterval(t);
   }, [timer]);
 
   return (
-    <Form
-      form={form}
-      layout="vertical"
-      onFinish={handleSendOtp}
-      validateTrigger="onBlur" // ✅ only blur pe validation trigger
-    >
-      {/* MOBILE */}
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {step === "mobile" && (
-        <Form.Item
-          name="mobile"
-          validateTrigger={["onBlur", "onSubmit"]} // ✅ focus ke baad hi error
-          rules={[
-            { required: true, message: "Mobile number required" },
-            {
-              len: 10,
-              message: "Enter valid 10 digit mobile number",
-            },
-          ]}
-        >
-          <FloatingAntInput
-            label="Enter Mobile Number"
-            autoFocus
-            maxLength={10}
-            onChange={handleMobileChange}
-          />
-        </Form.Item>
+        <AppInput
+          label="Enter Mobile Number"
+          value={mobile}
+          {...register("mobile")}
+          onChange={(e) => {
+            const val = e.target.value.replace(/\D/g, "").slice(0, 10);
+            setValue("mobile", val, { shouldValidate: true });
+          }}
+          error={errors.mobile?.message}
+        />
       )}
 
-      {/* OTP */}
       {step === "otp" && (
         <>
-          <Form.Item
-            name="otp"
-            validateTrigger={["onBlur", "onSubmit"]}
-            rules={[
-              { required: true, message: "OTP required" },
-              { len: 6, message: "Enter 6 digit OTP" },
-            ]}
-          >
-            <OtpInput
-              onChange={(val) => {
-                form.setFieldValue("otp", val);
+          <OtpInput
+            value={otp}
+            onChange={(val) => setValue("otp", val, { shouldValidate: true })}
+          />
 
-                // ✅ live error remove
-                form.validateFields(["otp"]).catch(() => {});
-              }}
-            />
-          </Form.Item>
+          {errors.otp && (
+            <p className="text-red-500 text-sm text-center">
+              {errors.otp.message}
+            </p>
+          )}
 
-          <div className="text-center mb-4">
+          <div className="text-center">
             {timer > 0 ? (
               <span>Resend in {timer}s</span>
             ) : (
               <span
                 className="text-blue-500 cursor-pointer"
-                onClick={() => form.submit()}
+                onClick={handleSubmit(onSubmit)}
               >
                 Resend OTP
               </span>
@@ -132,22 +118,9 @@ export default function MobileOtpLogin({ onSuccess }) {
         </>
       )}
 
-      {/* BUTTON */}
-      {step === "mobile" ? (
-        <AppButton
-          htmlType="submit"
-          loading={sendOtpMutation.isPending}
-        >
-          Continue
-        </AppButton>
-      ) : (
-        <AppButton
-          onClick={handleVerifyOtp}
-          loading={verifyOtpMutation.isPending}
-        >
-          Verify OTP
-        </AppButton>
-      )}
-    </Form>
+      <AppButton htmlType="submit" loading={sendOtpMutation.isPending}>
+        {step === "mobile" ? "Continue" : "Verify OTP"}
+      </AppButton>
+    </form>
   );
 }

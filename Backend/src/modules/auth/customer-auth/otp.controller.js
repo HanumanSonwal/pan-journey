@@ -1,15 +1,17 @@
+import { normalizeMobile } from "../../../utils/normalizeMobile.js";
 import User from "../../user/user.model.js";
 import { sendOTPService, verifyOTPService } from "./otp.service.js";
 
-// 🔹 SEND OTP
 export const sendOTP = async (req, res) => {
   try {
-    const { mobile } = req.body;
+    console.log("RAW BODY:", req.body);
 
-    if (!mobile) {
+    let mobile = normalizeMobile(req.body.mobile);
+
+    if (!mobile || mobile.length !== 10) {
       return res.status(400).json({
         success: false,
-        message: "Mobile required",
+        message: "Invalid mobile number",
       });
     }
 
@@ -20,41 +22,36 @@ export const sendOTP = async (req, res) => {
       message: "OTP sent successfully",
     });
   } catch (err) {
+    console.error("SEND OTP ERROR:", err);
     return res.status(500).json({
       success: false,
       message: err.message,
     });
   }
 };
-
-// 🔹 VERIFY OTP (🔥 MAIN LOGIC)
 export const verifyOTP = async (req, res) => {
   try {
-    const { mobile, otp } = req.body;
+    console.log("RAW BODY:", req.body); // 🔍 debug
 
-    if (!mobile || !otp) {
+    let mobile = normalizeMobile(req.body.mobile);
+    let otp = String(req.body.otp || "");
+
+    if (!mobile || mobile.length !== 10 || !otp) {
       return res.status(400).json({
         success: false,
-        message: "Mobile & OTP required",
+        message: "Invalid mobile or OTP",
       });
     }
 
-    // 🔥 OTP verify
     await verifyOTPService(mobile, otp);
 
-    // 🔥 1. Find by mobile
     let user = await User.findOne({ mobile });
 
-    // 🔥 2. If not found → check if Google user exists (by email not possible here)
-    // 👉 future में email merge flow करेंगे
-
     if (user) {
-      // 🔥 update existing user
       user.isMobileVerified = true;
       user.provider = user.provider || "otp";
       await user.save();
     } else {
-      // 🔥 create new user
       user = await User.create({
         mobile,
         provider: "otp",

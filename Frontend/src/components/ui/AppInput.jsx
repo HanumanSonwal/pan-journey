@@ -1,40 +1,64 @@
 "use client";
 
 import { Input } from "antd";
-import { useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 
-export default function AppInput({
-  value,
-  onChange,
-  placeholder,
-  label,
-  type = "text",
-}) {
-  const [focused, setFocused] = useState(false);
+const AppInput = forwardRef(
+  ({ label, error, value = "", onChange, type = "text", ...rest }, ref) => {
+    const [focused, setFocused] = useState(false);
+    const [hasValue, setHasValue] = useState(!!value);
 
-  const isActive = focused || value;
+    useEffect(() => {
+      setHasValue(!!value);
+    }, [value]);
 
-  return (
-    <div className="relative w-full">
-      {/* Floating Label */}
-      <label
-        className={`absolute left-3 px-1 text-[12px] font-roboto transition-all duration-200
-        ${isActive ? "-top-2 bg-white text-[#4A9BB5]" : "top-1/2 -translate-y-1/2 text-gray-400"}
-        `}
-      >
-        {label}
-      </label>
+    const isActive = focused || hasValue;
 
-      {/* Input */}
-      <Input
-        value={value}
-        onChange={onChange}
-        placeholder={!isActive ? placeholder : ""}
-        type={type}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
-        className="!h-[56px] !rounded-xl !px-4 !text-[16px] font-medium font-roboto"
-      />
-    </div>
-  );
-}
+    return (
+      <div className="w-full">
+        <div className="relative">
+          {/* INPUT */}
+          <Input
+            ref={ref}
+            value={value}
+            onChange={(e) => {
+              setHasValue(!!e.target.value);
+              onChange?.(e);
+            }}
+            type={type}
+            onFocus={() => setFocused(true)}
+            onBlur={(e) => {
+              setFocused(false);
+              setHasValue(!!e.target.value);
+            }}
+            className={`!h-[56px] !rounded-xl !px-4 !pt-5 !pb-2 !text-[16px]
+              ${error ? "!border-red-500" : ""}`}
+            {...rest}
+          />
+
+          {/* LABEL */}
+          <label
+            className={`absolute left-3 transition-all duration-200 pointer-events-none z-10
+              ${
+                isActive
+                  ? "-top-2 text-[11px] text-[#4A9BB5]"
+                  : "top-1/2 -translate-y-1/2 text-sm text-gray-400"
+              }`}
+            style={{
+              background: "#fff", // ✅ clean cut
+              padding: "0 4px", // ✅ border hide
+            }}
+          >
+            {label}
+          </label>
+        </div>
+
+        {/* ERROR */}
+        {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+      </div>
+    );
+  },
+);
+
+AppInput.displayName = "AppInput";
+export default AppInput;
