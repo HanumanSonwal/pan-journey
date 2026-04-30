@@ -1,11 +1,21 @@
-import { asyncHandler } from "../../middleware/asyncHandler.js";
-import { sendSuccess } from "../../utils/response/ApiResponse.js";
-import { searchHotelsByCity } from "./hotel.service.js";
+// import { searchHotelsService } from "./hotel.service.js";
 
-export const searchHotels = asyncHandler(async (req, res) => {
-  const { city } = req.query;
+// export const searchHotels = async (req, res) => {
+//   try {
+//     const params = {
+//       city: req.query.city,
+//       checkIn: req.query.checkIn,
+//       checkOut: req.query.checkOut,
+//       adults: Number(req.query.adults),
+//       children: Number(req.query.children),
+//       rooms: Number(req.query.rooms)
+//     };
 
-  const hotels = await searchHotelsByCity(city);
+//     const data = await searchHotelsService(params);
 
-  return sendSuccess(res, "Hotels fetched", hotels);
-});
+//     res.json({ success: true, data });
+
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// };

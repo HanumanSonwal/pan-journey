@@ -1,33 +1,29 @@
-import Hotel from "./hotel.model.js";
-import { fetchHotelsByCity } from "../../suppliers/supplier.client.js";
-import { mapSupplierHotels } from "../../suppliers/supplier.mapper.js";
-import { normalizeCity } from "../../utils/normalize.js";
+// import HotelSearchCache from "./hotelSearchCache.model.js";
+// import { searchHotelsFromSupplier } from "./hotel.supplier.service.js";
+// import { createSearchKey } from "../../utils/createSearchKey.js";
 
-export const searchHotelsByCity = async (city) => {
-  const normalizedCity = normalizeCity(city);
+// export const searchHotelsService = async (params) => {
+//   const searchKey = createSearchKey(params);
 
-  console.log("🔎 Searching hotels for:", normalizedCity);
+//   // 1️⃣ CHECK CACHE FIRST
+//   const cached = await HotelSearchCache.findOne({ searchKey });
 
-  // 1️⃣ Check cache (DB)
-  const cachedHotels = await Hotel.find({ city: normalizedCity });
+//   if (cached) {
+//     console.log("⚡ CACHE HIT");
+//     return cached.supplierResponse;
+//   }
 
-  if (cachedHotels.length > 0) {
-    console.log("⚡ Returning hotels from DB cache");
-    return cachedHotels;
-  }
+//   console.log("🐌 CACHE MISS → calling supplier");
 
-  console.log("🌐 No cache found → calling supplier");
+//   // 2️⃣ CALL SUPPLIER
+//   const supplierData = await searchHotelsFromSupplier(params);
 
-  // 2️⃣ Fetch from supplier
-  const supplierData = await fetchHotelsByCity(normalizedCity);
+//   // 3️⃣ SAVE TO CACHE
+//   await HotelSearchCache.create({
+//     searchKey,
+//     ...params,
+//     supplierResponse: supplierData
+//   });
 
-  // 3️⃣ Map supplier response → our DB format
-  const mappedHotels = mapSupplierHotels(supplierData, normalizedCity);
-
-  // 4️⃣ Save in DB
-  console.log("💾 Saving hotels into DB...");
-  await Hotel.insertMany(mappedHotels);
-
-  // 5️⃣ Return hotels
-  return mappedHotels;
-};
+//   return supplierData;
+// };
