@@ -35,46 +35,63 @@ export const sendEmailOtpService = async (email) => {
   return true;
 };
 
-export const verifyEmailOtpService = async ({ email, otp }) => {
-  if (!email || !otp) throw new Error("Email & OTP required");
 
+
+// 🔹 Verify Email OTP Service
+export const verifyEmailOtpService = async (email, otp) => {
   const record = await EmailOTP.findOne({ email, otp });
 
-  if (!record) throw new Error("Invalid OTP");
-
-  if (record.expiresAt < Date.now()) {
-    await EmailOTP.deleteOne({ email });
-    throw new Error("OTP expired");
+  if (!record) {
+    throw new Error("Invalid or expired OTP");
   }
 
+  // delete OTP after verification
   await EmailOTP.deleteOne({ email });
 
+  // 🔥 Check if user exists
   let user = await User.findOne({ email });
 
   if (user) {
     user.isEmailVerified = true;
-    user.provider = user.provider || "email";
+    user.provider = "email";
     await user.save();
-  } else {
-    user = await User.create({
-      email,
-      provider: "email",
-      type: "customer",
-      isEmailVerified: true,
-      isActive: true,
-    });
+
+    return {
+      profileCompleted: !!user.name,
+      email: user.email,
+    };
   }
 
-  const accessToken = generateAccessToken(user);
-  const refreshToken = generateRefreshToken(user);
+  // 🔥 Create new user (without name)
+  user = await User.create({
+    email,
+    provider: "email",
+    type: "customer",
+    isEmailVerified: true,
+    isActive: true,
+  });
 
   return {
-    _id: user._id,
+    profileCompleted: false,
     email: user.email,
-    mobile: user.mobile || null,
-    name: user.name || null,
-    type: user.type,
-    accessToken,
-    refreshToken,
+  };
+};
+
+
+
+// 🔹 Complete Profile Service
+export const completeProfileService = async (email, name) => {
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  user.name = name;
+  await user.save();
+
+  return {
+    name: user.name,
+    email: user.email,
   };
 };
