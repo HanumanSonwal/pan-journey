@@ -1,8 +1,12 @@
-import User from "../../user/user.model.js";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../../../../utils/authentication/token.util.js";
+import User from "../../../user/user.model.js";
 
 export const googleLogin = async (req, res) => {
   try {
-    const { email, name } = req.body;
+    const { email, name, mobile } = req.body;
 
     // 🔹 validation
     if (!email) {
@@ -12,16 +16,15 @@ export const googleLogin = async (req, res) => {
       });
     }
 
-    // 🔥 1. पहले email से find
     let user = await User.findOne({ email });
 
-    // 🔥 2. अगर email नहीं मिला → mobile से check (merge case)
-    if (!user && req.body.mobile) {
-      user = await User.findOne({ mobile: req.body.mobile });
+    // 🔹 merge by mobile if exists
+    if (!user && mobile) {
+      user = await User.findOne({ mobile });
     }
 
     if (user) {
-      // 🔥 update existing user (merge)
+      // 🔥 update existing user
       user.email = email || user.email;
       user.name = name || user.name;
       user.provider = "google";
@@ -29,7 +32,7 @@ export const googleLogin = async (req, res) => {
 
       await user.save();
     } else {
-      // 🔥 new user
+      // 🔥 create new user
       user = await User.create({
         email,
         name: name || "",
@@ -48,6 +51,10 @@ export const googleLogin = async (req, res) => {
       });
     }
 
+    // 🔥 GENERATE TOKENS
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+
     return res.json({
       success: true,
       message: "Google login successful",
@@ -57,6 +64,8 @@ export const googleLogin = async (req, res) => {
         name: user.name,
         mobile: user.mobile || null,
         type: user.type,
+        accessToken, 
+        refreshToken, 
       },
     });
   } catch (err) {

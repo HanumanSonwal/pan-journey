@@ -1,5 +1,7 @@
 "use client";
 
+import styles from "./styles/Hero.module.css";
+
 import { HOME_TABS } from "@/modules/shared/config/homeTabs";
 import { useState } from "react";
 import SearchButton from "./SearchButton";
@@ -22,29 +24,28 @@ export default function Hero() {
   const ActiveForm = FORM_MAP[activeTab];
 
   return (
-    <div className="relative w-full min-h-[90vh]">
-      {/* Background */}
-      <div className="absolute top-0 w-full h-[50%] bg-[url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e')] bg-cover bg-center" />
-      <div className="absolute bottom-0 w-full h-[50%] bg-[#EDF7FF]" />
-
-      <div className="relative flex items-center justify-center min-h-[80vh] px-4">
-        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl p-8 pb-24">
+    <section className="relative w-full pb-60 bg-[#EDF7FF]">
+      <div className={styles.heroBg} />
+      <div
+        className={`absolute left-1/2 -translate-x-1/2 w-[80.83%] h-[46%] top-[53%]   px-4 ${styles.cardWrapper}`}
+      >
+        <div className="  bg-white rounded-[10px] shadow-2xl w-full  !pb-14  md:p-8">
           <Tabs
-            tabs={enabledTabs}
+            tabs={enabledTabs}  
             activeTab={activeTab}
             setActiveTab={setActiveTab}
-          />
+          />a
+           
 
-          <h2 className="text-center text-[#65a9c8] text-3xl font-stretch-110% mb-6 ">
+          <h2 className="text-center text-[#72C0F0] text-xl md:text-3xl font-bold mb-6 ">
             Find What You Are Looking For
           </h2>
 
-          {/* Dynamic Form */}
           {ActiveForm && <ActiveForm />}
 
           <SearchButton />
         </div>
       </div>
-    </div>
+    </section>
   );
 }

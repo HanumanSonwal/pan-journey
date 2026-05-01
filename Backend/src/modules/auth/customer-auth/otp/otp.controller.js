@@ -1,15 +1,20 @@
-import User from "../../user/user.model.js";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../../../../utils/authentication/token.util.js";
+import { normalizeMobile } from "../../../../utils/normalizeMobile.js";
+import User from "../../../user/user.model.js";
+
 import { sendOTPService, verifyOTPService } from "./otp.service.js";
 
-// 🔹 SEND OTP
 export const sendOTP = async (req, res) => {
   try {
-    const { mobile } = req.body;
+    let mobile = normalizeMobile(req.body.mobile);
 
-    if (!mobile) {
+    if (!mobile || mobile.length !== 10) {
       return res.status(400).json({
         success: false,
-        message: "Mobile required",
+        message: "Invalid mobile number",
       });
     }
 
@@ -20,6 +25,8 @@ export const sendOTP = async (req, res) => {
       message: "OTP sent successfully",
     });
   } catch (err) {
+    console.error("SEND OTP ERROR:", err);
+
     return res.status(500).json({
       success: false,
       message: err.message,
@@ -27,34 +34,26 @@ export const sendOTP = async (req, res) => {
   }
 };
 
-// 🔹 VERIFY OTP (🔥 MAIN LOGIC)
 export const verifyOTP = async (req, res) => {
   try {
-    const { mobile, otp } = req.body;
+    let mobile = normalizeMobile(req.body.mobile);
+    let otp = String(req.body.otp || "");
 
-    if (!mobile || !otp) {
+    if (!mobile || mobile.length !== 10 || !otp) {
       return res.status(400).json({
         success: false,
-        message: "Mobile & OTP required",
+        message: "Invalid mobile or OTP",
       });
     }
-
-    // 🔥 OTP verify
     await verifyOTPService(mobile, otp);
 
-    // 🔥 1. Find by mobile
     let user = await User.findOne({ mobile });
 
-    // 🔥 2. If not found → check if Google user exists (by email not possible here)
-    // 👉 future में email merge flow करेंगे
-
     if (user) {
-      // 🔥 update existing user
       user.isMobileVerified = true;
       user.provider = user.provider || "otp";
       await user.save();
     } else {
-      // 🔥 create new user
       user = await User.create({
         mobile,
         provider: "otp",
@@ -63,6 +62,16 @@ export const verifyOTP = async (req, res) => {
         isActive: true,
       });
     }
+
+    if (!user.isActive) {
+      return res.status(403).json({
+        success: false,
+        message: "Account is deactivated",
+      });
+    }
+
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
 
     return res.json({
       success: true,
@@ -73,6 +82,8 @@ export const verifyOTP = async (req, res) => {
         email: user.email || null,
         name: user.name || null,
         type: user.type,
+        accessToken, // ✅ ADD
+        refreshToken, // ✅ ADD
       },
     });
   } catch (err) {

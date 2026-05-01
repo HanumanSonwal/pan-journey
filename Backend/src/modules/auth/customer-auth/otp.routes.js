@@ -1,15 +1,22 @@
 import express from "express";
-import { sendOTP, verifyOTP } from "./otp.controller.js";
-import { googleLogin } from "./google.controller.js";
-import { sendEmailOtp,verifyEmailOtp } from "./loginEmailotp/sendotp.js";
+import { sendOTP, verifyOTP } from "./otp/otp.controller.js";
+import {
+  sendEmailOtp,
+  verifyEmailOtp,
+} from "./email/email.controller.js";
+import { googleLogin } from "./google/google.controller.js";
+import { refreshAccessToken } from "./refresh.controller.js";
 
 const router = express.Router();
 
 router.post("/otp/send", sendOTP);
 router.post("/otp/verify", verifyOTP);
 router.post("/google", googleLogin);
-router.post("/send-otp-gmail", sendEmailOtp);
-router.post("/verify-otp-gmail", verifyEmailOtp);
+router.post("/refresh", refreshAccessToken);
 
+// email
+
+router.post("/email/send", sendEmailOtp);
+router.post("/email/verify", verifyEmailOtp);
 
 export default router;
