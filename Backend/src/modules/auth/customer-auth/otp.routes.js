@@ -3,9 +3,12 @@ import { sendOTP, verifyOTP } from "./otp/otp.controller.js";
 import {
   sendEmailOtp,
   verifyEmailOtp,
+
 } from "./email/email.controller.js";
 import { googleLogin } from "./google/google.controller.js";
 import { refreshAccessToken } from "./refresh.controller.js";
+import { completeProfile } from "../customer-auth/email/email.controller.js";
+
 
 const router = express.Router();
 
@@ -18,5 +21,6 @@ router.post("/refresh", refreshAccessToken);
 
 router.post("/email/send", sendEmailOtp);
 router.post("/email/verify", verifyEmailOtp);
+router.put("/email/profile", completeProfile);
 
 export default router;

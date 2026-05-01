@@ -7,6 +7,10 @@ const emailOtpSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
+    mobile: {
+      type: String,
+      index: true,
+    },
     otp: {
       type: String,
       required: true,
