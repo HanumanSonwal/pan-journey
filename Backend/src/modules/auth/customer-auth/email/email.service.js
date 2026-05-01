@@ -1,6 +1,6 @@
 import EmailOTP from "./email.model.js";
 import User from "../../../user/user.model.js";
-
+import { getEmailTemplate } from "../../../../utils/emailTemplateReader.js";
 import {
   generateAccessToken,
   generateRefreshToken,
@@ -21,17 +21,13 @@ export const sendEmailOtpService = async (email) => {
     otp,
     expiresAt: new Date(Date.now() + 5 * 60 * 1000), // 5 min
   });
-
+  const htmlTemplate = getEmailTemplate(otp);
   await transporter.sendMail({
     from: `"Travel App" <${process.env.GMAIL_USER}>`,
     to: email,
     subject: "Your OTP Code",
-    html: `
-      <h2>Your OTP is: ${otp}</h2>
-      <p>Valid for 5 minutes</p>
-    `,
+    html: htmlTemplate,
   });
-
   return true;
 };
 
