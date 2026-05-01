@@ -1,7 +1,7 @@
 import {
   sendEmailOtpService,
   verifyEmailOtpService,
-  completeProfileService
+ 
 } from "./email.service.js";
 
 export const sendEmailOtp = async (req, res) => {
@@ -75,30 +75,30 @@ export const verifyEmailOtp = async (req, res) => {
 
 
 
-// 🔹 Complete Profile Controller
-export const completeProfile = async (req, res) => {
-  try {
-    const { email, name } = req.body;
+// // 🔹 Complete Profile Controller
+// export const completeProfile = async (req, res) => {
+//   try {
+//     const { email, name } = req.body;
 
-    if (!email || !name) {
-      return res.status(400).json({
-        success: false,
-        message: "Email & Name required",
-      });
-    }
+//     if (!email || !name) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Email & Name required",
+//       });
+//     }
 
-    const user = await completeProfileService(email, name);
+//     const user = await completeProfileService(email, name);
 
-    return res.json({
-      success: true,
-      message: "Profile completed",
-      data: user,
-    });
+//     return res.json({
+//       success: true,
+//       message: "Profile completed",
+//       data: user,
+//     });
 
-  } catch (err) {
-    return res.status(400).json({
-      success: false,
-      message: err.message,
-    });
-  }
-};
+//   } catch (err) {
+//     return res.status(400).json({
+//       success: false,
+//       message: err.message,
+//     });
+//   }
+// };

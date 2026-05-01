@@ -79,19 +79,19 @@ export const verifyEmailOtpService = async (email, otp) => {
 
 
 
-// 🔹 Complete Profile Service
-export const completeProfileService = async (email, name) => {
-  const user = await User.findOne({ email });
+// // 🔹 Complete Profile Service
+// export const completeProfileService = async (email, name) => {
+//   const user = await User.findOne({ email });
 
-  if (!user) {
-    throw new Error("User not found");
-  }
+//   if (!user) {
+//     throw new Error("User not found");
+//   }
 
-  user.name = name;
-  await user.save();
+//   user.name = name;
+//   await user.save();
 
-  return {
-    name: user.name,
-    email: user.email,
-  };
-};
+//   return {
+//     name: user.name,
+//     email: user.email,
+//   };
+// };
