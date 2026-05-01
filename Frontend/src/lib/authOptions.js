@@ -53,6 +53,7 @@ export const authOptions = {
       name: "OTP",
       credentials: {
         mobile: {},
+        email: {},
         otp: {},
       },
 
@@ -60,24 +61,45 @@ export const authOptions = {
         try {
           console.log("📥 LOGIN REQUEST:", credentials);
 
-          if (!credentials?.mobile || !credentials?.otp) {
-            throw new Error("Missing credentials");
+          const { mobile, email, otp } = credentials;
+
+          if (!otp) {
+            throw new Error("OTP is required");
           }
 
-          const res = await fetch(`${API_BASE}/customer/auth/otp/verify`, {
+          let url = "";
+          let body = {};
+
+          // 🔥 MOBILE LOGIN
+          if (mobile) {
+            url = `${API_BASE}/customer/auth/otp/verify`;
+            body = {
+              mobile,
+              otp,
+            };
+          }
+
+          // 🔥 EMAIL LOGIN
+          else if (email) {
+            url = `${API_BASE}/customer/auth/email/verify`;
+            body = {
+              email,
+              otp,
+            };
+          } else {
+            throw new Error("Mobile or Email required");
+          }
+
+          const res = await fetch(url, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              mobile: credentials.mobile,
-              otp: credentials.otp,
-            }),
+            body: JSON.stringify(body),
           });
 
           let data;
           try {
             data = await res.json();
           } catch {
-            console.log("❌ RESPONSE NOT JSON");
             throw new Error("Server error (invalid response)");
           }
 
@@ -87,10 +109,18 @@ export const authOptions = {
             throw new Error(data?.message || "Login failed");
           }
 
-          if (!data?.data?.accessToken) {
+          const token =
+            data?.data?.accessToken ||
+            data?.data?.token ||
+            data?.accessToken ||
+            data?.token;
+
+          if (!token) {
+            console.log("❌ FULL BACKEND RESPONSE:", data);
             throw new Error("AccessToken missing");
           }
 
+          // ✅ ye session me jayega
           return data.data;
         } catch (err) {
           console.log("❌ AUTHORIZE ERROR:", err.message);

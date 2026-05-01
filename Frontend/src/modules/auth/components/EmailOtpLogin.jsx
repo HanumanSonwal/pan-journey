@@ -1,263 +1,156 @@
-// "use client";
-
-// import { useEffect, useState } from "react";
-// import { Form, message } from "antd";
-
-// import AppButton from "@/components/ui/AppButton";
-// import FloatingAntInput from "@/components/ui/FloatingInput";
-// import OtpInput from "@/modules/auth/components/OtpInput";
-
-// import { useSendEmailotp, useVerifyOtp } from "@/modules/auth/hooks/useLogin";
-
-// export default function EmailOtpLogin({ onSuccess }) {
-//   const [step, setStep] = useState("email");
-//   const [timer, setTimer] = useState(0);
-//   const [form] = Form.useForm();
-
-//   const sendOtpMutation = useSendEmailotp();
-//   const verifyOtpMutation = useVerifyOtp();
-
-//   // 📧 Send OTP
-//   const handleSendOtp = async (values) => {
-//     try {
-//       await sendOtpMutation.mutateAsync({
-//         email: values.email,
-//         type: "email", // backend differentiate
-//       });
-
-//       message.success("OTP sent to email");
-//       setStep("otp");
-//       setTimer(30);
-//     } catch {
-//       message.error("Failed to send OTP");
-//     }
-//   };
-
-//   // 🔐 Verify OTP
-//   const handleVerifyOtp = async () => {
-//     const otp = form.getFieldValue("otp");
-//     const email = form.getFieldValue("email");
-
-//     if (!otp || otp.length !== 6) {
-//       return message.error("Enter valid OTP");
-//     }
-
-//     try {
-//       await verifyOtpMutation.mutateAsync({
-//         email,
-//         otp,
-//         type: "email",
-//       });
-
-//       message.success("Login successful");
-//       onSuccess?.();
-//     } catch {
-//       message.error("Invalid OTP");
-//     }
-//   };
-
-//   // ⏳ Timer
-//   useEffect(() => {
-//     if (timer <= 0) return;
-
-//     const interval = setInterval(() => {
-//       setTimer((p) => p - 1);
-//     }, 1000);
-
-//     return () => clearInterval(interval);
-//   }, [timer]);
-
-//   return (
-//     <Form form={form} layout="vertical" onFinish={handleSendOtp}>
-//       {/* EMAIL INPUT */}
-//       {step === "email" && (
-//         <Form.Item
-//           name="email"
-//           rules={[
-//             { required: true, message: "Email is required" },
-//             { type: "email", message: "Enter valid email" },
-//           ]}
-//         >
-//           <FloatingAntInput
-//             label="Enter Email Address"
-//             autoFocus
-//           />
-//         </Form.Item>
-//       )}
-
-//       {/* OTP */}
-//       {step === "otp" && (
-//         <>
-//           <Form.Item name="otp">
-//             <OtpInput
-//               onChange={(val) => form.setFieldValue("otp", val)}
-//             />
-//           </Form.Item>
-
-//           <div className="text-center mb-4">
-//             {timer > 0 ? (
-//               <span>Resend in {timer}s</span>
-//             ) : (
-//               <span
-//                 className="text-blue-500 cursor-pointer"
-//                 onClick={() => form.submit()}
-//               >
-//                 Resend OTP
-//               </span>
-//             )}
-//           </div>
-//         </>
-//       )}
-
-//       {/* BUTTON */}
-//       {step === "email" ? (
-//         <AppButton
-//           htmlType="submit"
-//           onClick={() => form.submit()}
-//           loading={sendOtpMutation.isPending}
-//         >
-//           Continue
-//         </AppButton>
-//       ) : (
-//         <AppButton
-//           onClick={handleVerifyOtp}
-//           loading={verifyOtpMutation.isPending}
-//         >
-//           Verify OTP
-//         </AppButton>
-//       )}
-//     </Form>
-//   );
-// }
-
-
 "use client";
 
-import { useEffect, useState } from "react";
-import { Form, message } from "antd";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { message } from "antd";
 import { signIn } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 import AppButton from "@/components/ui/AppButton";
-import FloatingAntInput from "@/components/ui/FloatingInput";
+import AppInput from "@/components/ui/AppInput";
 import OtpInput from "@/modules/auth/components/OtpInput";
 
-import {
-  useSendEmailotp,
-  useVerifyOtp,
-} from "@/modules/auth/hooks/useLogin";
+import { useSendEmailotp } from "@/modules/auth/hooks/useLogin";
+
+const schema = z.object({
+  email: z.string().email("Enter valid email"),
+  otp: z.string().optional(),
+});
 
 export default function EmailOtpLogin({ onSuccess }) {
   const [step, setStep] = useState("email");
   const [timer, setTimer] = useState(0);
-  const [form] = Form.useForm();
+  const [verifying, setVerifying] = useState(false);
 
   const sendOtpMutation = useSendEmailotp();
-  const verifyOtpMutation = useVerifyOtp();
 
-  // 📧 SEND OTP (ONLY EMAIL)
-  const handleSendOtp = async (values) => {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      email: "",
+      otp: "",
+    },
+  });
+
+  const email = watch("email");
+  const otp = watch("otp");
+
+  // 🔥 SUBMIT
+  const onSubmit = async (data) => {
     try {
-      const payload = {
-        email: values.email, // ✅ only string
-      };
+      // STEP 1: SEND OTP
+      if (step === "email") {
+        await sendOtpMutation.mutateAsync({
+          email: data.email,
+        });
 
-      console.log("SEND OTP:", payload);
+        message.success("OTP sent to email");
+        setStep("otp");
+        setTimer(30);
+        return;
+      }
 
-      await sendOtpMutation.mutateAsync(payload);
+      // STEP 2: VERIFY OTP
+      if (!data.otp || data.otp.length !== 6) {
+        message.error("Enter valid 6 digit OTP");
+        return;
+      }
 
-      message.success("OTP sent to email");
-      setStep("otp");
-      setTimer(30);
-    } catch (err) {
-      message.error(err?.message || "Failed to send OTP");
-    }
-  };
+      setVerifying(true);
 
-  // 🔐 VERIFY OTP
-  const handleVerifyOtp = async () => {
-    let email = form.getFieldValue("email");
-    const otp = form.getFieldValue("otp");
-
-    // safety
-    if (typeof email === "object") {
-      email = email?.email;
-    }
-
-    if (!otp || otp.length !== 6) {
-      return message.error("Enter valid OTP");
-    }
-
-    try {
-      const payload = {
-        email,
-        otp,
-      };
-
-      console.log("VERIFY OTP:", payload);
-
-      // backend verify
-      await verifyOtpMutation.mutateAsync(payload);
-
-      // NextAuth login
+      // ✅ NextAuth login (session create)
       const res = await signIn("credentials", {
-        email,
-        otp,
+        email: data.email,
+        otp: data.otp,
         redirect: false,
       });
 
-      if (res?.error) {
-        return message.error(res.error);
+      setVerifying(false);
+
+      if (!res) {
+        message.error("No response from server");
+        return;
       }
 
-      message.success("Login successful");
-      onSuccess?.();
+      if (res.error) {
+        message.error(res.error);
+        return;
+      }
+
+      if (res.ok) {
+        message.success("Login success");
+        onSuccess?.();
+      }
     } catch (err) {
-      message.error(err?.message || "Invalid OTP");
+      console.error("❌ EMAIL LOGIN ERROR:", err);
+      message.error(err?.message || "Something went wrong");
+      setVerifying(false);
     }
   };
 
   // ⏳ TIMER
   useEffect(() => {
-    if (timer <= 0) return;
-
-    const interval = setInterval(() => {
-      setTimer((p) => p - 1);
-    }, 1000);
-
-    return () => clearInterval(interval);
+    if (!timer) return;
+    const t = setInterval(() => setTimer((p) => p - 1), 1000);
+    return () => clearInterval(t);
   }, [timer]);
 
+  // 🔁 RESEND
+  const handleResend = async () => {
+    try {
+      await sendOtpMutation.mutateAsync({ email });
+      message.success("OTP resent");
+      setTimer(30);
+    } catch {
+      message.error("Failed to resend OTP");
+    }
+  };
+
+  const isLoading = sendOtpMutation.isPending || verifying;
+
   return (
-    <Form form={form} layout="vertical" onFinish={handleSendOtp}>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {/* EMAIL */}
       {step === "email" && (
-        <Form.Item
-          name="email"
-          rules={[
-            { required: true, message: "Email is required" },
-            { type: "email", message: "Enter valid email" },
-          ]}
-        >
-          <FloatingAntInput label="Enter Email Address" autoFocus />
-        </Form.Item>
+        <AppInput
+          label="Enter Email Address"
+          value={email}
+          {...register("email")}
+          onChange={(e) =>
+            setValue("email", e.target.value, { shouldValidate: true })
+          }
+          error={errors.email?.message}
+        />
       )}
 
       {/* OTP */}
       {step === "otp" && (
         <>
-          <Form.Item name="otp">
-            <OtpInput
-              onChange={(val) => form.setFieldValue("otp", val)}
-            />
-          </Form.Item>
+          <OtpInput
+            value={otp}
+            onChange={(val) => setValue("otp", val, { shouldValidate: true })}
+          />
 
-          <div className="text-center mb-4">
+          {errors.otp && (
+            <p className="text-red-500 text-sm text-center">
+              {errors.otp.message}
+            </p>
+          )}
+
+          <div className="text-center">
             {timer > 0 ? (
-              <span>Resend in {timer}s</span>
+              <span className="text-gray-500">Resend in {timer}s</span>
             ) : (
               <span
                 className="text-blue-500 cursor-pointer"
-                onClick={() => form.submit()}
+                onClick={handleResend}
               >
                 Resend OTP
               </span>
@@ -267,21 +160,9 @@ export default function EmailOtpLogin({ onSuccess }) {
       )}
 
       {/* BUTTON */}
-      {step === "email" ? (
-        <AppButton
-          htmlType="submit"
-          loading={sendOtpMutation.isPending}
-        >
-          Continue
-        </AppButton>
-      ) : (
-        <AppButton
-          onClick={handleVerifyOtp}
-          loading={verifyOtpMutation.isPending}
-        >
-          Verify OTP
-        </AppButton>
-      )}
-    </Form>
+      <AppButton htmlType="submit" loading={isLoading}>
+        {step === "email" ? "Continue" : "Verify OTP"}
+      </AppButton>
+    </form>
   );
 }

@@ -7,7 +7,8 @@ export const sendOtpApi = (mobile) =>
 export const verifyOtpApi = (data) =>
   api.post("/customer/auth/otp/verify", data);
 
-export const sendEmailOtpApi = (email) => api.post("/customer/auth/email/send", { email });
+export const sendEmailOtpApi = (data) =>
+  api.post("/customer/auth/email/send", data);
 
 // 🔹 USER
 export const getMeApi = () => api.get("/customer/auth/me");
