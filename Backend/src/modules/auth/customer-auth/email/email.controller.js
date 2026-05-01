@@ -1,104 +1,47 @@
+import { asyncHandler } from "../../../../middleware/asyncHandler.js";
+import { sendSuccess } from "../../../../utils/response/ApiResponse.js";
+import user from "../../../user/user.model.js";
 import {
   sendEmailOtpService,
   verifyEmailOtpService,
-  completeProfileService
 } from "./email.service.js";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../../../../utils/authentication/token.util.js";
 
-export const sendEmailOtp = async (req, res) => {
-  try {
-    const { email } = req.body;
+export const sendEmailOtp = asyncHandler(async (req, res) => {
+  const { email } = req.body;
 
-    await sendEmailOtpService(email);
-
-    return res.json({
-      success: true,
-      message: "OTP sent successfully",
-    });
-  } catch (err) {
-    console.log("❌ SEND EMAIL OTP ERROR:", err.message);
-
-    return res.status(400).json({
-      success: false,
-      message: err.message,
-    });
+  if (!email) {
+    return sendError(res, "Email is required", 400);
   }
- };
-// export const verifyEmailOtp = async (req, res) => {
-//   try {
-//     const data = await verifyEmailOtpService(req.body);
 
-//     return res.json({
-//       success: true,
-//       message: "Login successful",
-//       data,
-//     });
-//   } catch (err) {
-//     console.log("❌ VERIFY EMAIL OTP ERROR:", err.message);
+  await sendEmailOtpService(email);
 
-//     return res.status(400).json({
-//       success: false,
-//       message: err.message,
-//     });
-//   }
-// };
+  return sendSuccess(res, "OTP sent successfully");
+});
 
 
 
+export const verifyEmailOtp = asyncHandler(async (req, res) => {
+  const { email, otp } = req.body;
 
-// 🔹 Verify Email OTP Controller
-export const verifyEmailOtp = async (req, res) => {
-  try {
-    const { email, otp } = req.body;
+  if (!email || !otp) {
+    return sendError(res, "Email & OTP required", 400);
+  }
 
-    if (!email || !otp) {
-      return res.status(400).json({
-        success: false,
-        message: "Email & OTP required",
-      });
+  const result = await verifyEmailOtpService(email, otp,);
+  const accessToken = generateAccessToken(user);
+  const refreshToken = generateRefreshToken(user);
+
+ return sendSuccess(
+    res,
+    "Email verified successfully",
+    {
+      ...result,
+      accessToken,
+      refreshToken,
     }
-
-    const result = await verifyEmailOtpService(email, otp);
-
-    return res.json({
-      success: true,
-      message: "Email verified successfully",
-      data: result,
-    });
-
-  } catch (err) {
-    return res.status(400).json({
-      success: false,
-      message: err.message,
-    });
-  }
-};
-
-
-
-// 🔹 Complete Profile Controller
-export const completeProfile = async (req, res) => {
-  try {
-    const { email, name } = req.body;
-
-    if (!email || !name) {
-      return res.status(400).json({
-        success: false,
-        message: "Email & Name required",
-      });
-    }
-
-    const user = await completeProfileService(email, name);
-
-    return res.json({
-      success: true,
-      message: "Profile completed",
-      data: user,
-    });
-
-  } catch (err) {
-    return res.status(400).json({
-      success: false,
-      message: err.message,
-    });
-  }
-};
+  );
+});

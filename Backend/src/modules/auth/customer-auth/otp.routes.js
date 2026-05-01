@@ -7,7 +7,7 @@ import {
 } from "./email/email.controller.js";
 import { googleLogin } from "./google/google.controller.js";
 import { refreshAccessToken } from "./refresh.controller.js";
-import { completeProfile } from "../customer-auth/email/email.controller.js";
+import { completeProfile } from "../customer-auth/customerProfile/customerProfile.controller.js";
 
 
 const router = express.Router();
