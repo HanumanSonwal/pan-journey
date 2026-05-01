@@ -12,12 +12,11 @@ export const sendOTPService = async (mobile) => {
     expiresAt: Date.now() + 5 * 60 * 1000,
   });
 
-  console.log(`OTP for ${normalizedMobile}: ${otp}`);
+  console.log(`📲 OTP for ${normalizedMobile}: ${otp}`);
 
   return true;
 };
 
-// 🔹 Verify OTP
 export const verifyOTPService = async (mobile, otp) => {
   const normalizedMobile = normalizeMobile(mobile);
 

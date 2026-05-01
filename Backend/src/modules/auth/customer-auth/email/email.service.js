@@ -1,13 +1,8 @@
-import EmailOTP from "./email.model.js";
-import User from "../../../user/user.model.js";
-import { getEmailTemplate } from "../../../../utils/emailTemplateReader.js";
-import {
-  generateAccessToken,
-  generateRefreshToken,
-} from "../../../../utils/authentication/token.util.js";
-
 import transporter from "../../../../config/mailer.js";
+import { getEmailTemplate } from "../../../../utils/emailTemplateReader.js";
 import { generateOTP } from "../../../../utils/generateOtp.js";
+import { findOrCreateAndMergeUser } from "../auth.service.js";
+import EmailOTP from "./email.model.js";
 
 export const sendEmailOtpService = async (email) => {
   if (!email) throw new Error("Email required");
@@ -19,21 +14,21 @@ export const sendEmailOtpService = async (email) => {
   await EmailOTP.create({
     email,
     otp,
-    expiresAt: new Date(Date.now() + 5 * 60 * 1000), // 5 min
+    expiresAt: new Date(Date.now() + 5 * 60 * 1000),
   });
+
   const htmlTemplate = getEmailTemplate(otp);
+
   await transporter.sendMail({
     from: `"Travel App" <${process.env.GMAIL_USER}>`,
     to: email,
     subject: "Your OTP Code",
     html: htmlTemplate,
   });
+
   return true;
 };
 
-
-
-// 🔹 Verify Email OTP Service
 export const verifyEmailOtpService = async (email, otp) => {
   const record = await EmailOTP.findOne({ email, otp });
 
@@ -41,53 +36,15 @@ export const verifyEmailOtpService = async (email, otp) => {
     throw new Error("Invalid or expired OTP");
   }
 
-  // delete OTP after verification
   await EmailOTP.deleteOne({ email });
 
-  // 🔥 Check if user exists
-  let user = await User.findOne({ email });
-
-  if (user) {
-    user.isEmailVerified = true;
-    user.provider = "email";
-    await user.save();
-
-    return {
-      profileCompleted: !!user.name,
-      email: user.email,
-    };
-  }
-
-  // 🔥 Create new user (without name)
-  user = await User.create({
+  const user = await findOrCreateAndMergeUser({
     email,
     provider: "email",
-    type: "customer",
-    isEmailVerified: true,
-    isActive: true,
   });
 
   return {
-    profileCompleted: false,
+    profileCompleted: !!user.name,
     email: user.email,
   };
 };
-
-
-
-// // 🔹 Complete Profile Service
-// export const completeProfileService = async (email, name) => {
-//   const user = await User.findOne({ email });
-
-//   if (!user) {
-//     throw new Error("User not found");
-//   }
-
-//   user.name = name;
-//   await user.save();
-
-//   return {
-//     name: user.name,
-//     email: user.email,
-//   };
-// };

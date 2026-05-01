@@ -1,31 +1,31 @@
- 
- import {
-   completeProfileService
- } from "../customerProfile/customerProfile.service.js";
- export const completeProfile = async (req, res) => {
-   try {
-     const { email, name } = req.body;
- 
-     if (!email || !name) {
-       return res.status(400).json({
-         success: false,
-         message: "Email & Name required",
-       });
-     }
- 
-     const user = await completeProfileService(email, name);
- 
-     return res.json({
-       success: true,
-       message: "Profile completed",
-       data: user,
-     });
- 
-   } catch (err) {
-     return res.status(400).json({
-       success: false,
-       message: err.message,
-     });
-   }
- };
- 
+import { asyncHandler } from "../../../../middleware/asyncHandler.js";
+import {
+  sendSuccess,
+  sendError,
+} from "../../../../utils/response/ApiResponse.js";
+
+import { completeProfileService } from "./customerProfile.service.js";
+
+export const completeProfile = asyncHandler(async (req, res) => {
+  const userId = req.user._id; // 🔥 IMPORTANT (from auth middleware)
+
+  const { name, email, mobile } = req.body;
+
+  if (!name) {
+    return sendError(res, "Name is required", 400);
+  }
+
+  const user = await completeProfileService(userId, {
+    name,
+    email,
+    mobile,
+  });
+
+  return sendSuccess(res, "Profile updated successfully", {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    mobile: user.mobile,
+    profileCompleted: user.profileCompleted,
+  });
+});

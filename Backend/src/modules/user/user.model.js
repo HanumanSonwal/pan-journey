@@ -5,9 +5,9 @@ const userSchema = new mongoose.Schema(
     name: {
       type: String,
       trim: true,
-    required: function () {
-    return this.type !== "customer"; // 🔥 only admin/staff require
-  },
+      required: function () {
+        return this.type !== "customer";
+      },
       index: true,
     },
 
@@ -17,6 +17,7 @@ const userSchema = new mongoose.Schema(
       sparse: true,
       lowercase: true,
       trim: true,
+      index: true,
     },
 
     mobile: {
@@ -25,6 +26,7 @@ const userSchema = new mongoose.Schema(
       sparse: true,
       trim: true,
     },
+
     type: {
       type: String,
       enum: ["admin", "staff", "customer"],
@@ -36,27 +38,36 @@ const userSchema = new mongoose.Schema(
       select: false,
     },
 
-    // 🔥 ROLE (MAIN CONTROL)
     role: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Role",
-       required: function () {
-    return this.type !== "customer"; 
-  },
+      required: function () {
+        return this.type !== "customer";
+      },
     },
 
-    // 🔥 AUTH PROVIDER
-    provider: {
+    providers: {
+      type: [String], // ["otp", "email", "google"]
+      default: [],
+    },
+
+    googleId: {
       type: String,
-      enum: ["local", "google", "otp" , "email"],
-      default: "local",
+      unique: true,
+      sparse: true,
     },
 
-    providerId: {
-      type: String, // googleId / otp session id
+    avatar: {
+      type: String,
+      default: null,
     },
 
-    // 🔥 STATUS CONTROL
+    // 🔥 PROFILE FLOW
+    profileCompleted: {
+      type: Boolean,
+      default: false,
+    },
+
     isActive: {
       type: Boolean,
       default: true,
@@ -74,7 +85,7 @@ const userSchema = new mongoose.Schema(
 
     refreshToken: String,
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 export default mongoose.model("User", userSchema);

@@ -7,6 +7,7 @@ import { useState } from "react";
 
 import EmailOtpLogin from "./EmailOtpLogin";
 import MobileOtpLogin from "./MobileOtpLogin";
+import { signIn } from "next-auth/react";
 
 export default function LoginModal({ isOpen, onClose }) {
   const [activeView, setActiveView] = useState("mobile");
@@ -16,6 +17,10 @@ export default function LoginModal({ isOpen, onClose }) {
     setActiveView("mobile");
     setResetKey((prev) => prev + 1); 
     onClose();
+  };
+
+    const handleGoogleLogin = () => {
+    signIn("google", { callbackUrl: "/" });
   };
 
   return (
@@ -32,7 +37,7 @@ export default function LoginModal({ isOpen, onClose }) {
         </span>
       }
     >
-      <div className="flex h-[600px] rounded-xl overflow-hidden">
+      <div className="flex h-150 rounded-xl overflow-hidden">
         {/* Left Image */}
         <div className="w-1/2 h-full relative">
           <Image
@@ -89,7 +94,7 @@ export default function LoginModal({ isOpen, onClose }) {
               {/* Social Buttons */}
               <div className="flex justify-center gap-4">
                 {/* Google */}
-                <button className="w-[48px] h-[48px] border rounded-lg flex items-center justify-center hover:bg-gray-100 transition">
+                <button onClick={handleGoogleLogin}  className="w-[48px] h-[48px] border rounded-lg flex items-center justify-center hover:bg-gray-100 transition">
                   <Image
                     src="/images/google.png"
                     alt="google"

@@ -23,7 +23,6 @@ const emailOtpSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-// 🔥 auto delete expired OTP
 emailOtpSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 export default mongoose.model("EmailOTP", emailOtpSchema);

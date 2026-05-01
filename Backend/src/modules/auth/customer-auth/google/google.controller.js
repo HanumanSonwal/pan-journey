@@ -1,79 +1,74 @@
+import { asyncHandler } from "../../../../middleware/asyncHandler.js";
 import {
   generateAccessToken,
   generateRefreshToken,
 } from "../../../../utils/authentication/token.util.js";
-import User from "../../../user/user.model.js";
+import {
+  sendError,
+  sendSuccess,
+} from "../../../../utils/response/ApiResponse.js";
 
-export const googleLogin = async (req, res) => {
+import { findOrCreateAndMergeUser } from "../auth.service.js";
+
+export const googleLogin = asyncHandler(async (req, res) => {
   try {
-    const { email, name, mobile } = req.body;
+    const { email, name, image, googleId } = req.body;
 
-    // 🔹 validation
+    console.log("🔥 GOOGLE LOGIN HIT:", { email, googleId });
+
     if (!email) {
-      return res.status(400).json({
-        success: false,
-        message: "Email is required",
-      });
+      return sendError(res, "Email is required", 400);
     }
 
-    let user = await User.findOne({ email });
+    let user;
 
-    // 🔹 merge by mobile if exists
-    if (!user && mobile) {
-      user = await User.findOne({ mobile });
-    }
-
-    if (user) {
-      // 🔥 update existing user
-      user.email = email || user.email;
-      user.name = name || user.name;
-      user.provider = "google";
-      user.isEmailVerified = true;
-
-      await user.save();
-    } else {
-      // 🔥 create new user
-      user = await User.create({
+    try {
+      user = await findOrCreateAndMergeUser({
         email,
-        name: name || "",
+        name,
+        avatar: image,
+        googleId,
         provider: "google",
-        type: "customer",
-        isEmailVerified: true,
-        isActive: true,
       });
+    } catch (err) {
+      if (err.code === 11000 || err.message.includes("duplicate")) {
+        console.log("⚠️ Duplicate detected, fetching existing user");
+
+        user = await User.findOne({
+          $or: [{ email }, { googleId }],
+        });
+      } else {
+        throw err;
+      }
     }
 
-    // 🔥 inactive user block
+    if (!user) {
+      return sendError(res, "User creation failed", 500);
+    }
+
     if (!user.isActive) {
-      return res.status(403).json({
-        success: false,
-        message: "Account is deactivated",
-      });
+      return sendError(res, "Account is deactivated", 403);
     }
 
-    // 🔥 GENERATE TOKENS
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
-    return res.json({
-      success: true,
-      message: "Google login successful",
-      data: {
-        _id: user._id,
-        email: user.email,
-        name: user.name,
-        mobile: user.mobile || null,
-        type: user.type,
-        accessToken, 
-        refreshToken, 
-      },
+    console.log("✅ GOOGLE LOGIN SUCCESS:", user._id);
+
+    return sendSuccess(res, "Google login successful", {
+      _id: user._id,
+      email: user.email,
+      name: user.name,
+      mobile: user.mobile || null,
+      avatar: user.avatar || null,
+      type: user.type,
+      accessToken,
+      refreshToken,
+      profileCompleted: !!user.name,
     });
   } catch (err) {
     console.log("❌ GOOGLE LOGIN ERROR:", err.message);
 
-    return res.status(500).json({
-      success: false,
-      message: "Google login failed",
-    });
+    return sendError(res, "Google login failed", 500);
   }
-};
+});
