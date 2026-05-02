@@ -44,7 +44,22 @@ export const verifyEmailOtpService = async (email, otp) => {
   });
 
   return {
-    profileCompleted: !!user.name,
-    email: user.email,
+      profileCompleted: !!user.name,   // true if name exists
+    email: user.email || null,
+    name: user.name || null,
+    avatar: user.avatar || null,
+    googleId: user.googleId || null,
+    isEmailVerified: user.isEmailVerified ?? false,
+    isMobileVerified: user.isMobileVerified ?? false,
+  
+     providers: user.providers || [], 
+    // profileCompleted: !!user.name,
+    // email: user.email,
+    // name: user.name,
+    // avatar: user.avatar,
+    // googleId:user.googleId,
+    // isEmailVerified:user.isEmailVerified,
+    // isMobileVerified:user.isMobileVerified,
+    // type:user.type
   };
 };
