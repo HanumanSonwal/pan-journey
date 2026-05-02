@@ -14,6 +14,7 @@ export const refreshAccessToken = async (req, res) => {
     }
 
     let decoded;
+
     try {
       decoded = jwt.verify(
         refreshToken,
@@ -26,21 +27,31 @@ export const refreshAccessToken = async (req, res) => {
       });
     }
 
-    const user = await User.findById(decoded.id);
+    console.log("🧠 DECODED:", decoded);
 
-    if (!user || !user.isActive) {
+    const userId = decoded.id || decoded.userId || decoded._id;
+
+    const user = await User.findById(userId);
+
+    // 🔥 MOST IMPORTANT FIX
+    if (!user || !user.isActive || user.refreshToken !== refreshToken) {
+      console.log("❌ INVALID REFRESH TOKEN:", userId);
+
       return res.status(401).json({
         success: false,
-        message: "User not found",
+        message: "Invalid refresh token",
       });
     }
 
     const newAccessToken = generateAccessToken(user);
 
+    console.log("✅ NEW ACCESS TOKEN GENERATED");
+
     return res.json({
       success: true,
       accessToken: newAccessToken,
     });
+
   } catch (err) {
     console.log("❌ REFRESH ERROR:", err.message);
 

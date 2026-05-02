@@ -46,6 +46,14 @@ export const verifyOTP = asyncHandler(async (req, res) => {
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
 
+  // 🔥 SAVE TOKEN
+  user.refreshToken = refreshToken;
+
+  // 🔥 PROFILE LOGIC FIX
+  user.profileCompleted = !!(user.name && (user.email || user.mobile));
+
+  await user.save();
+
   return sendSuccess(res, "Login successful", {
     _id: user._id,
     mobile: user.mobile,
@@ -54,6 +62,6 @@ export const verifyOTP = asyncHandler(async (req, res) => {
     type: user.type,
     accessToken,
     refreshToken,
-    profileCompleted: !!user.name, // 🔥 important for frontend
+    profileCompleted: user.profileCompleted, // ✅ FIX
   });
 });

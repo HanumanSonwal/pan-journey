@@ -35,6 +35,9 @@ export const verifyEmailOtp = asyncHandler(async (req, res) => {
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
 
+  user.refreshToken = refreshToken;
+  await user.save();
+
   return sendSuccess(res, "Login successful", {
     _id: user._id,
     email: user.email,
