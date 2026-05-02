@@ -1,3 +1,6 @@
+
+
+
 import { asyncHandler } from "../../../../middleware/asyncHandler.js";
 import {
   generateAccessToken,
@@ -36,23 +39,25 @@ export const verifyEmailOtp = asyncHandler(async (req, res) => {
   const refreshToken = generateRefreshToken(user);
 
   user.refreshToken = refreshToken;
+
+  user.profileCompleted = !!(
+    user.name && (user.email || user.mobile)
+  );
+
   await user.save();
 
   return sendSuccess(res, "Login successful", {
     _id: user._id,
-    email: user.email,
+    email: user.email || null,
     mobile: user.mobile || null,
     name: user.name || null,
-
-    avatar: user.avatar || null, // ⭐ added
-    googleId: user.googleId || null, // ⭐ added
-    providers: user.providers || [], // ⭐ added
-
+    avatar: user.avatar || null,
+    googleId: user.googleId || null,
+    providers: user.providers || [],
     isEmailVerified: user.isEmailVerified ?? false,
     isMobileVerified: user.isMobileVerified ?? false,
     accessToken,
     refreshToken,
-
     profileCompleted: user.profileCompleted,
   });
 });

@@ -5,7 +5,7 @@ import "./cron/hotelCache.cron.js";
 import { errorHandler } from "./middleware/error.middleware.js";
 import authRoutes from "./modules/auth/admin-auth/auth.routes.js";
 import otpRoutes from "./modules/auth/customer-auth/auth.routes.js";
-//import hotelRoutes from "./modules/hotel/hotel.routes.js";
+import profileRoutes from "./modules/auth/customer-auth/customerProfile/profile.routes.js";
 import roleRoutes from "./modules/role/role.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
 import testRoutes from "./test.routes.js";
@@ -19,26 +19,20 @@ app.use(
   }),
 );
 
-// Parse cookies (used for auth tokens)
 app.use(cookieParser());
 
-// Parse incoming JSON requests
 app.use(express.json());
 
-// Authentication routes (login, logout, profile, etc.)
 app.use("/api/v1/auth", authRoutes);
 
-// User management (admin, staff, customers)
 app.use("/api/v1/users", userRoutes);
 
-// Role & permission management
 app.use("/api/v1/roles", roleRoutes);
-//app.use("/api/v1/hotel", hotelRoutes);
 
 app.use("/api/v1/customer/auth/", otpRoutes);
+app.use("/api/v1/customer/profile", profileRoutes);
 
 app.use("/api/v1", testRoutes);
-// Handles all errors in one place
 app.use(errorHandler);
 
 export default app;

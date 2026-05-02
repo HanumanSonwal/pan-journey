@@ -7,9 +7,6 @@ import { googleLogin } from "./google/google.controller.js";
 import { refreshAccessToken } from "./refresh.controller.js";
 import { logoutCustomer } from "./logout.controller.js";
 
-import { completeProfile } from "./customerProfile/customerProfile.controller.js";
-import { protectCustomer } from "../../../middleware/customerAuth.middleware.js";
-
 const router = express.Router();
 
 // 🔹 OTP
@@ -27,7 +24,5 @@ router.post("/google", googleLogin);
 router.post("/refresh", refreshAccessToken);
 router.post("/logout", logoutCustomer);
 
-// 🔹 PROFILE
-router.patch("/complete-profile", protectCustomer, completeProfile);
 
 export default router;

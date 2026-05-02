@@ -1,38 +1,52 @@
 "use client";
 
 import LoginModal from "@/modules/auth/components/LoginFormModal";
-import { HeartOutlined, UserOutlined } from "@ant-design/icons";
-import { Avatar, Dropdown } from "antd";
+import { useLogout } from "@/modules/auth/hooks/useAuth";
+import { HeartOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons";
+import { Dropdown } from "antd";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
-
   const { data: session } = useSession();
+  const { mutate: logout } = useLogout();
 
-  const handleLogout = async () => {
-    try {
-      // 🔥 call backend logout
-      await fetch("http://localhost:8000/api/v1/customer/auth/logout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          refreshToken: session?.refreshToken,
-        }),
-      });
-    } catch (err) {
-      console.log("Logout error:", err);
-    } finally {
-      // 🔥 clear nextauth session
-      await signOut({ callbackUrl: "/" });
-    }
+  const user = session?.user;
+
+  const getInitials = (name) => {
+    if (!name) return "U";
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
   };
 
+ const handleLogout = () => {
+  logout(session?.refreshToken);
+};
+
   const items = [
+    {
+      key: "user",
+      label: (
+        <div className="flex flex-col">
+          <span className="font-medium text-[14px]">
+            {user?.name || "User"}
+          </span>
+          <span className="text-[12px] text-gray-400">
+            {user?.email || user?.mobile || ""}
+          </span>
+        </div>
+      ),
+      disabled: true,
+    },
+    {
+      type: "divider",
+    },
     {
       key: "profile",
       label: <Link href="/profile">My Profile</Link>,
@@ -42,10 +56,21 @@ export default function Header() {
       label: <Link href="/booking">My Bookings</Link>,
     },
     {
+      type: "divider",
+    },
+    {
       key: "logout",
-      label: <span onClick={handleLogout}>Logout</span>,
+      label: (
+        <span
+          onClick={handleLogout}
+          className="text-red-500 flex items-center gap-1"
+        >
+          <LogoutOutlined /> Logout
+        </span>
+      ),
     },
   ];
+
   return (
     <div className="w-full">
       {/* 🔹 Top Offer Bar */}
@@ -86,6 +111,7 @@ export default function Header() {
             <HeartOutlined style={{ color: "#4A9BB5", fontSize: 16 }} />
             <span className="text-[#4A9BB5]">Wishlist</span>
           </button>
+
           {!session ? (
             <button
               onClick={() => setOpen(true)}
@@ -95,12 +121,24 @@ export default function Header() {
               Login / Sign Up
             </button>
           ) : (
-            // ✅ LOGGED IN
+            // ✅ USER PROFILE (same style improved)
             <Dropdown menu={{ items }} placement="bottomRight">
-              <div className="cursor-pointer flex items-center gap-2">
-                <Avatar src={session.user.image} icon={<UserOutlined />} />
-                <span className="hidden md:block">
-                  {session.user.name || "User"}
+              <div className="flex items-center gap-2 cursor-pointer px-2 py-1 rounded-md hover:bg-gray-100 transition">
+                {/* 🔥 Avatar */}
+                <div className="w-9 h-9 rounded-full overflow-hidden bg-[#4A9BB5] flex items-center justify-center text-white text-sm font-semibold border border-gray-200">
+                  {user?.image ? (
+                    <img
+                      src={user.image}
+                      alt="avatar"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    getInitials(user?.name)
+                  )}
+                </div>
+
+                <span className="hidden md:block text-gray-900 font-medium text-[14px] leading-tight">
+                  {user?.name || "User"}
                 </span>
               </div>
             </Dropdown>
