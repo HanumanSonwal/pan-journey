@@ -43,5 +43,15 @@ export const verifyEmailOtpService = async (email, otp) => {
     provider: "email",
   });
 
-  return user; // ✅ FIX
+  return {
+    profileCompleted: !!user.name, // true if name exists
+    email: user.email || null,
+    name: user.name || null,
+    avatar: user.avatar || null,
+    googleId: user.googleId || null,
+    isEmailVerified: user.isEmailVerified ?? false,
+    isMobileVerified: user.isMobileVerified ?? false,
+
+    providers: user.providers || [],
+  };
 };
