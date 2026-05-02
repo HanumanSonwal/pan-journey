@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import ButtonTab from "./ButtonTab";
-import HotelType from "@/modules/hotel/components/hotlelcategory/components/HotelType";
+import HotelType from "@/modules/shared/home/components/data/HotelType";
 
 const HotelCategory_Map = {
   Beachvacations: "Beach Vacations",
