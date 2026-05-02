@@ -43,8 +43,5 @@ export const verifyEmailOtpService = async (email, otp) => {
     provider: "email",
   });
 
-  return {
-    profileCompleted: !!user.name,
-    email: user.email,
-  };
+  return user; // ✅ FIX
 };

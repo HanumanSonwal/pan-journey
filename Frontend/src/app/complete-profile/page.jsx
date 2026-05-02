@@ -6,15 +6,16 @@ import { useUpdateProfile } from "@/modules/auth/hooks/useProfile";
 import { useRouter } from "next/navigation";
 
 export default function CompleteProfile() {
-  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
+  const [type, setType] = useState("customer");
 
   const updateProfile = useUpdateProfile();
   const router = useRouter();
 
   const handleSubmit = async () => {
     try {
-      await updateProfile.mutateAsync({ email, mobile });
+      await updateProfile.mutateAsync({ name, mobile, type });
 
       message.success("Profile updated");
       router.push("/");
@@ -28,8 +29,8 @@ export default function CompleteProfile() {
       <Card className="w-96">
 
         <Input
-          placeholder="Email"
-          onChange={(e) => setEmail(e.target.value)}
+          placeholder="name"
+          onChange={(e) => setName(e.target.value)}
           className="mb-3"
         />
 

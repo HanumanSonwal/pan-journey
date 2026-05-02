@@ -43,6 +43,7 @@ export const verifyEmailOtp = asyncHandler(async (req, res) => {
     type: user.type,
     accessToken,
     refreshToken,
-    profileCompleted: !!user.name,
+
+    profileCompleted: user.profileCompleted,
   });
 });

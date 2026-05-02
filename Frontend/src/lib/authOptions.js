@@ -24,6 +24,8 @@ async function refreshAccessToken(token) {
 
     const decoded = jwtDecode(data.accessToken);
 
+    console.log("✅ REFRESH RESPONSE --- responce:", decoded);
+
     return {
       ...token,
       accessToken: data.accessToken,
@@ -137,6 +139,7 @@ export const authOptions = {
               email: data.data.email,
               image: data.data.avatar,
               mobile: data.data.mobile,
+              profileCompleted: data.data.profileCompleted,
               accessToken: data.data.accessToken,
               refreshToken: data.data.refreshToken,
               accessTokenExpires: decoded.exp * 1000,
@@ -155,6 +158,8 @@ export const authOptions = {
       if (user) {
         const decoded = jwtDecode(user.accessToken);
 
+        console.log("📡 BACKEND logn with otp:", user);
+
         return {
           ...token,
           userId: user._id,
@@ -162,6 +167,7 @@ export const authOptions = {
           email: user.email,
           image: user.avatar,
           mobile: user.mobile,
+          profileCompleted: user.profileCompleted,
           accessToken: user.accessToken,
           refreshToken: user.refreshToken,
           accessTokenExpires: decoded.exp * 1000,
@@ -185,6 +191,7 @@ export const authOptions = {
         email: token.email, // ✅ ADD
         image: token.image, // ✅ ADD
         mobile: token.mobile,
+        profileCompleted: token.profileCompleted,
       };
 
       session.accessToken = token.accessToken;

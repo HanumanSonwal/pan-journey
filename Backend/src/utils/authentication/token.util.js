@@ -5,7 +5,7 @@ export const generateAccessToken = (user) =>
     { id: user._id || user.id, role: user.role },
     process.env.JWT_SECRET,
     {
-      expiresIn: "30s",
+      expiresIn: "15m",
     },
   );
 

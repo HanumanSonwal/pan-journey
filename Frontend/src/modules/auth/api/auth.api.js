@@ -13,6 +13,6 @@ export const sendEmailOtpApi = (data) =>
 // 🔹 USER
 export const getMeApi = () => api.get("/customer/auth/me");
 
-export const updateProfileApi = (data) => api.patch("/customer/profile", data);
+export const updateProfileApi = (data) => api.patch("/customer/auth/complete-profile", data);
 
 
