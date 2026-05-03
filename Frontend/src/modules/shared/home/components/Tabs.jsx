@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Tabs({ tabs, activeTab, setActiveTab }) {
   return (
-    <div className="flex justify-center gap-15 -mt-19 mb-0 pb-3">
+    <div className="flex justify-center gap-15 -mt-19 mb-10 pb-3">
       {tabs.map((tab) => (
         <button
           key={tab.key}
@@ -16,8 +16,8 @@ export default function Tabs({ tabs, activeTab, setActiveTab }) {
           <Image
             src={tab.icon}
             alt={tab.label}
-            width={28}
-            height={28}
+            width={50}
+            height={50}
             className={`mb-1 ${
               activeTab === tab.key ? "brightness-0 invert" : ""
             }`}

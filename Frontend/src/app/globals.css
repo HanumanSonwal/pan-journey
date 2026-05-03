@@ -61,3 +61,38 @@ body {
   border-color: #4A9BB5 !important;
   box-shadow: 0 0 0 2px rgba(74, 155, 181, 0.15) !important;
 }
+
+
+/* Calendar selected range */
+.ant-picker-cell-in-view.ant-picker-cell-range-start .ant-picker-cell-inner,
+.ant-picker-cell-in-view.ant-picker-cell-range-end .ant-picker-cell-inner {
+  background: #0077b6 !important;
+  color: white !important;
+  border-radius: 6px;
+}
+
+/* In-range highlight */
+.ant-picker-cell-in-view.ant-picker-cell-in-range .ant-picker-cell-inner {
+  background: #e6f4ff !important;
+}
+
+/* Today highlight */
+.ant-picker-cell-today .ant-picker-cell-inner {
+  border: 1px solid #0077b6 !important;
+}
+
+/* Popup shadow */
+.ant-picker-dropdown {
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+
+/* Remove default input */
+.hidden-range-input .ant-picker {
+  display: none !important;
+}
+
+/* Gradient Theme */
+.gradient-primary {
+  background: linear-gradient(180deg, #72C0F0 0%, #0F6A75 100%);
+}
