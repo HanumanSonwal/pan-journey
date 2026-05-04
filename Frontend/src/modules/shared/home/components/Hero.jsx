@@ -5,6 +5,7 @@ import styles from "./styles/Hero.module.css";
 import { HOME_TABS } from "@/modules/shared/config/homeTabs";
 import { useState } from "react";
 import SearchButton from "./SearchButton";
+
 import Tabs from "./Tabs";
 
 import BusSearchForm from "@/modules/bus/components/BusSearchForm";
