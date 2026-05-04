@@ -54,7 +54,7 @@ const userSchema = new mongoose.Schema(
     googleId: {
       type: String,
       unique: true,
-      sparse: true,
+      sparse: true, // 🔥 IMPORTANT
     },
 
     avatar: {
@@ -85,7 +85,7 @@ const userSchema = new mongoose.Schema(
 
     refreshToken: String,
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("User", userSchema);

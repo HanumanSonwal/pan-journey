@@ -1,18 +1,12 @@
-import { normalizeMobile } from "../../../../utils/normalizeMobile.js";
 
-const otpStore = new Map();
+
+import { normalizeMobile } from "../../../../utils/normalizeMobile.js";
+import { sendOtp, verifyOtp } from "../shared/otp/otp.core.js";
 
 export const sendOTPService = async (mobile) => {
   const normalizedMobile = normalizeMobile(mobile);
 
-  const otp = Math.floor(100000 + Math.random() * 900000);
-
-  otpStore.set(normalizedMobile, {
-    otp,
-    expiresAt: Date.now() + 5 * 60 * 1000,
-  });
-
-  console.log(`📲 OTP for ${normalizedMobile}: ${otp}`);
+  await sendOtp("mobile", normalizedMobile); // ✅ updated
 
   return true;
 };
@@ -20,22 +14,7 @@ export const sendOTPService = async (mobile) => {
 export const verifyOTPService = async (mobile, otp) => {
   const normalizedMobile = normalizeMobile(mobile);
 
-  const record = otpStore.get(normalizedMobile);
-
-  if (!record) {
-    throw new Error("OTP not found");
-  }
-
-  if (record.expiresAt < Date.now()) {
-    otpStore.delete(normalizedMobile);
-    throw new Error("OTP expired");
-  }
-
-  if (record.otp !== Number(otp)) {
-    throw new Error("Invalid OTP");
-  }
-
-  otpStore.delete(normalizedMobile);
+  await verifyOtp("mobile", normalizedMobile, otp); // ✅ updated
 
   return true;
 };

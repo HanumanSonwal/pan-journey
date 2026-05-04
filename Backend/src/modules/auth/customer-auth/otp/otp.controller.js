@@ -9,7 +9,7 @@ import {
   sendSuccess,
 } from "../../../../utils/response/ApiResponse.js";
 
-import { findOrCreateAndMergeUser } from "../auth.service.js"; // 🔥 IMPORTANT
+import { findOrCreateAndMergeUser } from "../auth.service.js";
 import { sendOTPService, verifyOTPService } from "./otp.service.js";
 
 export const sendOTP = asyncHandler(async (req, res) => {
@@ -27,6 +27,8 @@ export const sendOTP = asyncHandler(async (req, res) => {
 export const verifyOTP = asyncHandler(async (req, res) => {
   const mobile = normalizeMobile(req.body.mobile);
   const otp = String(req.body.otp || "");
+
+  console.log("🔍 VERIFY LOGIN INPUT:", mobile, otp);
 
   if (!mobile || mobile.length !== 10 || !otp) {
     return sendError(res, "Invalid mobile or OTP", 400);
@@ -46,14 +48,27 @@ export const verifyOTP = asyncHandler(async (req, res) => {
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
 
-  return sendSuccess(res, "Login successful", {
-    _id: user._id,
-    mobile: user.mobile,
-    email: user.email || null,
-    name: user.name || null,
-    type: user.type,
-    accessToken,
-    refreshToken,
-    profileCompleted: !!user.name, // 🔥 important for frontend
-  });
+  user.refreshToken = refreshToken;
+
+  user.profileCompleted = !!(user.name && (user.email || user.mobile));
+
+  await user.save();
+
+return sendSuccess(res, "Login successful", {
+  _id: user._id,
+  mobile: user.mobile,
+  email: user.email || null,
+  name: user.name || null,
+
+  avatar: user.avatar || null,      
+  googleId: user.googleId || null,  
+  providers: user.providers || [],  
+
+  isEmailVerified: user.isEmailVerified ?? false,
+  isMobileVerified: user.isMobileVerified ?? false,
+
+  accessToken,
+  refreshToken,
+  profileCompleted: user.profileCompleted,
+});
 });

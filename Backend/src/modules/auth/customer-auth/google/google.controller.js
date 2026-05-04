@@ -53,6 +53,9 @@ export const googleLogin = asyncHandler(async (req, res) => {
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
+    user.refreshToken = refreshToken;
+    await user.save();
+
     console.log("✅ GOOGLE LOGIN SUCCESS:", user._id);
 
     return sendSuccess(res, "Google login successful", {
