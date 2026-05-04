@@ -66,13 +66,13 @@ export default function HotelSearchForm({ setFormData }) {
       {/* GRID */}
       <div className="grid grid-cols-1 md:grid-cols-[2fr_1.5fr_1.5fr] gap-4 mt-4">
         {/* ✅ FIXED CITY */}
-        <div className="relative border border-gray-300 rounded-xl px-3 py-2 hover:border-[#0077b6] transition-all">
-          <span className="absolute -top-2 left-3 bg-white px-1 text-[14px] md:text-[15px] text-gray-800 font-medium">
+        <div className="relative border border-gray-300 rounded-xl px-3 py-3 hover:border-[#0077b6] transition-all !h-[96px]">
+          <span className="absolute -top-2 left-3 bg-white px-1 text-[14px] md:text-[15px] text-gray-800 font-medium" >
             City, Property name or Location
           </span>
 
           {/* <div className="flex flex-col justify-center min-h-[50px] px-1 md:px-3"> */}
-          <div className="flex flex-col justify-center min-h-[56px] px-1 md:px-2">
+          <div className="flex flex-col justify-center min-h-[56px] px-1 md:px-2 ">
             <Select
               value={form.city}
               onChange={(v) => update("city", v)}
@@ -86,7 +86,7 @@ export default function HotelSearchForm({ setFormData }) {
               }}
             />
 
-            <span className="text-xs md:text-sm text-gray-500 mt-[2px]">
+            <span className="text-xs md:text-sm text-gray-500 mp-[-12px]">
               India
             </span>
           </div>
