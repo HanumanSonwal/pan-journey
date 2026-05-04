@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Tabs({ tabs, activeTab, setActiveTab }) {
   return (
-    <div className="flex justify-center gap-15 -mt-19 mb-10 pb-3">
+    <div className="flex justify-center gap-15 -mt-19 mb-5 pb-3">
       {tabs.map((tab) => (
         <button
           key={tab.key}

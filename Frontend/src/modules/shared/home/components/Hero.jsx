@@ -34,14 +34,14 @@ export default function Hero() {
       <div className={styles.heroBg} />
 
       <div className="absolute left-1/2 -translate-x-1/2 w-[80.83%] h-[60%] top-[35%] px-4">
-        <div className="bg-white rounded-[10px] shadow-2xl w-full !pb-14 h-100 md:p-8">
+        <div className="bg-white rounded-[10px] shadow-2xl w-full !pb-14 h-89 md:p-8">
           <Tabs
             tabs={enabledTabs}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
           />
 
-          <h2 className="text-center text-[#72C0F0] text-xl md:text-3xl font-bold mb-6">
+          <h2 className="text-center text-[#72C0F0] text-xl md:text-3xl font-bold mb-2">
             Find What You Are Looking For
           </h2>
 
