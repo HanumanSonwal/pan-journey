@@ -4,16 +4,23 @@ import LoginModal from "@/modules/auth/components/LoginFormModal";
 import { useLogout } from "@/modules/auth/hooks/useAuth";
 import { HeartOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons";
 import { Dropdown } from "antd";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import LoginSuccessModal from "./LoginSuccessModal";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const { data: session } = useSession();
   const { mutate: logout } = useLogout();
+  const router = useRouter();
 
   const user = session?.user;
+
+  console.log("🚀 ~ user:", user);
 
   const getInitials = (name) => {
     if (!name) return "U";
@@ -25,9 +32,9 @@ export default function Header() {
       .slice(0, 2);
   };
 
- const handleLogout = () => {
-  logout(session?.refreshToken);
-};
+  const handleLogout = () => {
+    logout(session?.refreshToken);
+  };
 
   const items = [
     {
@@ -127,10 +134,12 @@ export default function Header() {
                 {/* 🔥 Avatar */}
                 <div className="w-9 h-9 rounded-full overflow-hidden bg-[#4A9BB5] flex items-center justify-center text-white text-sm font-semibold border border-gray-200">
                   {user?.image ? (
-                    <img
+                    <Image
                       src={user.image}
                       alt="avatar"
-                      className="w-full h-full object-cover"
+                      width={40}
+                      height={40}
+                      className="object-cover w-full h-full"
                     />
                   ) : (
                     getInitials(user?.name)
@@ -146,7 +155,23 @@ export default function Header() {
         </div>
       </header>
 
-      <LoginModal isOpen={open} onClose={() => setOpen(false)} />
+      {/* <LoginModal isOpen={open} onClose={() => setOpen(false)} /> */}
+      <LoginModal
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        onSuccess={() => {
+          setOpen(false); // ❌ login modal close
+          setShowSuccess(true); // ✅ success modal open
+        }}
+      />
+      <LoginSuccessModal
+        open={showSuccess}
+        onClose={() => setShowSuccess(false)}
+        onProfile={() => {
+          setShowSuccess(false);
+          router.push("/profile");
+        }}
+      />
     </div>
   );
 }

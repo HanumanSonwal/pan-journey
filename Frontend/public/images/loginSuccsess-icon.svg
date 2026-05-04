@@ -1,0 +1,26 @@
+<svg width="222" height="131" viewBox="0 0 222 131" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_424_1711)">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M111 30C88.3859 30 70 48.3859 70 71C70 93.6141 88.3859 112 111 112C133.614 112 152 93.6141 152 71C152 48.3859 133.614 30 111 30Z" fill="#4BAE4F"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M130.827 57.1786C131.82 58.1716 131.82 59.8052 130.827 60.7981L106.804 84.8216C106.307 85.3181 105.651 85.5743 104.994 85.5743C104.337 85.5743 103.681 85.3181 103.184 84.8216L91.1725 72.8099C90.1795 71.8169 90.1795 70.1833 91.1725 69.1903C92.1654 68.1974 93.799 68.1974 94.792 69.1903L104.994 79.3923L127.208 57.1786C128.201 56.1696 129.834 56.1696 130.827 57.1786Z" fill="white"/>
+</g>
+<circle cx="167.5" cy="98.5" r="6.5" fill="#4BAE4F" fill-opacity="0.5"/>
+<circle cx="187.5" cy="36.5" r="6.5" fill="#4BAE4F" fill-opacity="0.5"/>
+<circle cx="187.5" cy="67.5" r="5.5" fill="#4BAE4F" fill-opacity="0.5"/>
+<circle cx="97.5" cy="6.5" r="6.5" fill="#4BAE4F" fill-opacity="0.5"/>
+<circle cx="207.5" cy="96.5" r="6.5" fill="#4BAE4F" fill-opacity="0.5"/>
+<circle cx="60.5" cy="19.5" r="6.5" fill="#4BAE4F" fill-opacity="0.5"/>
+<circle cx="26" cy="35" r="5" fill="#4BAE4F" fill-opacity="0.5"/>
+<circle cx="24.5" cy="85.5" r="6.5" fill="#4BAE4F" fill-opacity="0.5"/>
+<circle cx="61.5" cy="111.5" r="6.5" fill="#4BAE4F" fill-opacity="0.5"/>
+<circle cx="158" cy="62" r="4" fill="#4BAE4F" fill-opacity="0.5"/>
+<circle cx="218" cy="62" r="4" fill="#4BAE4F" fill-opacity="0.5"/>
+<circle cx="143" cy="13" r="4" fill="#4BAE4F" fill-opacity="0.5"/>
+<circle cx="55" cy="58" r="4" fill="#4BAE4F" fill-opacity="0.5"/>
+<circle cx="4" cy="47" r="4" fill="#4BAE4F" fill-opacity="0.5"/>
+<circle cx="117" cy="127" r="4" fill="#4BAE4F" fill-opacity="0.5"/>
+<defs>
+<clipPath id="clip0_424_1711">
+<rect width="82" height="82" fill="white" transform="translate(70 30)"/>
+</clipPath>
+</defs>
+</svg>

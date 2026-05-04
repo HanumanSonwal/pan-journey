@@ -9,7 +9,7 @@ import EmailOtpLogin from "./EmailOtpLogin";
 import MobileOtpLogin from "./MobileOtpLogin";
 import { signIn } from "next-auth/react";
 
-export default function LoginModal({ isOpen, onClose }) {
+export default function LoginModal({ isOpen, onClose,onSuccess  }) {
   const [activeView, setActiveView] = useState("mobile");
   const [resetKey, setResetKey] = useState(0);
 
@@ -21,6 +21,7 @@ export default function LoginModal({ isOpen, onClose }) {
 
     const handleGoogleLogin = () => {
     signIn("google", { callbackUrl: "/" });
+     onSuccess();
   };
 
   return (
@@ -66,7 +67,7 @@ export default function LoginModal({ isOpen, onClose }) {
             {/* Forms */}
             <div key={resetKey} className="flex flex-col gap-4">
               {activeView === "mobile" && (
-                <MobileOtpLogin onSuccess={onClose} />
+              <MobileOtpLogin onSuccess={onSuccess} />
               )}
 
               {activeView === "email" && (
@@ -80,7 +81,7 @@ export default function LoginModal({ isOpen, onClose }) {
                     ← Back to Mobile Login
                   </button>
 
-                  <EmailOtpLogin onSuccess={onClose} />
+                 <EmailOtpLogin onSuccess={onSuccess} />
                 </div>
               )}
             </div>

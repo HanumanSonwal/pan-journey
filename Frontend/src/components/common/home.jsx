@@ -87,7 +87,7 @@ export default function Home() {
   const perPage = usePerPage();
   const hotels = hotelsData[activeTab] || [];
 
-  useEffect(() => {
+  useEffect(() => { 
     if (currentIndex + perPage > hotels.length) {
       setCurrentIndex(Math.max(0, hotels.length - perPage));
     }
