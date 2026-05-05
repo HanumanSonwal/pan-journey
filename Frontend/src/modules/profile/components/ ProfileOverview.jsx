@@ -3,6 +3,7 @@
 import { CheckCircleFilled, EditOutlined } from "@ant-design/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, DatePicker, Divider, Input, Select } from "antd";
+import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
@@ -64,7 +65,7 @@ export default function ProfileOverview() {
       mobile: "",
       city: "",
       state: "",
-      dob: null,
+      dateOfBirth: null,
       anniversary: null,
       nationality: "",
       maritalStatus: "",
@@ -97,8 +98,11 @@ export default function ProfileOverview() {
       mobile: user.mobile || "",
       city: user.city || "",
       state: user.state || "",
-      dob: user.dob || null,
-      anniversary: user.anniversary || null,
+
+      // 🔥 IMPORTANT FIX
+      dateOfBirth: user.dateOfBirth ? dayjs(user.dateOfBirth) : null,
+      anniversary: user.anniversary ? dayjs(user.anniversary) : null,
+
       nationality: user.nationality || "",
       maritalStatus: user.maritalStatus || "",
     });
@@ -106,16 +110,24 @@ export default function ProfileOverview() {
 
   // ✅ SUBMIT
   const onSubmit = (data) => {
+    console.log("FORM DATA:", data);
     const fullName = [data.firstName, data.lastName].join(" ");
 
     updateProfile.mutate({
       name: fullName,
       email: data.email,
       mobile: data.mobile,
-      dob: data.dob ? data.dob.format("YYYY-MM-DD") : null,
+      city: data.city,
+      state: data.state,
+      gender: data.gender,
+      nationality: data.nationality,
+      maritalStatus: data.maritalStatus,
+      
+
+      dateOfBirth: data.dateOfBirth ? data.dateOfBirth.toISOString() : user?.dateOfBirth || null,
       anniversary: data.anniversary
-        ? data.anniversary.format("YYYY-MM-DD")
-        : null,
+        ? data.anniversary.toISOString()
+        : user?.anniversary || null,
     });
 
     setIsEdit(false);
@@ -138,19 +150,27 @@ export default function ProfileOverview() {
   }, [mobile]);
 
   // ✅ FIELD COMPONENT
-  const Field = ({ label, field, children }) => (
-    <div>
-      <p className="text-gray-700 text-[14px] font-medium">{label}</p>
+  const Field = ({ label, field, children }) => {
+    const isDate = field?.value && dayjs(field.value).isValid();
 
-      {isEdit ? (
-        children
-      ) : (
-        <p className="text-gray-900 font-semibold mt-1">
-          {field?.value?.toString().trim() || "-"}
-        </p>
-      )}
-    </div>
-  );
+    return (
+      <div>
+        <p className="text-gray-700 text-[14px] font-medium">{label}</p>
+
+        {isEdit ? (
+          children
+        ) : (
+          <p className="text-gray-900 font-semibold mt-1">
+            {field?.value
+              ? isDate
+                ? dayjs(field.value).format("DD MMM YYYY") // 🔥 FIX
+                : field.value.toString()
+              : "-"}
+          </p>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.08)] p-6">
@@ -221,7 +241,7 @@ export default function ProfileOverview() {
           </div>
           <div>
             <Controller
-              name="dob"
+              name="dateOfBirth"
               control={control}
               render={({ field }) => (
                 <Field label="Date Of Birth" field={field} isEdit={isEdit}>
@@ -235,7 +255,7 @@ export default function ProfileOverview() {
                 </Field>
               )}
             />
-            <p className="text-red-500 text-xs">{errors.dob?.message}</p>
+            <p className="text-red-500 text-xs">{errors.dateOfBirth?.message}</p>
           </div>
           <div>
             <Controller
@@ -290,6 +310,7 @@ export default function ProfileOverview() {
               {errors.maritalStatus?.message}
             </p>
           </div>
+
           <div>
             <Controller
               name="anniversary"
@@ -299,13 +320,15 @@ export default function ProfileOverview() {
                   <DatePicker
                     className="w-full"
                     size="large"
-                    value={field.value || null}
-                    onChange={(date) => field.onChange(date)}
+                    value={field.value || null} // now already dayjs
+                    onChange={(date) => field.onChange(date)} // store dayjs
+                    format="DD MMM YYYY"
                     disabled={!isEdit}
                   />
                 </Field>
               )}
             />
+
             <p className="text-red-500 text-xs">
               {errors.anniversary?.message}
             </p>
