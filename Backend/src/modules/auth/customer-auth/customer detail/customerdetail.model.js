@@ -31,4 +31,4 @@ const CustomerDetailSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("CustomerDetail", CustomerDetailSchema);
+export default mongoose.model("CustomerDocumentDetail", CustomerDetailSchema);
