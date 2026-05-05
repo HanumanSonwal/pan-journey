@@ -7,7 +7,7 @@ export default function ButtonTab({ tabs = [], activeTab, setActiveTab }) {
         <button
           key={tab.key}
           onClick={() => setActiveTab(tab.key)}
-          className={`relative pb-2 text-lg font-medium transition-all duration-200 ${
+          className={` pb-1 text-lg font-medium transition-all duration-200 ${
             activeTab === tab.key
               ? "!text-[#72C0F0]"
               : "text-gray-500 hover:text-[#72C0F0]"
@@ -16,7 +16,7 @@ export default function ButtonTab({ tabs = [], activeTab, setActiveTab }) {
           {tab.label}
 
           {activeTab === tab.key && (
-            <span className="absolute left-0 bottom-0 w-full h-[5px] bg-[#72C0F0] rounded"></span>
+            <span className="absolute z-10 left-0 bottom-0 w-full h-[5px] bg-[72C0F0] rounded"></span>
           )}
         </button>
       ))}

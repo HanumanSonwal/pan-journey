@@ -62,7 +62,7 @@ export default function GuestsField({ value, onChange }) {
       onClick={() => setOpen((prev) => !prev)}
       className="relative border border-gray-300 rounded-xl px-3 py-2 cursor-pointer hover:border-[#0077b6] transition-all"
     >
-      <span className="absolute -top-2 left-3 bg-white px-1 text-[14px] md:text-[15px] text-gray-900 font-medium">
+      <span className="absolute -top-2 left-3 bg-white px-1 text-[14px] md:text-[15px] text-gray-900 font-medium ">
         Rooms & Guests
       </span>
 
@@ -98,7 +98,7 @@ export default function GuestsField({ value, onChange }) {
       {open && (
         <div
           onClick={(e) => e.stopPropagation()}
-          className="absolute z-50 mt-2 w-[340px] bg-white shadow-2xl rounded-xl p-4 transition-all duration-200"
+          className="absolute !z-50 mt-2 w-[340px] bg-white shadow-2xl rounded-xl p-4 transition-all duration-200"
         >
           <Counter
             label="Room"
@@ -148,7 +148,7 @@ export default function GuestsField({ value, onChange }) {
               </div>
             </div>
           )}
-          <div className="my-5 border-t pt-4">
+          <div className="my-5 border-t pt-4 ">
             <label className="flex items-start gap-3 border border-gray-400 rounded-xl p-3 cursor-pointer hover:border-[#0077b6] transition">
               <input
                 type="checkbox"
