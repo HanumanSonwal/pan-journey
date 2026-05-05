@@ -12,70 +12,14 @@ import { verifyOtp } from "../shared/otp/otp.core.js";
 
 export const getProfile = asyncHandler(async (req, res) => {
   const user = await getProfileService(req.user._id);
-
-  return sendSuccess(res, "Profile fetched", {
-      _id: user._id,
-    name: user.name,
-    email: user.email,
-    mobile: user.mobile,
-    avatar: user.avatar,
-    providers: user.providers,
-    isEmailVerified: user.isEmailVerified,
-    isMobileVerified: user.isMobileVerified,
-    profileCompleted: user.profileCompleted,
-    nationality: user.nationality || null,
-    maritalStatus: user.maritalStatus || null,
-    anniversary: user.anniversary || null,
-    dateOfBirth: user.dateOfBirth || null,
-    city: user.city || null,
-    state: user.state || null,
-  });
+  return sendSuccess(res, "Profile fetched", user);
 });
 
 export const updateProfile = asyncHandler(async (req, res) => {
-  const {
-    name,
-    avatar,
-    nationality,
-    maritalStatus,
-    anniversary,
-    dateOfBirth,
-    city,
-    state,
-  } = req.body;
 
-  if (!name) {
-    return sendError(res, "Name is required", 400);
-  }
+  const user = await updateProfileService(req.user._id, req.body);
 
-  const user = await updateProfileService(req.user._id, {
-    name,
-    avatar,
-    nationality,
-    maritalStatus,
-    anniversary,
-    dateOfBirth,
-    city,
-    state,
-  });
-
-  return sendSuccess(res, "Profile updated", {
-    _id: user._id,
-    name: user.name,
-    email: user.email,
-    mobile: user.mobile,
-    avatar: user.avatar,
-    providers: user.providers,
-    isEmailVerified: user.isEmailVerified,
-    isMobileVerified: user.isMobileVerified,
-    profileCompleted: user.profileCompleted,
-    nationality: user.nationality || null,
-    maritalStatus: user.maritalStatus || null,
-    anniversary: user.anniversary || null,
-    dateOfBirth: user.dateOfBirth || null,
-    city: user.city || null,
-    state: user.state || null,
-  });
+  return sendSuccess(res, "Profile updated", user);
 });
 
 export const verifyProfileEmail = asyncHandler(async (req, res) => {
