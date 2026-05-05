@@ -1,13 +1,8 @@
-import Home from "@/components/common/home";
-// import Hero from "@/components/homepage/Hero";
+import BussflightCards from "@/modules/shared/home/components/BussflightCards";
+import Feselity from "@/modules/shared/home/components/Feselity";
 import Hero from "@/modules/shared/home/components/Hero";
 import Herobanner from "@/modules/shared/home/components/Herobanner";
 import HotelCategory from "@/modules/shared/home/components/HotelCategory";
-import Feselity from "@/modules/shared/home/components/Feselity";
-import BussflightCards from "@/modules/shared/home/components/BussflightCards";
-
-     
-  
 
 import TopRatedHotels from "@/modules/shared/home/components/TopRated";
 
@@ -17,9 +12,9 @@ export default function Page() {
       <Hero />
       <HotelCategory />
       <Herobanner />
-       <Feselity/>
-        <TopRatedHotels/>
-        <BussflightCards/>
+      <Feselity />
+      <TopRatedHotels />
+      <BussflightCards />
     </>
   );
 }
