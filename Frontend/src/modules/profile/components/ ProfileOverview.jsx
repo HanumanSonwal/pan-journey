@@ -31,6 +31,8 @@ const schema = z.object({
 export default function ProfileOverview() {
   const { data: user } = useProfile();
 
+  console.log("🚀 USER-data:", user);
+
   const updateProfile = useUpdateProfile();
   const sendEmailOtp = useSendEmailOtp();
   const verifyEmail = useVerifyEmail();
@@ -100,8 +102,8 @@ export default function ProfileOverview() {
       state: user.state || "",
 
       // 🔥 IMPORTANT FIX
-      dateOfBirth: user.dateOfBirth ? dayjs(user.dateOfBirth) : null,
-      anniversary: user.anniversary ? dayjs(user.anniversary) : null,
+      // dateOfBirth: user.dateOfBirth ? dayjs(user.dateOfBirth) : null,
+      // anniversary: user.anniversary ? dayjs(user.anniversary) : null,
 
       nationality: user.nationality || "",
       maritalStatus: user.maritalStatus || "",
@@ -122,9 +124,10 @@ export default function ProfileOverview() {
       gender: data.gender,
       nationality: data.nationality,
       maritalStatus: data.maritalStatus,
-      
 
-      dateOfBirth: data.dateOfBirth ? data.dateOfBirth.toISOString() : user?.dateOfBirth || null,
+      dateOfBirth: data.dateOfBirth
+        ? data.dateOfBirth.toISOString()
+        : user?.dateOfBirth || null,
       anniversary: data.anniversary
         ? data.anniversary.toISOString()
         : user?.anniversary || null,
@@ -150,9 +153,7 @@ export default function ProfileOverview() {
   }, [mobile]);
 
   // ✅ FIELD COMPONENT
-  const Field = ({ label, field, children }) => {
-    const isDate = field?.value && dayjs(field.value).isValid();
-
+  const Field = ({ label, field, children, type }) => {
     return (
       <div>
         <p className="text-gray-700 text-[14px] font-medium">{label}</p>
@@ -162,8 +163,8 @@ export default function ProfileOverview() {
         ) : (
           <p className="text-gray-900 font-semibold mt-1">
             {field?.value
-              ? isDate
-                ? dayjs(field.value).format("DD MMM YYYY") // 🔥 FIX
+              ? type === "date"
+                ? dayjs(field.value).format("DD MMM YYYY")
                 : field.value.toString()
               : "-"}
           </p>
@@ -255,7 +256,9 @@ export default function ProfileOverview() {
                 </Field>
               )}
             />
-            <p className="text-red-500 text-xs">{errors.dateOfBirth?.message}</p>
+            <p className="text-red-500 text-xs">
+              {errors.dateOfBirth?.message}
+            </p>
           </div>
           <div>
             <Controller
@@ -483,10 +486,14 @@ export default function ProfileOverview() {
                   <div className="flex gap-2 items-center">
                     <Input
                       {...field}
+                      type="tel"
+                      inputMode="numeric"
+                      autoComplete="tel"
                       className="w-full"
                       size="large"
                       disabled={!isEdit}
                       maxLength={10}
+                      value={field.value || ""} // ✅ important
                       onChange={(e) =>
                         field.onChange(e.target.value.replace(/\D/g, ""))
                       }
