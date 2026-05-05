@@ -14,20 +14,35 @@ export const getProfile = asyncHandler(async (req, res) => {
   const user = await getProfileService(req.user._id);
 
   return sendSuccess(res, "Profile fetched", {
-    _id: user._id,
-    name: user.name || null,
-    email: user.email || null,
-    mobile: user.mobile || null,
-    avatar: user.avatar || null,
-    providers: user.providers || [],
-    isEmailVerified: user.isEmailVerified ?? false,
-    isMobileVerified: user.isMobileVerified ?? false,
-    profileCompleted: user.profileCompleted ?? false,
+      _id: user._id,
+    name: user.name,
+    email: user.email,
+    mobile: user.mobile,
+    avatar: user.avatar,
+    providers: user.providers,
+    isEmailVerified: user.isEmailVerified,
+    isMobileVerified: user.isMobileVerified,
+    profileCompleted: user.profileCompleted,
+    nationality: user.nationality || null,
+    maritalStatus: user.maritalStatus || null,
+    anniversary: user.anniversary || null,
+    dateOfBirth: user.dateOfBirth || null,
+    city: user.city || null,
+    state: user.state || null,
   });
 });
 
 export const updateProfile = asyncHandler(async (req, res) => {
-  const { name, avatar } = req.body;
+  const {
+    name,
+    avatar,
+    nationality,
+    maritalStatus,
+    anniversary,
+    dateOfBirth,
+    city,
+    state,
+  } = req.body;
 
   if (!name) {
     return sendError(res, "Name is required", 400);
@@ -36,6 +51,12 @@ export const updateProfile = asyncHandler(async (req, res) => {
   const user = await updateProfileService(req.user._id, {
     name,
     avatar,
+    nationality,
+    maritalStatus,
+    anniversary,
+    dateOfBirth,
+    city,
+    state,
   });
 
   return sendSuccess(res, "Profile updated", {
@@ -48,6 +69,12 @@ export const updateProfile = asyncHandler(async (req, res) => {
     isEmailVerified: user.isEmailVerified,
     isMobileVerified: user.isMobileVerified,
     profileCompleted: user.profileCompleted,
+    nationality: user.nationality || null,
+    maritalStatus: user.maritalStatus || null,
+    anniversary: user.anniversary || null,
+    dateOfBirth: user.dateOfBirth || null,
+    city: user.city || null,
+    state: user.state || null,
   });
 });
 
