@@ -9,6 +9,8 @@ import profileRoutes from "./modules/auth/customer-auth/customerProfile/profile.
 import roleRoutes from "./modules/role/role.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
 import testRoutes from "./test.routes.js";
+import customerProfileRoutes from "./modules/auth/customer-auth/customer detail/customerdetail.route.js";
+
 
 const app = express();
 
@@ -33,6 +35,7 @@ app.use("/api/v1/customer/auth/", otpRoutes);
 app.use("/api/v1/customer/profile", profileRoutes);
 
 app.use("/api/v1", testRoutes);
+app.use("/api/v1/customer", customerProfileRoutes);
 app.use(errorHandler);
 
 export default app;
