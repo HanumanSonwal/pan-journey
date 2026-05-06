@@ -10,7 +10,34 @@ const userSchema = new mongoose.Schema(
       },
       index: true,
     },
-
+    nationality: {
+      type: String,
+      trim: true,
+    },
+    maritalStatus: {
+      type: String,
+      trim: true,
+      enum: ["Single", "Married"],
+    },
+    anniversary: {
+      type: Date,
+    },
+    dateOfBirth: {
+      type: Date,
+    },
+    city: {
+      type: String,
+      trim: true,
+    },
+    state: {
+      type: String,
+      trim: true,
+    },
+    gender: {
+      type: String,
+      trim: true,
+      enum: ["Male", "Female", "Other"],
+    },
     email: {
       type: String,
       unique: true,

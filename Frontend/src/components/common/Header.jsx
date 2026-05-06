@@ -7,9 +7,9 @@ import { Dropdown } from "antd";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import LoginSuccessModal from "./LoginSuccessModal";
-import { useRouter } from "next/navigation";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -89,7 +89,9 @@ export default function Header() {
       <header className="bg-white px-10 md:px-30 py-4 flex items-center justify-between shadow-sm">
         {/* Logo */}
         <div className="text-3xl md:text-4xl font-bold bg-offer-gradient bg-clip-text text-transparent tracking-widest">
-          LOGO
+          <Link href="/" className="hover:text-[#4A9BB5]">
+            LOGO
+          </Link>
         </div>
 
         {/* Menu */}

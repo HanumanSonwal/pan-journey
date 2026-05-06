@@ -12,43 +12,14 @@ import { verifyOtp } from "../shared/otp/otp.core.js";
 
 export const getProfile = asyncHandler(async (req, res) => {
   const user = await getProfileService(req.user._id);
-
-  return sendSuccess(res, "Profile fetched", {
-    _id: user._id,
-    name: user.name || null,
-    email: user.email || null,
-    mobile: user.mobile || null,
-    avatar: user.avatar || null,
-    providers: user.providers || [],
-    isEmailVerified: user.isEmailVerified ?? false,
-    isMobileVerified: user.isMobileVerified ?? false,
-    profileCompleted: user.profileCompleted ?? false,
-  });
+  return sendSuccess(res, "Profile fetched", user);
 });
 
 export const updateProfile = asyncHandler(async (req, res) => {
-  const { name, avatar } = req.body;
 
-  if (!name) {
-    return sendError(res, "Name is required", 400);
-  }
+  const user = await updateProfileService(req.user._id, req.body);
 
-  const user = await updateProfileService(req.user._id, {
-    name,
-    avatar,
-  });
-
-  return sendSuccess(res, "Profile updated", {
-    _id: user._id,
-    name: user.name,
-    email: user.email,
-    mobile: user.mobile,
-    avatar: user.avatar,
-    providers: user.providers,
-    isEmailVerified: user.isEmailVerified,
-    isMobileVerified: user.isMobileVerified,
-    profileCompleted: user.profileCompleted,
-  });
+  return sendSuccess(res, "Profile updated", user);
 });
 
 export const verifyProfileEmail = asyncHandler(async (req, res) => {
