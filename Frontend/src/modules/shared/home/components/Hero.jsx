@@ -10,7 +10,7 @@ import Tabs from "./Tabs";
 
 import BusSearchForm from "@/modules/bus/components/BusSearchForm";
 import FlightSearchForm from "@/modules/flight/components/FlightSearchForm";
-import HotelSearchForm from "@/modules/hotel/components/HotelSearchForm";
+import HotelSearchForm from "@/modules/hotel/components/hotels/HotelSearchForm";
 
 const FORM_MAP = {
   hotel: HotelSearchForm,

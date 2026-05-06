@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import HotelCard from "./HotelCard";
+import HotelCard from "../../../shared/home/components/HotelCard";
 
 export default function HotelList({ filters, sort }) {
   const [hotels, setHotels] = useState([]);

@@ -1,17 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import SearchBar from "./SearchBar";
-import SidebarFilters from "./SidebarFilters";
-import SortBar from "./SortBar";
-import HotelList from "./HotelList";
 import { CloseOutlined } from "@ant-design/icons";
+import { useState } from "react";
+import SearchBar from "../components/hotels/SearchBar";
+import SidebarFilters from "../components/hotels/SidebarFilters";
+import SortBar from "../components/hotels/SortBar";
+import HotelList from "../components/hotels/HotelList";
 
 export default function Hotel() {
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState("");
 
-  // ❌ Remove single filter
   const removeFilter = (key, value) => {
     const updated = { ...filters };
 
@@ -25,20 +24,15 @@ export default function Hotel() {
     setFilters(updated);
   };
 
-  // ❌ Clear all filters
   const clearAll = () => {
     setFilters({});
   };
 
   return (
     <div className="bg-[#f3f4f6] min-h-screen">
-
-      {/* 🔍 SEARCH BAR */}
       <SearchBar filters={filters} setFilters={setFilters} />
 
-      {/* 🧩 MAIN LAYOUT */}
       <div className="flex gap-2 sm:gap-3 md:gap-4 p-2 sm:p-3 md:p-4 max-w-7xl mx-auto flex-wrap md:flex-nowrap mt-[-48px] relative">
-
         {/* 📌 SIDEBAR */}
         <div className="w-full sm:w-64 md:w-72">
           <SidebarFilters filters={filters} setFilters={setFilters} />
@@ -46,13 +40,11 @@ export default function Hotel() {
 
         {/* 📄 MAIN CONTENT */}
         <div className="flex-1 min-w-0">
-
           {/* 🔃 SORT BAR (TOP) */}
           <SortBar sort={sort} setSort={setSort} />
 
           {/* 🏷️ ACTIVE FILTERS (NOW BELOW SORTBAR) */}
           <div className="flex flex-wrap gap-2 mb-4 mt-3">
-
             {Object.entries(filters).map(([key, value]) => {
               if (Array.isArray(value)) {
                 return value.map((v, i) => (
@@ -82,12 +74,10 @@ export default function Hotel() {
                 </div>
               );
             })}
-
           </div>
 
           {/* 🏨 HOTEL LIST */}
           <HotelList filters={filters} sort={sort} />
-
         </div>
       </div>
     </div>
