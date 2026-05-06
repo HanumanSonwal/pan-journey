@@ -21,11 +21,24 @@ import {
 const schema = z.object({
   firstName: z.string().min(1, "First name required"),
   lastName: z.string().optional(),
+
   gender: z.string().min(1, "Select gender"),
+
   email: z.string().email("Invalid email"),
+
   mobile: z.string().regex(/^[6-9]\d{9}$/, "Invalid mobile number"),
+
   city: z.string().min(1, "City required"),
+
   state: z.string().min(1, "State required"),
+
+  nationality: z.string().nullable().optional(),
+
+  maritalStatus: z.string().nullable().optional(),
+
+  dateOfBirth: z.any().nullable().optional(),
+
+  anniversary: z.any().nullable().optional(),
 });
 
 export default function ProfileOverview() {
@@ -100,38 +113,48 @@ export default function ProfileOverview() {
       mobile: user.mobile || "",
       city: user.city || "",
       state: user.state || "",
+      nationality: user.nationality || "",
 
       // 🔥 IMPORTANT FIX
-      // dateOfBirth: user.dateOfBirth ? dayjs(user.dateOfBirth) : null,
-      // anniversary: user.anniversary ? dayjs(user.anniversary) : null,
+      dateOfBirth: user.dateOfBirth ? dayjs(user.dateOfBirth) : null,
+      anniversary: user.anniversary ? dayjs(user.anniversary) : null,
 
-      nationality: user.nationality || "",
       maritalStatus: user.maritalStatus || "",
     });
   }, [user, reset]);
 
   // ✅ SUBMIT
-  const onSubmit = (data) => {
-    console.log("FORM DATA:", data);
-    const fullName = [data.firstName, data.lastName].join(" ");
 
-    updateProfile.mutate({
-      name: fullName,
+  const buildPayload = (data, user) => {
+    return {
+      name: [data.firstName, data.lastName].filter(Boolean).join(" "),
+
       email: data.email,
       mobile: data.mobile,
+      gender: data.gender,
+
       city: data.city,
       state: data.state,
-      gender: data.gender,
-      nationality: data.nationality,
-      maritalStatus: data.maritalStatus,
 
+      nationality: data.nationality || null,
+      maritalStatus: data.maritalStatus || null,
+
+      // ✅ DATE FIX (most important)
       dateOfBirth: data.dateOfBirth
-        ? data.dateOfBirth.toISOString()
+        ? dayjs(data.dateOfBirth).toISOString()
         : user?.dateOfBirth || null,
+
       anniversary: data.anniversary
-        ? data.anniversary.toISOString()
+        ? dayjs(data.anniversary).toISOString()
         : user?.anniversary || null,
-    });
+    };
+  };
+  const onSubmit = (data) => {
+    const payload = buildPayload(data, user);
+
+    console.log("🚀 FINAL PAYLOAD:", payload);
+
+    updateProfile.mutate(payload);
 
     setIsEdit(false);
   };
@@ -245,7 +268,7 @@ export default function ProfileOverview() {
               name="dateOfBirth"
               control={control}
               render={({ field }) => (
-                <Field label="Date Of Birth" field={field} isEdit={isEdit}>
+                <Field label="Date Of Birth"  type="date" field={field} isEdit={isEdit}>
                   <DatePicker
                     className="w-full"
                     size="large"
@@ -266,19 +289,18 @@ export default function ProfileOverview() {
               control={control}
               render={({ field }) => (
                 <Field label="Nationality" field={field} isEdit={isEdit}>
-                  <Select
-                    {...field}
-                    className="w-full"
-                    size="large"
-                    placeholder="Select Country"
-                    disabled={!isEdit}
-                    options={[
-                      { value: "India", label: "India" },
-                      { value: "USA", label: "USA" },
-                    ]}
-                    value={field.value || undefined}
-                    onChange={(value) => field.onChange(value)}
-                  />
+                <Select
+                  className="w-full"
+                  size="large"
+                  placeholder="Select Country"
+                  disabled={!isEdit}
+                  options={[
+                    { value: "India", label: "India" },
+                    { value: "USA", label: "USA" },
+                  ]}
+                  value={field.value || undefined}
+                  onChange={field.onChange}
+                />
                 </Field>
               )}
             />
@@ -319,7 +341,7 @@ export default function ProfileOverview() {
               name="anniversary"
               control={control}
               render={({ field }) => (
-                <Field label="Anniversary" field={field} isEdit={isEdit}>
+                <Field label="Anniversary"  type="date" field={field} isEdit={isEdit}>
                   <DatePicker
                     className="w-full"
                     size="large"
