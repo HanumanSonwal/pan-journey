@@ -5,7 +5,7 @@ import Herobanner from "@/modules/shared/home/components/Herobanner";
 import HotelCategory from "@/modules/shared/home/components/HotelCategory";
 import Feselity from "@/modules/shared/home/components/Feselity";
 import BussflightCards from "@/modules/shared/home/components/BussflightCards";
-
+import Hotel from "@/modules/shared/home/components/Hotel";
      
   
 
@@ -20,6 +20,7 @@ export default function Page() {
        <Feselity/>
         <TopRatedHotels/>
         <BussflightCards/>
+        <Hotel/>
     </>
   );
 }

@@ -1,0 +1,95 @@
+"use client";
+
+import { useState } from "react";
+import SearchBar from "./SearchBar";
+import SidebarFilters from "./SidebarFilters";
+import SortBar from "./SortBar";
+import HotelList from "./HotelList";
+import { CloseOutlined } from "@ant-design/icons";
+
+export default function Hotel() {
+  const [filters, setFilters] = useState({});
+  const [sort, setSort] = useState("");
+
+  // ❌ Remove single filter
+  const removeFilter = (key, value) => {
+    const updated = { ...filters };
+
+    if (Array.isArray(updated[key])) {
+      updated[key] = updated[key].filter((v) => v !== value);
+      if (updated[key].length === 0) delete updated[key];
+    } else {
+      delete updated[key];
+    }
+
+    setFilters(updated);
+  };
+
+  // ❌ Clear all filters
+  const clearAll = () => {
+    setFilters({});
+  };
+
+  return (
+    <div className="bg-[#f3f4f6] min-h-screen">
+
+      {/* 🔍 SEARCH BAR */}
+      <SearchBar filters={filters} setFilters={setFilters} />
+
+      {/* 🧩 MAIN LAYOUT */}
+      <div className="flex gap-2 sm:gap-3 md:gap-4 p-2 sm:p-3 md:p-4 max-w-7xl mx-auto flex-wrap md:flex-nowrap mt-[-48px] relative">
+
+        {/* 📌 SIDEBAR */}
+        <div className="w-full sm:w-64 md:w-72">
+          <SidebarFilters filters={filters} setFilters={setFilters} />
+        </div>
+
+        {/* 📄 MAIN CONTENT */}
+        <div className="flex-1 min-w-0">
+
+          {/* 🔃 SORT BAR (TOP) */}
+          <SortBar sort={sort} setSort={setSort} />
+
+          {/* 🏷️ ACTIVE FILTERS (NOW BELOW SORTBAR) */}
+          <div className="flex flex-wrap gap-2 mb-4 mt-3">
+
+            {Object.entries(filters).map(([key, value]) => {
+              if (Array.isArray(value)) {
+                return value.map((v, i) => (
+                  <div
+                    key={`${key}-${i}`}
+                    className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs flex items-center gap-1"
+                  >
+                    {v}
+                    <CloseOutlined
+                      className="cursor-pointer text-xs"
+                      onClick={() => removeFilter(key, v)}
+                    />
+                  </div>
+                ));
+              }
+
+              return (
+                <div
+                  key={key}
+                  className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs flex items-center gap-1"
+                >
+                  {value}
+                  <CloseOutlined
+                    className="cursor-pointer text-xs"
+                    onClick={() => removeFilter(key)}
+                  />
+                </div>
+              );
+            })}
+
+          </div>
+
+          {/* 🏨 HOTEL LIST */}
+          <HotelList filters={filters} sort={sort} />
+
+        </div>
+      </div>
+    </div>
+  );
+}
