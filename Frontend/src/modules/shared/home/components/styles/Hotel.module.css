@@ -1,0 +1,14 @@
+.custom-box {
+  background: white;
+  border-radius: 8px;
+  padding: 6px 10px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.custom-input .ant-select-selector,
+.custom-input .ant-picker {
+  border: none !important;
+  box-shadow: none !important;
+}
