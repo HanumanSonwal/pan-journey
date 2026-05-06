@@ -13,7 +13,6 @@
   --color-foreground: var(--foreground);
 }
 
-
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -40,14 +39,14 @@ body {
 }
 
 :where(.css-dev-only-do-not-override-xogyor).ant-modal .ant-modal-container {
-    position: relative;
-    background-color: var(--ant-modal-content-bg);
-    background-clip: padding-box;
-    border: 0;
-    border-radius: var(--ant-border-radius-lg);
-    box-shadow: var(--ant-box-shadow);
-    pointer-events: auto;
-    padding: 0!important;
+  position: relative;
+  background-color: var(--ant-modal-content-bg);
+  background-clip: padding-box;
+  border: 0;
+  border-radius: var(--ant-border-radius-lg);
+  box-shadow: var(--ant-box-shadow);
+  pointer-events: auto;
+  padding: 0 !important;
 }
 
 /* Ant Input Override */
@@ -58,10 +57,9 @@ body {
 
 .ant-input:focus,
 .ant-input-focused {
-  border-color: #4A9BB5 !important;
+  border-color: #4a9bb5 !important;
   box-shadow: 0 0 0 2px rgba(74, 155, 181, 0.15) !important;
 }
-
 
 /* Calendar selected range */
 .ant-picker-cell-in-view.ant-picker-cell-range-start .ant-picker-cell-inner,
@@ -94,5 +92,29 @@ body {
 
 /* Gradient Theme */
 .gradient-primary {
-  background: linear-gradient(180deg, #72C0F0 0%, #0F6A75 100%);
+  background: linear-gradient(180deg, #72c0f0 0%, #0f6a75 100%);
+}
+
+/* Thin Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.18) transparent;
 }

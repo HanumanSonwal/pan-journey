@@ -268,7 +268,12 @@ export default function ProfileOverview() {
               name="dateOfBirth"
               control={control}
               render={({ field }) => (
-                <Field label="Date Of Birth"  type="date" field={field} isEdit={isEdit}>
+                <Field
+                  label="Date Of Birth"
+                  type="date"
+                  field={field}
+                  isEdit={isEdit}
+                >
                   <DatePicker
                     className="w-full"
                     size="large"
@@ -289,18 +294,18 @@ export default function ProfileOverview() {
               control={control}
               render={({ field }) => (
                 <Field label="Nationality" field={field} isEdit={isEdit}>
-                <Select
-                  className="w-full"
-                  size="large"
-                  placeholder="Select Country"
-                  disabled={!isEdit}
-                  options={[
-                    { value: "India", label: "India" },
-                    { value: "USA", label: "USA" },
-                  ]}
-                  value={field.value || undefined}
-                  onChange={field.onChange}
-                />
+                  <Select
+                    className="w-full"
+                    size="large"
+                    placeholder="Select Country"
+                    disabled={!isEdit}
+                    options={[
+                      { value: "India", label: "India" },
+                      { value: "USA", label: "USA" },
+                    ]}
+                    value={field.value || undefined}
+                    onChange={field.onChange}
+                  />
                 </Field>
               )}
             />
@@ -341,7 +346,12 @@ export default function ProfileOverview() {
               name="anniversary"
               control={control}
               render={({ field }) => (
-                <Field label="Anniversary"  type="date" field={field} isEdit={isEdit}>
+                <Field
+                  label="Anniversary"
+                  type="date"
+                  field={field}
+                  isEdit={isEdit}
+                >
                   <DatePicker
                     className="w-full"
                     size="large"

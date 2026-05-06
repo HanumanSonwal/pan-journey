@@ -2,10 +2,10 @@
 
 import { CloseOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import SearchBar from "../components/hotels/SearchBar";
-import SidebarFilters from "../components/hotels/SidebarFilters";
-import SortBar from "../components/hotels/SortBar";
 import HotelList from "../components/hotels/HotelList";
+import SearchBar from "../components/hotels/SearchBar";
+import SidebarFilters from "../components/SidebarFilters";
+import SortBar from "../components/SortBar";
 
 export default function Hotel() {
   const [filters, setFilters] = useState({});
@@ -29,16 +29,14 @@ export default function Hotel() {
   };
 
   return (
-    <div className="bg-[#f3f4f6] min-h-screen">
+    <div className="bg-[#edf7ff] ">
       <SearchBar filters={filters} setFilters={setFilters} />
 
       <div className="flex gap-2 sm:gap-3 md:gap-4 p-2 sm:p-3 md:p-4 max-w-7xl mx-auto flex-wrap md:flex-nowrap mt-[-48px] relative">
         {/* 📌 SIDEBAR */}
-        <div className="w-full sm:w-64 md:w-72">
+        <div className="w-full sm:w-64 md:w-72 self-start sticky top-4 max-h-[calc(100vh-20px)] overflow-y-auto overflow-x-hidden custom-scrollbar">
           <SidebarFilters filters={filters} setFilters={setFilters} />
         </div>
-
-        {/* 📄 MAIN CONTENT */}
         <div className="flex-1 min-w-0">
           {/* 🔃 SORT BAR (TOP) */}
           <SortBar sort={sort} setSort={setSort} />

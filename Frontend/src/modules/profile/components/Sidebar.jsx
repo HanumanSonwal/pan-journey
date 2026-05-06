@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  AccountBookOutlined,
   BookOutlined,
   CustomerServiceOutlined,
   FileTextOutlined,
@@ -15,6 +16,8 @@ export default function Sidebar({ activeTab, setActiveTab }) {
     { key: "profile", label: "My Profile", icon: <UserOutlined /> },
     { key: "documents", label: "Documents", icon: <FileTextOutlined /> },
     { key: "wishlist", label: "Wishlist", icon: <HeartOutlined /> },
+    { key: "BookingHistory", label: "Booking History", icon: <AccountBookOutlined /> },
+
   ];
   const { data: session } = useSession();
   const user = session?.user;
@@ -39,7 +42,7 @@ export default function Sidebar({ activeTab, setActiveTab }) {
   ];
 
   return (
-    <div className="w-70 bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.08)] p-5">
+    <div className="w-70 bg-white  shadow-[0_10px_30px_rgba(0,0,0,0.08)] p-5">
       {/* 🔹 Profile Header */}
       <div className="flex items-center gap-4 mb-7">
         <div className="w-16 h-16 rounded-full overflow-hidden bg-[#4A9BB5] flex items-center justify-center text-white text-xl font-bold">

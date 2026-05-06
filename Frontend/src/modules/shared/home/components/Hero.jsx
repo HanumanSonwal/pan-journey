@@ -11,6 +11,7 @@ import Tabs from "./Tabs";
 import BusSearchForm from "@/modules/bus/components/BusSearchForm";
 import FlightSearchForm from "@/modules/flight/components/FlightSearchForm";
 import HotelSearchForm from "@/modules/hotel/components/hotels/HotelSearchForm";
+import { useRouter } from "next/navigation";
 
 const FORM_MAP = {
   hotel: HotelSearchForm,
@@ -23,12 +24,16 @@ export default function Hero() {
     HOME_TABS.find((t) => t.enabled)?.key,
   );
 
+  const router = useRouter();
+
   const [formData, setFormData] = useState(null);
 
   const ActiveForm = FORM_MAP[activeTab];
 
   const handleSearch = () => {
     console.log("🚀 FINAL DATA:", formData);
+    router.push("/hotels");
+    
   };
   return (
     <section className="relative w-full pb-60 bg-[#EDF7FF]">
