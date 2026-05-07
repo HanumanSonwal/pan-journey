@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import ProfileOverview from "../components/ ProfileOverview";
+import BookingDetailsTab from "../components/BookingDetailsTab";
 import BookingHistoryTab from "../components/BookingHistoryTab";
 import DocumentsTab from "../components/DocumentsTab";
 import Sidebar from "../components/Sidebar";
@@ -10,6 +11,7 @@ import WishlistTab from "../components/WishlistTab";
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("profile");
+  const [selectedBooking, setSelectedBooking] = useState(null);
 
   return (
     <div className="bg-[#edf7ff] min-h-screen">
@@ -30,7 +32,16 @@ export default function ProfilePage() {
         <div className="grid grid-cols-1 lg:grid-cols-[300px_minmax(0,1fr)] gap-3 items-start">
           {/* SIDEBAR */}
           <div className="w-full sticky top-5 self-start">
-            <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+            {/* <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} /> */}
+            <Sidebar
+              activeTab={activeTab}
+              setActiveTab={(tab) => {
+                setActiveTab(tab);
+
+                // ✅ reset details page
+                setSelectedBooking(null);
+              }}
+            />
           </div>
 
           {/* CONTENT */}
@@ -40,7 +51,19 @@ export default function ProfilePage() {
             {activeTab === "documents" && <DocumentsTab />}
 
             {activeTab === "wishlist" && <WishlistTab />}
-            {activeTab === "BookingHistory" && <BookingHistoryTab />}
+            {/* {activeTab === "BookingHistory" && <BookingHistoryTab />} */}
+            {activeTab === "BookingHistory" && (
+              <>
+                {!selectedBooking ? (
+                  <BookingHistoryTab setSelectedBooking={setSelectedBooking} />
+                ) : (
+                  <BookingDetailsTab
+                    booking={selectedBooking}
+                    onBack={() => setSelectedBooking(null)}
+                  />
+                )}
+              </>
+            )}
 
             {activeTab === "settings" && (
               <div className="p-6">Settings coming soon...</div>
