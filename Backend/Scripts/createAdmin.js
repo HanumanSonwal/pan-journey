@@ -43,7 +43,6 @@ const createAdmin = async () => {
     }
 
     const hashedPassword = await bcrypt.hash("Admin@123", 10);
-
     await User.create({
       name: "Super Admin",
       email: "admin@trainscafe.com",
@@ -51,8 +50,8 @@ const createAdmin = async () => {
       role: adminRole._id,
       provider: "local",
       isEmailVerified: true,
+      type: "admin", // ✅ ADD THIS
     });
-
     console.log("🎉 Admin created successfully");
     process.exit();
   } catch (error) {

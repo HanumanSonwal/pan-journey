@@ -1,63 +1,62 @@
 "use client";
 
+import Image from "next/image";
 import { Card } from "antd";
-import bookingData from "../components/data/Busflightherodata"; // 🔥 IMPORT DATA
 
-export default function BussflightCards() {
+import bookingData from "../components/data/Busflightherodata";
+
+export default function ComingSoonModulesSection() {
   return (
-    <div className="px-6 py-12 bg-gray-100">
-      
-      {/* Cards Section */}
-      <div className="grid md:grid-cols-2 gap-10">
-        {bookingData.map((item) => (
-          <div key={item.id} className="relative">
-
-            {/* Image */}
-            <img
-              src={item.image}
-              alt={item.title}
-              className="rounded-2xl w-full h-[320px] object-cover"
-            />
-
-            {/* Tag */}
-            <span className="absolute top-3 left-3 bg-sky-500 text-white text-sm px-3 py-1 rounded-md">
-              {item.tag}
-            </span>
-
-            {/* Bottom Card */}
-            <Card
-              className="absolute left-1/2 -translate-x-1/2 -bottom-10 w-[90%] rounded-2xl shadow-xl text-center"
-              styles={{ body: { padding: "20px" } }}  // ✅ FIX (no warning)
-            >
-              <h3 className="text-xl font-semibold">{item.title}</h3>
-              <p className="text-gray-500 text-sm mt-2">
-                {item.desc}
-              </p>
-            </Card>
-
-          </div>
-        ))}
-      </div>
-
-      {/* Bottom Text Section */}
-      <div className="grid md:grid-cols-2 gap-10 mt-24">
+    <section className="bg-[#F3F4F6]  md:pt-15 px-4 overflow-hidden">
+      <div className="max-w-7xl mx-auto">
         
-        <div>
-          <p className="text-sky-500 font-medium">Our Testimonial</p>
-          <h2 className="text-4xl font-bold mt-2 text-gray-800">
-            Real Feedback from Our Happy Travelers Worldwide
-          </h2>
-        </div>
+        {/* Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-12">
+          {bookingData.map((item) => (
+            <div key={item.id} className="relative">
+              
+              {/* Image */}
+              <div className="relative h-[320px] sm:h-[380px] md:h-[420px] rounded-[16px] overflow-hidden">
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  fill
+                  priority
+                  sizes="(max-width:768px) 100vw, 50vw"
+                  className="object-cover"
+                />
 
-        <div>
-          <p className="text-gray-600">
-            Contrary to popular belief, Lorem Ipsum is not simply random text. 
-            It has roots in a piece of classical Latin literature from 45 BC.
-          </p>
-        </div>
+                {/* Coming Soon Tag */}
+                <div className="absolute top-0 left-0 z-10">
+                  <span className="bg-[#49A6C9] text-white text-sm sm:text-base px-5 py-3 rounded-br-[12px]">
+                    Coming Soon
+                  </span>
+                </div>
+              </div>
 
+              {/* Floating Card */}
+              <Card
+                rootClassName="absolute left-1/2 -translate-x-1/2 bottom-20 w-[82%] rounded-[14px] border-0 shadow-[0_8px_30px_rgba(0,0,0,0.12)]"
+                styles={{
+                  body: {
+                    padding: "28px 24px",
+                  },
+                }}
+              >
+                <div className="text-center">
+                  <h3 className="text-[22px] leading-tight font-bold text-[#222]">
+                    {item.title}
+                  </h3>
+
+                  <p className="text-gray-600 text-[13px]  mt-4">
+                    {item.desc}
+                  </p>
+                </div>
+              </Card>
+            </div>
+          ))}
+        </div>
       </div>
-
-    </div>
+    </section>
   );
 }

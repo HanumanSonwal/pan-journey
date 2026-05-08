@@ -1,17 +1,21 @@
 "use client";
 
+import RHFInput from "@/components/ui/RHFInput";
 import { EditOutlined } from "@ant-design/icons";
-import { Button, DatePicker, Divider, Input, Select } from "antd";
-import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, Divider } from "antd";
 import dayjs from "dayjs";
+import { useEffect, useMemo, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { z } from "zod";
+import EditableField from "./EditableField";
+import RHFDatePicker from "./RHFDatePicker";
+import RHFSelect from "./RHFSelect";
 
-// 🔥 Schema
+// SCHEMA
 const schema = z.object({
   passportNumber: z.string().optional(),
-  passportExpiry: z.any().optional(),
+  passportExpiry: z.string().nullable().optional(),
   issuingCountry: z.string().optional(),
   panNumber: z.string().optional(),
 });
@@ -19,16 +23,21 @@ const schema = z.object({
 export default function DocumentsTab() {
   const [isEdit, setIsEdit] = useState(false);
 
-  // 👉 future API data (placeholder)
-  const userDocs = null;
+  // API DATA
+  const userDocs = useMemo(
+    () => ({
+      passportNumber: "P123456",
+      passportExpiry: "2028-05-20T00:00:00.000Z",
+      issuingCountry: "India",
+      panNumber: "ABCDE1234F",
+    }),
+    [],
+  );
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
+  // FORM
+  const methods = useForm({
     resolver: zodResolver(schema),
+
     defaultValues: {
       passportNumber: "",
       passportExpiry: null,
@@ -37,148 +46,117 @@ export default function DocumentsTab() {
     },
   });
 
-  // ✅ Load API data later
-  useEffect(() => {
-    if (!userDocs) return;
+  const { handleSubmit, reset, watch } = methods;
 
-    reset({
-      passportNumber: userDocs.passportNumber || "",
-      passportExpiry: userDocs.passportExpiry
-        ? dayjs(userDocs.passportExpiry)
-        : null,
-      issuingCountry: userDocs.issuingCountry || "",
-      panNumber: userDocs.panNumber || "",
-    });
+  // LOAD API DATA
+  useEffect(() => {
+    if (userDocs) {
+      reset(userDocs);
+    }
   }, [userDocs, reset]);
 
-  // ✅ Submit
-  const onSubmit = (data) => {
-    console.log("📦 Documents Data:", data);
+  // SUBMIT
+  const onSubmit = async (data) => {
+    console.log("FINAL DATA:", data);
 
-    // 👉 future API
-    // updateDocuments.mutate({...})
+    // API CALL
+    // await updateDocuments(data)
 
     setIsEdit(false);
   };
 
-  // 🔹 Common Field UI (same as profile)
-  const Field = ({ label, field, children }) => (
-    <div>
-      <p className="text-gray-700 text-[14px] font-medium">{label}</p>
-
-      {isEdit ? (
-        children
-      ) : (
-        <p className="text-gray-900 font-semibold mt-1">
-          {field?.value
-            ? field.value.format?.("DD MMM YYYY") || field.value
-            : (
-              <span className="text-[#4A9BB5] underline cursor-pointer">
-                Add Detail
-              </span>
-            )}
-        </p>
-      )}
-    </div>
-  );
-
   return (
-    <div className=" rounded-xl text-gray-900 shadow p-6">
+    <div className="rounded-xl p-6 text-gray-900 shadow">
+      {/* TITLE */}
       <h2 className="text-[22px] font-semibold">My Profile</h2>
 
       <Divider />
 
       {/* HEADER */}
-      <div className="flex justify-between mb-4">
-        <h3 className="font-semibold">Personal Information</h3>
+      <div className="mb-4 flex items-center justify-between">
+        <h3 className="font-semibold">Documents</h3>
 
         {!isEdit && (
-          <Button
-            icon={<EditOutlined />}
-            onClick={() => setIsEdit(true)}
-          >
+          <Button icon={<EditOutlined />} onClick={() => setIsEdit(true)}>
             Edit Details
           </Button>
         )}
       </div>
 
-      {/* FORM */}
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid md:grid-cols-2 gap-6">
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* PASSPORT NUMBER */}
+            <EditableField
+              label="Passport Number"
+              value={watch("passportNumber")}
+              isEdit={isEdit}
+            >
+              <RHFInput name="passportNumber" label="Passport Number" />
+            </EditableField>
 
-          {/* PASSPORT NUMBER */}
-          <Controller
-            name="passportNumber"
-            control={control}
-            render={({ field }) => (
-              <Field label="Passport No." field={field}>
-                <Input {...field} size="large" />
-              </Field>
-            )}
-          />
+            {/* PASSPORT EXPIRY */}
+            <EditableField
+              label="Passport Expiry"
+              value={
+                watch("passportExpiry")
+                  ? dayjs(watch("passportExpiry")).format("DD MMM YYYY")
+                  : ""
+              }
+              isEdit={isEdit}
+            >
+              <RHFDatePicker name="passportExpiry" />
+            </EditableField>
 
-          {/* PASSPORT EXPIRY */}
-          <Controller
-            name="passportExpiry"
-            control={control}
-            render={({ field }) => (
-              <Field label="Expiry Date" field={field}>
-                <DatePicker
-                  className="w-full"
-                  size="large"
-                  value={field.value || null}
-                  onChange={(d) => field.onChange(d)}
-                />
-              </Field>
-            )}
-          />
+            {/* COUNTRY */}
+            <EditableField
+              label="Issuing Country"
+              value={watch("issuingCountry")}
+              isEdit={isEdit}
+            >
+              <RHFSelect
+                name="issuingCountry"
+                placeholder="Select Country"
+                options={[
+                  {
+                    label: "India",
+                    value: "India",
+                  },
 
-          {/* ISSUING COUNTRY */}
-          <Controller
-            name="issuingCountry"
-            control={control}
-            render={({ field }) => (
-              <Field label="Issuing Country" field={field}>
-                <Select
-                  {...field}
-                  className="w-full"
-                  size="large"
-                  placeholder="Select Country"
-                  options={[
-                    { value: "India", label: "India" },
-                    { value: "USA", label: "USA" },
-                  ]}
-                  value={field.value || undefined}
-                  onChange={(v) => field.onChange(v)}
-                />
-              </Field>
-            )}
-          />
+                  {
+                    label: "USA",
+                    value: "USA",
+                  },
+                ]}
+              />
+            </EditableField>
 
-          {/* PAN NUMBER */}
-          <Controller
-            name="panNumber"
-            control={control}
-            render={({ field }) => (
-              <Field label="Pan Card Number" field={field}>
-                <Input {...field} size="large" />
-              </Field>
-            )}
-          />
-        </div>
-
-        {/* ACTION */}
-        {isEdit && (
-          <div className="mt-6 flex gap-3">
-            <Button onClick={() => setIsEdit(false)}>
-              Cancel
-            </Button>
-            <Button htmlType="submit" type="primary">
-              Save Changes
-            </Button>
+            {/* PAN NUMBER */}
+            <EditableField
+              label="PAN Number"
+              value={watch("panNumber")}
+              isEdit={isEdit}
+            >
+              <RHFInput
+                name="panNumber"
+                label="PAN Number"
+                transform={(value) => value.toUpperCase()}
+              />
+            </EditableField>
           </div>
-        )}
-      </form>
+
+          {/* ACTION BUTTONS */}
+          {isEdit && (
+            <div className="mt-6 flex gap-3">
+              <Button onClick={() => setIsEdit(false)}>Cancel</Button>
+
+              <Button htmlType="submit" type="primary">
+                Save Changes
+              </Button>
+            </div>
+          )}
+        </form>
+      </FormProvider>
     </div>
   );
 }
