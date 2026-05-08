@@ -1,9 +1,9 @@
 "use client";
 
-import { Card, Rate } from "antd";
-import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-import { useState } from "react";
 import hotels from "@/modules/shared/home/components/data/TopRatedData";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
+import { Card, Rate } from "antd";
+import { useState } from "react";
 
  // 🔥 IMPORT DATA
 
@@ -27,7 +27,7 @@ export default function TopRatedHotels() {
 
   return (
     <div className=" bg-[#EDF7FF]">
-    <div className="bg-gradient-to-br from-sky-400 to-teal-700 py-16 px-4 md:px-10 rounded-3xl ml-30 mr-30">
+    <div className="bg-gradient-to-br from-sky-400 to-teal-700 py-16 px-4 md:px-10 rounded-3xl ml-30 mr-30 w-[85.87%]">
 
       {/* Heading */}
       <div className="text-center text-white mb-10">

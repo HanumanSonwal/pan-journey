@@ -24,7 +24,7 @@ export default function HotelCategory() {
 
   return (
     <div className="py-10 bg-[#edf7ff] mt-[-45px] ">
-      <div className="w- mx-auto px-4">
+      <div className="!w-[96%] mx-auto px-4">
 
         {/* Heading */}
         <div className="text-center mb-10">

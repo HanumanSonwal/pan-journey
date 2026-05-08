@@ -38,7 +38,7 @@ const features = [
 export default function WhySection() {
   return (
     <section className="overflow-hidden bg-[#EDF7FF] px-4 py-16 md:py-20">
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto w-[85.87%]">
         {/* Heading */}
         <div className="mx-auto mb-12 max-w-3xl text-center md:mb-16">
           <h2 className="text-3xl leading-tight font-bold tracking-[-0.02em] text-gray-900 sm:text-3xl md:text-4xl">
