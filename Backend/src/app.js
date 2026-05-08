@@ -9,7 +9,7 @@ import profileRoutes from "./modules/auth/customer-auth/customerProfile/profile.
 import roleRoutes from "./modules/role/role.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
 import testRoutes from "./test.routes.js";
-import customerProfileRoutes from "./modules/auth/customer-auth/customer detail/customerdetail.route.js";
+import customerProfileRoutes from "./modules/auth/customer-auth/customer-documents/customerDocument.routes.js";
 
 
 const app = express();

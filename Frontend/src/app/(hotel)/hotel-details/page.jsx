@@ -1,12 +1,11 @@
-import HotelDetails from '@/modules/hotel/pages/HotelDetails'
-import React from 'react'
+import HotelDetails from "@/modules/hotel/pages/hotelDetails";
 
 function page() {
   return (
     <>
-      <HotelDetails/>
+      <HotelDetails />
     </>
-  )
+  );
 }
 
-export default page
+export default page;

@@ -1,24 +1,24 @@
 import mongoose from "mongoose";
 
-const CustomerDetailSchema = new mongoose.Schema(
+const customerDocumentSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      unique: true, // 1 user = 1 detail document
+      unique: true,
     },
 
-    passportNo: {
+    passportNumber: {
       type: String,
       trim: true,
     },
 
-    expireDate: {
+    passportExpiryDate: {
       type: Date,
     },
 
-    issuingCountry: {
+    passportIssuingCountry: {
       type: String,
       trim: true,
     },
@@ -26,9 +26,17 @@ const CustomerDetailSchema = new mongoose.Schema(
     panCardNumber: {
       type: String,
       trim: true,
+      uppercase: true,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  },
 );
 
-export default mongoose.model("CustomerDocumentDetail", CustomerDetailSchema);
+const CustomerDocument = mongoose.model(
+  "CustomerDocument",
+  customerDocumentSchema,
+);
+
+export default CustomerDocument;
