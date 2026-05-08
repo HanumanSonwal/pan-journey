@@ -95,7 +95,7 @@ export default function DestinationsSection() {
 
   return (
     <section className="overflow-hidden bg-[#F5F7F9] px-4 py-16 text-black md:pb-15">
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto w-[88.87%]">
         {/* Heading */}
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-2xl font-bold text-[#222] md:text-4xl">

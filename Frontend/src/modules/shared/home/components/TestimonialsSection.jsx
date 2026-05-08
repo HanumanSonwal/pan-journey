@@ -34,7 +34,7 @@ const testimonials = [
 export default function TestimonialsSection() {
   return (
     <section className="overflow-hidden bg-[#F5F7F9]  pb-16  md:pb-24">
-      <div className="mx-auto max-w-7xl px-4">
+      <div className="mx-auto w-[90.87%] px-4 ml-20">
         {/* Top Section */}
         <div className="mb-16 grid grid-cols-1 items-start gap-10 lg:grid-cols-2">
           {/* Left */}

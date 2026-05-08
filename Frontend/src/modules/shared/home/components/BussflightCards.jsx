@@ -1,17 +1,17 @@
 "use client";
 
-import Image from "next/image";
 import { Card } from "antd";
+import Image from "next/image";
 
 import bookingData from "../components/data/Busflightherodata";
 
 export default function ComingSoonModulesSection() {
   return (
     <section className="bg-[#F3F4F6]  md:pt-15 px-4 overflow-hidden">
-      <div className="max-w-7xl mx-auto">
+      <div className=" !w-[88.72%] mx-auto  ml-25">
         
         {/* Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-12 ">
           {bookingData.map((item) => (
             <div key={item.id} className="relative">
               

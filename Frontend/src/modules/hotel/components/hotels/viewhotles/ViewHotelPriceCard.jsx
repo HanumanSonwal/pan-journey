@@ -2,7 +2,7 @@ import { Button } from "antd";
 
 const ViewHotelPriceCard = () => {
   return (
-    <div className="border border-gray-200 rounded-xl p-5 bg-gray-50 min-h-[320px] flex flex-col justify-between mb-[-65]">
+    <div className="border border-gray-200  p-5 bg-gray-50 min-h-[320px] flex flex-col justify-between mb-[-65]">
       
       <div>
         <h3 className="text-lg font-semibold">

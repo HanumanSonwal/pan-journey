@@ -5,7 +5,7 @@ import Image from "next/image";
 export default function OfferBanner() {
   return (
     <div className="px-6 py-10 bg-[#EDF7FF] mx-auto flex justify-center items-center">
-      <div className="relative rounded-[30px] overflow-hidden w-[83%] h-[430px]">
+      <div className="relative rounded-[30px] overflow-hidden w-[85.87%] h-[430px]">
         <Image
           src="/images/cashback_banner.png"
           alt="banner"

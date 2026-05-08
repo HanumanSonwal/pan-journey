@@ -1,8 +1,8 @@
 "use client";
 
+import HotelType from "@/modules/shared/home/components/data/HotelType";
 import { useState } from "react";
 import ButtonTab from "./ButtonTab";
-import HotelType from "@/modules/shared/home/components/data/HotelType";
 
 const HotelCategory_Map = {
   Beachvacations: "Beach Vacations",
@@ -23,8 +23,8 @@ export default function HotelCategory() {
   const [activeTab, setActiveTab] = useState(enabledTabs[0]);
 
   return (
-    <div className="py-10 bg-[#edf7ff] mt-[-45px]">
-      <div className="max-w-7xl mx-auto px-4">
+    <div className="py-10 bg-[#edf7ff] mt-[-45px] ">
+      <div className="!w-[96%] mx-auto px-4">
 
         {/* Heading */}
         <div className="text-center mb-10">

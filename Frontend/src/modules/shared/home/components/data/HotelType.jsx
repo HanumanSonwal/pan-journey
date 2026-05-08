@@ -111,12 +111,12 @@ export default function HotelType({ activeTab }) {
         </button>
 
         {/* 🧩 Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 flex-1  justify-items-center !w-[100%] ">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 !gap-[-2] flex-1  justify-items-center !w-[93%] ">
 
           {visibleData.map((item) => (
             <div
               key={item.id}
-              className="bg-white rounded-[12px] overflow-hidden shadow-md hover:shadow-xl transition group w-[260px] mt-[-50px]"
+              className="bg-white rounded-[12px] overflow-hidden shadow-md hover:shadow-xl transition group w-[95%] mt-[-50px]"
             >
               {/* 📸 Image (bigger height) */}
               <div className="h-[260px] overflow-hidden">
