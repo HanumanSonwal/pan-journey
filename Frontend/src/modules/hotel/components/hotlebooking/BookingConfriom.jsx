@@ -1,18 +1,17 @@
-import React from "react";
 import {
-  Card,
-  Row,
-  Col,
-  Tag,
-  Divider,
-  Typography,
-  Space,
-} from "antd";
-import {
-  StarFilled,
   ArrowRightOutlined,
   ClockCircleOutlined,
+  StarFilled,
 } from "@ant-design/icons";
+import {
+  Card,
+  Col,
+  Divider,
+  Row,
+  Space,
+  Tag,
+  Typography,
+} from "antd";
 
 const { Title, Text } = Typography;
 
