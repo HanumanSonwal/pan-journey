@@ -9,7 +9,7 @@ export default function LoginSuccessModal({ open, onClose, onProfile }) {
       open={open}
       footer={null}
       closable={false}
-      width={720} // thoda compact better lagta hai
+      width={720}
       centered
       mask={{ closable: false }}
       styles={{
