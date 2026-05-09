@@ -1,7 +1,7 @@
 "use client";
 
 import AppButton from "@/components/ui/AppButton";
-import RHFInput from "@/components/ui/RHFInput";
+import RHFInput from "@/components/ui/RHFinputs/RHFInput";
 import OtpInput from "@/modules/auth/components/OtpInput";
 import { useSendOtp } from "@/modules/auth/hooks/useLogin";
 import { zodResolver } from "@hookform/resolvers/zod";

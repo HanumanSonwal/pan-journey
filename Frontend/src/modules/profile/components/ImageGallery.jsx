@@ -12,7 +12,7 @@ export default function ImageGallery({ images = [] }) {
   return (
     <>
       {/* FIXED WIDTH WRAPPER (IMPORTANT) */}
-      <div className="w-full md:w-[280px] shrink-0">
+      <div className="w-full shrink-0">
         {/* MAIN IMAGE */}
         <div
           className="w-full h-[180px] rounded-t-xl overflow-hidden cursor-pointer"
