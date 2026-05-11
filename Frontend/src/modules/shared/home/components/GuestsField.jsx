@@ -98,7 +98,7 @@ export default function GuestsField({ value, onChange }) {
       {open && (
         <div
           onClick={(e) => e.stopPropagation()}
-          className="absolute !z-50 mt-2 w-[340px] bg-white shadow-2xl rounded-xl p-4 transition-all duration-200"
+          className="absolute !z-250 mt-2 w-[340px] bg-white shadow-2xl rounded-xl p-4 transition-all duration-200"
         >
           <Counter
             label="Room"

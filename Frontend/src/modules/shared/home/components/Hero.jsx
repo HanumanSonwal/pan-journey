@@ -5,7 +5,6 @@ import { useState } from "react";
 import styles from "./styles/Hero.module.css";
 
 import SearchButton from "./SearchButton";
-
 import Tabs from "./Tabs";
 
 import BusSearchForm from "@/modules/bus/components/BusSearchForm";
@@ -33,26 +32,80 @@ export default function Hero() {
   const handleSearch = () => {
     console.log("🚀 FINAL DATA:", formData);
     router.push("/hotels");
-    
   };
+
   return (
-    <section className="relative w-full pb-60 bg-[#EDF7FF] ">
+    <section className="relative w-full bg-[#EDF7FF] pb-60">
+      {/* Hero Background */}
       <div className={styles.heroBg} />
 
-      <div className="absolute left-1/2 -translate-x-1/2 w-[85.83%] h-[60%] top-[35%] px-4">
-        <div className="bg-white rounded-[10px] shadow-2xl w-full !pb-14 h-86 md:p-8">
+      {/* Search Card */}
+      <div
+        className="
+          absolute
+          left-1/2
+          top-[35%]
+          w-[85.83%]
+          h-[60%]
+          -translate-x-1/2
+          px-4
+
+          /* Tablet Responsive */
+          max-lg:w-[92%]
+          max-lg:top-[32%]
+
+          /* Mobile */
+          max-md:w-[95%]
+          max-md:top-[25%]
+        "
+      >
+        <div
+          className="
+            w-full
+            rounded-[10px]
+            bg-white
+            shadow-2xl
+            !pb-14
+            md:p-8
+
+            /* Tablet */
+            max-lg:p-6
+
+            /* Mobile */
+            max-md:p-4
+          "
+        >
+          {/* Tabs */}
           <Tabs
-             tabs={HOME_TABS} 
+            tabs={HOME_TABS}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
           />
 
-          <h2 className="text-center text-[#72C0F0] text-xl md:text-3xl font-bold mb-2">
+          {/* Heading */}
+          <h2
+            className="
+              mb-2
+              text-center
+              font-bold
+              text-[#72C0F0]
+              text-xl
+              md:text-3xl
+
+              /* Tablet */
+              max-lg:text-[28px]
+
+              /* Mobile */
+              max-md:text-[22px]
+            "
+          >
             Find What You Are Looking For
           </h2>
 
+          {/* Dynamic Form */}
           {ActiveForm && <ActiveForm setFormData={setFormData} />}
 
+          {/* Search Button */}
           <SearchButton onSearch={handleSearch} />
         </div>
       </div>

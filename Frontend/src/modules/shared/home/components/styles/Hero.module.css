@@ -4,7 +4,7 @@
   background-position: center;
   background-repeat: no-repeat;
 
-  height: 65vh; /* 👈 enough space for 440px image */
+  height: 65vh;
   position: relative;
 
   display: flex;
@@ -16,18 +16,29 @@
 .heroBg img {
   width: 100%;
   max-width: 1164px;
-  height: 440px; /* 👈 FIXED height */
+  height: 440px;
   object-fit: contain;
 }
 
-/* Tablet */
-@media (min-width: 768px) {
+/* Tablet Responsive */
+@media (max-width: 1024px) {
   .heroBg {
-    height: 67vh; 
+    height: 60vh;
   }
 
   .heroBg img {
-    height: 440px;
+    height: 360px;
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 767px) {
+  .heroBg {
+    height: 52vh;
+  }
+
+  .heroBg img {
+    height: 250px;
   }
 }
 
@@ -43,9 +54,16 @@
   margin-top: -520px;
 }
 
-@media (min-width: 768px) {
+/* Tablet */
+@media (max-width: 1024px) {
+  .cardWrapper {
+    margin-top: -220px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
   .cardWrapper {
     margin-top: -120px;
-    
   }
 }

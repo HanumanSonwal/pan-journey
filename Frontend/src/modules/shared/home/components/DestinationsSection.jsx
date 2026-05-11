@@ -94,7 +94,7 @@ export default function DestinationsSection() {
   const [activeTab, setActiveTab] = useState("All Destinations");
 
   return (
-    <section className="overflow-hidden bg-[#F5F7F9] px-4 py-16 text-black md:pb-15">
+    <section className="overflow-hidden bg-[#F5F7F9] px-4 py-16 text-black md:pb-15  mt-[-10px]">
       <div className="mx-auto w-[88.87%]">
         {/* Heading */}
         <div className="mx-auto max-w-3xl text-center">
@@ -116,11 +116,10 @@ export default function DestinationsSection() {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`relative text-[22px] font-medium whitespace-nowrap transition-all duration-300 md:text-[28px] ${
-                  activeTab === tab
+                className={`relative text-[22px] font-medium whitespace-nowrap transition-all duration-300 md:text-[28px] ${activeTab === tab
                     ? "font-semibold text-[#69B8E7]"
                     : "text-[#333] hover:text-[#69B8E7]"
-                }`}
+                  }`}
               >
                 {tab}
 

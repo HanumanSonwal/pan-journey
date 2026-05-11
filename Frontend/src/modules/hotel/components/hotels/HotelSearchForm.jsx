@@ -53,26 +53,35 @@ export default function HotelSearchForm({ setFormData }) {
   return (
     <div className="w-full">
       {/* Heading */}
-      <div className="flex flex-col md:flex-row md:justify-between gap-2">
-        <h3 className="text-xl md:text-2xl font-extrabold text-gray-900">
+      <div className="flex flex-col gap-2 md:flex-row md:justify-between">
+        <h3 className="text-xl font-extrabold text-gray-900 md:text-2xl">
           Select Your Hotels
         </h3>
 
-        <h3 className="text-xs md:text-sm font-semibold text-gray-600">
+        <h3 className="text-xs font-semibold text-gray-600 md:text-sm">
           Book Domestic and International Property Online.
         </h3>
       </div>
 
       {/* GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-[2fr_1.5fr_1.5fr] gap-4 mt-4">
-        {/* ✅ FIXED CITY */}
-        <div className="relative border border-gray-300 rounded-xl px-3 py-3 hover:border-[#0077b6] transition-all !h-[96px]">
-          <span className="absolute -top-2 left-3 bg-white px-1 text-[14px] md:text-[15px] text-gray-800 font-medium" >
+      <div
+        className="
+          mt-4
+          grid
+          grid-cols-1
+          gap-4
+
+          md:grid-cols-2
+          xl:grid-cols-[2fr_1.5fr_1.5fr]
+        "
+      >
+        {/* CITY */}
+        <div className="relative rounded-xl border border-gray-300 px-3 py-3 transition-all hover:border-[#0077b6] min-h-[96px]">
+          <span className="absolute -top-2 left-3 bg-white px-1 text-[14px] font-medium text-gray-800 md:text-[15px]">
             City, Property name or Location
           </span>
 
-          {/* <div className="flex flex-col justify-center min-h-[50px] px-1 md:px-3"> */}
-          <div className="flex flex-col justify-center min-h-[56px] px-1 md:px-2 ">
+          <div className="flex min-h-[56px] flex-col justify-center px-1 md:px-2">
             <Select
               value={form.city}
               onChange={(v) => update("city", v)}
@@ -86,20 +95,24 @@ export default function HotelSearchForm({ setFormData }) {
               }}
             />
 
-            <span className="text-xs md:text-sm text-gray-500 mp-[-12px]">
+            <span className="text-xs text-gray-500 md:text-sm">
               India
             </span>
           </div>
         </div>
 
         {/* DATE */}
-        <DateRangeField
-          value={form.dateRange}
-          onChange={(dates) => update("dateRange", dates)}
-        />
+        <div className="w-full">
+          <DateRangeField
+            value={form.dateRange}
+            onChange={(dates) => update("dateRange", dates)}
+          />
+        </div>
 
         {/* GUESTS */}
-        <GuestsField value={form} onChange={(val) => setForm(val)} />
+        <div className="w-full md:col-span-2 xl:col-span-1">
+          <GuestsField value={form} onChange={(val) => setForm(val)} />
+        </div>
       </div>
     </div>
   );

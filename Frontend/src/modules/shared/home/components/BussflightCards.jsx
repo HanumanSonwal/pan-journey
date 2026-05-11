@@ -7,14 +7,14 @@ import bookingData from "../components/data/Busflightherodata";
 
 export default function ComingSoonModulesSection() {
   return (
-    <section className="bg-[#F3F4F6]  md:pt-15 px-4 overflow-hidden">
-      <div className=" !w-[88.72%] mx-auto  ml-25">
-        
+    <section className="bg-[#F3F4F6]  md:pt-15 px-4 overflow-hidden  mt-[-10px]">
+      <div className=" w-[88.72%] md:w-[95%] lg:w-[87%] mx-auto  ml-25 md:ml-4 lg:ml-25">
+
         {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-12 ">
           {bookingData.map((item) => (
             <div key={item.id} className="relative">
-              
+
               {/* Image */}
               <div className="relative h-[320px] sm:h-[380px] md:h-[420px] rounded-[16px] overflow-hidden">
                 <Image

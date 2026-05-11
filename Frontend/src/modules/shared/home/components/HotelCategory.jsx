@@ -23,24 +23,24 @@ export default function HotelCategory() {
   const [activeTab, setActiveTab] = useState(enabledTabs[0]);
 
   return (
-    <div className="py-10 bg-[#edf7ff] mt-[-45px] ">
-      <div className="!w-[96%] mx-auto px-4">
+    <div className="bg-[#edf7ff] pt-12 pb-10 relative z-[-10] mt-[-4]   mt-[-10px] max-lg:mt-[-50px] max-md:mt-[-10px]">
+      <div className="w-[96%] mx-auto px-4 !boder-none">
 
         {/* Heading */}
         <div className="text-center mb-10">
-          <h1 className="!text-4xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 mb-2">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-2">
             Places As Per Your Vibe
           </h1>
 
           <p className="text-gray-500 text-sm sm:text-base max-w-md mx-auto">
-            We're committed to offering more than just products—<br/>
+            We're committed to offering more than just products—
+            <br className="hidden sm:block" />
             we provide exceptional experiences.
           </p>
-        
         </div>
 
         {/* Tabs */}
-        <div className="flex justify-center mb-12 text-[#3D3D3D] text-xl">
+        <div className="flex justify-center mb-10 overflow-x-auto scrollbar-hide">
           <ButtonTab
             tabs={tabs}
             activeTab={activeTab}
@@ -50,9 +50,7 @@ export default function HotelCategory() {
 
         {/* Hotels */}
         <HotelType activeTab={activeTab} />
-
       </div>
-      
     </div>
   );
 }
