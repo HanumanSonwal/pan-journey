@@ -1,11 +1,9 @@
 "use client";
 
-import dayjs from "dayjs";
-
 import { Controller, useFormContext } from "react-hook-form";
-import AppDatePicker from "./AppDatePicker";
+import AppSelect from "../inputs/AppSelect";
 
-export default function RHFDatePicker({ name, ...props }) {
+export default function RHFSelect({ name, ...props }) {
   const {
     control,
     formState: { errors },
@@ -16,10 +14,11 @@ export default function RHFDatePicker({ name, ...props }) {
       name={name}
       control={control}
       render={({ field }) => (
-        <AppDatePicker
+        <AppSelect
+          {...field}
           {...props}
-          value={field.value ? dayjs(field.value) : null}
-          onChange={(date) => field.onChange(date ? date.toISOString() : null)}
+          value={field.value || undefined}
+          onChange={(value) => field.onChange(value)}
           error={errors?.[name]?.message}
         />
       )}

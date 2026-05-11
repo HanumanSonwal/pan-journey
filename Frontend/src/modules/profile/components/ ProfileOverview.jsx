@@ -21,45 +21,30 @@ import {
 const schema = z.object({
   firstName: z.string().min(1, "First name required"),
   lastName: z.string().optional(),
-
   gender: z.string().min(1, "Select gender"),
-
   email: z.string().email("Invalid email"),
-
   mobile: z.string().regex(/^[6-9]\d{9}$/, "Invalid mobile number"),
-
   city: z.string().min(1, "City required"),
-
   state: z.string().min(1, "State required"),
-
   nationality: z.string().nullable().optional(),
-
   maritalStatus: z.string().nullable().optional(),
-
   dateOfBirth: z.any().nullable().optional(),
-
   anniversary: z.any().nullable().optional(),
 });
 
 export default function ProfileOverview() {
   const { data: user } = useProfile();
-
   console.log("🚀 USER-data:", user);
-
   const updateProfile = useUpdateProfile();
   const sendEmailOtp = useSendEmailOtp();
   const verifyEmail = useVerifyEmail();
   const sendMobileOtp = useSendMobileOtp();
   const verifyMobile = useVerifyMobile();
-
   const [isEdit, setIsEdit] = useState(false);
-
   const [emailOtp, setEmailOtp] = useState("");
   const [mobileOtp, setMobileOtp] = useState("");
-
   const [showEmailOtp, setShowEmailOtp] = useState(false);
   const [showMobileOtp, setShowMobileOtp] = useState(false);
-
   const [emailVerified, setEmailVerified] = useState(false);
   const [mobileVerified, setMobileVerified] = useState(false);
 
@@ -179,12 +164,12 @@ export default function ProfileOverview() {
   const Field = ({ label, field, children, type }) => {
     return (
       <div>
-        <p className="text-gray-700 text-[14px] font-medium">{label}</p>
+        <p className="text-[14px] font-medium text-gray-700">{label}</p>
 
         {isEdit ? (
           children
         ) : (
-          <p className="text-gray-900 font-semibold mt-1">
+          <p className="mt-1 font-semibold text-gray-900">
             {field?.value
               ? type === "date"
                 ? dayjs(field.value).format("DD MMM YYYY")
@@ -197,15 +182,19 @@ export default function ProfileOverview() {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.08)] p-6">
+<>
       {/* 🔹 Heading */}
-      <h2 className="text-[22px] font-semibold text-black">My Profile</h2>
+      <div className="flex items-center justify-between bg-white py-4 px-6 text-gray-900">
+        <h2 className="mb-0! text-[22px] font-bold text-gray-900">
+          My Profile
+        </h2>
+      </div>
 
-      <Divider />
-
+      {/* <Divider /> */}
+    <div className="rounded-xl bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.08)]">
       {/* 🔹 PERSONAL INFO */}
-      <div className="flex justify-between items-center mb-4 text-gray-900">
-        <h3 className="font-semibold text-[16px]">Personal Information</h3>
+      <div className="mb-4 flex items-center justify-between text-gray-900">
+        <h3 className="text-[16px] font-semibold">Personal Information</h3>
 
         {!isEdit && (
           <Button icon={<EditOutlined />} onClick={() => setIsEdit(true)}>
@@ -214,7 +203,7 @@ export default function ProfileOverview() {
         )}
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           <div>
             <Controller
               name="firstName"
@@ -225,7 +214,7 @@ export default function ProfileOverview() {
                 </Field>
               )}
             />
-            <p className="text-red-500 text-xs">{errors.firstName?.message}</p>
+            <p className="text-xs text-red-500">{errors.firstName?.message}</p>
           </div>
 
           <div>
@@ -238,7 +227,7 @@ export default function ProfileOverview() {
                 </Field>
               )}
             />
-            <p className="text-red-500 text-xs">{errors.lastName?.message}</p>
+            <p className="text-xs text-red-500">{errors.lastName?.message}</p>
           </div>
           <div>
             <Controller
@@ -261,7 +250,7 @@ export default function ProfileOverview() {
                 </Field>
               )}
             />
-            <p className="text-red-500 text-xs">{errors.gender?.message}</p>
+            <p className="text-xs text-red-500">{errors.gender?.message}</p>
           </div>
           <div>
             <Controller
@@ -284,7 +273,7 @@ export default function ProfileOverview() {
                 </Field>
               )}
             />
-            <p className="text-red-500 text-xs">
+            <p className="text-xs text-red-500">
               {errors.dateOfBirth?.message}
             </p>
           </div>
@@ -309,7 +298,7 @@ export default function ProfileOverview() {
                 </Field>
               )}
             />
-            <p className="text-red-500 text-xs">
+            <p className="text-xs text-red-500">
               {errors.nationality?.message}
             </p>
           </div>
@@ -336,7 +325,7 @@ export default function ProfileOverview() {
               )}
             />
 
-            <p className="text-red-500 text-xs">
+            <p className="text-xs text-red-500">
               {errors.maritalStatus?.message}
             </p>
           </div>
@@ -364,7 +353,7 @@ export default function ProfileOverview() {
               )}
             />
 
-            <p className="text-red-500 text-xs">
+            <p className="text-xs text-red-500">
               {errors.anniversary?.message}
             </p>
           </div>
@@ -391,7 +380,7 @@ export default function ProfileOverview() {
               )}
             />
 
-            <p className="text-red-500 text-xs">{errors.city?.message}</p>
+            <p className="text-xs text-red-500">{errors.city?.message}</p>
           </div>
 
           <div>
@@ -417,20 +406,20 @@ export default function ProfileOverview() {
               )}
             />
 
-            <p className="text-red-500 text-xs">{errors.state?.message}</p>
+            <p className="text-xs text-red-500">{errors.state?.message}</p>
           </div>
         </div>
 
         <Divider />
 
         {/* 🔹 CONTACT */}
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="font-semibold text-[16px] text-gray-900">
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="text-[16px] font-semibold text-gray-900">
             Contact Details
           </h3>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {/* EMAIL */}
 
           <div>
@@ -439,7 +428,7 @@ export default function ProfileOverview() {
               control={control}
               render={({ field }) => (
                 <Field label="Email" field={field} isEdit={isEdit}>
-                  <div className="flex gap-2 items-center">
+                  <div className="flex items-center gap-2">
                     <Input
                       {...field}
                       className="w-full"
@@ -461,7 +450,7 @@ export default function ProfileOverview() {
                     </Button>
 
                     {emailVerified && (
-                      <CheckCircleFilled className="text-green-500 text-lg" />
+                      <CheckCircleFilled className="text-lg text-green-500" />
                     )}
                   </div>
                 </Field>
@@ -470,7 +459,7 @@ export default function ProfileOverview() {
 
             {/* OTP INPUT */}
             {showEmailOtp && (
-              <div className="flex gap-2 mt-2">
+              <div className="mt-2 flex gap-2">
                 <Input
                   placeholder="6 digit OTP"
                   maxLength={6}
@@ -505,7 +494,7 @@ export default function ProfileOverview() {
               </div>
             )}
 
-            <p className="text-red-500 text-xs">{errors.email?.message}</p>
+            <p className="text-xs text-red-500">{errors.email?.message}</p>
           </div>
 
           {/* MOBILE */}
@@ -515,7 +504,7 @@ export default function ProfileOverview() {
               control={control}
               render={({ field }) => (
                 <Field label="Mobile No." field={field} isEdit={isEdit}>
-                  <div className="flex gap-2 items-center">
+                  <div className="flex items-center gap-2">
                     <Input
                       {...field}
                       type="tel"
@@ -547,7 +536,7 @@ export default function ProfileOverview() {
                     </Button>
 
                     {mobileVerified && (
-                      <CheckCircleFilled className="text-green-500 text-lg" />
+                      <CheckCircleFilled className="text-lg text-green-500" />
                     )}
                   </div>
                 </Field>
@@ -556,7 +545,7 @@ export default function ProfileOverview() {
 
             {/* OTP INPUT */}
             {showMobileOtp && (
-              <div className="flex gap-2 mt-2">
+              <div className="mt-2 flex gap-2">
                 <Input
                   placeholder="6 digit OTP"
                   maxLength={6}
@@ -591,7 +580,7 @@ export default function ProfileOverview() {
               </div>
             )}
 
-            <p className="text-red-500 text-xs">{errors.mobile?.message}</p>
+            <p className="text-xs text-red-500">{errors.mobile?.message}</p>
           </div>
         </div>
       </form>
@@ -612,5 +601,6 @@ export default function ProfileOverview() {
         </div>
       )}
     </div>
+    </>
   );
 }

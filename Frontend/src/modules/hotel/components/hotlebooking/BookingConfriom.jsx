@@ -3,6 +3,15 @@ import {
   ClockCircleOutlined,
   StarFilled,
 } from "@ant-design/icons";
+import {
+  Card,
+  Col,
+  Divider,
+  Row,
+  Space,
+  Tag,
+  Typography,
+} from "antd";
 
 import {
   Button,

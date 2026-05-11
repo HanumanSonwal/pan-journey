@@ -162,8 +162,8 @@ export default function Header() {
         isOpen={open}
         onClose={() => setOpen(false)}
         onSuccess={() => {
-          setOpen(false); // ❌ login modal close
-          setShowSuccess(true); // ✅ success modal open
+          setOpen(false); // 
+          setShowSuccess(true); 
         }}
       />
       <LoginSuccessModal

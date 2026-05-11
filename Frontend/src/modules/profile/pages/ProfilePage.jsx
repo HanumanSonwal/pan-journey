@@ -6,52 +6,50 @@ import ProfileOverview from "../components/ ProfileOverview";
 import BookingDetailsTab from "../components/BookingDetailsTab";
 import BookingHistoryTab from "../components/BookingHistoryTab";
 import DocumentsTab from "../components/DocumentsTab";
+import HelpSupportPage from "../components/HelpSupportPage";
 import Sidebar from "../components/Sidebar";
 import WishlistTab from "../components/WishlistTab";
-
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("profile");
   const [selectedBooking, setSelectedBooking] = useState(null);
 
   return (
-    <div className="bg-[#edf7ff] min-h-screen">
+    <div className="min-h-screen bg-[#edf7ff]">
       {/* TOP BANNER */}
       <div className="relative h-[220px] w-full overflow-hidden">
         <img
           src="/images/profile-bg.png"
           alt="background"
-          className="w-full h-full object-cover"
+          className="h-full w-full object-cover"
         />
 
         <div className="absolute inset-0 bg-black/20" />
       </div>
 
       {/* MAIN SECTION */}
-      <div className="relative z-20 max-w-[1250px] mx-auto px-3 sm:px-4 md:px-6 -mt-14 pb-10">
-        {/* SMALL GAP */}
-        <div className="grid grid-cols-1 lg:grid-cols-[300px_minmax(0,1fr)] gap-3 items-start">
+      <div className="relative z-20 mx-auto -mt-10 max-w-[1300px] px-4 pb-12 sm:px-5 lg:px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[340px_minmax(0,1fr)]">
           {/* SIDEBAR */}
-          <div className="w-full sticky top-5 self-start">
-            {/* <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} /> */}
+          <div className="sticky top-5 self-start">
             <Sidebar
               activeTab={activeTab}
               setActiveTab={(tab) => {
                 setActiveTab(tab);
 
-                // ✅ reset details page
+                // RESET BOOKING DETAILS
                 setSelectedBooking(null);
               }}
             />
           </div>
 
           {/* CONTENT */}
-          <div className="min-w-0 bg-white  border border-gray-200 shadow-[1px_4px_4px_4px_#00000014] overflow-hidden">
+          <div className="min-w-0">
             {activeTab === "profile" && <ProfileOverview />}
 
             {activeTab === "documents" && <DocumentsTab />}
 
             {activeTab === "wishlist" && <WishlistTab />}
-            {/* {activeTab === "BookingHistory" && <BookingHistoryTab />} */}
+
             {activeTab === "BookingHistory" && (
               <>
                 {!selectedBooking ? (
@@ -66,8 +64,14 @@ export default function ProfilePage() {
             )}
 
             {activeTab === "settings" && (
-              <div className="p-6">Settings coming soon...</div>
+              <div className="rounded-2xl bg-white p-6 shadow-[1px_4px_4px_4px_#00000014]">
+                <p className="mb-0 text-[16px] text-gray-700">
+                  Settings coming soon...
+                </p>
+              </div>
             )}
+
+            {activeTab === "support" && <HelpSupportPage />}
           </div>
         </div>
       </div>
