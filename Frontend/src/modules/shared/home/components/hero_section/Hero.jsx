@@ -1,8 +1,8 @@
 "use client";
 
 import { HOME_TABS } from "@/modules/shared/config/homeTabs";
-import { useState } from "react";
 import styles from "@/modules/shared/home/components/styles/Hero.module.css";
+import { useState } from "react";
 
 import SearchButton from "./SearchButton";
 import Tabs from "./Tabs";
@@ -40,38 +40,8 @@ export default function Hero() {
       <div className={styles.heroBg} />
 
       {/* Search Card */}
-      <div
-        className="absolute left-1/2
-          top-[35%]
-          w-[85.83%]
-          h-[60%]
-          -translate-x-1/2
-          px-4
-
-          /* Tablet Responsive */
-          max-lg:w-[92%]
-          max-lg:top-[32%]
-
-          /* Mobile */
-          max-md:w-[95%]
-          max-md:top-[25%]
-        "
-      >
-        <div
-          className="w-full
-            rounded-[10px]
-            bg-white
-            shadow-2xl
-            !pb-14
-            md:p-8
-
-            /* Tablet */
-            max-lg:p-6
-
-            /* Mobile */
-            max-md:p-4
-          "
-        >
+      <div className="/* Tablet Responsive */ /* Mobile */ absolute top-[35%] left-1/2 h-[60%] w-[85.83%] -translate-x-1/2 px-4 max-lg:top-[32%] max-lg:w-[92%] max-md:top-[25%] max-md:w-[95%]">
+        <div className="/* Tablet */ /* Mobile */ w-full rounded-[10px] bg-white !pb-14 shadow-2xl max-lg:p-6 max-md:p-4 md:p-8">
           {/* Tabs */}
           <Tabs
             tabs={HOME_TABS}
