@@ -81,22 +81,7 @@ export default function Hero() {
           />
 
           {/* Heading */}
-          <h2
-            className="
-              mb-2
-              text-center
-              font-bold
-              text-[#72C0F0]
-              text-xl
-              md:text-3xl
-
-              /* Tablet */
-              max-lg:text-[28px]
-
-              /* Mobile */
-              max-md:text-[22px]
-            "
-          >
+          <h2 className="/* Tablet */ /* Mobile */ mb-2 text-center text-xl font-bold text-[#72C0F0] max-lg:text-[28px] max-md:text-[22px] md:text-3xl">
             Find What You Are Looking For
           </h2>
 

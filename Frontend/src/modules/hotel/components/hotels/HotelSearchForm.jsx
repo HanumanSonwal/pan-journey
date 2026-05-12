@@ -64,17 +64,7 @@ export default function HotelSearchForm({ setFormData }) {
       </div>
 
       {/* GRID */}
-      <div
-        className="
-          mt-4
-          grid
-          grid-cols-1
-          gap-4
-
-          md:grid-cols-2
-          xl:grid-cols-[2fr_1.5fr_1.5fr]
-        "
-      >
+      <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-[2fr_1.5fr_1.5fr]">
         {/* CITY */}
         <div className="relative rounded-xl border border-gray-300 px-3 py-3 transition-all hover:border-[#0077b6] h-[82px]">
           <span className="absolute -top-2 left-3 bg-white px-1 text-[14px] font-medium text-gray-800 md:text-[15px]">
@@ -95,9 +85,7 @@ export default function HotelSearchForm({ setFormData }) {
               }}
             />
 
-            <span className="text-xs text-gray-500 md:text-sm">
-              India
-            </span>
+            <span className="text-xs text-gray-500 md:text-sm">India</span>
           </div>
         </div>
 
