@@ -33,7 +33,17 @@ const hotels = [
     image: "https://images.unsplash.com/photo-1521783988139-8933fbcf5d1f",
     desc: "Lorem Ipsum Dolor Sit Amet",
     rating: 5,
+
   },
+  {
+    id: 6,
+    name: "Hotle full name ",
+    image: " https://images.unsplash.com/photo-1582719478250-c89cae4dc85b ",
+    desc: " Lorem Ipsum Dolor Sit Amet",
+    rating: 5
+
+  },
+
 ];
 
 export default hotels;
