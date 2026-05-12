@@ -8,6 +8,7 @@ import otpRoutes from "./modules/auth/customer-auth/auth.routes.js";
 import profileRoutes from "./modules/auth/customer-auth/customerProfile/profile.routes.js";
 import roleRoutes from "./modules/role/role.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
+import destinationRoutes from "./modules/exploreDesitanation/desitanation.routes.js";
 import citySearch from "./modules/citysearch/supplierCity.routes.js";
 
 import testRoutes from "./test.routes.js";
@@ -38,6 +39,7 @@ app.use("/api/v1/customer/auth/", otpRoutes);
 app.use("/api/v1/customer/profile", profileRoutes);
 
 app.use("/api/v1", testRoutes);
+app.use("/api/v1", destinationRoutes);
 app.use("/api/v1/customer", customerProfileRoutes);
 app.use(errorHandler);
 
