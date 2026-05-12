@@ -1,7 +1,4 @@
-
-
 import { searchDestinationFromSupplier } from "../citysearch/supplierCity.service.js";
-
 import {
   sendSuccess,
   sendError,
@@ -11,25 +8,38 @@ export const supplierCitySearchController = async (req, res) => {
   try {
     const { SearchInput } = req.body;
 
-    if (!SearchInput) {
-      return sendError(
+    /* ===============================
+       CASE 1 → No Search Input
+       Return Popular Cities
+    =============================== */
+    if (!SearchInput || SearchInput.trim() === "") {
+      const popularCities = [
+        { id: "437227", name: "Paris", city: "Paris, France" },
+        { id: "480416", name: "Rome", city: "Rome, Lazio, Italy" },
+        { id: "246673", name: "Singapore", city: "Singapore" },
+        { id: "221688", name: "Dubai", city: "Dubai, UAE" }
+      ];
+
+      return sendSuccess(
         res,
-        "SearchInput is required",
-        400
+        "Popular destinations fetched successfully",
+        popularCities
       );
     }
 
-    const destinations =
-      await searchDestinationFromSupplier(SearchInput);
+    /* ===============================
+       CASE 2 → Search From Supplier
+    =============================== */
+    const destinations = await searchDestinationFromSupplier(SearchInput);
 
     return sendSuccess(
       res,
       "Destination fetched successfully",
-      destinations,
-    
+      destinations
     );
+
   } catch (err) {
-    console.log(err);
+    console.log("Supplier city search error:", err);
 
     return sendError(
       res,
