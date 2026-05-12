@@ -1,22 +1,11 @@
 "use client";
 
-import { Select } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
 
+import DestinationSearchField from "@/modules/shared/home/components/DestinationSearchField";
 import DateRangeField from "../DateRangeField";
 import GuestsField from "../GuestsField";
-
-const cities = [
-  { label: "Goa", value: "goa" },
-  { label: "Jaipur", value: "jaipur" },
-  { label: "Delhi", value: "delhi" },
-  { label: "Mumbai", value: "mumbai" },
-  { label: "Bangalore", value: "bangalore" },
-  { label: "Hyderabad", value: "hyderabad" },
-  { label: "Udaipur", value: "udaipur" },
-  { label: "Pune", value: "pune" },
-];
 
 export default function SearchBar({ filters, setFilters }) {
   const [form, setForm] = useState({
@@ -55,10 +44,10 @@ export default function SearchBar({ filters, setFilters }) {
   };
 
   return (
-    <div className="bg-[#72C0F0] py-10 px-2 md:px-6 shadow relative pb-10 mb-3">
-      <div className="max-w-[1200px] mx-auto">
+    <div className="relative mb-3 bg-[#72C0F0] px-2 py-10 pb-10 shadow md:px-6">
+      <div className="mx-auto max-w-[1200px]">
         {/* HEADINGS */}
-        <div className="hidden md:grid grid-cols-12 gap-3 text-sm mb-2 px-1 text-white">
+        <div className="mb-2 hidden grid-cols-12 gap-3 px-1 text-sm text-white md:grid">
           <div className="col-span-4">City / Location</div>
 
           <div className="col-span-3">Check-In / Check-Out</div>
@@ -68,22 +57,25 @@ export default function SearchBar({ filters, setFilters }) {
           <div className="col-span-2"></div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
-          <div className="bg-white rounded-lg border border-gray-300 h-[50px] md:col-span-4 flex items-center px-2">
-            <Select
-              value={form.city}
-              onChange={(v) => update("city", v)}
-              options={cities}
-              variant="borderless"
-              popupMatchSelectWidth={false}
-              className="w-full"
-              style={{
-                fontWeight: 700,
-                fontSize: "16px",
+        <div className="grid grid-cols-1 items-center gap-3 md:grid-cols-12">
+          <div className="md:col-span-4">
+            <DestinationSearchField
+              value={{
+                city: form.city,
+                cityData: form.cityData,
               }}
+              onChange={(val) =>
+                setForm((prev) => ({
+                  ...prev,
+                  ...val,
+                }))
+              }
+              compact
+              fontSize="16px"
+              height="50px"
+              wrapperClassName="bg-white !py-0"
             />
           </div>
-
           <div className="md:col-span-3">
             <DateRangeField
               value={form.dateRange}
@@ -108,7 +100,7 @@ export default function SearchBar({ filters, setFilters }) {
             <button
               type="button"
               onClick={handleSearch}
-              className="w-full h-[50px] rounded-lg bg-[#0f766e] hover:bg-[#0d5f58] transition-all duration-200 text-white font-semibold text-sm tracking-wide active:scale-[0.98]"
+              className="h-[50px] w-full rounded-lg bg-[#0f766e] text-sm font-semibold tracking-wide text-white transition-all duration-200 hover:bg-[#0d5f58] active:scale-[0.98]"
             >
               SEARCH
             </button>

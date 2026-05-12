@@ -3,20 +3,18 @@
 import { Card } from "antd";
 import Image from "next/image";
 
-import bookingData from "../components/data/Busflightherodata";
+import bookingData from "./data/Busflightherodata";
 
-export default function ComingSoonModulesSection() {
+export default function ComingSoonSection() {
   return (
-    <section className="bg-[#F3F4F6]  md:pt-15 px-4 overflow-hidden  mt-[-10px]">
-      <div className=" w-[88.72%] md:w-[95%] lg:w-[87%] mx-auto  ml-25 md:ml-4 lg:ml-25">
-
+    <section className="mt-[-10px] overflow-hidden bg-[#F3F4F6] px-4 md:pt-15">
+      <div className="mx-auto ml-25 w-[88.72%] md:ml-4 md:w-[95%] lg:ml-25 lg:w-[87%]">
         {/* Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-12 ">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:gap-12">
           {bookingData.map((item) => (
             <div key={item.id} className="relative">
-
               {/* Image */}
-              <div className="relative h-[320px] sm:h-[380px] md:h-[420px] rounded-[16px] overflow-hidden">
+              <div className="relative h-[320px] overflow-hidden rounded-[16px] sm:h-[380px] md:h-[420px]">
                 <Image
                   src={item.image}
                   alt={item.title}
@@ -28,7 +26,7 @@ export default function ComingSoonModulesSection() {
 
                 {/* Coming Soon Tag */}
                 <div className="absolute top-0 left-0 z-10">
-                  <span className="bg-[#49A6C9] text-white text-sm sm:text-base px-5 py-3 rounded-br-[12px]">
+                  <span className="rounded-br-[12px] bg-[#49A6C9] px-5 py-3 text-sm text-white sm:text-base">
                     Coming Soon
                   </span>
                 </div>
@@ -48,9 +46,7 @@ export default function ComingSoonModulesSection() {
                     {item.title}
                   </h3>
 
-                  <p className="text-gray-600 text-[13px]  mt-4">
-                    {item.desc}
-                  </p>
+                  <p className="mt-4 text-[13px] text-gray-600">{item.desc}</p>
                 </div>
               </Card>
             </div>

@@ -7,33 +7,9 @@ import Slider from "react-slick";
 
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
+import { testimonials } from "./data/TestimonialData";
 
-const testimonials = [
-  {
-    id: 1,
-    name: "William Smith",
-    country: "From India",
-    image: "/images/testimonials.png",
-    review:
-      "Lorem ipsum dolor sit amet, consectetur lorem adipiscing elit. sed do eiusmod tem por ipsum incididunt ut labore et dolore magna aliqua lorem ipsum dolor.",
-  },
-  {
-    id: 2,
-    name: "William Smith",
-    country: "From India",
-    image: "/images/testimonials.png",
-    review:
-      "Lorem ipsum dolor sit amet, consectetur lorem adipiscing elit. sed do eiusmod tem por ipsum incididunt ut labore et dolore magna aliqua lorem ipsum dolor.",
-  },
-  {
-    id: 3,
-    name: "William Smith",
-    country: "From India",
-    image: "/images/testimonials.png",
-    review:
-      "Lorem ipsum dolor sit amet, consectetur lorem adipiscing elit. sed do eiusmod tem por ipsum incididunt ut labore et dolore magna aliqua lorem ipsum dolor.",
-  },
-];
+
 
 export default function TestimonialsSection() {
   const settings = {

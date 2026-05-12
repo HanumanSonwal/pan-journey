@@ -1,4 +1,5 @@
-import HotelDetails from "@/modules/hotel/pages/HotelDetails";
+import HotelDetails from "@/modules/hotel/pages/hotelDetails";
+
 
 
 function page() {

@@ -1,28 +1,28 @@
-import BussflightCards from "@/modules/shared/home/components/BussflightCards";
-import Feselity from "@/modules/shared/home/components/WhySection";
-import Hero from "@/modules/shared/home/components/Hero";
-import Herobanner from "@/modules/shared/home/components/Herobanner";
-import HotelCategory from "@/modules/shared/home/components/HotelCategory";
+import Herobanner from "@/modules/shared/home/components/cashback_sections/OfferBanner";
+import Hero from "@/modules/shared/home/components/hero_section/Hero";
 
-import TopRatedHotels from "@/modules/shared/home/components/TopRated";
-import TestimonialsSection from "@/modules/shared/home/components/TestimonialsSection";
-import DestinationsSection from "@/modules/shared/home/components/DestinationsSection";
+import ComingSoonSection from "@/modules/shared/home/components/ComingSoonSection";
 import FAQSection from "@/modules/shared/home/components/FAQSection";
 import NewsletterSection from "@/modules/shared/home/components/NewsletterSection";
+import TestimonialsSection from "@/modules/shared/home/components/TestimonialsSection";
+import TopRatedHotels from "@/modules/shared/home/components/TopRatedHotels";
+import VacationSection from "@/modules/shared/home/components/vacation_sections/VacationSection";
+import WhySection from "@/modules/shared/home/components/why_sections/WhySection";
+import DestinationsSection from "@/modules/shared/home/components/DestinationsSection";
 
 export default function Page() {
   return (
     <>
       <Hero />
-      <HotelCategory />
+      <VacationSection />
       <Herobanner />
-      <Feselity />
+      <WhySection />
       <TopRatedHotels />
-      <BussflightCards />
-      <TestimonialsSection/>
-      <DestinationsSection/>
-      <FAQSection/>
-    <NewsletterSection/>
+      <ComingSoonSection />
+      <TestimonialsSection />
+      <DestinationsSection />
+      <FAQSection />
+      <NewsletterSection />
     </>
   );
 }

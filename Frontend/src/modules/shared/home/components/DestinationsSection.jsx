@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import ButtonTab from "./vacation_sections/ButtonTab";
 
 const tabs = [
   "All Destinations",
@@ -94,7 +95,7 @@ export default function DestinationsSection() {
   const [activeTab, setActiveTab] = useState("All Destinations");
 
   return (
-    <section className="overflow-hidden bg-[#F5F7F9] px-4 py-16 text-black md:pb-15  mt-[-10px]">
+    <section className="mt-[-10px] overflow-hidden bg-[#F5F7F9] px-4 py-16 text-black md:pb-15">
       <div className="mx-auto w-[88.87%]">
         {/* Heading */}
         <div className="mx-auto max-w-3xl text-center">
@@ -102,32 +103,22 @@ export default function DestinationsSection() {
             Popular Destinations
           </h2>
 
-          <p className="mx-auto mt-5 max-w-[620px] text-lg  text-gray-600">
+          <p className="mx-auto mt-5 max-w-[620px] text-lg text-gray-600">
             We’re committed to offering more than just products— we provide
             exceptional experiences.
           </p>
         </div>
 
-        {/* Tabs */}
-        {/* Tabs */}
         <div className="flex justify-center">
-          <div className="scrollbar-hide mt-14 flex max-w-full items-center gap-8 overflow-x-auto pb-4 md:gap-10">
-            {tabs.map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`relative text-[22px] font-medium whitespace-nowrap transition-all duration-300 md:text-[28px] ${activeTab === tab
-                    ? "font-semibold text-[#69B8E7]"
-                    : "text-[#333] hover:text-[#69B8E7]"
-                  }`}
-              >
-                {tab}
-
-                {activeTab === tab && (
-                  <span className="absolute -bottom-3 left-0 h-[3px] w-full rounded-full bg-[#69B8E7]" />
-                )}
-              </button>
-            ))}
+          <div className="scrollbar-hide mt-14 flex max-w-full items-center gap-8 overflow-x-auto pb-4 text-[20px] md:gap-10">
+            <ButtonTab
+              tabs={tabs.map((tab) => ({
+                key: tab,
+                label: tab,
+              }))}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+            />
           </div>
         </div>
 
