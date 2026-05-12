@@ -23,7 +23,7 @@ export default function HotelCategory() {
   const [activeTab, setActiveTab] = useState(enabledTabs[0]);
 
   return (
-    <div className="bg-[#edf7ff] pt-12 pb-10 relative z-[-10] mt-[-4]   mt-[-10px] max-lg:mt-[-50px] max-md:mt-[-10px]">
+    <div className="bg-[#edf7ff] pt-12 pb-10 relative z-[-10]   mt-[-10px] max-lg:mt-[-10px] max-md:mt-[-10px]">
       <div className="w-[96%] mx-auto px-4 !boder-none">
 
         {/* Heading */}

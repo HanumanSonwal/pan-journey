@@ -2,8 +2,13 @@
 
 import LoginModal from "@/modules/auth/components/LoginFormModal";
 import { useLogout } from "@/modules/auth/hooks/useAuth";
-import { HeartOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons";
-import { Dropdown } from "antd";
+import {
+  HeartOutlined,
+  LogoutOutlined,
+  MenuOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import { Drawer, Dropdown } from "antd";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,13 +19,13 @@ import LoginSuccessModal from "./LoginSuccessModal";
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [mobileMenu, setMobileMenu] = useState(false);
+
   const { data: session } = useSession();
   const { mutate: logout } = useLogout();
   const router = useRouter();
 
   const user = session?.user;
-
-  console.log("🚀 ~ user:", user);
 
   const getInitials = (name) => {
     if (!name) return "U";
@@ -41,30 +46,20 @@ export default function Header() {
       key: "user",
       label: (
         <div className="flex flex-col">
-          <span className="font-medium text-[14px]">
+          <span className="font-medium text-sm">
             {user?.name || "User"}
           </span>
-          <span className="text-[12px] text-gray-400">
+          <span className="text-xs text-gray-400">
             {user?.email || user?.mobile || ""}
           </span>
         </div>
       ),
       disabled: true,
     },
-    {
-      type: "divider",
-    },
-    {
-      key: "profile",
-      label: <Link href="/profile">My Profile</Link>,
-    },
-    {
-      key: "booking",
-      label: <Link href="/booking">My Bookings</Link>,
-    },
-    {
-      type: "divider",
-    },
+    { type: "divider" },
+    { key: "profile", label: <Link href="/profile">My Profile</Link> },
+    { key: "booking", label: <Link href="/booking">My Bookings</Link> },
+    { type: "divider" },
     {
       key: "logout",
       label: (
@@ -80,92 +75,109 @@ export default function Header() {
 
   return (
     <div className="w-full">
-      {/* 🔹 Top Offer Bar */}
-      <div className="bg-offer-gradient text-white text-center py-3 text-[16px] leading-[120%]">
+      {/* Top Bar */}
+      <div className="bg-offer-gradient text-white text-center py-2 text-sm md:text-base">
         Get the best offers on your every booking!
       </div>
 
-      {/* 🔹 Navbar */}
-      <header className="bg-white px-10 md:px-30 py-4 flex items-center justify-between shadow-sm">
-        {/* Logo */}
-        <div className="text-3xl md:text-4xl font-bold bg-offer-gradient bg-clip-text text-transparent tracking-widest">
-          <Link href="/" className="hover:text-[#4A9BB5]">
-            LOGO
-          </Link>
-        </div>
+      {/* Navbar */}
+      <header className="bg-white px-4 md:px-10 lg:px-20 py-4 flex items-center justify-between shadow-sm">
 
-        {/* Menu */}
-        <nav className="hidden md:flex items-center gap-8 text-gray-900 text-[16px] leading-[130%]">
-          <Link href="#" className="hover:text-[#4A9BB5]">
-            Hotels
-          </Link>
-          <Link href="#" className="hover:text-[#4A9BB5]">
-            Best Offers
-          </Link>
-          <Link href="#" className="hover:text-[#4A9BB5]">
-            Flight Booking
-          </Link>
-          <Link href="#" className="hover:text-[#4A9BB5]">
-            Bus Booking
-          </Link>
-          <Link href="#" className="hover:text-[#4A9BB5]">
-            Support
-          </Link>
+        {/* Logo */}
+        <Link
+          href="/"
+          className="text-2xl md:text-3xl lg:text-4xl font-bold bg-offer-gradient bg-clip-text text-transparent"
+        >
+          LOGO
+        </Link>
+
+        {/* Desktop Menu */}
+        <nav className="hidden lg:flex items-center gap-8 text-gray-900">
+          <Link href="#">Hotels</Link>
+          <Link href="#">Best Offers</Link>
+          <Link href="#">Flight Booking</Link>
+          <Link href="#">Bus Booking</Link>
+          <Link href="#">Support</Link>
         </nav>
 
-        {/* Right Buttons */}
-        <div className="flex items-center gap-3">
+        {/* Right Side */}
+        <div className="flex items-center gap-2 md:gap-3">
+
           {/* Wishlist */}
-          <button className="flex items-center gap-2 border border-[#4A9BB5] text-[#4A9BB5] px-4 py-2 rounded-lg text-[16px] leading-[130%] font-medium hover:bg-[#4A9BB5]/10 transition">
-            <HeartOutlined style={{ color: "#4A9BB5", fontSize: 16 }} />
-            <span className="text-[#4A9BB5]">Wishlist</span>
+          <button className="hidden md:flex items-center gap-2 border border-[#4A9BB5] !text-[#4A9BB5] px-3 py-2 rounded-lg text-sm font-medium">
+            <HeartOutlined />
+            Wishlist
           </button>
 
           {!session ? (
             <button
               onClick={() => setOpen(true)}
-              className="flex items-center gap-2 bg-offer-gradient text-white px-4 py-2 rounded-lg text-[16px] leading-[130%] hover:opacity-90 transition"
+              className="flex items-center gap-2 bg-offer-gradient text-white px-3 py-2 rounded-lg text-sm"
             >
-              <UserOutlined style={{ fontSize: 16 }} />
-              Login / Sign Up
+              <UserOutlined />
+              <span className="hidden md:block">Login</span>
             </button>
           ) : (
-            // ✅ USER PROFILE (same style improved)
             <Dropdown menu={{ items }} placement="bottomRight">
-              <div className="flex items-center gap-2 cursor-pointer px-2 py-1 rounded-md hover:bg-gray-100 transition">
-                {/* 🔥 Avatar */}
-                <div className="w-9 h-9 rounded-full overflow-hidden bg-[#4A9BB5] flex items-center justify-center text-white text-sm font-semibold border border-gray-200">
+              <div className="flex items-center gap-2 cursor-pointer">
+
+                {/* ✅ PERFECT ROUND AVATAR */}
+                <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-[#4A9BB5] flex items-center justify-center bg-gray-100">
                   {user?.image ? (
                     <Image
                       src={user.image}
                       alt="avatar"
                       width={40}
                       height={40}
-                      className="object-cover w-full h-full"
+                      className="w-full h-full object-cover"
                     />
                   ) : (
-                    getInitials(user?.name)
+                    <span className="text-sm font-semibold text-[#4A9BB5]">
+                      {getInitials(user?.name)}
+                    </span>
                   )}
                 </div>
 
-                <span className="hidden md:block text-gray-900 font-medium text-[14px] leading-tight">
-                  {user?.name || "User"}
-                </span>
               </div>
             </Dropdown>
           )}
+
+          {/* Mobile Menu */}
+          <button
+            className="lg:hidden text-xl !text-[#4A9BB5]"
+            onClick={() => setMobileMenu(true)}
+          >
+            <MenuOutlined />
+          </button>
         </div>
       </header>
 
-      {/* <LoginModal isOpen={open} onClose={() => setOpen(false)} /> */}
+      {/* Mobile Drawer */}
+      <Drawer
+        title="Menu"
+        placement="right"
+        onClose={() => setMobileMenu(false)}
+        open={mobileMenu}
+      >
+        <div className="flex flex-col gap-4">
+          <Link href="#">Hotels</Link>
+          <Link href="#">Best Offers</Link>
+          <Link href="#">Flights</Link>
+          <Link href="#">Bus</Link>
+          <Link href="#">Support</Link>
+        </div>
+      </Drawer>
+
+      {/* Modals */}
       <LoginModal
         isOpen={open}
         onClose={() => setOpen(false)}
         onSuccess={() => {
-          setOpen(false); // 
-          setShowSuccess(true); 
+          setOpen(false);
+          setShowSuccess(true);
         }}
       />
+
       <LoginSuccessModal
         open={showSuccess}
         onClose={() => setShowSuccess(false)}

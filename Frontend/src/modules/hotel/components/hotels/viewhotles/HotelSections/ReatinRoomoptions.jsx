@@ -205,14 +205,13 @@ export default function RatingReviews() {
                   {item}
                 </p> 
 
-                <Progress
-                  percent={43}
-                  showInfo={false}
-                  strokeColor="#66b7f7"
-                  
-                  strokeWidth={6}
-                  className="flex-1 !mb-[-4] "
-                />
+             <Progress
+  percent={43}
+  showInfo={false}
+  strokeColor="#66b7f7"
+  size={[180, 6]}
+  className="flex-1 !mb-[-4px]"
+/>
 
                 <span className="text-[14px] text-[#666]">
                   43%

@@ -11,7 +11,7 @@ export default function DateRangeField({ value, onChange }) {
   const nights = start && end ? end.diff(start, "day") : 0;
 
   return (
-    <div className="relative border border-gray-300 rounded-xl px-3 py-2 !h-[96px]">
+    <div className="relative border border-gray-300 rounded-xl px-2 !py-2 !h-[82px]">
       <span className="absolute -top-2 left-3 bg-white px-1 text-[15px] text-gray-800 font-medium">
         Check In - Check Out
       </span>

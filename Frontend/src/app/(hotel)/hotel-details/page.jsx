@@ -1,9 +1,11 @@
-import HotelDetails from "@/modules/hotel/pages/hotelDetails";
+import HotelDetails from "@/modules/hotel/pages/HotelDetails";
+
 
 function page() {
   return (
     <>
       <HotelDetails />
+      
     </>
   );
 }
