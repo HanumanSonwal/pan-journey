@@ -58,8 +58,7 @@ export default function Hero() {
         "
       >
         <div
-          className="
-            w-full
+          className="w-full
             rounded-[10px]
             bg-white
             shadow-2xl

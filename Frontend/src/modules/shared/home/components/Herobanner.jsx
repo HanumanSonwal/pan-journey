@@ -72,7 +72,7 @@ export default function OfferBanner() {
           <button
             className="
               bg-white
-              text-[#72C0F0]
+              !text-[#72C0F0]
               rounded
               font-semibold
               shadow-lg
