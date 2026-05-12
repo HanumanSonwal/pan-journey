@@ -3,56 +3,34 @@
 export default function SearchButton({ onSearch }) {
   return (
     <div
-      className="
-        absolute
-        left-1/2
-        -translate-x-1/2
-        translate-y-1/2
-
-        top-[64%]
-
-        /* Tablet */
-        max-lg:top-[68%]
-
-        /* Mobile */
-        max-md:top-[72%]
+      className="absolute left-1/2 -translate-x-1/2 w-full flex justify-center
+      top-[70%]        /* Default/Desktop */
+      md:top-[380px]   /* 768px */
+      lg:top-[380px]   /* 1024px */
+      xl:top-[292px]   /* ~1440px */
+      2xl:top-[260px]  /* ~2560px */
       "
     >
       <button
         onClick={onSearch}
-        className="
-          flex
-          items-center
-          justify-center
+        className="flex items-center justify-center text-white font-semibold shadow-lg transition-all duration-200 hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] rounded-xl
+        w-[400px] 
+        md:w-[300px] 
+        lg:w-[360px] 
+        xl:w-[380px] 
+        !2xl:w-[490px]
 
-          text-white
-          font-semibold
-          shadow-lg
-          transition-all
-          duration-200
+        h-16 
+        md:h-14 
+        lg:h-16 
+        xl:h-[60px] 
+        2xl:h-[70px]
 
-          hover:opacity-90
-          hover:scale-[1.02]
-          active:scale-[0.98]
-
-          rounded-xl
-
-          /* Laptop Same */
-          w-[400px]
-          h-16
-          text-2xl
-          px-12
-          py-4
-
-          /* Tablet */
-          max-lg:w-[330px]
-          max-lg:h-14
-          max-lg:text-xl
-
-          /* Mobile */
-          max-md:w-[250px]
-          max-md:h-12
-          max-md:text-lg
+        text-2xl 
+        md:text-xl 
+        lg:text-2xl 
+        xl:text-2xl 
+        2xl:text-2xl
         "
         style={{
           background: "linear-gradient(180deg, #72C0F0 0%, #0F6A75 100%)",

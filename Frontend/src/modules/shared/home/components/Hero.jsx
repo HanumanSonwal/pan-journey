@@ -41,9 +41,7 @@ export default function Hero() {
 
       {/* Search Card */}
       <div
-        className="
-          absolute
-          left-1/2
+        className="absolute left-1/2
           top-[35%]
           w-[85.83%]
           h-[60%]

@@ -60,7 +60,7 @@ export default function GuestsField({ value, onChange }) {
     <div
       ref={ref}
       onClick={() => setOpen((prev) => !prev)}
-      className="relative border border-gray-300 rounded-xl px-3 py-2 cursor-pointer hover:border-[#0077b6] transition-all"
+      className="relative border border-gray-300 rounded-xl px-3 py-2 h-[82px] cursor-pointer hover:border-[#0077b6] transition-all"
     >
       <span className="absolute -top-2 left-3 bg-white px-1 text-[14px] md:text-[15px] text-gray-900 font-medium ">
         Rooms & Guests

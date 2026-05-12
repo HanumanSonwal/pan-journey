@@ -76,7 +76,7 @@ export default function HotelSearchForm({ setFormData }) {
         "
       >
         {/* CITY */}
-        <div className="relative rounded-xl border border-gray-300 px-3 py-3 transition-all hover:border-[#0077b6] min-h-[96px]">
+        <div className="relative rounded-xl border border-gray-300 px-3 py-3 transition-all hover:border-[#0077b6] h-[82px]">
           <span className="absolute -top-2 left-3 bg-white px-1 text-[14px] font-medium text-gray-800 md:text-[15px]">
             City, Property name or Location
           </span>
