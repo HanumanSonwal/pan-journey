@@ -20,6 +20,8 @@ export default function Sidebar({ activeTab, setActiveTab }) {
   const [logoutModal, setLogoutModal] = useState(false);
   const user = session?.user;
 
+  console.log("🚀 USER:", user);
+
   const handleLogout = () => {
     logout(session?.refreshToken);
   };
