@@ -39,7 +39,7 @@ app.use("/api/v1/users", userRoutes);
 
 app.use("/api/v1/roles", roleRoutes);
 app.use("/api/v1/Seacrhcity", citySearch);
-app.use("/api/v1/Hotelsearch", hotelSearch);
+app.use("/api/v1/Hotels", hotelSearch);
 
 app.use("/api/v1/customer/auth/", otpRoutes);
 app.use("/api/v1/customer/profile", profileRoutes);
