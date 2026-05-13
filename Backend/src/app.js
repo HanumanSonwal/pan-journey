@@ -6,20 +6,23 @@ import { errorHandler } from "./middleware/error.middleware.js";
 import authRoutes from "./modules/auth/admin-auth/auth.routes.js";
 import otpRoutes from "./modules/auth/customer-auth/auth.routes.js";
 import profileRoutes from "./modules/auth/customer-auth/customerProfile/profile.routes.js";
+import citySearch from "./modules/citysearch/supplierCity.routes.js";
+import destinationRoutes from "./modules/exploreDesitanation/desitanation.routes.js";
 import roleRoutes from "./modules/role/role.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
-import destinationRoutes from "./modules/exploreDesitanation/desitanation.routes.js";
-import citySearch from "./modules/citysearch/supplierCity.routes.js";
 
-import testRoutes from "./test.routes.js";
 import customerProfileRoutes from "./modules/auth/customer-auth/customer-documents/customerDocument.routes.js";
-
+import testRoutes from "./test.routes.js";
 
 const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:3001"],
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      "https://main.d1lddnidhuqzni.amplifyapp.com/",
+    ],
     credentials: true,
   }),
 );
