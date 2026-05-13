@@ -25,7 +25,6 @@ export default function Hotel() {
     pets: searchParams.get("pets") === "true",
   });
 
-  // 🔍 APPLIED SEARCH
   const [searchData, setSearchData] = useState({
     city: searchParams.get("city") || "",
     cityData: {
@@ -101,7 +100,6 @@ export default function Hotel() {
           {/* 🔃 SORT */}
           <SortBar sort={sort} setSort={setSort} />
 
-          {/* 🏷️ FILTERS */}
           <div className="mt-3 mb-4 flex flex-wrap gap-2">
             {Object.entries(filters).map(([key, value]) => {
               if (Array.isArray(value) && value.length === 0) {
