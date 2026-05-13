@@ -1,98 +1,18 @@
 "use client";
 
+import {
+  destinations,
+  tabs,
+} from "@/modules/shared/home/components/data/destinationsData";
 import Image from "next/image";
 import { useState } from "react";
 import ButtonTab from "./vacation_sections/ButtonTab";
 
-const tabs = [
-  "All Destinations",
-  "India",
-  "Maldives",
-  "Bali",
-  "Vietnam",
-  "London",
-  "Dubai",
-  "Thailand",
-];
-
-const destinations = [
-  {
-    id: 1,
-    title: "Bali",
-    subtitle: "Land of the Gods",
-    image: "/images/destination1.png",
-    height: "h-[260px] md:h-[320px]",
-  },
-  {
-    id: 2,
-    title: "Bali",
-    subtitle: "Land of the Gods",
-    image: "/images/destination2.png",
-    height: "h-[260px] md:h-[320px]",
-  },
-
-  {
-    id: 3,
-    title: "Bali",
-    subtitle: "Land of the Gods",
-    image: "/images/destination3.png",
-    height: "h-[260px] md:h-[420px]",
-  },
-  {
-    id: 4,
-    title: "Bali",
-    subtitle: "Land of the Gods",
-    image: "/images/destination4.png",
-    height: "h-[260px] md:h-[420px]",
-  },
-  {
-    id: 5,
-    title: "Bali",
-    subtitle: "Land of the Gods",
-    image: "/images/destination5.png",
-    height: "h-[260px] md:h-[420px]",
-  },
-
-  {
-    id: 6,
-    title: "Bali",
-    subtitle: "Land of the Gods",
-    image: "/images/destination1.png",
-    height: "h-[260px] md:h-[320px]",
-  },
-  {
-    id: 7,
-    title: "Bali",
-    subtitle: "Land of the Gods",
-    image: "/images/destination2.png",
-    height: "h-[260px] md:h-[320px]",
-  },
-
-  {
-    id: 8,
-    title: "Bali",
-    subtitle: "Land of the Gods",
-    image: "/images/destination3.png",
-    height: "h-[260px] md:h-[420px]",
-  },
-  {
-    id: 9,
-    title: "Bali",
-    subtitle: "Land of the Gods",
-    image: "/images/destination4.png",
-    height: "h-[260px] md:h-[420px]",
-  },
-  {
-    id: 10,
-    title: "Bali",
-    subtitle: "Land of the Gods",
-    image: "/images/destination5.png",
-    height: "h-[260px] md:h-[420px]",
-  },
-];
-
 export default function DestinationsSection() {
   const [activeTab, setActiveTab] = useState("All Destinations");
+
+  const activeDestinations =
+    destinations[activeTab] || destinations["All Destinations"];
 
   return (
     <section className="mt-[-10px] overflow-hidden bg-[#F5F7F9] px-4 py-16 text-black md:pb-15">
@@ -109,6 +29,7 @@ export default function DestinationsSection() {
           </p>
         </div>
 
+        {/* Tabs */}
         <div className="flex justify-center">
           <div className="scrollbar-hide mt-14 flex max-w-full items-center gap-8 overflow-x-auto pb-4 text-[20px] md:gap-10">
             <ButtonTab
@@ -122,33 +43,41 @@ export default function DestinationsSection() {
           </div>
         </div>
 
-        {/* 2 Image Layout */}
-        <div className="mt-16 grid grid-cols-1 gap-5 md:grid-cols-2">
-          {destinations.slice(0, 2).map((item) => (
-            <DestinationCard key={item.id} item={item} />
-          ))}
-        </div>
+        {/* First Layout */}
+        {activeDestinations.length >= 2 && (
+          <div className="mt-16 grid grid-cols-1 gap-5 md:grid-cols-2">
+            {activeDestinations.slice(0, 2).map((item) => (
+              <DestinationCard key={item.id} item={item} />
+            ))}
+          </div>
+        )}
 
-        {/* 3 Image Layout */}
-        <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-3">
-          {destinations.slice(2, 5).map((item) => (
-            <DestinationCard key={item.id} item={item} />
-          ))}
-        </div>
+        {/* Second Layout */}
+        {activeDestinations.length > 2 && (
+          <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-3">
+            {activeDestinations.slice(2, 5).map((item) => (
+              <DestinationCard key={item.id} item={item} />
+            ))}
+          </div>
+        )}
 
-        {/* 2 Image Layout */}
-        <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
-          {destinations.slice(5, 7).map((item) => (
-            <DestinationCard key={item.id} item={item} />
-          ))}
-        </div>
+        {/* Third Layout */}
+        {activeDestinations.length > 5 && (
+          <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
+            {activeDestinations.slice(5, 7).map((item) => (
+              <DestinationCard key={item.id} item={item} />
+            ))}
+          </div>
+        )}
 
-        {/* 3 Image Layout */}
-        <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-3">
-          {destinations.slice(7, 10).map((item) => (
-            <DestinationCard key={item.id} item={item} />
-          ))}
-        </div>
+        {/* Fourth Layout */}
+        {activeDestinations.length > 7 && (
+          <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-3">
+            {activeDestinations.slice(7, 10).map((item) => (
+              <DestinationCard key={item.id} item={item} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
