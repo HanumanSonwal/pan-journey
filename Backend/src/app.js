@@ -12,7 +12,7 @@ import hotelSearch from "./modules/hotel/hotel.route.js";
 import roleRoutes from "./modules/role/role.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
 
-import customerProfileRoutes from "./modules/auth/customer-auth/customer-documents/customerDocument.routes.js";
+import customerProfileRoutes from "./modules/auth/customer-auth/customer detail/customerdetail.route.js";
 import testRoutes from "./test.routes.js";
 
 const app = express();

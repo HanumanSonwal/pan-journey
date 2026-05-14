@@ -105,11 +105,14 @@ export const searchHotelsFromSupplier = async (reqBody) => {
     });
 
     hotelsData = firstPageHotels;
-
+/* 🚀 TRIGGER BACKGROUND JOB (ALWAYS) */
+// fetchRemainingHotelsInBackground(body, data);
     /* 🚀 TRIGGER BACKGROUND JOB (NO AWAIT) */
-    if (data.MoreHotels) {
-      fetchRemainingHotelsInBackground(body, data);
-    }
+    /* 🚀 TRIGGER BACKGROUND JOB (NO AWAIT) */
+if (data?.ResponseHeader?.ErrorCode === "0000") {
+  console.log("🚀 Starting background pagination...");
+  fetchRemainingHotelsInBackground(body, data);
+}
   }
 
   /* 🎯 FILTER → SORT → PAGINATE */
