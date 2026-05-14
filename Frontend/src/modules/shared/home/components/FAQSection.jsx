@@ -1,7 +1,8 @@
 "use client";
 
+import SectionHeading from "@/components/common/SectionHeading";
+import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { Collapse } from "antd";
-import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
 
 const faqData = [
   {
@@ -52,18 +53,13 @@ export default function FAQSection() {
   return (
     <section className="bg-[#F5F7F9] py-16 md:py-24 px-4">
       <div className="max-w-5xl mx-auto">
-        
-        {/* Heading */}
-        <div className="text-center max-w-3xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#222]">
-            Questions & Answer
-          </h2>
 
-          <p className="mt-5 text-gray-600 text-lg  max-w-[620px] mx-auto">
-            We’re committed to offering more than just products—
-            we provide exceptional experiences.
-          </p>
-        </div>
+        {/* Heading */}
+        <SectionHeading
+          title="  Questions & Answer"
+          description=" We’re committed to offering more than just products—
+            we provide exceptional experiences.."
+        />
 
         {/* FAQ */}
         <div className="mt-16">
@@ -78,7 +74,7 @@ export default function FAQSection() {
                 <PlusOutlined className="text-[22px] text-[#222]" />
               )
             }
-        expandIconPlacement="end"
+            expandIconPlacement="end"
             items={faqData.map((item) => ({
               key: item.key,
               label: (

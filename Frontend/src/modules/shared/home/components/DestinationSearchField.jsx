@@ -259,100 +259,55 @@ export default function DestinationSearchField({
         </span>
       )}
 
-      <style jsx global>{`
-        .custom-search-select {
-          width: full !important;
-          max-width: 100% !important;
-          overflow: auto !important;
-        }
+ <style jsx global>{`
+  .custom-search-select {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
 
-        .custom-search-select .ant-select-selector {
-          border: none !important;
-          box-shadow: none !important;
-          background: transparent !important;
-          padding: 0 !important;
+  .custom-search-select .ant-select-selector {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
 
-          width: 100% !important;
-          max-width: 100% !important;
-          overflow: hidden !important;
-        }
+  .custom-search-select .ant-select-selection-item {
+    font-size: 45px !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
 
-        /* MAIN VALUE */
-        .custom-search-select .ant-select-selection-item {
-          font-size: 45px !important;
-          font-weight: 700 !important;
-          color: #111827 !important;
-          line-height: 1.1 !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
 
-          width: 100% !important;
-          max-width: 100% !important;
+    white-space: nowrap !important;
 
-          overflow-x: auto !important;
-          overflow-y: hidden !important;
+    scrollbar-width: none !important;
+  }
 
-          white-space: nowrap !important;
-          text-overflow: unset !important;
+  .custom-search-select
+    .ant-select-selection-item::-webkit-scrollbar {
+    display: none !important;
+  }
 
-          scrollbar-width: none !important;
-          -ms-overflow-style: none !important;
+  .custom-search-select .ant-select-selection-placeholder {
+    font-size: 45px !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+  }
 
-          cursor: grab !important;
-          user-select: text !important;
-        }
+  .custom-search-select .ant-select-selection-search-input {
+    font-size: 45px !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+  }
 
-        /* HIDE SCROLLBAR */
-        .custom-search-select
-          .ant-select-selection-item::-webkit-scrollbar {
-          display: none !important;
-        }
-
-        /* PLACEHOLDER */
-        .custom-search-select .ant-select-selection-placeholder {
-          font-size: 45px !important;
-          font-weight: 700 !important;
-          color: #111827 !important;
-          line-height: 1.1 !important;
-
-          white-space: nowrap !important;
-          overflow: hidden !important;
-          text-overflow: ellipsis !important;
-        }
-
-        /* INPUT */
-        .custom-search-select .ant-select-selection-search-input {
-          font-size: 45px !important;
-          font-weight: 700 !important;
-          color: #111827 !important;
-
-          height: 52px !important;
-        }
-
-        .custom-search-select .ant-select-arrow {
-          display: none !important;
-        }
-
-        /* IMPORTANT FIX */
-        .custom-search-select,
-        .custom-search-select .ant-select-selector,
-        .custom-search-select .ant-select-selection-item,
-        .custom-search-select .ant-select-selection-search,
-        .custom-search-select .ant-select-selection-overflow {
-          min-width: 0 !important;
-        }
-
-        /* MOBILE */
-        @media (max-width: 768px) {
-          .custom-search-select .ant-select-selection-item,
-          .custom-search-select .ant-select-selection-placeholder,
-          .custom-search-select .ant-select-selection-search-input {
-            font-size: 28px !important;
-          }
-
-          .custom-search-select .ant-select-selection-search-input {
-            height: 40px !important;
-          }
-        }
-      `}</style>
+  .custom-search-select .ant-select-arrow {
+    display: none !important;
+  }
+`}</style>
     </div>
   );
 }

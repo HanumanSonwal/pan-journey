@@ -1,5 +1,6 @@
 "use client";
 
+import SectionHeading from "@/components/common/SectionHeading";
 import {
   destinations,
   tabs,
@@ -18,16 +19,10 @@ export default function DestinationsSection() {
     <section className="mt-[-10px] overflow-hidden bg-[#F5F7F9] px-4 py-16 text-black md:pb-15">
       <div className="mx-auto w-[88.87%]">
         {/* Heading */}
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-2xl font-bold text-[#222] md:text-4xl">
-            Popular Destinations
-          </h2>
-
-          <p className="mx-auto mt-5 max-w-[620px] text-lg text-gray-600">
-            We’re committed to offering more than just products— we provide
-            exceptional experiences.
-          </p>
-        </div>
+        <SectionHeading
+          title=" Popular Destinations"
+          description=" We’re committed to offering more than just products— we provide exceptional experiences."
+        />
 
         {/* Tabs */}
         <div className="flex justify-center">
