@@ -1,0 +1,56 @@
+
+.destinationSelect {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* MAIN SELECT */
+.destinationSelect :global(.ant-select) {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+/* SELECTOR */
+.destinationSelect :global(.ant-select-selector) {
+  width: 100% !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* SELECTION WRAP */
+.destinationSelect :global(.ant-select-selection-wrap) {
+  width: 100% !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+/* SELECTION ITEM */
+.destinationSelect :global(.ant-select-selection-item) {
+  width: 100% !important;
+  min-width: 0 !important;
+
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+
+  display: block !important;
+}
+
+/* PLACEHOLDER */
+.destinationSelect :global(.ant-select-selection-placeholder) {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+
+  width: 100% !important;
+}
+
+/* SEARCH */
+.destinationSelect :global(.ant-select-selection-search) {
+  width: 100% !important;
+  min-width: 0 !important;
+}
