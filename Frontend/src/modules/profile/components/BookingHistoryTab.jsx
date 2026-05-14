@@ -212,17 +212,7 @@ export default function BookingHistoryTab({ setSelectedBooking }) {
 
                 {/* VIEW BUTTON */}
               <button
-  className="
-    h-[40px] 
-    w-[150px] 
-    md:w-[120px] 
-    lg:w-[150px]
-    rounded-lg 
-    bg-[#72C0F0] 
-    text-white 
-    text-[15px] 
-    md:text-[14px]
-    font-semibold
+  className="h-[40px] w-[150px] md:w-[120px] lg:w-[150px] rounded-lg bg-[#72C0F0] text-white text-[15px] md:text-[14px] font-semibold
   "
 >
   View Booking

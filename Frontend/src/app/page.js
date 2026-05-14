@@ -1,5 +1,5 @@
 import Herobanner from "@/modules/shared/home/components/cashback_sections/OfferBanner";
-import Hero from "@/modules/shared/home/components/hero_section/Hero";
+import Hero from "@/modules/hotel/hero_section/Hero";
 
 import ComingSoonSection from "@/modules/shared/home/components/ComingSoonSection";
 import FAQSection from "@/modules/shared/home/components/FAQSection";
