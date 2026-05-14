@@ -22,9 +22,12 @@ app.use(
       "http://localhost:3000",
       "http://localhost:3001",
       "http://main.d1lddnidhuqzni.amplifyapp.com",
+      "https://main.d1lddnidhuqzni.amplifyapp.com",
+      "https://www.panjourney.com",
+      "https://panjourney.com",
     ],
     credentials: true,
-  }),
+  })
 );
 
 app.use(cookieParser());
