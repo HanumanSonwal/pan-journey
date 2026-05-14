@@ -70,5 +70,6 @@ return sendSuccess(res, "Login successful", {
   accessToken,
   refreshToken,
   profileCompleted: user.profileCompleted,
+   profilePopupDismissed: user.profilePopupDismissed
 });
 });

@@ -1,8 +1,12 @@
 export const getAuthHeader = () => ({
   AuthHeader: {
-    UserId: process.env.SUPPLIER_USER,
-    Password: process.env.SUPPLIER_PASS,
-    RequestId: Date.now().toString(),
-    IPAddress: "1", // supplier ne yehi diya hai
+   "UserId": "panjourneyuat",
+    "Password": "01ED6B7F54BCF0BDB8F6C910974377AAB7D52AC2",
+    "RequestId": "1778492918224",
+    "IPAddress": "192.168.29.157"
   },
 });
+
+
+
+       

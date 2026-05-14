@@ -4,6 +4,7 @@ import { useDestinationSearch } from "@/modules/hotel/hooks/useDestinationSearch
 import { Select, Spin } from "antd";
 import debounce from "lodash/debounce";
 import { useEffect, useMemo, useState } from "react";
+import styles from "../components/styles/DestinationSearch.module.css";
 
 export default function DestinationSearchField({
   value,
@@ -153,7 +154,7 @@ export default function DestinationSearchField({
 
   return (
     <div
-      className={`relative rounded-xl border border-gray-300 px-3 py-3 transition-all hover:border-[#0077b6] ${wrapperClassName}`}
+      className={`relative min-w-0 rounded-xl border border-gray-300 px-3 py-3 transition-all hover:border-[#0077b6] ${wrapperClassName}`}
       style={{ height }}
     >
       {/* LABEL */}
@@ -174,12 +175,13 @@ export default function DestinationSearchField({
           showSearch
           allowClear
           value={value?.city || undefined}
+          title={value?.city || ""}
           placeholder="Where do you want to stay?"
           variant="borderless"
           popupMatchSelectWidth={false}
           filterOption={false}
           loading={isLoading}
-          className="w-full"
+          className={`w-full ${styles.destinationSelect}`}
           style={{
             fontWeight: 700,
             fontSize,
@@ -206,7 +208,6 @@ export default function DestinationSearchField({
 
             onChange({
               city: option?.searchLabel || "",
-
               cityData: option?.itemData || null,
             });
           }}

@@ -1,349 +1,250 @@
 "use client";
 
-import { Checkbox, Input } from "antd";
+import { Checkbox, Collapse, Input } from "antd";
 import { useState } from "react";
-
 export default function SidebarFilters({ filters, setFilters }) {
-  const [searchText, setSearchText] = useState("");
-
-  const [showMore, setShowMore] = useState({
-    suggested: false,
-    propertyType: false,
-  });
-
-  // ✅ SHOW MORE
-  const toggleShowMore = (key) => {
-    setShowMore((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
-  };
-
-  // ✅ CHECKBOX FILTERS
+  const [hotelSearch, setHotelSearch] = useState("");
   const handleCheckbox = (key, value) => {
     const current = filters[key] || [];
-
     const updated = current.includes(value)
       ? current.filter((v) => v !== value)
       : [...current, value];
-
     setFilters((prev) => ({
       ...prev,
       [key]: updated,
     }));
   };
 
-  // ✅ PRICE FILTER
-  const handlePrice = (value) => {
-    let min = 0;
-    let max = Infinity;
-
-    if (value === "₹ 0 - ₹ 3000") {
-      min = 0;
-      max = 3000;
-    } else if (value === "₹ 3000 - ₹ 6000") {
-      min = 3000;
-      max = 6000;
-    } else if (value === "₹ 6000 - ₹ 10000") {
-      min = 6000;
-      max = 10000;
-    } else if (value === "₹ 10000+") {
-      min = 10000;
-    }
-
+  const handlePriceRange = (min, max) => {
     setFilters((prev) => ({
       ...prev,
-      min,
-      max,
+      priceMin: min,
+      priceMax: max,
     }));
   };
 
-  // ✅ FILTER RENDER
-  const renderOptions = (key, items, isPrice = false) => {
-    const filtered = items.filter((item) =>
-      item.label.toLowerCase().includes(searchText.toLowerCase()),
-    );
-
-    const visibleItems = showMore[key] ? filtered : filtered.slice(0, 4);
-
-    return (
-      <>
-        {visibleItems.map((item) => (
-          <div
-            key={item.label}
-            className="flex items-center justify-between gap-2 py-1.5"
-          >
+  const filterSections = [
+    {
+      key: "suggested",
+      title: "Suggested For You",
+      content: (
+        <div className="flex flex-col gap-2">
+          {[
+            "5 Star",
+            "Breakfast Included",
+            "Couple Friendly",
+            "Free Cancellation",
+          ].map((option) => (
             <Checkbox
-              checked={filters[key]?.includes(item.label) || false}
-              onChange={() =>
-                isPrice
-                  ? handlePrice(item.label)
-                  : handleCheckbox(key, item.label)
-              }
-              className="flex-1"
+              key={option}
+              checked={filters.suggested?.includes(option) || false}
+              onChange={() => handleCheckbox("suggested", option)}
             >
-              <span className="text-gray-800 text-sm">{item.label}</span>
+              {option}
             </Checkbox>
+          ))}
+        </div>
+      ),
+    },
 
-            <span className="text-gray-400 text-[11px] min-w-[40px] text-right">
-              ({item.count})
-            </span>
+    {
+      key: "price",
+      title: "Price Per Night",
+      content: (
+        <>
+          <div className="flex flex-col gap-2">
+            {[
+              {
+                label: "₹ 0 - ₹ 3000",
+                min: 0,
+                max: 3000,
+              },
+              {
+                label: "₹ 3000 - ₹ 6000",
+                min: 3000,
+                max: 6000,
+              },
+              {
+                label: "₹ 6000 - ₹ 10000",
+                min: 6000,
+                max: 10000,
+              },
+              {
+                label: "₹ 10000+",
+                min: 10000,
+                max: 50000,
+              },
+            ].map((item) => (
+              <Checkbox
+                key={item.label}
+                checked={
+                  filters.priceMin === item.min && filters.priceMax === item.max
+                }
+                onChange={() => handlePriceRange(item.min, item.max)}
+              >
+                {item.label}
+              </Checkbox>
+            ))}
           </div>
-        ))}
 
-        {/* SHOW MORE */}
-        {filtered.length > 4 && (
-          <button
-            type="button"
-            onClick={() => toggleShowMore(key)}
-            className="text-[#0077b6] text-sm font-medium mt-1 hover:underline mb-3"
-          >
-            {showMore[key] ? "Show less" : `Show ${filtered.length - 4} more`}
-          </button>
-        )}
-      </>
-    );
-  };
+          {/* CUSTOM */}
+          <div className="mt-4">
+            <p className="mb-2 text-xs font-medium text-gray-500">
+              Custom Range
+            </p>
 
-  // ✅ FILTER DATA
-  const data = {
-    suggested: [
-      {
-        label: "Last Minute Deals",
-        count: 102,
-      },
-      {
-        label: "5 Star",
-        count: 102,
-      },
-      {
-        label: "North Goa",
-        count: 102,
-      },
-      {
-        label: "Resorts",
-        count: 102,
-      },
-      {
-        label: "Beachfront Properties",
-        count: 102,
-      },
-      {
-        label: "Luxury",
-        count: 102,
-      },
-      {
-        label: "Budget Hotels",
-        count: 102,
-      },
-      {
-        label: "Couple Friendly",
-        count: 102,
-      },
-    ],
+            <div className="flex gap-2">
+              <Input
+                placeholder="Min"
+                value={filters.priceMin}
+                onChange={(e) =>
+                  setFilters((prev) => ({
+                    ...prev,
 
-    priceRange: [
-      {
-        label: "₹ 0 - ₹ 3000",
-        count: 102,
-      },
-      {
-        label: "₹ 3000 - ₹ 6000",
-        count: 102,
-      },
-      {
-        label: "₹ 6000 - ₹ 10000",
-        count: 102,
-      },
-      {
-        label: "₹ 10000+",
-        count: 102,
-      },
-    ],
+                    priceMin: Number(e.target.value) || 0,
+                  }))
+                }
+              />
 
-    starCategory: [
-      {
-        label: "3 Star",
-        count: 102,
-      },
-      {
-        label: "4 Star",
-        count: 102,
-      },
-      {
-        label: "5 Star",
-        count: 102,
-      },
-    ],
+              <Input
+                placeholder="Max"
+                value={filters.priceMax}
+                onChange={(e) =>
+                  setFilters((prev) => ({
+                    ...prev,
 
-    rating: [
-      {
-        label: "Excellent: 4.2+",
-        count: 102,
-      },
-      {
-        label: "Very Good: 4+",
-        count: 102,
-      },
-      {
-        label: "Good: 3.5+",
-        count: 102,
-      },
-    ],
+                    priceMax: Number(e.target.value) || 0,
+                  }))
+                }
+              />
+            </div>
+          </div>
+        </>
+      ),
+    },
+    {
+      key: "propertyType",
+      title: "Property Type",
+      content: (
+        <div className="flex flex-col gap-2">
+          {["Hotel", "Villa", "Resort", "Apartment", "Homestay"].map(
+            (option) => (
+              <Checkbox
+                key={option}
+                checked={filters.propertyType?.includes(option) || false}
+                onChange={() => handleCheckbox("propertyType", option)}
+              >
+                {option}
+              </Checkbox>
+            ),
+          )}
+        </div>
+      ),
+    },
 
-    propertyType: [
-      {
-        label: "Apartment",
-        count: 102,
-      },
-      {
-        label: "Villa",
-        count: 102,
-      },
-      {
-        label: "Hotel",
-        count: 102,
-      },
-      {
-        label: "Homestay",
-        count: 102,
-      },
-      {
-        label: "Resort",
-        count: 102,
-      },
-      {
-        label: "Hostel",
-        count: 102,
-      },
-      {
-        label: "Guest House",
-        count: 102,
-      },
-      {
-        label: "Cottage",
-        count: 102,
-      },
-    ],
+    {
+      key: "starCategory",
+      title: "Star Category",
+      content: (
+        <div className="flex flex-col gap-2">
+          {["3 Star", "4 Star", "5 Star"].map((option) => (
+            <Checkbox
+              key={option}
+              checked={filters.starCategory?.includes(option) || false}
+              onChange={() => handleCheckbox("starCategory", option)}
+            >
+              {option}
+            </Checkbox>
+          ))}
+        </div>
+      ),
+    },
 
-    locations: [
-      {
-        label: "North Goa",
-        count: 102,
-      },
-      {
-        label: "Calangute",
-        count: 102,
-      },
-      {
-        label: "Baga",
-        count: 102,
-      },
-      {
-        label: "Anjuna",
-        count: 102,
-      },
-      {
-        label: "Panjim",
-        count: 102,
-      },
-    ],
-  };
+    {
+      key: "rating",
+      title: "User Rating",
+      content: (
+        <div className="flex flex-col gap-2">
+          {["Excellent: 4.2+", "Very Good: 4+", "Good: 3.5+"].map((option) => (
+            <Checkbox
+              key={option}
+              checked={filters.rating?.includes(option) || false}
+              onChange={() => handleCheckbox("rating", option)}
+            >
+              {option}
+            </Checkbox>
+          ))}
+        </div>
+      ),
+    },
+    {
+      key: "locations",
+      title: "Top Locations",
+      content: (
+        <div className="flex flex-col gap-2">
+          {["North Goa", "Calangute", "Baga", "Candolim", "Anjuna"].map(
+            (option) => (
+              <Checkbox
+                key={option}
+                checked={filters.locations?.includes(option) || false}
+                onChange={() => handleCheckbox("locations", option)}
+              >
+                {option}
+              </Checkbox>
+            ),
+          )}
+        </div>
+      ),
+    },
+  ];
 
   return (
-    <div className="w-full bg-white  border border-gray-200 p-4 shadow-sm h-fit">
-      {/* MAP */}
-      <div className="mb-5  overflow-hidden border border-gray-200">
+    <div className="bg-white p-4 shadow-md">
+      <div className="mb-5 overflow-hidden border border-gray-200">
         <img
           src="/images/filterMap.png"
           alt="map"
-          className="w-full h-[150px] object-cover"
+          className="h-[150px] w-full object-cover"
+        />
+      </div>
+      {/* 🔍 SEARCH */}
+      <div className="mb-2">
+        <Input
+          allowClear
+          placeholder="Search Hotel Name"
+          value={hotelSearch}
+          className="[&_.ant-input]:!border-0 [&_.ant-input]:!shadow-none [&_.ant-input]:focus:!shadow-none"
+          onChange={(e) => {
+            const value = e.target.value;
+            setHotelSearch(value);
+            setFilters((prev) => ({
+              ...prev,
+              search: value,
+            }));
+          }}
         />
       </div>
 
-      {/* SEARCH */}
-      <Input
-        placeholder="Search hotels..."
-        className="!mb-6 !rounded-lg"
-        value={filters.search || ""}
-        onChange={(e) =>
-          setFilters((prev) => ({
-            ...prev,
-            search: e.target.value,
-          }))
-        }
+      <Collapse
+        defaultActiveKey={[
+          "suggested",
+          "price",
+          "propertyType",
+          "starCategory",
+          "rating",
+        ]}
+        ghost
+        expandIconPlacement="end"
+        items={filterSections.map((section) => ({
+          key: section.key,
+          label: (
+            <span className="text-sm font-semibold text-gray-800">
+              {section.title}
+            </span>
+          ),
+          children: section.content,
+        }))}
       />
-
-      {/* SUGGESTED */}
-      <h3 className="font-semibold text-[15px] text-gray-900 mb-3">
-        Suggested For You
-      </h3>
-
-      {renderOptions("suggested", data.suggested)}
-
-      {/* PRICE */}
-      <h3 className="font-semibold text-[15px] text-gray-900 mb-3 mt-5">
-        Price per night
-      </h3>
-
-      {renderOptions("priceRange", data.priceRange, true)}
-
-      {/* BUDGET */}
-      <h3 className="font-semibold text-[15px] text-gray-900 mb-3 mt-5">
-        Your Budget
-      </h3>
-
-      <div className="flex gap-2 mb-5">
-        <Input
-          placeholder="Min"
-          className="!rounded-lg"
-          onChange={(e) =>
-            setFilters((prev) => ({
-              ...prev,
-              min: Number(e.target.value),
-            }))
-          }
-        />
-
-        <Input
-          placeholder="Max"
-          className="!rounded-lg"
-          onChange={(e) =>
-            setFilters((prev) => ({
-              ...prev,
-              max: Number(e.target.value),
-            }))
-          }
-        />
-      </div>
-
-      {/* STAR */}
-      <h3 className="font-semibold text-[15px] text-gray-900 mb-3">
-        Star Category
-      </h3>
-
-      {renderOptions("starCategory", data.starCategory)}
-
-      {/* RATING */}
-      <h3 className="font-semibold text-[15px] text-gray-900 mb-3 mt-5">
-        User Rating
-      </h3>
-
-      {renderOptions("rating", data.rating)}
-
-      {/* PROPERTY */}
-      <h3 className="font-semibold text-[15px] text-gray-900 mb-3 mt-5">
-        Property Type
-      </h3>
-
-      {renderOptions("propertyType", data.propertyType)}
-
-      {/* LOCATION */}
-      <h3 className="font-semibold text-[15px] text-gray-900 mb-3 mt-5">
-        Top Locations
-      </h3>
-
-      {renderOptions("locations", data.locations)}
     </div>
   );
 }

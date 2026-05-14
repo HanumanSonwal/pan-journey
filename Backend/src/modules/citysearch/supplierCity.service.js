@@ -9,6 +9,7 @@ const ALLOWED_TYPES = [
   "Neighborhood",
   "Region",
   "Hotel",
+  "State"
 ];
 
 // 🔥 main function

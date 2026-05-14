@@ -1,113 +1,90 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import dayjs from "dayjs";
 import HotelCard from "../../../shared/home/components/HotelCard";
+import { useHotels } from "../../hooks/useHotels";
+export default function HotelList({ searchData, filters, sort, page }) {
+  const payload = {
+    HotelSeedValue: "",
+    CheckInDate: dayjs(searchData?.checkIn).format("MM/DD/YYYY"),
+    CheckOutDate: dayjs(searchData?.checkOut).format("MM/DD/YYYY"),
+    HotelRoomDetail: [
+      {
+        AdultCount: searchData?.adults || 1,
+        ChildCount: searchData?.children || 0,
+        Child1Age: searchData?.childAges?.[0] || 0,
+        Child2Age: searchData?.childAges?.[1] || 0,
+      },
+    ],
 
-export default function HotelList({ filters, sort }) {
-  const [hotels, setHotels] = useState([]);
-  const [loading, setLoading] = useState(true);
+    fullName: searchData?.city || "",
+    id: searchData?.cityData?.id || "",
+    RoomCount: searchData?.rooms || 1,
+    filters: {
+      search: filters?.search || "",
+      suggested: filters?.suggested || [],
+      propertyType: filters?.propertyType || [],
+      starCategory: filters?.starCategory || [],
+      rating: filters?.rating || [],
+      locations: filters?.locations || [],
+      priceMin: filters?.priceMin ?? 0,
+      priceMax: filters?.priceMax ?? 50000,
+    },
 
-  // 🔥 FETCH HOTELS
-  useEffect(() => {
-    const fetchHotels = async () => {
-      try {
-        const res = await fetch("https://dummyjson.com/products");
-        const data = await res.json();
-
-        const hotelImages = [
-          "https://images.unsplash.com/photo-1566073771259-6a8506099945",
-          "https://images.unsplash.com/photo-1501117716987-c8e1ecb2107c",
-          "https://images.unsplash.com/photo-1445019980597-93fa8acb246c",
-          "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa",
-          "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb",
-        ];
-
-        const mapped = data.products.map((item, i) => ({
-          id: item.id,
-          name: item.title,
-
-          location: ["Goa", "Delhi", "Manali", "Jaipur", "Mumbai"][i % 5],
-
-          price: item.price,
-          oldPrice: item.price + 400,
-
-          rating: Number(item.rating || 4.2),
-          reviews: Math.floor(Math.random() * 200) + 20,
-
-          // 🏨 REAL HOTEL IMAGE FIX
-          image: hotelImages[i % hotelImages.length],
-
-          images: [
-            hotelImages[i % hotelImages.length],
-            hotelImages[(i + 1) % hotelImages.length],
-            hotelImages[(i + 2) % hotelImages.length],
-          ],
-
-          propertyType: ["Hotel", "Resort", "Villa"][i % 3],
-
-          tags: ["Free WiFi", "Couple Friendly", "Breakfast"],
-        }));
-
-        setHotels(mapped);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchHotels();
-  }, []);
-
-  // 🔥 FILTER ENGINE
-  let filtered = hotels.filter((h) => {
-    if (filters.city && h.location !== filters.city) return false;
-
-    if (
-      filters.search &&
-      !h.name.toLowerCase().includes(filters.search.toLowerCase())
-    ) {
-      return false;
-    }
-
-    if (filters.min !== undefined && h.price < filters.min) return false;
-    if (filters.max !== undefined && h.price > filters.max) return false;
-
-    if (filters.location?.length) {
-      if (!filters.location.includes(h.location)) return false;
-    }
-
-    if (filters.propertyType?.length) {
-      if (!filters.propertyType.includes(h.propertyType)) return false;
-    }
-
-    if (filters.rating?.length) {
-      const match = filters.rating.some((r) => h.rating >= parseFloat(r));
-      if (!match) return false;
-    }
-
-    return true;
-  });
-
-  // 🔵 SORT
-  if (sort === "priceLow") filtered.sort((a, b) => a.price - b.price);
-  if (sort === "priceHigh") filtered.sort((a, b) => b.price - a.price);
-  if (sort === "rating") filtered.sort((a, b) => b.rating - a.rating);
-  if (sort === "popular") filtered.sort((a, b) => b.reviews - a.reviews);
-
-  if (loading) {
-    return <div className="text-center py-10">Loading hotels...</div>;
+    sort: sort || "",
+    pagination: {
+      page: page || 1,
+      limit: 10,
+    },
+  };
+  const { data, isLoading, isError, error } = useHotels(payload);
+  const hotels = data?.data?.hotels?.hotels || [];
+  console.log("🚀 FULL RESPONSE:", data);
+  console.log("🏨 HOTELS:", hotels);
+  if (isLoading) {
+    return <div className="py-10 text-center">Loading hotels...</div>;
   }
-
-  if (!filtered.length) {
-    return <div className="text-center py-10">No hotels found 😔</div>;
+  if (isError) {
+    return (
+      <div className="py-10 text-center text-red-500">
+        {error?.message || "Failed to fetch hotels"}
+      </div>
+    );
   }
-
+  if (!hotels.length) {
+    return <div className="py-10 text-center">No hotels found 😔</div>;
+  }
   return (
     <div className="flex flex-col gap-4">
-      {filtered.map((hotel) => (
-        <HotelCard key={hotel.id} hotel={hotel} />
-      ))}
+      {hotels.map((hotel) => {
+        const mappedHotel = {
+          id: hotel.hotelId || Math.random(),
+          name: hotel.hotelName || "Hotel Name",
+          location: hotel.location || hotel.address || "Location",
+          address: hotel.address || "",
+          rating: Number(hotel.starRating || 0),
+          reviews: hotel.reviewCount || 0,
+          price: hotel.price || hotel.minPrice || 0,
+          oldPrice: hotel.oldPrice || hotel.price || 0,
+          propertyType: hotel.propertyType || "Hotel",
+          image:
+            hotel.image ||
+            hotel.thumbnail ||
+            hotel.hotelImage ||
+            "https://images.unsplash.com/photo-1566073771259-6a8506099945",
+          images: hotel.images || [
+            hotel.image ||
+              hotel.thumbnail ||
+              hotel.hotelImage ||
+              "https://images.unsplash.com/photo-1566073771259-6a8506099945",
+          ],
+
+          tags: hotel.tags || ["Free WiFi", "Couple Friendly"],
+          starRating: hotel.starRating || "",
+          description: hotel.description || "",
+        };
+        return <HotelCard key={mappedHotel.id} hotel={mappedHotel} />;
+      })}
     </div>
   );
 }
