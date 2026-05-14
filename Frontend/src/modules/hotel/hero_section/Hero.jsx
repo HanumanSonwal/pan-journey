@@ -35,7 +35,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative w-full bg-[#EDF7FF] pb-60">
+    <section className="relative w-full bg-[#EDF7FF] pb-60 z-10">
       {/* Hero Background */}
       <div className={styles.heroBg} />
 
