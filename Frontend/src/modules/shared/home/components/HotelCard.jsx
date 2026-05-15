@@ -33,14 +33,14 @@ export default function HotelCard({ hotel }) {
         ];
   const price = Number(hotel.price || 0);
   const oldPrice = Number(hotel.oldPrice || price + 1500);
-  const handleNavigate = () => {
-    // router.push(`/hotel-details/${hotel.id}`);
-  };
+  // const handleNavigate = () => {
+  //   router.push(`/hotel-details/${hotel.id}`);
+  // };
 
   console.log("🚀 HOTEL in card:", hotel);
   return (
     <div
-      onClick={handleNavigate}
+      // onClick={handleNavigate}
       className="cursor-pointer overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-[1px_4px_4px_4px_#00000014] transition-all duration-300 hover:-translate-y-[2px]"
     >
       <div className="flex flex-col lg:flex-row">

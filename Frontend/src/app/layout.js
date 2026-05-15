@@ -1,9 +1,10 @@
 import Footer from "@/components/common/Footer";
 import Header from "@/components/common/Header";
 import QueryProvider from "@/providers/QueryProvider";
+import LoaderProvider from "@/providers/LoaderProvider";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import "antd/dist/reset.css";
-import { Geist, Geist_Mono, Roboto, Jost  } from "next/font/google";
+import { Geist, Geist_Mono, Jost, Roboto } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 
@@ -49,15 +50,19 @@ export default function RootLayout({ children }) {
       `}
     >
       <body className="min-h-full flex flex-col">
-        <AntdRegistry>
-          <QueryProvider>
-            <Providers>
-              <Header />
-              <main className="flex-1">{children}</main>
-              <Footer />
-            </Providers>
-          </QueryProvider>
-        </AntdRegistry>
+
+       <LoaderProvider>
+  <AntdRegistry>
+    <QueryProvider>
+      <Providers>
+        <Header />
+        <main className="flex-1">{children}</main>
+        <Footer />
+      </Providers>
+    </QueryProvider>
+  </AntdRegistry>
+</LoaderProvider>
+
       </body>
     </html>
   );
