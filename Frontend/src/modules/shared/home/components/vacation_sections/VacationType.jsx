@@ -110,7 +110,7 @@ export default function VacationType({ activeTab }) {
                       {item.name}
                     </h2>
 
-                    <p className="mb-3 text-sm text-gray-600">{item.City}</p>
+                    <p className="mb-3 text-sm text-gray-600">{item?.City}</p>
 
                     <button className="flex w-full items-center justify-center gap-1 text-sm font-medium text-[#5FA8C9]! transition hover:text-[#3D8FB3]!">
                       View Details →

@@ -96,7 +96,7 @@ export default function GuestsField({
                 ${compact ? "text-lg md:text-xl" : "text-2xl md:text-3xl"}
               `}
             >
-              {value.rooms}
+              {value?.rooms}
             </span>
 
             <span
@@ -119,7 +119,7 @@ export default function GuestsField({
                 ${compact ? "text-lg md:text-xl" : "text-2xl md:text-3xl"}
               `}
             >
-              {value.adults}
+              {value?.adults}
             </span>
 
             <span
@@ -142,7 +142,7 @@ export default function GuestsField({
                 ${compact ? "text-lg md:text-xl" : "text-2xl md:text-3xl"}
               `}
             >
-              {value.children}
+              {value?.children}
             </span>
 
             <span
@@ -165,34 +165,34 @@ export default function GuestsField({
         >
           <Counter
             label="Room"
-            value={value.rooms}
+            value={value?.rooms}
             onChange={(v) => update("rooms", Math.max(1, v))}
           />
 
           <Counter
             label="Adults"
-            value={value.adults}
+            value={value?.adults}
             onChange={(v) => updateAdults(v)}
           />
 
           <Counter
             label="Children"
             sub="0-17 Years Old"
-            value={value.children}
+            value={value?.children}
             onChange={(v) =>
               handleChildrenChange(Math.max(0, v))
             }
           />
 
           {/* CHILD AGES */}
-          {value.children > 0 && (
+          {value?.children > 0 && (
             <div className="mt-4 border-t pt-4">
               <p className="text-sm font-semibold mb-3 text-black">
                 Age of Children
               </p>
 
               <div className="grid grid-cols-2 gap-3">
-                {(value.childAges || []).map((age, i) => (
+                {(value?.childAges || []).map((age, i) => (
                   <div
                     key={i}
                     className="flex items-center justify-between"
@@ -231,7 +231,7 @@ export default function GuestsField({
             <label className="flex items-start gap-3 border border-gray-300 rounded-xl p-3 cursor-pointer hover:border-[#0077b6] transition">
               <input
                 type="checkbox"
-                checked={value.pets || false}
+                checked={value?.pets || false}
                 onChange={(e) =>
                   update("pets", e.target.checked)
                 }

@@ -33,13 +33,13 @@ export default function GuestsField({ value, onChange }) {
   };
 
   const updateChildAge = (index, age) => {
-    const newAges = [...(value.childAges || [])];
+    const newAges = [...(value?.childAges || [])];
     newAges[index] = age;
     update("childAges", newAges);
   };
 
   const handleChildrenChange = (val) => {
-    let newAges = [...(value.childAges || [])];
+    let newAges = [...(value?.childAges || [])];
 
     if (val > newAges.length) newAges.push(1);
     else newAges.pop();
@@ -70,7 +70,7 @@ export default function GuestsField({ value, onChange }) {
         <div className="flex flex-col justify-center flex-1 leading-tight">
           <div className="flex items-baseline gap-2">
             <span className="text-2xl md:text-3xl font-bold text-black">
-              {value.rooms}
+              {value?.rooms}
             </span>
             <span className="text-sm md:text-base text-gray-600">Room</span>
           </div>
@@ -79,7 +79,7 @@ export default function GuestsField({ value, onChange }) {
         <div className="flex flex-col justify-center flex-1 items-center leading-tight">
           <div className="flex items-baseline gap-2">
             <span className="text-2xl md:text-3xl font-bold text-black">
-              {value.adults}
+              {value?.adults}
             </span>
             <span className="text-sm md:text-base text-gray-900">Adults</span>
           </div>
@@ -88,7 +88,7 @@ export default function GuestsField({ value, onChange }) {
         <div className="flex flex-col justify-center flex-1 items-end leading-tight">
           <div className="flex items-baseline gap-2">
             <span className="text-2xl md:text-3xl font-bold text-black">
-              {value.children}
+              {value?.children}
             </span>
             <span className="text-sm md:text-base text-gray-900">Children</span>
           </div>
@@ -102,31 +102,31 @@ export default function GuestsField({ value, onChange }) {
         >
           <Counter
             label="Room"
-            value={value.rooms}
+            value={value?.rooms}
             onChange={(v) => update("rooms", Math.max(1, v))}
           />
 
           <Counter
             label="Adults"
-            value={value.adults}
+            value={value?.adults}
             onChange={(v) => updateAdults(v)}
           />
 
           <Counter
             label="Children"
             sub="0-17 Years Old"
-            value={value.children}
+            value={value?.children}
             onChange={(v) => handleChildrenChange(Math.max(0, v))}
           />
 
-          {value.children > 0 && (
+          {value?.children > 0 && (
             <div className="mt-4 border-t pt-4">
               <p className="text-sm font-semibold mb-3 text-black">
                 Age of Children
               </p>
 
               <div className="grid grid-cols-2 gap-3">
-                {(value.childAges || []).map((age, i) => (
+                {(value?.childAges || []).map((age, i) => (
                   <div key={i} className="flex items-center justify-between">
                     <span className="text-sm text-gray-900">Child {i + 1}</span>
 
@@ -152,7 +152,7 @@ export default function GuestsField({ value, onChange }) {
             <label className="flex items-start gap-3 border border-gray-400 rounded-xl p-3 cursor-pointer hover:border-[#0077b6] transition">
               <input
                 type="checkbox"
-                checked={value.pets || false}
+                checked={value?.pets || false}
                 onChange={(e) => update("pets", e.target.checked)}
                 className="mt-1 cursor-pointer"
               />

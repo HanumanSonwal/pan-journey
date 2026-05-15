@@ -21,7 +21,7 @@ export default function DestinationsSection() {
         {/* Heading */}
         <SectionHeading
           title=" Popular Destinations"
-          description=" We’re committed to offering more than just products— we provide exceptional experiences."
+          description=" We’re committed to offering more than just products  we provide exceptional experiences."
         />
 
         {/* Tabs */}

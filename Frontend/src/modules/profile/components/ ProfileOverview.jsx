@@ -96,8 +96,8 @@ export default function ProfileOverview() {
       gender: user.gender || "",
       email: user.email || "",
       mobile: user.mobile || "",
-      city: user.city || "",
-      state: user.state || "",
+      city: user?.city || "",
+      state: user?.state || "",
       nationality: user.nationality || "",
 
       // 🔥 IMPORTANT FIX
@@ -118,8 +118,8 @@ export default function ProfileOverview() {
       mobile: data.mobile,
       gender: data.gender,
 
-      city: data.city,
-      state: data.state,
+      city: data?.city,
+      state: data?.state,
 
       nationality: data.nationality || null,
       maritalStatus: data.maritalStatus || null,
@@ -380,7 +380,7 @@ export default function ProfileOverview() {
               )}
             />
 
-            <p className="text-xs text-red-500">{errors.city?.message}</p>
+            <p className="text-xs text-red-500">{errors?.city?.message}</p>
           </div>
 
           <div>
