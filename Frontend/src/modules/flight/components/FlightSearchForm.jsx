@@ -3,7 +3,7 @@ import { DatePicker, Input, Select } from "antd";
 export default function FlightSearchForm() {
   return (
     <div>
-      <h3 className="mb-4 text-xl font-bold">Book Flights form</h3>
+      <h3 className="mb-4 text-xl font-bold">Book Flights</h3>
 
       <div className="grid gap-4 md:grid-cols-4">
         <Input size="large" placeholder="From" />
