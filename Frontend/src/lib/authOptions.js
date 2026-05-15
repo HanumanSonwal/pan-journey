@@ -210,6 +210,6 @@ export const authOptions = {
     signIn: "/login",
   },
 
-  secret: "hvy0/bu0DdVXOSgVczgekp8Tm6+X8hm4g6DU7Vo1gOLHBcH4LY6hA6xkjdw=",
+  secret: process.env.NEXTAUTH_SECRET,
   trustHost: true,
 };
