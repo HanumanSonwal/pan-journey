@@ -206,6 +206,6 @@ export const authOptions = {
     signIn: "/login",
   },
 
-secret: process.env.AUTH_SECRET,
-trustHost: true,
+  secret: process.env.AUTH_SECRET,
+  trustHost: true,
 };
