@@ -20,14 +20,14 @@ export default function SearchBar({
   const handleSearch = () => {
     onSearch();
     const query = new URLSearchParams({
-      city: draftSearchData.city || "",
-      cityId: draftSearchData.cityData?.id || "",
-      checkIn: draftSearchData.checkIn || "",
-      checkOut: draftSearchData.checkOut || "",
-      rooms: String(draftSearchData.rooms || 1),
-      adults: String(draftSearchData.adults || 2),
-      children: String(draftSearchData.children || 0),
-      pets: draftSearchData.pets ? "true" : "false",
+      city: draftSearchData?.city || "",
+      cityId: draftSearchData?.cityData?.id || "",
+      checkIn: draftSearchData?.checkIn || "",
+      checkOut: draftSearchData?.checkOut || "",
+      rooms: String(draftSearchData?.rooms || 1),
+      adults: String(draftSearchData?.adults || 2),
+      children: String(draftSearchData?.children || 0),
+      pets: draftSearchData?.pets ? "true" : "false",
     });
     router.push(`/hotels?${query.toString()}`);
   };
@@ -49,8 +49,8 @@ export default function SearchBar({
           <div className="md:col-span-4">
             <DestinationSearchField
               value={{
-                city: draftSearchData.city,
-                cityData: draftSearchData.cityData,
+                city: draftSearchData?.city,
+                cityData: draftSearchData?.cityData,
               }}
               onChange={(val) =>
                 setDraftSearchData((prev) => ({
@@ -69,12 +69,12 @@ export default function SearchBar({
           <div className="md:col-span-3">
             <DateRangeField
               value={[
-                draftSearchData.checkIn
-                  ? dayjs(draftSearchData.checkIn)
+                draftSearchData?.checkIn
+                  ? dayjs(draftSearchData?.checkIn)
                   : dayjs(),
 
-                draftSearchData.checkOut
-                  ? dayjs(draftSearchData.checkOut)
+                draftSearchData?.checkOut
+                  ? dayjs(draftSearchData?.checkOut)
                   : dayjs().add(1, "day"),
               ]}
               onChange={(dates) => {

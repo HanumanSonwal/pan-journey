@@ -11,34 +11,34 @@ import { fetchRemainingHotelsInBackground } from "./supplierPagination.service.j
 
 /* 🔁 normalize */
 const normalizeBody = (body) => ({
-  cityId: body.cityId || body.id,
-  cityName: body.cityName || body.fullName,
-  CheckInDate: body.CheckInDate,
-  CheckOutDate: body.CheckOutDate,
-  RoomCount: body.RoomCount || 1,
-  filters: body.filters || {},
-  sort: body.sort || "",
-  pagination: body.pagination || { page: 1, limit: 10 },
+  cityId: body?.cityId || body.id,
+  cityName: body?.cityName || body.fullName,
+  CheckInDate: body?.CheckInDate,
+  CheckOutDate: body?.CheckOutDate,
+  RoomCount: body?.RoomCount || 1,
+  filters: body?.filters || {},
+  sort: body?.sort || "",
+  pagination: body?.pagination || { page: 1, limit: 10 },
 });
 
 /* 🔨 build payload */
 const buildPayload = (body, seedValue = "") => ({
   AuthHeader: getAuthHeader().AuthHeader,
   HotelSeedValue: seedValue,
-  CheckInDate: body.CheckInDate,
-  CheckOutDate: body.CheckOutDate,
+  CheckInDate: body?.CheckInDate,
+  CheckOutDate: body?.CheckOutDate,
   HotelRoomDetail: [
     { AdultCount: 1, ChildCount: 0, Child1Age: 0, Child2Age: 0 },
   ],
-  fullName: body.cityName,
-  id: body.cityId,
-  RoomCount: body.RoomCount,
+  fullName: body?.cityName,
+  id: body?.cityId,
+  RoomCount: body?.RoomCount,
 });
 
 /* 🧠 merge */
 const mergeHotels = (data) => {
   if (!data?.HotelContents) return [];
-  return data.HotelContents.map((hotel) => {
+  return data?.HotelContents.map((hotel) => {
     const price = data.HotelFareDetails.find(
       (fare) => fare.HotelId === hotel.HotelId
     );
@@ -105,11 +105,14 @@ export const searchHotelsFromSupplier = async (reqBody) => {
     });
 
     hotelsData = firstPageHotels;
-
+/* 🚀 TRIGGER BACKGROUND JOB (ALWAYS) */
+// fetchRemainingHotelsInBackground(body, data);
     /* 🚀 TRIGGER BACKGROUND JOB (NO AWAIT) */
-    if (data.MoreHotels) {
-      fetchRemainingHotelsInBackground(body, data);
-    }
+    /* 🚀 TRIGGER BACKGROUND JOB (NO AWAIT) */
+if (data?.ResponseHeader?.ErrorCode === "0000") {
+  console.log("🚀 Starting background pagination...");
+  fetchRemainingHotelsInBackground(body, data);
+}
   }
 
   /* 🎯 FILTER → SORT → PAGINATE */

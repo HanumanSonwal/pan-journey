@@ -28,14 +28,14 @@ export default function Hero() {
     console.log("🚀 FINAL DATA:", formData);
     if (!formData) return;
     const query = new URLSearchParams({
-      city: formData.city || "",
-      cityId: formData.cityData?.id || "",
-      checkIn: formData.checkIn || "",
-      checkOut: formData.checkOut || "",
-      rooms: String(formData.rooms || 1),
-      adults: String(formData.adults || 2),
-      children: String(formData.children || 0),
-      pets: formData.pets ? "true" : "false",
+      city: formData?.city || "",
+      cityId: formData?.cityData?.id || "",
+      checkIn: formData?.checkIn || "",
+      checkOut: formData?.checkOut || "",
+      rooms: String(formData?.rooms || 1),
+      adults: String(formData?.adults || 2),
+      children: String(formData?.children || 0),
+      pets: formData?.pets ? "true" : "false",
     });
     router.push(`/hotels?${query.toString()}`);
   };

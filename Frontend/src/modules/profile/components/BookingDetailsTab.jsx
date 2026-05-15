@@ -109,19 +109,19 @@ export default function BookingDetailsTab({ booking, onBack }) {
               {/* LEFT */}
               <div className="flex gap-5">
                 <img
-                  src={bookingData.image}
+                  src={bookingData?.image}
                   alt="hotel"
                   className="h-[120px] w-[140px] shrink-0 rounded-xl object-cover"
                 />
 
                 <div>
                   <h2 className="text-[20px] leading-tight font-bold text-gray-900">
-                    {bookingData.hotelName}
+                    {bookingData?.hotelName}
                   </h2>
 
                   <div className="mt-3 flex flex-wrap items-center gap-3">
                     <div className="flex items-center gap-1">
-                      {[...Array(bookingData.rating)].map((_, i) => (
+                      {[...Array(bookingData?.rating)].map((_, i) => (
                         <StarFilled
                           key={i}
                           className="text-[14px] !text-[#ffb400]"
@@ -136,14 +136,14 @@ export default function BookingDetailsTab({ booking, onBack }) {
 
                   <p className="my-4! flex items-center gap-2 text-[16px] text-gray-500">
                     <EnvironmentOutlined />
-                    {bookingData.address}
+                    {bookingData?.address}
                   </p>
                 </div>
               </div>
 
               {/* STATUS */}
               <div className="h-fit rounded-full border border-[#72C0F0] bg-[#edf7ff] px-4 py-1 text-[13px] font-semibold text-[#72C0F0]">
-                {bookingData.status}
+                {bookingData?.status}
               </div>
             </div>
           </div>
@@ -155,15 +155,15 @@ export default function BookingDetailsTab({ booking, onBack }) {
               <p className="text-[14px] font-medium text-gray-500">Check-in</p>
 
               <h3 className="mt-1 text-[18px] leading-tight font-bold text-gray-900">
-                {bookingData.checkIn}
+                {bookingData?.checkIn}
               </h3>
 
               <p className="mt-1 text-[16px] leading-none font-medium text-gray-700">
-                From {bookingData.checkInTime}
+                From {bookingData?.checkInTime}
               </p>
 
               <p className="mt-2 text-[13px] text-gray-500">
-                {bookingData.city}
+                {bookingData?.city}
               </p>
             </div>
 
@@ -178,7 +178,7 @@ export default function BookingDetailsTab({ booking, onBack }) {
               </div>
 
               <div className="mt-3 rounded-full border border-gray-300 bg-gray-50 px-3 py-[4px] text-[14px] leading-none font-medium text-gray-700">
-                🌙 {bookingData.nights}
+                🌙 {bookingData?.nights}
               </div>
             </div>
 
@@ -187,11 +187,11 @@ export default function BookingDetailsTab({ booking, onBack }) {
               <p className="text-[14px] font-medium text-gray-500">Check-out</p>
 
               <h3 className="mt-1 text-[18px] leading-tight font-bold text-gray-900">
-                {bookingData.checkOut}
+                {bookingData?.checkOut}
               </h3>
 
               <p className="mt-1 text-[16px] leading-none font-medium text-gray-700">
-                By {bookingData.checkOutTime}
+                By {bookingData?.checkOutTime}
               </p>
             </div>
           </div>
@@ -216,11 +216,11 @@ export default function BookingDetailsTab({ booking, onBack }) {
             <div className="mt-6 md:mt-7">
               {/* ROOM TYPE */}
               <h3 className="text-[20px] leading-tight font-bold text-gray-900 md:text-[20px]">
-                {bookingData.roomType}
+                {bookingData?.roomType}
               </h3>
 
               <p className="mt-2 text-[14px] text-gray-600 md:text-[15px]">
-                {bookingData.roomGuests}
+                {bookingData?.roomGuests}
               </p>
 
               {/* POLICIES */}
@@ -247,11 +247,11 @@ export default function BookingDetailsTab({ booking, onBack }) {
                   </p>
 
                   <h4 className="mt-1 text-[16px] font-bold text-gray-900 md:text-[16px]">
-                    {bookingData.guests}
+                    {bookingData?.guests}
                   </h4>
 
                   <p className="mt-1 text-[14px] text-gray-600">
-                    {bookingData.rooms}
+                    {bookingData?.rooms}
                   </p>
                 </div>
 
@@ -262,7 +262,7 @@ export default function BookingDetailsTab({ booking, onBack }) {
                   </p>
 
                   <h4 className="mt-1 text-[18px] font-bold break-all text-gray-900 md:text-[20px]">
-                    {bookingData.bookingId}
+                    {bookingData?.bookingId}
                   </h4>
                 </div>
 
@@ -273,7 +273,7 @@ export default function BookingDetailsTab({ booking, onBack }) {
                   </p>
 
                   <h4 className="mt-1 text-[18px] font-bold text-gray-900 md:text-[20px]">
-                    CNF {bookingData.confirmation}
+                    CNF {bookingData?.confirmation}
                   </h4>
                 </div>
 
@@ -284,7 +284,7 @@ export default function BookingDetailsTab({ booking, onBack }) {
                   </p>
 
                   <h4 className="mt-1 text-[18px] font-bold text-gray-900 md:text-[20px]">
-                    {bookingData.mealPlan}
+                    {bookingData?.mealPlan}
                   </h4>
                 </div>
 
@@ -295,7 +295,7 @@ export default function BookingDetailsTab({ booking, onBack }) {
                   </p>
 
                   <h4 className="mt-1 text-[18px] font-bold text-gray-900 md:text-[20px]">
-                    {bookingData.bookedOn}
+                    {bookingData?.bookedOn}
                   </h4>
 
                   <p className="mt-1 text-[14px] text-gray-500">
@@ -475,7 +475,7 @@ export default function BookingDetailsTab({ booking, onBack }) {
               </p>
 
               <p className="mt-1 text-[14px] leading-relaxed text-gray-700 md:text-[15px]">
-                {bookingData.address}
+                {bookingData?.address}
               </p>
             </div>
           </div>

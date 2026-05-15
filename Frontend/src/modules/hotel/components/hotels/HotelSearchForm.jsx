@@ -34,8 +34,8 @@ export default function HotelSearchForm({ setFormData }) {
     if (!setFormData) return;
 
     const payload = {
-      city: form.city,
-      cityData: form.cityData,
+      city: form?.city,
+      cityData: form?.cityData,
 
       checkIn: form.dateRange?.[0]?.format("YYYY-MM-DD"),
 

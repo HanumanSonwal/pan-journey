@@ -56,15 +56,20 @@ export const fetchRemainingHotelsInBackground = async (
  
     let seedValue = firstResponse.HotelSeedValue;
 let moreHotels = firstResponse.MoreHotels;
+let previousSeed = ""; 
 let allHotels = [];
 let page = 1;
 
 /* 🆕 empty page safety counter */
 let emptyPageCount = 0;
 
-while (moreHotels) {
+
+
+while (seedValue && seedValue !== previousSeed) {
   page++;
   console.log(`📡 Background Supplier Call #${page}`);
+
+  previousSeed = seedValue;
 
   const payload = buildPayload(normalizedBody, seedValue);
 
@@ -80,30 +85,21 @@ while (moreHotels) {
   );
 
   const mergedHotels = mergeHotels(data);
-
   console.log(`➡️ Received ${mergedHotels.length} hotels`);
 
-  /* 🛑 STOP CONDITION */
   if (mergedHotels.length === 0) {
     emptyPageCount++;
-    console.log(`⚠️ Empty page detected (${emptyPageCount}/2)`);
-
     if (emptyPageCount >= 2) {
-      console.log("🛑 STOPPING: Supplier returning empty pages");
+      console.log("🛑 STOP: empty pages");
       break;
     }
   } else {
-    /* reset if hotels mil gaye */
     emptyPageCount = 0;
     allHotels.push(...mergedHotels);
   }
 
-  seedValue = data.HotelSeedValue;
-  moreHotels = data.MoreHotels;
-
-  if (!moreHotels) break;
+  seedValue = data.HotelSeedValue; // ⭐ pagination cursor update
 }
-
      
 
     /* 💾 PUSH REMAINING HOTELS INTO CACHE */

@@ -11,8 +11,6 @@ import destinationRoutes from "./modules/exploreDesitanation/desitanation.routes
 import hotelSearch from "./modules/hotel/hotel.route.js";
 import roleRoutes from "./modules/role/role.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
-
-import customerProfileRoutes from "./modules/auth/customer-auth/customer-documents/customerDocument.routes.js";
 import testRoutes from "./test.routes.js";
 
 const app = express();
@@ -26,10 +24,13 @@ app.use(
     origin: [
       "http://localhost:3000",
       "http://localhost:3001",
-      "https://main.d1lddnidhuqzni.amplifyapp.com/",
+      "http://main.d1lddnidhuqzni.amplifyapp.com",
+      "https://main.d1lddnidhuqzni.amplifyapp.com",
+      "https://www.panjourney.com",
+      "https://panjourney.com",
     ],
     credentials: true,
-  }),
+  })
 );
 
 app.use(cookieParser());
@@ -49,7 +50,6 @@ app.use("/api/v1/customer/profile", profileRoutes);
 
 app.use("/api/v1", testRoutes);
 app.use("/api/v1", destinationRoutes);
-app.use("/api/v1/customer", customerProfileRoutes);
 app.use(errorHandler);
 
 export default app;

@@ -9,7 +9,7 @@ import SearchBar from "../components/hotels/SearchBar";
 import SidebarFilters from "../components/SidebarFilters";
 import SortBar from "../components/SortBar";
 
-export default function Hotel() {
+export default function HotelContent() {
   const searchParams = useSearchParams();
 
   const [mounted, setMounted] = useState(false);
