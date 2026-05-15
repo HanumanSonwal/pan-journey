@@ -7,9 +7,12 @@ import {
   ShareAltOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import HotelBookingComingSoonModal from "./HotelBookingComingSoonModal";
 
 export default function HotelCard({ hotel }) {
   const router = useRouter();
+  const [openModal, setOpenModal] = useState(false);
   const rating = Number(hotel.rating) || 4.1;
   const reviews =
     hotel.reviews && hotel.reviews > 0
@@ -37,10 +40,18 @@ export default function HotelCard({ hotel }) {
   //   router.push(`/hotel-details/${hotel.id}`);
   // };
 
+  const handleNavigate = () => {
+    setOpenModal(true);
+  };
+
   console.log("🚀 HOTEL in card:", hotel);
   return (
     <div
-      // onClick={handleNavigate}
+      onClick={() => {
+        if (!openModal) {
+          handleNavigate();
+        }
+      }}
       className="cursor-pointer overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-[1px_4px_4px_4px_#00000014] transition-all duration-300 hover:-translate-y-[2px]"
     >
       <div className="flex flex-col lg:flex-row">
@@ -156,6 +167,10 @@ export default function HotelCard({ hotel }) {
           </div>
         </div>
       </div>
+      <HotelBookingComingSoonModal
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+      />
     </div>
   );
 }
