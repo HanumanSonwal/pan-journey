@@ -1,16 +1,33 @@
-import Herobanner from "@/modules/shared/home/components/cashback_sections/OfferBanner";
-import Hero from "@/modules/shared/home/components/hero_section/Hero";
+"use client";
 
+import { useLoader } from "@/providers/LoaderProvider";
+import { useEffect } from "react";
+
+import Herobanner from "@/modules/shared/home/components/cashback_sections/OfferBanner";
 import ComingSoonSection from "@/modules/shared/home/components/ComingSoonSection";
+import DestinationsSection from "@/modules/shared/home/components/DestinationsSection";
 import FAQSection from "@/modules/shared/home/components/FAQSection";
+import Hero from "@/modules/shared/home/components/hero_section/Hero";
 import NewsletterSection from "@/modules/shared/home/components/NewsletterSection";
 import TestimonialsSection from "@/modules/shared/home/components/TestimonialsSection";
 import TopRatedHotels from "@/modules/shared/home/components/TopRatedHotels";
 import VacationSection from "@/modules/shared/home/components/vacation_sections/VacationSection";
 import WhySection from "@/modules/shared/home/components/why_sections/WhySection";
-import DestinationsSection from "@/modules/shared/home/components/DestinationsSection";
 
 export default function Page() {
+  const { setLoading } = useLoader();
+
+  useEffect(() => {
+    setLoading(true);
+
+    // 🔥 PAGE LOAD SIMULATION
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1200);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <>
       <Hero />
