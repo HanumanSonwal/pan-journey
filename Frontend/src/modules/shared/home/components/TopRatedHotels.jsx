@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import { Card, Rate, Spin } from "antd";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -11,11 +13,14 @@ export default function TopRatedHotels() {
   const [perRow, setPerRow] = useState(4);
   const [topIndex, setTopIndex] = useState(0);
   const [bottomIndex, setBottomIndex] = useState(0);
+
   const [isDraggingTop, setIsDraggingTop] = useState(false);
   const [isDraggingBottom, setIsDraggingBottom] = useState(false);
+
   const topStartX = useRef(0);
   const bottomStartX = useRef(0);
 
+  // RESPONSIVE
   useEffect(() => {
     const updatePerRow = () => {
       const width = window.innerWidth;
@@ -28,21 +33,29 @@ export default function TopRatedHotels() {
         setPerRow(4);
       }
     };
+
     updatePerRow();
+
     window.addEventListener("resize", updatePerRow);
+
     return () => window.removeEventListener("resize", updatePerRow);
   }, []);
 
+  // DATA
   const topData = useMemo(() => data.slice(0, 10), [data]);
+
   const bottomData = useMemo(() => data.slice(10, 20), [data]);
 
+  // AUTO SLIDE TOP
   useEffect(() => {
     if (topData.length <= perRow || isDraggingTop) return;
+
     const interval = setInterval(() => {
       setTopIndex((prev) => {
         if (prev >= topData.length - perRow) {
           return 0;
         }
+
         return prev + 1;
       });
     }, 3500);
@@ -50,6 +63,7 @@ export default function TopRatedHotels() {
     return () => clearInterval(interval);
   }, [topData, perRow, isDraggingTop]);
 
+  // AUTO SLIDE BOTTOM
   useEffect(() => {
     if (bottomData.length <= perRow || isDraggingBottom) return;
 
@@ -66,6 +80,7 @@ export default function TopRatedHotels() {
     return () => clearInterval(interval);
   }, [bottomData, perRow, isDraggingBottom]);
 
+  // DRAG
   const handleDrag = (startX, endX, type) => {
     const diff = startX - endX;
 
@@ -88,6 +103,7 @@ export default function TopRatedHotels() {
     }
   };
 
+  // LOADING
   if (isLoading) {
     return (
       <div className="flex h-[500px] items-center justify-center bg-[#EDF7FF]">
@@ -96,22 +112,29 @@ export default function TopRatedHotels() {
     );
   }
 
-  const renderCard = (hotel) => (
+  // CARD
+  const renderCard = (hotel, idx) => (
     <div key={hotel.id} className="w-full flex-shrink-0 px-2 sm:w-1/2 lg:w-1/4">
       <Card
         hoverable
-        className="overflow-hidden rounded-xl shadow-md"
+        className="overflow-hidden rounded-2xl border-0 shadow-md transition duration-300 hover:-translate-y-1 hover:shadow-xl"
         cover={
-          <img
-            src={hotel.image}
-            alt={hotel.name}
-            className="block h-[220px] w-full object-cover md:h-[240px]"
-            draggable={false}
-          />
+          <div className="relative h-[220px] overflow-hidden md:h-[240px]">
+            <Image
+              src={hotel.image}
+              alt={hotel.name}
+              fill
+              priority={idx < 2}
+              loading={idx < 2 ? "eager" : "lazy"}
+              quality={80}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              className="object-cover transition duration-500 hover:scale-105"
+            />
+          </div>
         }
       >
         <div className="text-center">
-          <h3 className="text-lg font-semibold">{hotel.name}</h3>
+          <h3 className="text-lg font-semibold text-gray-800">{hotel.name}</h3>
 
           <p className="mt-2 line-clamp-3 text-sm leading-6 text-gray-500">
             {hotel.desc}
@@ -126,8 +149,7 @@ export default function TopRatedHotels() {
   );
 
   return (
-    <div className="!mt-[-10px] bg-[#EDF7FF] px-4 py-8 md:px-4 md:py-12">
-      {/* MAIN */}
+    <div className="!mt-[-10px] bg-[#EDF7FF] px-4 py-8 md:py-12">
       <div className="mx-auto w-full rounded-3xl bg-gradient-to-br from-sky-400 to-teal-700 px-4 py-10 md:px-8 md:py-14 lg:w-[85.87%]">
         {/* HEADING */}
         <div className="mb-8 text-center text-white md:mb-10">
@@ -146,18 +168,15 @@ export default function TopRatedHotels() {
           className="relative cursor-grab overflow-hidden active:cursor-grabbing"
           onMouseDown={(e) => {
             setIsDraggingTop(true);
-
             topStartX.current = e.clientX;
           }}
           onMouseUp={(e) => {
             handleDrag(topStartX.current, e.clientX, "top");
-
             setIsDraggingTop(false);
           }}
           onMouseLeave={() => setIsDraggingTop(false)}
           onTouchStart={(e) => {
             setIsDraggingTop(true);
-
             topStartX.current = e.touches[0].clientX;
           }}
           onTouchEnd={(e) => {
@@ -172,7 +191,7 @@ export default function TopRatedHotels() {
               transform: `translateX(-${topIndex * (100 / perRow)}%)`,
             }}
           >
-            {topData.map(renderCard)}
+            {topData.map((hotel, idx) => renderCard(hotel, idx))}
           </div>
         </div>
 
@@ -181,18 +200,15 @@ export default function TopRatedHotels() {
           className="relative mt-6 cursor-grab overflow-hidden active:cursor-grabbing md:mt-10"
           onMouseDown={(e) => {
             setIsDraggingBottom(true);
-
             bottomStartX.current = e.clientX;
           }}
           onMouseUp={(e) => {
             handleDrag(bottomStartX.current, e.clientX, "bottom");
-
             setIsDraggingBottom(false);
           }}
           onMouseLeave={() => setIsDraggingBottom(false)}
           onTouchStart={(e) => {
             setIsDraggingBottom(true);
-
             bottomStartX.current = e.touches[0].clientX;
           }}
           onTouchEnd={(e) => {
@@ -211,7 +227,7 @@ export default function TopRatedHotels() {
               transform: `translateX(-${bottomIndex * (100 / perRow)}%)`,
             }}
           >
-            {bottomData.map(renderCard)}
+            {bottomData.map((hotel, idx) => renderCard(hotel, idx))}
           </div>
         </div>
       </div>

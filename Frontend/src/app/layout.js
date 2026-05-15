@@ -3,7 +3,7 @@ import Header from "@/components/common/Header";
 import QueryProvider from "@/providers/QueryProvider";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import "antd/dist/reset.css";
-import { Geist, Geist_Mono, Roboto, Jost  } from "next/font/google";
+import { Geist, Geist_Mono, Jost, Roboto } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 
@@ -40,15 +40,12 @@ export default function RootLayout({ children }) {
     <html
       suppressHydrationWarning
       lang="en"
-      className={`
-        ${geistSans.variable} 
-        ${geistMono.variable} 
-        ${roboto.variable}  
-        ${jost.variable}
-        h-full antialiased
-      `}
+      className={` ${geistSans.variable} ${geistMono.variable} ${roboto.variable} ${jost.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <head>
+        <link rel="preload" as="image" href="/images/homepage/home.svg" />
+      </head>
+      <body className="flex min-h-full flex-col">
         <AntdRegistry>
           <QueryProvider>
             <Providers>
