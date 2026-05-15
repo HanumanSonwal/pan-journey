@@ -1,11 +1,10 @@
-import Hotel from "@/modules/hotel/pages/Hotel";
+import HotelContent from "@/modules/hotel/pages/Hotel";
+import { Suspense } from "react";
 
-function page() {
+export default function Page() {
   return (
-    <>
-      <Hotel />
-    </>
+    <Suspense fallback={<div>Loading...</div>}>
+      <HotelContent />
+    </Suspense>
   );
 }
-
-export default page;
