@@ -136,7 +136,7 @@ export default function TopRatedHotels() {
           </h2>
 
           <p className="mx-auto mt-3 max-w-3xl text-sm leading-6 opacity-90 sm:text-base lg:text-lg">
-            We’re committed to offering more than just products— we provide
+            We’re committed to offering more than just products we provide
             exceptional experiences.
           </p>
         </div>

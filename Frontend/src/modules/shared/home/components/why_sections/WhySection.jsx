@@ -38,13 +38,13 @@ const features = [
 
 export default function WhySection() {
   return (
-    <section className="overflow-hidden bg-[#EDF7FF] px-4 py-16 md:py-20  mt-[-10px]">
+    <section className="mt-[-10px] overflow-hidden bg-[#EDF7FF] px-4 py-16 md:py-20">
       <div className="mx-auto w-[85.87%]">
         {/* Heading */}
-           <SectionHeading
-  title="Why Choose Our Platform"
-  description="We’re committed to offering more than just products—we provide exceptional experiences."
-/>
+        <SectionHeading
+          title="Why Choose Our Platform"
+          description="We’re committed to offering more than just products we provide exceptional experiences."
+        />
 
         {/* Main Layout */}
         <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-[1.1fr_1fr] lg:gap-8">
