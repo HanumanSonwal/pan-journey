@@ -11,6 +11,7 @@ const hotelCacheSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+      //searchKey: String,
 
     createdAt: {
       type: Date,

@@ -151,12 +151,21 @@ export const searchHotelsFromSupplier = async (reqBody) => {
 
     const hotels = mergeHotels(data);
     console.log("📦 FIRST PAGE HOTELS RECEIVED:", hotels.length);
+    if (!hotels || hotels.length === 0) {
+      console.log("❌ SUPPLIER RETURNED 0 HOTELS → NOT CACHING");
+      throw new Error("No hotels received from supplier. Try again.");
+    }
 
     cache = await HotelCache.create({
       cityId: body.cityId,
       cityName: body.cityName,
       hotels,
     });
+    // cache = await HotelCache.create({
+    //   cityId: body.cityId,
+    //   cityName: body.cityName,
+    //   hotels,
+    // });
 
     console.log("💾 CACHE CREATED SUCCESSFULLY");
 
@@ -187,18 +196,18 @@ export const searchHotelsFromSupplier = async (reqBody) => {
   // const page = pagination.page || 1;
   // const limit = pagination.limit || 10;
 
-const paginated = paginateHotels(sorted, { page, limit });
+  const paginated = paginateHotels(sorted, { page, limit });
 
   console.log("📄 Page:", page, "| Limit:", limit);
   console.log("📦 Returned Hotels:", paginated.length);
   console.log("=================================================\n");
 
   return {
-  totalHotels: paginated.totalHotels,
-  page: paginated.page,
-  totalPage: paginated.totalPages,
-  limit:paginated.limit,
-  hotels: paginated.hotels,
-  isComplete: cache.isComplete,
-};
+    totalHotels: paginated.totalHotels,
+    page: paginated.page,
+    totalPage: paginated.totalPages,
+    limit: paginated.limit,
+    hotels: paginated.hotels,
+    isComplete: cache.isComplete,
+  };
 };
