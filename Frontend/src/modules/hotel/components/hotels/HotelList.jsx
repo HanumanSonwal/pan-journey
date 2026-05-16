@@ -1,13 +1,16 @@
 "use client";
+
+import HotelContentLoader from "@/components/common/loder/HotelContentLoader";
 import dayjs from "dayjs";
-import { useEffect, useMemo, useRef } from "react";
+import { memo, useEffect, useMemo, useRef } from "react";
 import HotelCard from "../../../shared/home/components/HotelCard";
 import { useInfiniteHotels } from "../../hooks/useInfiniteHotels";
-import HotelContentLoader from "@/components/common/loder/HotelContentLoader";
-export default function HotelList({ searchData, filters, sort, page }) {
-  // PAYLOAD
+function HotelList({ searchData, filters, sort }) {
   const payload = useMemo(() => {
-    if (!searchData?.cityData?.id) return null;
+    if (!searchData?.cityData?.id) {
+      return null;
+    }
+
     return {
       HotelSeedValue: "",
       CheckInDate: searchData?.checkIn
@@ -29,18 +32,15 @@ export default function HotelList({ searchData, filters, sort, page }) {
       RoomCount: searchData?.rooms || 1,
       filters: {
         search: filters?.search || "",
-        suggested: filters?.suggested || [],
-        propertyType: filters?.propertyType || [],
-        starCategory: filters?.starCategory || [],
-        rating: filters?.rating || [],
-        locations: filters?.locations || [],
-        priceMin: filters?.priceMin ?? 0,
-        priceMax: filters?.priceMax ?? 50000,
+        freeCancellation: filters?.freeCancellation || false,
+        starRating: filters?.starRating || "",
+        minPrice: filters?.minPrice || "",
+        maxPrice: filters?.maxPrice || "",
       },
       sort: sort || "",
     };
-  }, [searchData, filters, sort, page]);
-  // API
+  }, [searchData, filters, sort]);
+
   const {
     data,
     isLoading,
@@ -50,47 +50,49 @@ export default function HotelList({ searchData, filters, sort, page }) {
     hasNextPage,
     isFetchingNextPage,
   } = useInfiniteHotels(payload);
-  // LOAD MORE REF
+
   const loadMoreRef = useRef(null);
-  // INTERSECTION OBSERVER
+
   useEffect(() => {
+    if (!loadMoreRef.current) return;
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+        const firstEntry = entries[0];
+        if (firstEntry.isIntersecting && hasNextPage && !isFetchingNextPage) {
           fetchNextPage();
         }
       },
       {
-        threshold: 1,
+        threshold: 0.2,
       },
     );
-    if (loadMoreRef.current) {
-      observer.observe(loadMoreRef.current);
-    }
-    return () => observer.disconnect();
+    observer.observe(loadMoreRef.current);
+    return () => {
+      observer.disconnect();
+    };
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
-  // FLAT HOTELS
+
   const hotels = useMemo(() => {
     const allHotels =
       data?.pages?.flatMap((page) => page?.data?.hotels || []) || [];
-    console.log("🚀 HOTELS-data with pagination:", allHotels);
-    const uniqueHotels = Array.from(
+    return Array.from(
       new Map(allHotels.map((hotel) => [hotel.hotelId, hotel])).values(),
     );
-    return uniqueHotels;
   }, [data]);
-
-  // MAPPED HOTELS
   const mappedHotels = useMemo(() => {
     return hotels.map((hotel) => ({
       id: hotel.hotelId,
       name: hotel.hotelName || "Hotel Name",
+      facilities: hotel.facilities || [],
       location: hotel.location || hotel.address || "Location",
+      latitude: hotel.latitude || 0,
+      longitude: hotel.longitude || 0,
       address: hotel.address || "",
       rating: Number(hotel.starRating || 0),
       reviews: hotel.reviewCount || 0,
-      price: hotel.price || hotel.minPrice || 0,
-      oldPrice: hotel.oldPrice || (hotel.price ? hotel.price + 1500 : 0),
+      price: Number(hotel.price || hotel.minPrice || 0) || 0,
+      oldPrice:
+        hotel.oldPrice || (hotel.price ? Number(hotel.price) + 1500 : 0),
       propertyType: hotel.propertyType || "Hotel",
       image:
         hotel.image ||
@@ -106,24 +108,29 @@ export default function HotelList({ searchData, filters, sort, page }) {
                 hotel.hotelImage ||
                 "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80&auto=format&fit=crop",
             ],
+
       tags: hotel.facilities?.slice(0, 3) || [],
       starRating: hotel.starRating || "",
       description: hotel.description || "",
+      freeCancellation: hotel.freeCancellation || false,
+      tax: hotel.tax || 0,
     }));
   }, [hotels]);
+
   // LOADING
   if (isLoading) {
     return <HotelContentLoader />;
   }
+
   // ERROR
   if (isError) {
     return (
       <div className="py-10 text-center text-red-500">
-        {error?.message ||
-          "Failed to fetch hotels"}
+        {error?.message || "Failed to fetch hotels"}
       </div>
     );
   }
+
   // EMPTY
   if (!mappedHotels.length) {
     return <div className="py-10 text-center">No hotels found 😔</div>;
@@ -135,6 +142,7 @@ export default function HotelList({ searchData, filters, sort, page }) {
       {mappedHotels.map((hotel, index) => (
         <HotelCard key={hotel.id || index} hotel={hotel} />
       ))}
+
       {/* LOAD MORE */}
       <div ref={loadMoreRef} className="flex justify-center py-6">
         {isFetchingNextPage && (
@@ -148,3 +156,5 @@ export default function HotelList({ searchData, filters, sort, page }) {
     </div>
   );
 }
+
+export default memo(HotelList);
