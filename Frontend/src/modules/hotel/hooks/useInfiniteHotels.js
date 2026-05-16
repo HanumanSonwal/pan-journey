@@ -21,14 +21,32 @@ export const useInfiniteHotels = (params) => {
     initialPageParam: 1,
 
     getNextPageParam: (lastPage) => {
-      const currentPage = lastPage?.data?.currentPage || 1;
+      // API RESPONSE
+      // lastPage.data.page
+      // lastPage.data.totalPage
 
-      const totalPages = lastPage?.data?.totalPages || 1;
+      const currentPage =
+        lastPage?.data?.page || 1;
 
+      const totalPages =
+        lastPage?.data?.totalPage || 1;
+
+      console.log(
+        "CURRENT PAGE:",
+        currentPage,
+      );
+
+      console.log(
+        "TOTAL PAGES:",
+        totalPages,
+      );
+
+      // HAS NEXT PAGE
       if (currentPage < totalPages) {
         return currentPage + 1;
       }
 
+      // STOP
       return undefined;
     },
 
