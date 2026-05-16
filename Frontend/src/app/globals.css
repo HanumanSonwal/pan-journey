@@ -120,3 +120,13 @@ body {
 }
 
 
+.guest-popover {
+  z-index: 999999 !important;
+}
+
+.guest-popover .ant-popover-inner {
+  border-radius: 18px !important;
+  padding: 16px !important;
+}
+
+
