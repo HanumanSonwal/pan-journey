@@ -57,7 +57,7 @@ export default function FAQSection() {
         {/* Heading */}
         <SectionHeading
           title="  Questions & Answer"
-          description=" We’re committed to offering more than just products we provide exceptional experiences.."
+        description="We’re committed to offering more than just products—we provide exceptional experiences."
         />
 
         {/* FAQ */}

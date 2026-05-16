@@ -79,7 +79,8 @@ export default function DestinationSearchField({
       label: (
         <div className="flex flex-col py-1">
           <span className="font-semibold text-gray-800">{item.name}</span>
-          <span className="text-xs text-gray-500">{item.type}</span>
+          <span className="text-xs text-gray-500">{item.type}</span>  
+          
         </div>
       ),
 
@@ -92,65 +93,65 @@ export default function DestinationSearchField({
   // GROUPED OPTIONS
   const groupedOptions = isEmptySearch
     ? [
-        ...(recentSearches.length > 0
-          ? [
-              {
-                label: "Recent Searches",
+      ...(recentSearches.length > 0
+        ? [
+          {
+            label: "Recent Searches",
 
-                options: buildOptions(recentSearches),
-              },
-            ]
-          : []),
+            options: buildOptions(recentSearches),
+          },
+        ]
+        : []),
 
-        {
-          label: "Popular Destinations",
+      {
+        label: "Popular Destinations",
 
-          options: buildOptions(
-            data.filter(
-              (popular) =>
-                !recentSearches.some((recent) => recent.name === popular.name),
-            ),
+        options: buildOptions(
+          data.filter(
+            (popular) =>
+              !recentSearches.some((recent) => recent.name === popular.name),
           ),
-        },
-      ]
+        ),
+      },
+    ]
     : [
-        {
-          label: "Cities",
+      {
+        label: "Cities",
 
-          options: buildOptions(
-            sortedSearchResults.filter((item) => item.type === "City"),
+        options: buildOptions(
+          sortedSearchResults.filter((item) => item.type === "City"),
+        ),
+      },
+
+      {
+        label: "Hotels",
+
+        options: buildOptions(
+          sortedSearchResults.filter((item) => item.type === "Hotel"),
+        ),
+      },
+
+      {
+        label: "Airports",
+
+        options: buildOptions(
+          sortedSearchResults.filter((item) => item.type === "Airport"),
+        ),
+      },
+
+      {
+        label: "Locations",
+
+        options: buildOptions(
+          sortedSearchResults.filter(
+            (item) =>
+              item.type !== "City" &&
+              item.type !== "Hotel" &&
+              item.type !== "Airport",
           ),
-        },
-
-        {
-          label: "Hotels",
-
-          options: buildOptions(
-            sortedSearchResults.filter((item) => item.type === "Hotel"),
-          ),
-        },
-
-        {
-          label: "Airports",
-
-          options: buildOptions(
-            sortedSearchResults.filter((item) => item.type === "Airport"),
-          ),
-        },
-
-        {
-          label: "Locations",
-
-          options: buildOptions(
-            sortedSearchResults.filter(
-              (item) =>
-                item.type !== "City" &&
-                item.type !== "Hotel" &&
-                item.type !== "Airport",
-            ),
-          ),
-        },
-      ];
+        ),
+      },
+    ];
 
   return (
     <div
@@ -165,11 +166,10 @@ export default function DestinationSearchField({
       )}
 
       <div
-        className={`flex ${
-          compact
+        className={`flex ${compact
             ? "h-full items-center px-0"
             : "min-h-[56px] flex-col justify-center px-1 md:px-2"
-        }`}
+          }`}
       >
         <Select
           showSearch

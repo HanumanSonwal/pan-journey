@@ -1,6 +1,7 @@
 import Footer from "@/components/common/Footer";
 import Header from "@/components/common/Header";
 import QueryProvider from "@/providers/QueryProvider";
+import LoaderProvider from "@/providers/LoaderProvider";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import "antd/dist/reset.css";
 import { Geist, Geist_Mono, Jost, Roboto } from "next/font/google";
@@ -46,6 +47,7 @@ export default function RootLayout({ children }) {
         <link rel="preload" as="image" href="/images/homepage/home.svg" />
       </head>
       <body className="flex min-h-full flex-col">
+         <LoaderProvider/>
         <AntdRegistry>
           <QueryProvider>
             <Providers>
