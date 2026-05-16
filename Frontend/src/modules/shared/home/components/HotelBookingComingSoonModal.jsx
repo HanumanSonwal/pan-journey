@@ -14,15 +14,15 @@ export default function HotelBookingComingSoonModal({ open, onClose }) {
       destroyOnHidden
       className="hotel-coming-soon-modal"
     >
-      <div className="px-1 py-2">
+      <div className="px-1 py-2 !p-5">
         {/* HEADER */}
-        <div className="flex items-start gap-4 border-b border-gray-100 pb-5">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#0077b6]/10 text-[28px]">
+        <div className="flex items-start gap-4 border-b border-gray-100 pb-1 ">
+         <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-r from-[#72c0f0] via-[#4fa3c2] to-[#0f6a75] text-white text-[28px] shadow-[0_10px_30px_rgba(0,119,182,0.25)] -translate-y-4 transition-all duration-300 mt-4"> 
             🏨
           </div>
 
           <div className="flex-1">
-            <h2 className="m-0 text-[24px] leading-[30px] font-bold text-[#0077b6]">
+            <h2 className="m-0 text-[24px] leading-[30px] font-bold text-[#72c0f0]">
               Hotel Booking Coming Soon
             </h2>
 
@@ -34,7 +34,7 @@ export default function HotelBookingComingSoonModal({ open, onClose }) {
         </div>
 
         {/* CONTENT */}
-        <div className="pt-6">
+        <div className="pt-2">
           <p className="text-[15px] leading-7 text-gray-600">
             Our hotel booking system is currently under testing and final
             improvements to ensure a seamless reservation experience with better
@@ -71,7 +71,7 @@ export default function HotelBookingComingSoonModal({ open, onClose }) {
           </div>
 
           {/* FOOTER TEXT */}
-          <p className="mt-6 text-center text-[13px] leading-6 text-gray-500">
+          <p className="mt-6 text-center text-[13px] leading-6 text-gray-900">
             Thank you for your patience and support while we prepare the best
             experience for you.
           </p>
@@ -81,7 +81,7 @@ export default function HotelBookingComingSoonModal({ open, onClose }) {
             <Button
               size="large"
               onClick={onClose}
-              className="!h-[46px] !rounded-xl !border-0 !bg-[#0077b6] !px-8 !text-[15px] !font-semibold hover:!bg-[#005f92]"
+              className="!h-[46px] !rounded-xl !border-0 !bg-gradient-to-r !from-[#72c0f0] !via-[#4fa3c2] !to-[#0f6a75] !px-8 !text-[15px] !font-semibold !text-white hover:!scale-105 hover:!shadow-lg !transition-all !duration-300"
             >
               Okay, Got it
             </Button>

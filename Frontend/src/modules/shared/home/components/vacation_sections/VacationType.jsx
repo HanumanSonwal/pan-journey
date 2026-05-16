@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 import { useDestinations } from "@/modules/shared/home/hooks/useDestinations";
+import { useLoader } from "@/providers/LoaderProvider";
 import { VacationsimageMap } from "../data/VacationsData";
 
 export default function VacationType({ activeTab }) {
@@ -14,6 +15,14 @@ export default function VacationType({ activeTab }) {
 
   // API DATA
   const { data = [], isLoading } = useDestinations(activeTab);
+
+  // GLOBAL LOADER
+  const { setLoading } = useLoader();
+
+  // 🔥 CONNECT API LOADER TO GLOBAL LOADER
+  useEffect(() => {
+    setLoading(isLoading);
+  }, [isLoading, setLoading]);
 
   // RESPONSIVE
   useEffect(() => {
@@ -30,7 +39,6 @@ export default function VacationType({ activeTab }) {
     };
 
     updatePerPage();
-
     window.addEventListener("resize", updatePerPage);
 
     return () => window.removeEventListener("resize", updatePerPage);
@@ -107,13 +115,14 @@ export default function VacationType({ activeTab }) {
                     />
                   </div>
 
-                  {/* CONTENT */}
                   <div className="bg-[#F5F5F5] px-4 py-5 text-center">
                     <h2 className="mb-2 text-lg font-semibold text-gray-800">
                       {item.name}
                     </h2>
 
-                    <p className="mb-3 text-sm text-gray-600">{item?.City}</p>
+                    <p className="mb-3 text-sm text-gray-600">
+                      {item.City}
+                    </p>
 
                     <button className="flex w-full items-center justify-center gap-1 text-sm font-medium text-[#5FA8C9] transition hover:text-[#3D8FB3]">
                       View Details →

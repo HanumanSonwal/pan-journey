@@ -53,7 +53,7 @@ export default function OfferBanner() {
           </p>
 
           {/* Button */}
-          <button className="h-[42px] w-[180px] rounded bg-white text-lg font-semibold text-[#72C0F0] shadow-lg transition-all duration-200 hover:scale-[1.02] hover:opacity-90 active:scale-[0.98] md:h-10 md:w-[200px] md:text-xl">
+          <button className="h-[42px] w-[180px] rounded bg-white text-lg font-semibold !text-[#72C0F0] shadow-lg transition-all duration-200 hover:scale-[1.02] hover:opacity-90 active:scale-[0.98] md:h-10 md:w-[200px] md:text-xl">
             Start Booking Now →
           </button>
         </div>

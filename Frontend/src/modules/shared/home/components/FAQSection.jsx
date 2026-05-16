@@ -14,36 +14,31 @@ const faqData = [
   },
   {
     key: "2",
-    question:
-      "How can I book my travel package online easily?",
+    question: "How can I book my travel package online easily?",
     answer:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
   },
   {
     key: "3",
-    question:
-      "Can I cancel or modify my booking after payment?",
+    question: "Can I cancel or modify my booking after payment?",
     answer:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
   },
   {
     key: "4",
-    question:
-      "Do you provide customer support during the journey?",
+    question: "Do you provide customer support during the journey?",
     answer:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
   },
   {
     key: "5",
-    question:
-      "Are there any hidden charges in booking packages?",
+    question: "Are there any hidden charges in booking packages?",
     answer:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
   },
   {
     key: "6",
-    question:
-      "Can I use cashback and reward points together?",
+    question: "Can I use cashback and reward points together?",
     answer:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
   },
@@ -51,17 +46,17 @@ const faqData = [
 
 export default function FAQSection() {
   return (
-    <section className="bg-[#F5F7F9] py-16 md:py-24 px-4">
-      <div className="max-w-5xl mx-auto">
-
+    <section className="bg-[#F5F7F9] px-4 py-16 md:py-24">
+      <div className="mx-auto max-w-5xl !mt-[-95]">
         {/* Heading */}
         <SectionHeading
           title="  Questions & Answer"
-        description="We’re committed to offering more than just products—we provide exceptional experiences."
+
+          description=" We’re committed to offering more than just products we provide exceptional experiences.."
         />
 
         {/* FAQ */}
-        <div className="mt-16">
+        <div >
           <Collapse
             accordion
             defaultActiveKey={["1"]}
@@ -77,12 +72,12 @@ export default function FAQSection() {
             items={faqData.map((item) => ({
               key: item.key,
               label: (
-                <span className="text-[18px] font-medium text-[#222]  ">
+                <span className="text-[18px] font-medium text-[#222]">
                   {item.question}
                 </span>
               ),
               children: (
-                <p className="text-[15px] leading-9 text-gray-600 pr-8 pb-2">
+                <p className="pr-8 pb-2 text-[15px] leading-9 text-gray-600">
                   {item.answer}
                 </p>
               ),

@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import { useEffect, useMemo, useRef } from "react";
 import HotelCard from "../../../shared/home/components/HotelCard";
 import { useInfiniteHotels } from "../../hooks/useInfiniteHotels";
+import HotelContentLoader from "@/components/common/loder/HotelContentLoader";
 export default function HotelList({ searchData, filters, sort, page }) {
   // PAYLOAD
   const payload = useMemo(() => {
@@ -112,13 +113,14 @@ export default function HotelList({ searchData, filters, sort, page }) {
   }, [hotels]);
   // LOADING
   if (isLoading) {
-    return <div className="py-10 text-center">Loading hotels...</div>;
+    return <HotelContentLoader />;
   }
   // ERROR
   if (isError) {
     return (
       <div className="py-10 text-center text-red-500">
-        {error?.message || "Failed to fetch hotels"}
+        {error?.message ||
+          "Failed to fetch hotels"}
       </div>
     );
   }
@@ -126,6 +128,7 @@ export default function HotelList({ searchData, filters, sort, page }) {
   if (!mappedHotels.length) {
     return <div className="py-10 text-center">No hotels found 😔</div>;
   }
+
   return (
     <div className="flex flex-col gap-4">
       {/* HOTELS */}
