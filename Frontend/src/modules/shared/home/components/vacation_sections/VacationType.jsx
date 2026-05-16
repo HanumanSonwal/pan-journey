@@ -1,21 +1,26 @@
 "use client";
 
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-
-import { Spin } from "antd";
-
 import { useEffect, useState } from "react";
 
 import { useDestinations } from "@/modules/shared/home/hooks/useDestinations";
+import { useLoader } from "@/providers/LoaderProvider";
 import { VacationsimageMap } from "../data/VacationsData";
 
 export default function VacationType({ activeTab }) {
   const [index, setIndex] = useState(0);
-
   const [perPage, setPerPage] = useState(4);
 
   // API
   const { data = [], isLoading } = useDestinations(activeTab);
+
+  // GLOBAL LOADER
+  const { setLoading } = useLoader();
+
+  // 🔥 CONNECT API LOADER TO GLOBAL LOADER
+  useEffect(() => {
+    setLoading(isLoading);
+  }, [isLoading, setLoading]);
 
   // RESPONSIVE
   useEffect(() => {
@@ -28,7 +33,6 @@ export default function VacationType({ activeTab }) {
     };
 
     updatePerPage();
-
     window.addEventListener("resize", updatePerPage);
 
     return () => window.removeEventListener("resize", updatePerPage);
@@ -52,18 +56,6 @@ export default function VacationType({ activeTab }) {
       setIndex(index - perPage);
     }
   };
-
-  // VISIBLE DATA
-  const visibleData = data.slice(index, index + perPage);
-
-  // LOADING
-  if (isLoading) {
-    return (
-      <div className="flex h-[350px] items-center justify-center">
-        <Spin size="large" />
-      </div>
-    );
-  }
 
   return (
     <div className="px-2 py-2">
@@ -91,12 +83,11 @@ export default function VacationType({ activeTab }) {
                 className="w-full flex-shrink-0 px-2 sm:w-1/2 lg:w-1/4"
               >
                 <div className="overflow-hidden rounded-xl bg-white shadow-sm transition hover:shadow-md">
-                  {/* IMAGE */}
                   <div className="h-[290px] overflow-hidden">
                     <img
                       src={
                         VacationsimageMap[activeTab][
-                          idx % VacationsimageMap[activeTab].length
+                        idx % VacationsimageMap[activeTab].length
                         ]
                       }
                       alt={item.name}
@@ -104,15 +95,16 @@ export default function VacationType({ activeTab }) {
                     />
                   </div>
 
-                  {/* CONTENT */}
                   <div className="bg-[#F5F5F5] px-4 py-5 text-center">
                     <h2 className="mb-2 text-lg font-semibold text-gray-800">
                       {item.name}
                     </h2>
 
-                    <p className="mb-3 text-sm text-gray-600">{item?.City}</p>
+                    <p className="mb-3 text-sm text-gray-600">
+                      {item.City}
+                    </p>
 
-                    <button className="flex w-full items-center justify-center gap-1 text-sm font-medium text-[#5FA8C9]! transition hover:text-[#3D8FB3]!">
+                    <button className="flex w-full items-center justify-center gap-1 text-sm font-medium !text-[#5FA8C9] transition hover:text-[#3D8FB3]">
                       View Details →
                     </button>
 
@@ -128,7 +120,7 @@ export default function VacationType({ activeTab }) {
         <button
           onClick={next}
           disabled={index + perPage >= data.length}
-          className="flex h-10 w-10 items-center justify-center rounded-full text-xl transition hover:bg-gray-900! disabled:opacity-30"
+          className="flex h-10 w-10 items-center justify-center rounded-full text-xl transition hover:bg-gray-900 disabled:opacity-30"
         >
           <RightOutlined />
         </button>

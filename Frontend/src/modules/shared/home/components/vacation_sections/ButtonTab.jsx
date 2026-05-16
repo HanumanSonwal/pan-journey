@@ -8,17 +8,16 @@ export default function ButtonTab({ tabs = [], activeTab, setActiveTab }) {
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`relative border-0 border-b-0 bg-transparent pb-2 text-sm text-[20px]! font-medium whitespace-nowrap shadow-none transition-all duration-200 outline-none focus:ring-0 focus:outline-none sm:text-base md:text-lg ${
-              activeTab === tab.key
+            className={`relative border-0 border-b-0 bg-transparent pb-2 text-sm text-[20px]! font-medium whitespace-nowrap shadow-none transition-all duration-200 outline-none focus:ring-0 focus:outline-none sm:text-base md:text-lg ${activeTab === tab.key
                 ? "!text-[#72C0F0]"
                 : "!hover:text-[#72C0F0] !text-gray-500"
-            } `}
+              } `}
           >
             {tab.label}
 
             {/* ONLY active underline */}
             {activeTab === tab.key && (
-              <span className="absolute bottom-0 left-0 h-[3px] w-full rounded-full bg-[#72C0F0] sm:h-[4px]"></span>
+              <span className="absolute bottom-0 left-0 h-[3px] w-full rounded-full bg-[#72C0F0] sm:h-[2px]"></span>
             )}
           </button>
         ))}

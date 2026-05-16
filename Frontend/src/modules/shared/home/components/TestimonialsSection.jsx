@@ -65,7 +65,7 @@ export default function TestimonialsSection() {
         <Slider {...settings}>
           {testimonials.map((item) => (
             <div key={item.id} className="px-3 pt-10">
-              <div className="relative rounded-[22px] bg-white shadow-[0_8px_30px_rgba(0,0,0,0.08)] mb-2">
+              <div className="relative rounded-[22px] bg-white shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
                 {/* Profile Image */}
                 <div className="absolute -top-10 left-5 z-20 sm:left-6 ">
                   <div className="relative h-[70px] w-[70px] overflow-hidden rounded-full border-4 border-white shadow-md sm:h-[74px] sm:w-[74px] ">

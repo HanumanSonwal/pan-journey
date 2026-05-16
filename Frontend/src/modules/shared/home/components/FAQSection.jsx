@@ -47,16 +47,16 @@ const faqData = [
 export default function FAQSection() {
   return (
     <section className="bg-[#F5F7F9] px-4 py-16 md:py-24">
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto max-w-5xl !mt-[-95]">
         {/* Heading */}
         <SectionHeading
           title="  Questions & Answer"
 
           description=" We’re committed to offering more than just products we provide exceptional experiences.."
-/>
+        />
 
         {/* FAQ */}
-        <div className="mt-16">
+        <div >
           <Collapse
             accordion
             defaultActiveKey={["1"]}

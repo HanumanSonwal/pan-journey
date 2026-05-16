@@ -17,7 +17,7 @@ export default function DestinationsSection() {
 
   return (
     <section className="mt-[-10px] overflow-hidden bg-[#F5F7F9] px-4 py-16 text-black md:pb-15">
-      <div className="mx-auto w-[88.87%]">
+      <div className="mx-auto w-[88.87%] !mt-[-71] ">
         {/* Heading */}
         <SectionHeading
           title=" Popular Destinations"
@@ -26,7 +26,7 @@ export default function DestinationsSection() {
 
         {/* Tabs */}
         <div className="flex justify-center">
-          <div className="scrollbar-hide mt-14 flex max-w-full items-center gap-8 overflow-x-auto pb-4 text-[20px] md:gap-10">
+          <div className="scrollbar-hide mb-[-54] flex max-w-full items-center gap-8 overflow-x-auto pb-2 text-[20px] md:gap-10 mt-5 ">
             <ButtonTab
               tabs={tabs.map((tab) => ({
                 key: tab,
