@@ -1,117 +1,112 @@
+// modules/hotel/supplierPagination.service.js
 
 import { supplierAPI } from "../../config/supplierApi.js";
-import { getAuthHeader } from "../../config/supplierAuth.service.js";
-import HotelCache from "../hotel/hotelCache.model.js";
+import HotelCache from "./hotelCache.model.js";
+import { buildPayload, mergeHotels } from "./searchservice.js";
 
-/* ♻️ SAME PAYLOAD BUILDER (reuse) */
-const buildPayload = (body, seedValue = "") => ({
-  AuthHeader: getAuthHeader().AuthHeader,
-  HotelSeedValue: seedValue,
-  CheckInDate: body.CheckInDate,
-  CheckOutDate: body.CheckOutDate,
-  HotelRoomDetail: [
-    { AdultCount: 1, ChildCount: 0, Child1Age: 0, Child2Age: 0 },
-  ],
-  fullName: body.cityName,
-  id: body.cityId,
-  RoomCount: body.RoomCount,
-});
-
-/* ♻️ SAME MERGE FUNCTION (reuse) */
-const mergeHotels = (data) => {
-  if (!data?.HotelContents) return [];
-
-  return data.HotelContents.map((hotel) => {
-    const price = (data.HotelFareDetails || []).find(
-      (fare) => fare.HotelId === hotel.HotelId
-    );
-
-    return {
-      hotelId: hotel.HotelId,
-      hotelName: hotel.HotelName,
-      address: hotel.Address,
-      location: hotel.Location,
-      starRating: hotel.StarCategoryId,
-      latitude: hotel.Latitude,
-      longitude: hotel.Longitude,
-      image: hotel.HotelImage,
-      facilities: hotel.HotelFacilities?.map(f => f.FacilityName) || [],
-      price: price?.TotalAmount || 0,
-      tax: price?.TaxAmount || 0,
-      freeCancellation: price?.FreeCancellation === "2",
-    };
-  });
-};
-
-/* =====================================================
-   🚀 BACKGROUND PAGINATION WORKER (UPDATED)
-===================================================== */
-export const fetchRemainingHotelsInBackground = async (
-  normalizedBody,
-  firstResponse
-) => {
+export const fetchRemainingHotelsInBackground = async (body, firstResponse) => {
   try {
+    console.log("=================================================");
     console.log("🚀 BACKGROUND PAGINATION STARTED");
+    console.log("🏙 City:", body.cityName, "|", body.cityId);
+    console.log("🔑 Initial Seed:", firstResponse.HotelSeedValue);
+    console.log("=================================================");
 
- 
     let seedValue = firstResponse.HotelSeedValue;
-let moreHotels = firstResponse.MoreHotels;
-let previousSeed = ""; 
-let allHotels = [];
-let page = 1;
+    let visited = new Set();
+    let allHotels = [];
+    let page = 1;
 
-/* 🆕 empty page safety counter */
-let emptyPageCount = 0;
+    let emptyPageCount = 0;
 
+    while (seedValue && !visited.has(seedValue)) {
+      visited.add(seedValue);
+      page++;
 
+      console.log("\n---------------------------------------------");
+      console.log(`📡 SUPPLIER CALL #${page}`);
+      console.log("🔑 Seed Value:", seedValue);
+      console.log("📦 Already Visited Seeds:", visited.size);
 
-while (seedValue && seedValue !== previousSeed) {
-  page++;
-  console.log(`📡 Background Supplier Call #${page}`);
+      const payload = buildPayload(body, seedValue);
 
-  previousSeed = seedValue;
-
-  const payload = buildPayload(normalizedBody, seedValue);
-
-  const { data } = await supplierAPI.post(
-    "/JSONService/HotelSearch",
-    payload,
-    {
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        Accept: "application/json",
-      },
-    }
-  );
-
-  const mergedHotels = mergeHotels(data);
-  console.log(`➡️ Received ${mergedHotels.length} hotels`);
-
-  if (mergedHotels.length === 0) {
-    emptyPageCount++;
-    if (emptyPageCount >= 2) {
-      console.log("🛑 STOP: empty pages");
-      break;
-    }
-  } else {
-    emptyPageCount = 0;
-    allHotels.push(...mergedHotels);
-  }
-
-  seedValue = data.HotelSeedValue; // ⭐ pagination cursor update
-}
-     
-
-    /* 💾 PUSH REMAINING HOTELS INTO CACHE */
-    if (allHotels.length) {
-      await HotelCache.updateOne(
-        { cityId: normalizedBody.cityId },
-        { $push: { hotels: { $each: allHotels } } }
+      const { data } = await supplierAPI.post(
+        "/JSONService/HotelSearch",
+        payload
       );
+
+      const hotels = mergeHotels(data);
+
+      console.log("🏨 Hotels Received:", hotels.length);
+      console.log("📊 MoreHotels Flag:", data?.MoreHotels);
+      console.log("🔁 Next Seed:", data?.HotelSeedValue);
+
+      if (hotels.length === 0) {
+        emptyPageCount++;
+        console.log(`⚠️ Empty Page Count: ${emptyPageCount}`);
+
+        if (emptyPageCount >= 2) {
+          console.log("🛑 STOP: 2 consecutive empty pages");
+          break;
+        }
+      } else {
+        emptyPageCount = 0;
+        allHotels.push(...hotels);
+
+        console.log("📥 Total Collected Hotels So Far:", allHotels.length);
+      }
+
+      // update seed
+      if (!data?.HotelSeedValue) {
+        console.log("🛑 STOP: No next seed returned");
+        break;
+      }
+
+      seedValue = data.HotelSeedValue;
+
+      if (!data.MoreHotels) {
+        console.log("🛑 STOP: MoreHotels = false");
+        break;
+      }
     }
 
-    console.log("🎉 BACKGROUND CACHE COMPLETE");
+    console.log("\n=================================================");
+    console.log("📦 BACKGROUND FETCH COMPLETED");
+    console.log("🏨 Total Hotels Collected:", allHotels.length);
+    console.log("=================================================\n");
+
+    // ---------------- CACHE UPDATE ----------------
+    if (allHotels.length) {
+      console.log("💾 Updating cache...");
+
+      const cache = await HotelCache.findOne({ cityId: body.cityId });
+
+      if (!cache) {
+        console.log("⚠️ Cache not found, skipping update");
+        return;
+      }
+
+      const map = new Map();
+
+      [...(cache.hotels || []), ...allHotels].forEach((h) => {
+        map.set(h.hotelId, h);
+      });
+
+      cache.hotels = Array.from(map.values());
+      cache.isComplete = true;
+
+      await cache.save();
+
+      console.log("✅ CACHE UPDATED SUCCESSFULLY");
+      console.log("🏨 Final Cached Hotels:", cache.hotels.length);
+    } else {
+      console.log("⚠️ No new hotels to update in cache");
+    }
+
+    console.log("🎉 BACKGROUND JOB FINISHED SUCCESSFULLY");
   } catch (err) {
-    console.log("❌ Background fetch failed:", err.message);
+    console.log("❌ BACKGROUND ERROR OCCURRED");
+    console.log("🧨 Error Message:", err.message);
+    console.log("🧨 Stack (short):", err.stack?.split("\n")[0]);
   }
 };

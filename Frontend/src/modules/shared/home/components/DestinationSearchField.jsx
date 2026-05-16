@@ -213,10 +213,6 @@ export default function DestinationSearchField({
           }}
         />
 
-
-
-
-
         {/* COUNTRY */}
         {/* COUNTRY */}
         {/* COUNTRY */}
@@ -230,7 +226,6 @@ export default function DestinationSearchField({
           </span>
         )}
       </div>
-
     </div>
   );
 }

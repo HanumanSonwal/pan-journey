@@ -3,13 +3,13 @@ import { DatePicker, Input, Select } from "antd";
 export default function FlightSearchForm() {
   return (
     <div>
-      <h3 className="text-xl font-bold mb-4">Book Flights</h3>
+      <h3 className="mb-4 text-xl font-bold">Book Flights</h3>
 
-      <div className="grid md:grid-cols-4 gap-4">
+      <div className="grid gap-4 md:grid-cols-4">
         <Input size="large" placeholder="From" />
         <Input size="large" placeholder="To" />
 
-        <DatePicker className="w-full h-[60px]" />
+        <DatePicker className="h-[60px] w-full" />
 
         <Select
           size="large"

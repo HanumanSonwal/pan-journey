@@ -1,7 +1,7 @@
 import Footer from "@/components/common/Footer";
 import Header from "@/components/common/Header";
-import QueryProvider from "@/providers/QueryProvider";
 import LoaderProvider from "@/providers/LoaderProvider";
+import QueryProvider from "@/providers/QueryProvider";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import "antd/dist/reset.css";
 import { Geist, Geist_Mono, Jost, Roboto } from "next/font/google";
@@ -41,28 +41,25 @@ export default function RootLayout({ children }) {
     <html
       suppressHydrationWarning
       lang="en"
-      className={`
-        ${geistSans.variable} 
-        ${geistMono.variable} 
-        ${roboto.variable}  
-        ${jost.variable}
-        h-full antialiased
-      `}
+      className={` ${geistSans.variable} ${geistMono.variable} ${roboto.variable} ${jost.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <head>
+        <link rel="preload" as="image" href="/images/homepage/home.svg" />
+      </head>
+      <body className="flex min-h-full flex-col">
+        <LoaderProvider>
+          <AntdRegistry>
+            <QueryProvider>
+              <Providers>
+                <Header />
 
-       <LoaderProvider>
-  <AntdRegistry>
-    <QueryProvider>
-      <Providers>
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
-      </Providers>
-    </QueryProvider>
-  </AntdRegistry>
-</LoaderProvider>
+                <main className="flex-1">{children}</main>
 
+                <Footer />
+              </Providers>
+            </QueryProvider>
+          </AntdRegistry>
+        </LoaderProvider>
       </body>
     </html>
   );

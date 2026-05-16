@@ -3,42 +3,51 @@
 import {
   ArrowDownOutlined,
   ArrowUpOutlined,
-  FireOutlined,
   StarOutlined,
 } from "@ant-design/icons";
 
-export default function SortBar({ sort, setSort }) {
-  const tabs = [
-    {
-      label: "Popular",
-      value: "popular",
-      icon: <FireOutlined />,
-    },
-    {
-      label: "User Rating",
-      sub: "(Highest First)",
-      value: "ratingHigh",
-      icon: <StarOutlined />,
-    },
-    {
-      label: "Price",
-      sub: "(Highest First)",
-      value: "priceHigh",
-      icon: <ArrowDownOutlined />,
-    },
-    {
-      label: "Price",
-      sub: "(Lowest First)",
-      value: "priceLow",
-      icon: <ArrowUpOutlined />,
-    },
-  ];
+import { memo, useMemo } from "react";
+
+function SortBar({ sort, setSort }) {
+  // SORT TABS
+  const tabs = useMemo(
+    () => [
+      {
+        label: "User Rating",
+        sub: "(Highest First)",
+        value: "ratingHigh",
+        icon: <StarOutlined />,
+      },
+
+      {
+        label: "User Rating",
+        sub: "(Lowest First)",
+        value: "ratingLow",
+        icon: <StarOutlined />,
+      },
+
+      {
+        label: "Price",
+        sub: "(Highest First)",
+        value: "priceHigh",
+        icon: <ArrowDownOutlined />,
+      },
+
+      {
+        label: "Price",
+        sub: "(Lowest First)",
+        value: "priceLow",
+        icon: <ArrowUpOutlined />,
+      },
+    ],
+    [],
+  );
 
   return (
-    <div className="bg-white border border-gray-200 overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.08)]">
+    <div className="overflow-hidden border border-gray-200 bg-white shadow-[0_2px_10px_rgba(0,0,0,0.08)]">
       <div className="flex items-stretch">
-        {/* SORT LABEL */}
-        <div className="min-w-27.5 border-r border-gray-200 flex items-center justify-center px-4">
+        {/* LABEL */}
+        <div className="flex min-w-27.5 items-center justify-center border-r border-gray-200 px-4">
           <span className="text-[15px] font-medium text-gray-700">
             Sort By:
           </span>
@@ -54,34 +63,25 @@ export default function SortBar({ sort, setSort }) {
                 key={tab.value}
                 type="button"
                 onClick={() => setSort(tab.value)}
-                className={`
-                  flex-1 h-[58px]
-                  flex items-center justify-center gap-2
-                  transition-all duration-200
-                  border-r border-gray-300
-
-                  ${active ? "bg-[#edf7ff]" : "bg-white hover:bg-gray-50"}
-
-                  ${index === tabs.length - 1 ? "!border-r-0" : ""}
-                `}
+                className={`flex h-[58px] flex-1 items-center justify-center gap-2 border-r border-gray-300 transition-all duration-200 ${
+                  active ? "bg-[#edf7ff]" : "bg-white hover:bg-gray-50"
+                } ${index === tabs.length - 1 ? "!border-r-0" : ""} `}
               >
                 {/* ICON */}
                 <span
-                  className={`
-                    text-[13px]
-                    ${active ? "text-[#4aa3df]" : "text-gray-400"}
-                  `}
+                  className={`text-[13px] ${
+                    active ? "text-[#4aa3df]" : "text-gray-400"
+                  } `}
                 >
                   {tab.icon}
                 </span>
 
                 {/* TEXT */}
-                <div className="flex items-center gap-1 flex-wrap justify-center">
+                <div className="flex flex-wrap items-center justify-center gap-1">
                   <span
-                    className={`
-                      text-[14px] font-medium
-                      ${active ? "text-[#4aa3df]" : "text-gray-800"}
-                    `}
+                    className={`text-[14px] font-medium ${
+                      active ? "text-[#4aa3df]" : "text-gray-800"
+                    } `}
                   >
                     {tab.label}
                   </span>
@@ -98,3 +98,5 @@ export default function SortBar({ sort, setSort }) {
     </div>
   );
 }
+
+export default memo(SortBar);

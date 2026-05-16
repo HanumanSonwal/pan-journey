@@ -40,6 +40,10 @@ async function refreshAccessToken(token) {
     };
   }
 }
+console.log("NEXTAUTH_SECRET:", process.env.NEXTAUTH_SECRET);
+console.log("AUTH_SECRET:", process.env.AUTH_SECRET);
+
+console.log("NEXTAUTH_SECRET:", process.env.NEXTAUTH_SECRET);
 
 export const authOptions = {
   providers: [
@@ -207,4 +211,5 @@ export const authOptions = {
   },
 
   secret: process.env.NEXTAUTH_SECRET,
+  trustHost: true,
 };

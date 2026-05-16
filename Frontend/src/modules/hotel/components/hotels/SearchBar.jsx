@@ -89,10 +89,18 @@ export default function SearchBar({
           <div className="md:col-span-3">
             <GuestsField
               compact
-              value={draftSearchData}
+              value={
+                draftSearchData || {
+                  rooms: 1,
+                  adults: 2,
+                  children: 0,
+                  childAges: [],
+                  pets: false,
+                }
+              }
               onChange={(val) =>
                 setDraftSearchData((prev) => ({
-                  ...prev,
+                  ...(prev || {}),
                   ...val,
                 }))
               }

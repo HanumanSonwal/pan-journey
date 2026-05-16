@@ -8,7 +8,7 @@ export const useHotels = (params) => {
 
     queryFn: () => searchHotels(params),
 
-    keepPreviousData: true,
+    enabled: !!params?.id,
 
     staleTime: 1000 * 60 * 5,
 

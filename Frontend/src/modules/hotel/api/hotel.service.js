@@ -1,8 +1,11 @@
 import { api } from "@/services/axios";
 
-// 🔍 SEARCH HOTELS
 export const searchHotels = async (payload) => {
-  const response = await api.post("/Hotels/search", payload);
-
-  return response.data;
+  try {
+    const response = await api.post("/Hotels/search", payload);
+    return response.data;
+  } catch (error) {
+    console.error("HOTEL SEARCH ERROR:", error);
+    throw new Error(error?.response?.data?.message || "Failed to fetch hotels");
+  }
 };
