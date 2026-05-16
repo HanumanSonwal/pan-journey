@@ -213,7 +213,10 @@ export default function DestinationSearchField({
           }}
         />
 
-<<<<<<<<< Temporary merge branch 1
+
+
+=======
+
         {/* COUNTRY */}
         {/* COUNTRY */}
         {/* COUNTRY */}
@@ -227,68 +230,7 @@ export default function DestinationSearchField({
           </span>
         )}
       </div>
-=========
-      {/* COUNTRY */}
-      {compact ? (
-        <span className="truncate text-[11px] text-gray-400">
-          {value?.cityData?.country || ""}
-        </span>
-      ) : (
-        <span className="mt-[2px] block truncate text-[12px] leading-none text-gray-500">
-          {value?.cityData?.country || "Search destinations"}
-        </span>
-      )}
 
- <style jsx global>{`
-  .custom-search-select {
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow: hidden !important;
-  }
-
-  .custom-search-select .ant-select-selector {
-    border: none !important;
-    box-shadow: none !important;
-    background: transparent !important;
-    padding: 0 !important;
-    overflow: hidden !important;
-  }
-
-  .custom-search-select .ant-select-selection-item {
-    font-size: 45px !important;
-    font-weight: 700 !important;
-    color: #111827 !important;
-
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-
-    white-space: nowrap !important;
-
-    scrollbar-width: none !important;
-  }
-
-  .custom-search-select
-    .ant-select-selection-item::-webkit-scrollbar {
-    display: none !important;
-  }
-
-  .custom-search-select .ant-select-selection-placeholder {
-    font-size: 45px !important;
-    font-weight: 700 !important;
-    color: #111827 !important;
-  }
-
-  .custom-search-select .ant-select-selection-search-input {
-    font-size: 45px !important;
-    font-weight: 700 !important;
-    color: #111827 !important;
-  }
-
-  .custom-search-select .ant-select-arrow {
-    display: none !important;
-  }
-`}</style>
->>>>>>>>> Temporary merge branch 2
     </div>
   );
 }

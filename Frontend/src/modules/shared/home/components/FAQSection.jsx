@@ -53,7 +53,7 @@ export default function FAQSection() {
           title="  Questions & Answer"
 
           description=" We’re committed to offering more than just products we provide exceptional experiences.."
-
+/>
 
         {/* FAQ */}
         <div className="mt-16">
