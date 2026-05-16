@@ -11,6 +11,9 @@ import destinationRoutes from "./modules/exploreDesitanation/desitanation.routes
 import hotelSearch from "./modules/hotel/hotel.route.js";
 import roleRoutes from "./modules/role/role.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
+import supplierTestRoutes from "./modules/hotel/supplierTest.routes.js";
+
+import customerProfileRoutes from "./modules/auth/customer-auth/customer detail/customerdetail.route.js";
 import testRoutes from "./test.routes.js";
 
 const app = express();
@@ -44,6 +47,7 @@ app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/roles", roleRoutes);
 app.use("/api/v1/Seacrhcity", citySearch);
 app.use("/api/v1/Hotels", hotelSearch);
+app.use("/api/v1/Hotels", supplierTestRoutes);
 
 app.use("/api/v1/customer/auth/", otpRoutes);
 app.use("/api/v1/customer/profile", profileRoutes);
