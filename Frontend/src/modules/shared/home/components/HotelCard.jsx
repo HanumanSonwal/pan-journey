@@ -71,7 +71,7 @@ function HotelCard({ hotel }) {
   }, [hotel.location, hotel.address]);
 
   const handleNavigate = () => {
-    // setOpenModal(true);
+    setOpenModal(true);
     // router.push(`/hotel-details/${hotel.id}`);
   };
 
