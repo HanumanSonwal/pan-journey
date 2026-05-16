@@ -1,23 +1,24 @@
+// modules/hotel/hotel.cache.model.js
 import mongoose from "mongoose";
 
-const hotelSchema = new mongoose.Schema(
+const hotelCacheSchema = new mongoose.Schema(
   {
     cityId: String,
     cityName: String,
+    hotels: Array,
 
-    hotels: Array,        // merged hotels जो supplier से आये
-    nextSeed: String,
-    moreHotels: Boolean,
-    totalHotels: Number,
-    searchKey: String,
+    isComplete: {
+      type: Boolean,
+      default: false,
+    },
 
     createdAt: {
       type: Date,
       default: Date.now,
-      expires: 60 * 60 * 24, // 🔥 Auto delete after 24 hours
+      expires: 60 * 60 * 24, // 24h TTL
     },
   },
   { timestamps: true }
 );
 
-export default mongoose.model("HotelCache", hotelSchema);
+export default mongoose.model("HotelCache", hotelCacheSchema);
