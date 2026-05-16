@@ -94,7 +94,7 @@ export default function SortBar({ sort, setSort }) {
             );
           })}
         </div>
-      </div>
+      </div>  
     </div>
   );
 }

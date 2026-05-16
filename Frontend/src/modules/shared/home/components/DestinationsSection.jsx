@@ -26,7 +26,7 @@ export default function DestinationsSection() {
 
         {/* Tabs */}
         <div className="flex justify-center">
-          <div className="scrollbar-hide mb-[-54] flex max-w-full items-center gap-8 overflow-x-auto pb-2 text-[20px] md:gap-10 mt-5 ">
+          <div className="scrollbar-hide mb-[-24] flex max-w-full items-center gap-8 overflow-x-auto pb-2 text-[20px] md:gap-10 mt-5 ">
             <ButtonTab
               tabs={tabs.map((tab) => ({
                 key: tab,
