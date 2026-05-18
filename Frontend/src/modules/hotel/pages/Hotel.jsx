@@ -3,6 +3,7 @@
 import { CloseOutlined } from "@ant-design/icons";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
+
 import HotelList from "../components/hotels/HotelList";
 import SearchBar from "../components/hotels/SearchBar";
 import SidebarFilters from "../components/SidebarFilters";
@@ -31,18 +32,26 @@ const defaultFilters = {
   rating: [],
   locations: [],
 };
+
 export default function HotelContent() {
   const searchParams = useSearchParams();
+
   const [mounted, setMounted] = useState(false);
+
   const [draftSearchData, setDraftSearchData] = useState(defaultSearchData);
+
   const [searchData, setSearchData] = useState(defaultSearchData);
+
   const [filters, setFilters] = useState(defaultFilters);
+
   const [sort, setSort] = useState("recommended");
 
+  // MOUNT
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  // INITIAL URL DATA
   useEffect(() => {
     if (!mounted) return;
 
@@ -61,20 +70,41 @@ export default function HotelContent() {
     };
 
     setDraftSearchData(initialData);
-
     setSearchData(initialData);
   }, [mounted, searchParams]);
 
+  // SEARCH
   const handleSearch = useCallback(() => {
     setSearchData(draftSearchData);
+
     console.log("🚀 FINAL SEARCH:", draftSearchData);
   }, [draftSearchData]);
 
+  // CHECK FILTER ACTIVE
+  const isFilterActive = useCallback((value) => {
+    if (
+      value === "" ||
+      value === null ||
+      value === undefined ||
+      value === false
+    ) {
+      return false;
+    }
+
+    if (Array.isArray(value) && value.length === 0) {
+      return false;
+    }
+
+    return true;
+  }, []);
+
+  // REMOVE SINGLE FILTER
   const removeFilter = useCallback((key, value) => {
     setFilters((prev) => {
       const updated = {
         ...prev,
       };
+
       if (Array.isArray(updated[key])) {
         updated[key] = updated[key].filter((v) => v !== value);
       } else if (typeof updated[key] === "boolean") {
@@ -82,27 +112,26 @@ export default function HotelContent() {
       } else {
         updated[key] = "";
       }
+
       return updated;
     });
   }, []);
 
+  // CLEAR ALL FILTERS
   const clearAll = useCallback(() => {
-    setFilters({
-      freeCancellation: false,
-      search: "",
-      starRating: "",
-      minPrice: "",
-      maxPrice: "",
-      suggested: [],
-      propertyType: [],
-      rating: [],
-      locations: [],
-    });
+    setFilters(defaultFilters);
   }, []);
 
+  // ACTIVE FILTERS
   const activeFilters = useMemo(() => {
     return Object.entries(filters);
   }, [filters]);
+
+  // HAS ANY ACTIVE FILTER
+  const hasActiveFilters = useMemo(() => {
+    return activeFilters.some(([_, value]) => isFilterActive(value));
+  }, [activeFilters, isFilterActive]);
+
   if (!mounted) return null;
 
   return (
@@ -113,35 +142,31 @@ export default function HotelContent() {
         setDraftSearchData={setDraftSearchData}
         onSearch={handleSearch}
       />
+
       <div className="relative mx-auto mt-[-48px] flex max-w-7xl gap-4 p-3 md:flex-nowrap">
         {/* SIDEBAR */}
         <div className="sticky top-4 max-h-[calc(100vh-20px)] w-full overflow-y-auto sm:w-64 md:w-72">
           <SidebarFilters filters={filters} setFilters={setFilters} />
         </div>
+
         {/* MAIN */}
         <div className="min-w-0 flex-1">
           {/* SORT */}
           <SortBar sort={sort} setSort={setSort} />
+
           {/* ACTIVE FILTERS */}
           <div className="mt-3 mb-4 flex flex-wrap gap-2">
             {activeFilters.map(([key, value]) => {
-              // SKIP EMPTY VALUES
-              if (
-                value === "" ||
-                value === null ||
-                value === undefined ||
-                value === false
-              ) {
+              // SKIP INACTIVE FILTERS
+              if (!isFilterActive(value)) {
                 return null;
               }
-              // SKIP EMPTY ARRAYS
-              if (Array.isArray(value) && value.length === 0) {
-                return null;
-              }
+
               // HIDE PRICE KEYS
               if (key === "minPrice" || key === "maxPrice") {
                 return null;
               }
+
               // ARRAY FILTERS
               if (Array.isArray(value)) {
                 return value.map((v, i) => (
@@ -204,14 +229,18 @@ export default function HotelContent() {
                 />
               </div>
             )}
+
             {/* CLEAR ALL */}
-            <button
-              onClick={clearAll}
-              className="rounded-full bg-red-100 px-3 py-1 text-xs text-red-600!"
-            >
-              Clear All
-            </button>
+            {hasActiveFilters && (
+              <button
+                onClick={clearAll}
+                className="rounded-full bg-red-100 px-3 py-1 text-xs text-red-600! transition hover:bg-red-200"
+              >
+                Clear All
+              </button>
+            )}
           </div>
+
           {/* HOTEL LIST */}
           <HotelList searchData={searchData} filters={filters} sort={sort} />
         </div>

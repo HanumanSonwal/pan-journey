@@ -13,6 +13,7 @@ function DestinationSearchField({
   height = "82px",
   fontSize = "24px",
   wrapperClassName = "",
+  autoSelectRecent = false,
 }) {
   const [searchText, setSearchText] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -27,7 +28,7 @@ function DestinationSearchField({
         JSON.parse(localStorage.getItem("recentHotelSearches") || "[]") || [];
       setRecentSearches(stored);
       // AUTO SELECT LAST SEARCH
-      if (stored.length > 0 && !value?.city) {
+      if (autoSelectRecent && stored.length > 0 && !value?.city) {
         onChange({
           city: stored[0]?.name || "",
           cityData: stored[0] || null,
@@ -83,7 +84,7 @@ function DestinationSearchField({
   // SORT RESULTS
   const sortedSearchResults = useMemo(() => {
     return [...(data || [])].sort((a, b) => {
-      const aStarts = a.name
+      const aStarts = a?.name
         ?.toLowerCase()
         ?.startsWith(searchText.toLowerCase());
       const bStarts = b.name
@@ -206,11 +207,17 @@ function DestinationSearchField({
         <Select
           showSearch
           allowClear
+          onClear={() => {
+            onChange({
+              city: "",
+              cityData: null,
+            });
+          }}
           value={value?.city || undefined}
           title={value?.city || ""}
           placeholder="Where do you want to stay?"
           variant="borderless"
-          popupMatchSelectWidth={false}
+          popupMatchSelectWidth={compact ? false : true}
           filterOption={false}
           loading={isLoading}
           className={`w-full ${styles.destinationSelect}`}
