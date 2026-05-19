@@ -13,6 +13,13 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 /* ---------------- NORMALIZE ---------------- */
 export const normalizeBody = (body) => ({
+    location: {
+    country: body.country,
+    fullName: body.fullName,
+    id: body.id,
+    state: body.state,
+    type: body.type,
+  },
   cityId: body.cityId || body.id,
   cityName: body.cityName || body.fullName,
   CheckInDate: body.CheckInDate,
@@ -76,7 +83,7 @@ const fetchSupplierHotelsWithRetry = async (body) => {
     await sleep(4000);
 
     // ⭐ next call me SearchKey bhejna mandatory
-    payload.HotelSeedValue = data.SearchKey;
+    payload.HotelSeedValue = data.HotelSeedValue;
   }
 
   return data; // fallback
@@ -157,6 +164,7 @@ export const searchHotelsFromSupplier = async (reqBody) => {
     }
 
     cache = await HotelCache.create({
+    location: body.location,
       cityId: body.cityId,
       cityName: body.cityName,
       hotels,
@@ -203,6 +211,7 @@ export const searchHotelsFromSupplier = async (reqBody) => {
   console.log("=================================================\n");
 
   return {
+      location: cache.location,
     totalHotels: paginated.totalHotels,
     page: paginated.page,
     totalPage: paginated.totalPages,
