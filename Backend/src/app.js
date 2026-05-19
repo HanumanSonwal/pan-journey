@@ -11,7 +11,9 @@ import destinationRoutes from "./modules/exploreDesitanation/desitanation.routes
 import hotelSearch from "./modules/hotel/hotel.route.js";
 import roleRoutes from "./modules/role/role.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
-
+import countryRoutes from "./modules/priceMarkup/countryData/country.routes.js";
+import stateRoutes from "./modules/priceMarkup/stateData/state.routes.js";
+import markeupRoutes from "./modules/priceMarkup/markup/markup.routes.js";
 
 import customerProfileRoutes from "./modules/auth/customer-auth/customer detail/customerdetail.route.js";
 import testRoutes from "./test.routes.js";
@@ -45,10 +47,13 @@ app.use("/api/v1/Hotels", hotelSearch);
 
 app.use("/api/v1/customer/auth/", otpRoutes);
 app.use("/api/v1/customer/profile", profileRoutes);
+app.use("/api/v1/markup", markeupRoutes);
 
 app.use("/api/v1", testRoutes);
 app.use("/api/v1", destinationRoutes);
 app.use("/api/v1/customer", customerProfileRoutes);
+app.use("/api", countryRoutes);
+app.use("/api/states", stateRoutes);
 app.use(errorHandler);
 
 export default app;
