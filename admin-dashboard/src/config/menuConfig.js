@@ -43,6 +43,13 @@ export const menuItems = [
 },
 
   {
+    key: "/dashboard/Markups",
+    icon: <CalendarOutlined />,
+    label: <Link href="/dashboard/Markups">Markups</Link>,
+    module: "Markups", // ✅ FIX
+  },
+
+  {
     key: "/dashboard/calendar",
     icon: <CalendarOutlined />,
     label: <Link href="/dashboard/calendar">Calendar</Link>,

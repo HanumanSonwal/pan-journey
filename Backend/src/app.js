@@ -58,8 +58,8 @@ app.use("/api/v1/markup", markeupRoutes);
 app.use("/api/v1", testRoutes);
 app.use("/api/v1", destinationRoutes);
 app.use("/api/v1/customer", customerProfileRoutes);
-app.use("/api", countryRoutes);
-app.use("/api/states", stateRoutes);
+app.use("/api/v1", countryRoutes);
+app.use("/api/v1/states", stateRoutes);
 app.use(errorHandler);
 
 export default app;
