@@ -20,22 +20,56 @@ export const getAllMarkups = async (req, res) => {
   }
 };
 
+// PUT /markups/:id
 export const updateMarkup = async (req, res) => {
   try {
-    const markup = await Markup.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const { level, markupType, markupValue, isActive } = req.body;
 
-    if (!markup) {
-      return sendError(res, "Markup not found", 404);
+    // full payload required
+    if (!level || !markupType || markupValue === undefined) {
+      return sendError(res, "All fields are required for PUT", 400);
     }
 
-    return sendSuccess(res, "Markup updated successfully", markup);
+    const markup = await Markup.findByIdAndUpdate(
+      req.params.id,
+      {
+        level,
+        markupType,
+        markupValue,
+        isActive,
+      },
+      { new: true, runValidators: true },
+    );
+
+    if (!markup) return sendError(res, "Markup not found", 404);
+
+    return sendSuccess(res, "Markup fully updated", markup);
   } catch (err) {
     return sendError(res, "Failed to update markup", 500, err.message);
   }
 };
+// PATCH /markups/:id/status
+export const toggleMarkupStatus = async (req, res) => {
+  try {
+    const { isActive } = req.body;
 
+    if (typeof isActive !== "boolean") {
+      return sendError(res, "isActive must be true/false", 400);
+    }
+
+    const markup = await Markup.findByIdAndUpdate(
+      req.params.id,
+      { isActive },
+      { new: true },
+    );
+
+    if (!markup) return sendError(res, "Markup not found", 404);
+
+    return sendSuccess(res, "Status updated successfully", markup);
+  } catch (err) {
+    return sendError(res, "Failed to update status", 500, err.message);
+  }
+};
 export const deleteMarkup = async (req, res) => {
   try {
     const markup = await Markup.findByIdAndDelete(req.params.id);

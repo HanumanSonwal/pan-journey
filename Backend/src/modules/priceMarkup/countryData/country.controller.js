@@ -1,17 +1,6 @@
-// import { seedCountries } from "../countryData/countrySeeder.js";
-// import Country from "../countryData/country.model.js";
-
-// export const seedCountryController = async (req, res) => {
-//   await seedCountries();
-//   res.send("Countries Seeded Successfully");
-// };
-
-// export const getCountries = async (req, res) => {
-//   const countries = await Country.find().sort({ countryName: 1 });
-//   res.json(countries);
-// };
 import { seedCountries } from "../countryData/countrySeeder.js";
 import Country from "../countryData/country.model.js";
+import { sendSuccess, sendError } from "../../../utils/response/ApiResponse.js";
 
 export const seedCountryController = async (req, res) => {
   await seedCountries();
@@ -23,12 +12,22 @@ export const getCountries = async (req, res) => {
     const search = req.query.search || "";
 
     const countries = await Country.find({
-      countryName: { $regex: search, $options: "i" } // 🔍 filter
+      countryName: { $regex: search, $options: "i" }
     }).sort({ countryName: 1 });
 
-    res.json(countries);
+    return sendSuccess(
+      res,
+      "Countries fetched successfully",
+      countries
+    );
+
   } catch (err) {
     console.error(err);
-    res.status(500).send("Failed to fetch countries");
+    return sendError(
+      res,
+      "Failed to fetch countries",
+      500,
+      err.message
+    );
   }
 };
