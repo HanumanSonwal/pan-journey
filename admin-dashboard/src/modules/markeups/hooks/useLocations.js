@@ -13,21 +13,17 @@ export const useLocations = ({
 }) =>
   useQuery({
     queryKey: ["locations", type, search, countryCode],
-
     queryFn: async () => {
       switch (type) {
         case "countries":
           return await getCountriesApi(search);
-
         case "states":
           return await getStatesApi({
             countryCode,
             search,
           });
-
         case "cities-hotels":
           return await getCitiesHotelsApi(search);
-
         default:
           return [];
       }

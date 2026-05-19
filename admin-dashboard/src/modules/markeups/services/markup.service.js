@@ -1,23 +1,51 @@
 import api from "@/services/api";
 
-// ================= CREATE =================
-
 export const createMarkupApi = async (data) => {
   const res = await api.post("/markup/createMarkup", data, {
     skipToast: true,
   });
 
-  return res.data;
+  return res?.data;
 };
 
-// ================= GET =================
+// ================= GET ALL =================
 
 export const getMarkupsApi = async () => {
   const res = await api.get("/markup/getAllMarkups", {
     skipToast: true,
   });
 
-  return res.data;
+  return res?.data?.data || [];
+};
+
+// ================= UPDATE =================
+
+export const updateMarkupApi = async ({ id, data }) => {
+  const res = await api.put(`/markup/${id}`, data, {
+    skipToast: true,
+  });
+
+  return res?.data;
+};
+
+// ================= DELETE =================
+
+export const deleteMarkupApi = async (id) => {
+  const res = await api.delete(`/markup/${id}`, {
+    skipToast: true,
+  });
+
+  return res?.data;
+};
+
+// ================= UPDATE STATUS =================
+
+export const updateMarkupStatusApi = async ({ id, data }) => {
+  const res = await api.patch(`/markup/status/${id}`, data, {
+    skipToast: true,
+  });
+
+  return res?.data;
 };
 
 // ================= COUNTRIES =================
@@ -27,7 +55,7 @@ export const getCountriesApi = async (search = "") => {
     skipToast: true,
   });
 
-  return res.data;
+  return res?.data?.data || [];
 };
 
 // ================= STATES =================
@@ -37,15 +65,16 @@ export const getStatesApi = async ({ countryCode, search = "" }) => {
     skipToast: true,
   });
 
-  return res.data;
+  return res?.data?.data || [];
 };
 
 // ================= CITY / HOTEL =================
 
 export const getCitiesHotelsApi = async (searchText = "") => {
-  // if (!searchText?.trim()) {
-  //   return [];
-  // }
+  if (!searchText?.trim()) {
+    return [];
+  }
+
   const response = await api.post(
     "/Seacrhcity/destination-search",
     {
