@@ -28,7 +28,7 @@ export default function DateRangeField({
       disabledDate={disabledDate}
       allowClear={false}
       format="DD MMM YYYY"
-      placement="bottomRight"
+      placement="bottomLeft"
       classNames={{
         popup: {
           root: "premium-hotel-calendar",
@@ -36,14 +36,16 @@ export default function DateRangeField({
       }}
       onChange={(dates) => {
         if (!dates) return;
+
         onChange(dates);
+
         if (dates?.[0] && dates?.[1]) {
           requestAnimationFrame(() => {
             setOpen?.(false);
           });
         }
       }}
-      className="pointer-events-none absolute opacity-0"
+      className="absolute top-[-20] left-0 h-0 w-0 opacity-0"
     />
   );
 
@@ -110,7 +112,7 @@ export default function DateRangeField({
   return (
     <div className="relative z-50 h-[82px] rounded-2xl border border-gray-200 bg-white px-3 py-2 shadow-sm transition-all duration-200 hover:border-[#0077b6] hover:shadow-md">
       {/* LABEL */}
-      <span className="absolute -top-2 left-3 rounded-md bg-white px-2 text-[13px] font-semibold text-gray-700">
+      <span className="absolute -top-2.5 left-4 rounded-md bg-white px-2 text-[14px] font-semibold tracking-wide text-[#0F6A75]">
         Check In - Check Out
       </span>
       {/* DISPLAY */}

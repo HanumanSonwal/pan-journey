@@ -118,20 +118,20 @@ function GuestsField({
             </p>
           )}
           <div className="max-h-[220px] overflow-y-auto pr-1">
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-1.5">
               {(safeValue.childAges || []).map((age, i) => (
                 <div
                   key={i}
-                  className="flex items-center justify-between gap-2 rounded-xl border border-[#e3f0f5] bg-[#fafefe] p-2.5"
+                  className="flex min-w-0 items-center justify-between gap-2 rounded-xl border border-[#e3f0f5] bg-[#fafefe] px-2.5 py-2"
                 >
-                  <span className="text-[13px] font-medium text-gray-800">
+                  <span className="shrink-0 text-[12px] font-medium text-gray-800">
                     Child {i + 1}
                   </span>
 
                   <select
                     value={age || ""}
                     onChange={(e) => updateChildAge(i, Number(e.target.value))}
-                    className={`rounded-md border px-2 py-1 text-[12px] transition-all outline-none ${
+                    className={`h-[34px] min-w-[96px] rounded-lg border px-2 text-[12px] transition-all outline-none ${
                       !age
                         ? "border-red-300 bg-red-50 text-red-500"
                         : "border-gray-300 bg-white text-gray-900"
@@ -206,8 +206,10 @@ function GuestsField({
         </div>
       </div>
     ) : (
-      <div className="relative h-[82px] cursor-pointer rounded-2xl border border-[#cfe8f3] bg-white px-4 py-2 shadow-sm transition-all duration-300 hover:border-[#72C0F0]">
-        <span className="absolute -top-2.5 left-4 rounded-md bg-white px-2 text-[13px] font-semibold tracking-wide text-[#0F6A75]">
+      <div
+        className={`relative min-w-0 rounded-xl border border-gray-300 px-3 py-3 transition-all hover:border-[#0077b6]`}
+      >
+        <span className="absolute -top-2.5 left-4 rounded-md bg-white px-2 text-[14px] font-semibold tracking-wide text-[#0F6A75]">
           Rooms & Guests
         </span>
 
@@ -290,11 +292,11 @@ const CompactItem = memo(function CompactItem({ value, label, center, right }) {
 
 const Counter = memo(function Counter({ label, sub, value = 0, onChange }) {
   return (
-    <div className="flex items-center justify-between border-b border-[#eef5f8] py-3">
+    <div className="flex items-center justify-between border-b border-[#eef5f8] py-1">
       <div>
-        <p className="text-sm font-semibold text-black">{label}</p>
+        <p className="m-0! text-sm font-semibold text-black">{label}</p>
 
-        {sub && <p className="text-[11px] text-[#7B8A97]">{sub}</p>}
+        {sub && <p className="m-0 text-[11px] text-[#7B8A97]">{sub}</p>}
       </div>
 
       <div className="flex items-center gap-2">
