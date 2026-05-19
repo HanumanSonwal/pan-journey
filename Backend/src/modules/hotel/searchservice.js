@@ -13,13 +13,6 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 /* ---------------- NORMALIZE ---------------- */
 export const normalizeBody = (body) => ({
-    location: {
-    country: body.country,
-    fullName: body.fullName,
-    id: body.id,
-    state: body.state,
-    type: body.type,
-  },
   cityId: body.cityId || body.id,
   cityName: body.cityName || body.fullName,
   CheckInDate: body.CheckInDate,
@@ -164,9 +157,9 @@ export const searchHotelsFromSupplier = async (reqBody) => {
     }
 
     cache = await HotelCache.create({
-    location: body.location,
       cityId: body.cityId,
       cityName: body.cityName,
+      searchKey: data.SearchKey,
       hotels,
     });
     // cache = await HotelCache.create({
@@ -211,7 +204,7 @@ export const searchHotelsFromSupplier = async (reqBody) => {
   console.log("=================================================\n");
 
   return {
-      location: cache.location,
+     searchKey: cache.searchKey,
     totalHotels: paginated.totalHotels,
     page: paginated.page,
     totalPage: paginated.totalPages,
