@@ -14,7 +14,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import LoginSuccessModal from "./LoginSuccessModal";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -24,6 +23,8 @@ export default function Header() {
   const { data: session } = useSession();
   const { mutate: logout } = useLogout();
   const router = useRouter();
+
+  console.log("SESSION:", session);
 
   const user = session?.user;
 
@@ -46,9 +47,7 @@ export default function Header() {
       key: "user",
       label: (
         <div className="flex flex-col">
-          <span className="font-medium text-sm">
-            {user?.name || "User"}
-          </span>
+          <span className="text-sm font-medium">{user?.name || "User"}</span>
           <span className="text-xs text-gray-400">
             {user?.email || user?.mobile || ""}
           </span>
@@ -65,7 +64,7 @@ export default function Header() {
       label: (
         <span
           onClick={handleLogout}
-          className="text-red-500 flex items-center gap-1"
+          className="flex items-center gap-1 text-red-500"
         >
           <LogoutOutlined /> Logout
         </span>
@@ -76,23 +75,22 @@ export default function Header() {
   return (
     <div className="w-full">
       {/* Top Bar */}
-      <div className="bg-offer-gradient text-white text-center py-2 text-sm md:text-base">
+      <div className="bg-offer-gradient py-2 text-center text-sm text-white md:text-base">
         Get the best offers on your every booking!
       </div>
 
       {/* Navbar */}
-      <header className="bg-white px-4 md:px-10 lg:px-20 py-4 flex items-center justify-between shadow-sm">
-
+      <header className="flex items-center justify-between bg-white px-4 py-4 shadow-sm md:px-10 lg:px-20">
         {/* Logo */}
         <Link
           href="/"
-          className="text-2xl md:text-3xl lg:text-4xl font-bold bg-offer-gradient bg-clip-text text-transparent"
+          className="bg-offer-gradient bg-clip-text text-2xl font-bold text-transparent md:text-3xl lg:text-4xl"
         >
           LOGO
         </Link>
 
         {/* Desktop Menu */}
-        <nav className="hidden lg:flex items-center gap-8 text-gray-900">
+        <nav className="hidden items-center gap-8 text-gray-900 lg:flex">
           <Link href="#">Hotels</Link>
           <Link href="#">Best Offers</Link>
           <Link href="#">Flight Booking</Link>
@@ -102,9 +100,8 @@ export default function Header() {
 
         {/* Right Side */}
         <div className="flex items-center gap-2 md:gap-3">
-
           {/* Wishlist */}
-          <button className="hidden md:flex items-center gap-2 border border-[#4A9BB5] !text-[#4A9BB5] px-3 py-2 rounded-lg text-sm font-medium">
+          <button className="hidden items-center gap-2 rounded-lg border border-[#4A9BB5] px-3 py-2 text-sm font-medium !text-[#4A9BB5] md:flex">
             <HeartOutlined />
             Wishlist
           </button>
@@ -112,24 +109,23 @@ export default function Header() {
           {!session ? (
             <button
               onClick={() => setOpen(true)}
-              className="flex items-center gap-2 bg-offer-gradient text-white px-3 py-2 rounded-lg text-sm"
+              className="bg-offer-gradient flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-white"
             >
               <UserOutlined />
               <span className="hidden md:block">Login</span>
             </button>
           ) : (
             <Dropdown menu={{ items }} placement="bottomRight">
-              <div className="flex items-center gap-2 cursor-pointer">
-
+              <div className="flex cursor-pointer items-center gap-2">
                 {/* ✅ PERFECT ROUND AVATAR */}
-                <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-[#4A9BB5] flex items-center justify-center bg-gray-100">
+                <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border-2 border-[#4A9BB5] bg-gray-100">
                   {user?.image ? (
                     <Image
                       src={user.image}
                       alt="avatar"
                       width={40}
                       height={40}
-                      className="w-full h-full object-cover"
+                      className="h-full w-full object-cover"
                     />
                   ) : (
                     <span className="text-sm font-semibold text-[#4A9BB5]">
@@ -137,14 +133,13 @@ export default function Header() {
                     </span>
                   )}
                 </div>
-
               </div>
             </Dropdown>
           )}
 
           {/* Mobile Menu */}
           <button
-            className="lg:hidden text-xl !text-[#4A9BB5]"
+            className="text-xl !text-[#4A9BB5] lg:hidden"
             onClick={() => setMobileMenu(true)}
           >
             <MenuOutlined />
@@ -175,15 +170,6 @@ export default function Header() {
         onSuccess={() => {
           setOpen(false);
           setShowSuccess(true);
-        }}
-      />
-
-      <LoginSuccessModal
-        open={showSuccess}
-        onClose={() => setShowSuccess(false)}
-        onProfile={() => {
-          setShowSuccess(false);
-          router.push("/profile");
         }}
       />
     </div>

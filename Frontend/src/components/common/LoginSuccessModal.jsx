@@ -3,63 +3,71 @@
 import { Button, Modal } from "antd";
 import Image from "next/image";
 
-export default function LoginSuccessModal({ open, onClose, onProfile }) {
+export default function LoginSuccessModal({
+  open,
+  onClose,
+  onProfile,
+  loading = false,
+}) {
   return (
     <Modal
       open={open}
       footer={null}
       closable={false}
-      width={720}
       centered
-      mask={{ closable: false }}
+      width={720}
+      mask={{
+        closable: false,
+      }}
       styles={{
         body: {
-          padding: "40px 32px", 
+          padding: "40px 32px",
         },
       }}
     >
       <div className="flex flex-col items-center text-center">
-        {/* Icon */}
+        {/* ICON */}
         <Image
           src="/images/loginSuccsess-icon.svg"
           alt="success"
           width={200}
           height={200}
           className="mb-4"
+          priority
         />
 
-        {/* Title */}
-        <h2 className="font-roboto font-bold text-[32px] leading-tight text-center mb-3">
+        {/* TITLE */}
+        <h2 className="font-roboto mb-3 text-center text-[32px] leading-tight font-bold">
           Logged In Successfully
         </h2>
 
-        {/* Description */}
-        <p className="font-roboto font-medium text-[18px] leading-[150%] text-gray-500 max-w-[520px]">
+        {/* DESCRIPTION */}
+        <p className="font-roboto max-w-[520px] text-[18px] leading-[150%] font-medium text-gray-500">
           Your account is ready to go. Complete your profile for a faster and
           more personalized booking experience.
         </p>
 
-        {/* Buttons */}
-        <div className="flex justify-center gap-4 mt-8 w-full">
-          {/* Primary */}
+        {/* BUTTONS */}
+        <div className="mt-8 flex w-full justify-center gap-4">
+          {/* PRIMARY */}
           <Button
             size="large"
             onClick={onProfile}
-            className="h-[44px] px-6 rounded-lg text-white! font-medium px-10!"
+            className="h-[44px] rounded-lg px-10 font-medium text-white!"
             style={{
-              background:
-                "linear-gradient(180deg, #72C0F0 0%, #0F6A75 100%)",
+              background: "linear-gradient(180deg, #72C0F0 0%, #0F6A75 100%)",
               border: "none",
             }}
           >
             Set Up Profile
           </Button>
 
-          {/* Secondary */}
+          {/* SECONDARY */}
           <Button
             size="large"
+            loading={loading}
             onClick={onClose}
-            className="h-[44px] px-6 rounded-lg font-medium text-[#0F6A75] border border-[#0F6A75] hover:bg-[#0F6A75]/5"
+            className="h-[44px] rounded-lg border border-[#0F6A75] px-6 font-medium text-[#0F6A75] hover:bg-[#0F6A75]/5"
           >
             Continue Browsing
           </Button>

@@ -144,6 +144,7 @@ export const authOptions = {
               image: data.data.avatar,
               mobile: data.data.mobile,
               profileCompleted: data.data.profileCompleted,
+              profilePopupDismissed: data.data.profilePopupDismissed,
               accessToken: data.data.accessToken,
               refreshToken: data.data.refreshToken,
               accessTokenExpires: decoded.exp * 1000,
@@ -172,6 +173,8 @@ export const authOptions = {
           image: user.avatar,
           mobile: user.mobile,
           profileCompleted: user.profileCompleted,
+          profilePopupDismissed: user.profilePopupDismissed,
+
           accessToken: user.accessToken,
           refreshToken: user.refreshToken,
           accessTokenExpires: decoded.exp * 1000,
@@ -196,6 +199,7 @@ export const authOptions = {
         image: token.image, // ✅ ADD
         mobile: token.mobile,
         profileCompleted: token.profileCompleted,
+        profilePopupDismissed: token.profilePopupDismissed,
       };
 
       session.accessToken = token.accessToken;

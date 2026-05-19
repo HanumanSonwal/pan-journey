@@ -7,6 +7,7 @@ import "antd/dist/reset.css";
 import { Geist, Geist_Mono, Jost, Roboto } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
+import ProfileCompletionHandler from "@/modules/auth/components/ProfileCompletionHandler";
 
 /* Fonts */
 const geistSans = Geist({
@@ -52,6 +53,8 @@ export default function RootLayout({ children }) {
             <QueryProvider>
               <Providers>
                 <Header />
+
+                 <ProfileCompletionHandler />
 
                 <main className="flex-1">{children}</main>
 

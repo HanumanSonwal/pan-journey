@@ -25,6 +25,8 @@ export default function Hero() {
   const { searchData } = useHotelSearchStore();
   const ActiveForm = FORM_MAP[activeTab];
 
+  console.log(searchData,  "in home  page");
+
   const handleSearch = () => {
     const query = new URLSearchParams({
       city: searchData?.city || "",
