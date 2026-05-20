@@ -1,6 +1,3 @@
-
-
-
 import { asyncHandler } from "../../../../middleware/asyncHandler.js";
 import {
   generateAccessToken,
@@ -40,9 +37,8 @@ export const verifyEmailOtp = asyncHandler(async (req, res) => {
 
   user.refreshToken = refreshToken;
 
-  user.profileCompleted = !!(
-    user.name && (user.email || user.mobile)
-  );
+  // ✅ PROFILE COMPLETION CHECK
+  user.profileCompleted = !!(user.name && user.email && user.mobile);
 
   await user.save();
 
@@ -59,6 +55,6 @@ export const verifyEmailOtp = asyncHandler(async (req, res) => {
     accessToken,
     refreshToken,
     profileCompleted: user.profileCompleted,
-    profilePopupDismissed: user.profilePopupDismissed
+    profilePopupDismissed: user.profilePopupDismissed,
   });
 });

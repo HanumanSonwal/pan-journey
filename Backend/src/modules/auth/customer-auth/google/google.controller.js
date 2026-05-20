@@ -67,7 +67,11 @@ export const googleLogin = asyncHandler(async (req, res) => {
       type: user.type,
       accessToken,
       refreshToken,
-      profileCompleted: !!user.name,
+
+      // ✅ FIXED
+      profileCompleted: user.profileCompleted,
+
+      profilePopupDismissed: user.profilePopupDismissed,
     });
   } catch (err) {
     console.log("❌ GOOGLE LOGIN ERROR:", err.message);

@@ -50,26 +50,27 @@ export const verifyOTP = asyncHandler(async (req, res) => {
 
   user.refreshToken = refreshToken;
 
-  user.profileCompleted = !!(user.name && (user.email || user.mobile));
+  // ✅ PROFILE COMPLETION CHECK
+  user.profileCompleted = !!(user.name && user.email && user.mobile);
 
   await user.save();
 
-return sendSuccess(res, "Login successful", {
-  _id: user._id,
-  mobile: user.mobile,
-  email: user.email || null,
-  name: user.name || null,
+  return sendSuccess(res, "Login successful", {
+    _id: user._id,
+    mobile: user.mobile,
+    email: user.email || null,
+    name: user.name || null,
 
-  avatar: user.avatar || null,      
-  googleId: user.googleId || null,  
-  providers: user.providers || [],  
+    avatar: user.avatar || null,
+    googleId: user.googleId || null,
+    providers: user.providers || [],
 
-  isEmailVerified: user.isEmailVerified ?? false,
-  isMobileVerified: user.isMobileVerified ?? false,
+    isEmailVerified: user.isEmailVerified ?? false,
+    isMobileVerified: user.isMobileVerified ?? false,
 
-  accessToken,
-  refreshToken,
-  profileCompleted: user.profileCompleted,
-   profilePopupDismissed: user.profilePopupDismissed
-});
+    accessToken,
+    refreshToken,
+    profileCompleted: user.profileCompleted,
+    profilePopupDismissed: user.profilePopupDismissed,
+  });
 });

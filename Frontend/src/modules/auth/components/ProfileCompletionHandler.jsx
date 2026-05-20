@@ -6,42 +6,29 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 export default function ProfileCompletionHandler() {
-  const { data: session, status } =
-    useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
-  const [open, setOpen] =
-    useState(false);
-  const alreadyCheckedRef =
-    useRef(false);
+  const [open, setOpen] = useState(false);
+  const alreadyCheckedRef = useRef(false);
   // UPDATE PROFILE
-  const {
-    mutate: updateProfile,
-    isPending,
-  } = useUpdateProfile();
+  const { mutate: updateProfile, isPending } = useUpdateProfile();
 
   // CHECK POPUP
   useEffect(() => {
-    if (
-      status !== "authenticated"
-    ) {
+    if (status !== "authenticated") {
       return;
     }
 
     // PREVENT MULTIPLE RUNS
-    if (
-      alreadyCheckedRef.current
-    ) {
+    if (alreadyCheckedRef.current) {
       return;
     }
 
-    alreadyCheckedRef.current =
-      true;
+    alreadyCheckedRef.current = true;
 
     const shouldShow =
-      !session?.user
-        ?.profileCompleted &&
-      !session?.user
-        ?.profilePopupDismissed;
+      session?.user?.profileCompleted === false &&
+      session?.user?.profilePopupDismissed === false;
 
     if (shouldShow) {
       setOpen(true);
@@ -52,14 +39,13 @@ export default function ProfileCompletionHandler() {
   const handleClose = () => {
     updateProfile(
       {
-        profilePopupDismissed:
-          true,
+        profilePopupDismissed: true,
       },
       {
         onSuccess: () => {
           setOpen(false);
         },
-      }
+      },
     );
   };
 

@@ -1,5 +1,6 @@
 import Footer from "@/components/common/Footer";
 import Header from "@/components/common/Header";
+import ProfileCompletionHandler from "@/modules/auth/components/ProfileCompletionHandler";
 import LoaderProvider from "@/providers/LoaderProvider";
 import QueryProvider from "@/providers/QueryProvider";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
@@ -7,7 +8,6 @@ import "antd/dist/reset.css";
 import { Geist, Geist_Mono, Jost, Roboto } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
-import ProfileCompletionHandler from "@/modules/auth/components/ProfileCompletionHandler";
 
 /* Fonts */
 const geistSans = Geist({
@@ -54,7 +54,7 @@ export default function RootLayout({ children }) {
               <Providers>
                 <Header />
 
-                 <ProfileCompletionHandler />
+                <ProfileCompletionHandler />
 
                 <main className="flex-1">{children}</main>
 

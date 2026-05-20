@@ -1,6 +1,5 @@
 "use client";
-
-import { Form, Select } from "antd";
+import { Col, Form, Row, Select } from "antd";
 import { useMemo, useState } from "react";
 import { useDebounce } from "use-debounce";
 import { useLocations } from "../hooks/useLocations";
@@ -76,140 +75,162 @@ export default function LevelFields({ level }) {
 
   return (
     <>
-      {/* ================= COUNTRY ================= */}
+      {/* ================= COUNTRY + STATE ================= */}
 
       {(level === "country" || level === "state") && (
-        <Form.Item
-          label="Country"
-          name="countryCode"
-          rules={[
-            {
-              required: true,
-              message: "Please select country",
-            },
-          ]}
-        >
-          <Select
-            showSearch
-            allowClear
-            placeholder="Select Country"
-            loading={countriesLoading}
-            onSearch={setCountrySearch}
-            filterOption={false}
-            optionFilterProp="label"
-            notFoundContent="No countries found"
-            onChange={() => {
-              form.setFieldValue("stateName", undefined);
-            }}
-            options={
-              Array.isArray(countries)
-                ? countries?.map((item) => ({
-                    label: item?.countryName || item?.name,
+        <Row gutter={16}>
+          {/* COUNTRY */}
 
-                    value: item?.countryCode || item?.code,
-                  }))
-                : []
-            }
-          />
-        </Form.Item>
-      )}
+          <Col xs={24} md={level === "state" ? 12 : 24}>
+            <Form.Item
+              label="Country"
+              name="countryCode"
+              rules={[
+                {
+                  required: true,
+                  message: "Please select country",
+                },
+              ]}
+            >
+              <Select
+                size="large"
+                showSearch
+                allowClear
+                placeholder="Select Country"
+                loading={countriesLoading}
+                onSearch={setCountrySearch}
+                filterOption={false}
+                optionFilterProp="label"
+                notFoundContent="No countries found"
+                onChange={() => {
+                  form.setFieldValue("stateName", undefined);
+                }}
+                options={
+                  Array.isArray(countries)
+                    ? countries?.map((item) => ({
+                        label: item?.countryName || item?.name,
 
-      {/* ================= STATE ================= */}
+                        value: item?.countryCode || item?.code,
+                      }))
+                    : []
+                }
+              />
+            </Form.Item>
+          </Col>
 
-      {level === "state" && (
-        <Form.Item
-          label="State"
-          name="stateName"
-          rules={[
-            {
-              required: true,
-              message: "Please select state",
-            },
-          ]}
-        >
-          <Select
-            showSearch
-            allowClear
-            placeholder={countryCode ? "Select State" : "Select country first"}
-            disabled={!countryCode}
-            loading={statesLoading}
-            onSearch={setStateSearch}
-            filterOption={false}
-            optionFilterProp="label"
-            notFoundContent="No states found"
-            options={
-              Array.isArray(states)
-                ? states?.map((item) => ({
-                    label: item?.stateName || item?.name,
+          {/* STATE */}
 
-                    value: item?.stateName || item?.name,
-                  }))
-                : []
-            }
-          />
-        </Form.Item>
+          {level === "state" && (
+            <Col xs={24} md={12}>
+              <Form.Item
+                label="State"
+                name="stateName"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please select state",
+                  },
+                ]}
+              >
+                <Select
+                  size="large"
+                  showSearch
+                  allowClear
+                  placeholder={
+                    countryCode ? "Select State" : "Select country first"
+                  }
+                  disabled={!countryCode}
+                  loading={statesLoading}
+                  onSearch={setStateSearch}
+                  filterOption={false}
+                  optionFilterProp="label"
+                  notFoundContent="No states found"
+                  options={
+                    Array.isArray(states)
+                      ? states?.map((item) => ({
+                          label: item?.stateName || item?.name,
+
+                          value: item?.stateName || item?.name,
+                        }))
+                      : []
+                  }
+                />
+              </Form.Item>
+            </Col>
+          )}
+        </Row>
       )}
 
       {/* ================= CITY ================= */}
 
       {level === "city" && (
-        <Form.Item
-          label="City"
-          name="cityData"
-          rules={[
-            {
-              required: true,
-              message: "Please select city",
-            },
-          ]}
-        >
-          <Select
-            showSearch
-            allowClear
-            placeholder="Search City"
-            loading={locationsLoading}
-            onSearch={setCityHotelSearch}
-            filterOption={false}
-            optionFilterProp="label"
-            notFoundContent={
-              debouncedCityHotelSearch?.length < 1
-                ? "Search city"
-                : "No cities found"
-            }
-            options={cityOptions}
-          />
-        </Form.Item>
+        <Row gutter={16}>
+          <Col span={24}>
+            <Form.Item
+              label="City"
+              name="cityData"
+              rules={[
+                {
+                  required: true,
+                  message: "Please select city",
+                },
+              ]}
+            >
+              <Select
+                size="large"
+                showSearch
+                allowClear
+                placeholder="Search City"
+                loading={locationsLoading}
+                onSearch={setCityHotelSearch}
+                filterOption={false}
+                optionFilterProp="label"
+                notFoundContent={
+                  debouncedCityHotelSearch?.length < 1
+                    ? "Search city"
+                    : "No cities found"
+                }
+                options={cityOptions}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
       )}
 
       {/* ================= HOTEL ================= */}
 
       {level === "hotel" && (
-        <Form.Item
-          label="Hotel"
-          name="hotelData"
-          rules={[
-            {
-              required: true,
-              message: "Please select hotel",
-            },
-          ]}
-        >
-          <Select
-            showSearch
-            allowClear
-            placeholder="Search Hotel"
-            loading={locationsLoading}
-            onSearch={setCityHotelSearch}
-            filterOption={false}
-            optionFilterProp="label"
-            notFoundContent={
-              debouncedCityHotelSearch?.length < 1
-                ? "Search hotel"
-                : "No hotels found"
-            }
-            options={hotelOptions}
-          />
-        </Form.Item>
+        <Row gutter={16}>
+          <Col span={24}>
+            <Form.Item
+              label="Hotel"
+              name="hotelData"
+              rules={[
+                {
+                  required: true,
+                  message: "Please select hotel",
+                },
+              ]}
+            >
+              <Select
+                size="large"
+                showSearch
+                allowClear
+                placeholder="Search Hotel"
+                loading={locationsLoading}
+                onSearch={setCityHotelSearch}
+                filterOption={false}
+                optionFilterProp="label"
+                notFoundContent={
+                  debouncedCityHotelSearch?.length < 1
+                    ? "Search hotel"
+                    : "No hotels found"
+                }
+                options={hotelOptions}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
       )}
     </>
   );
