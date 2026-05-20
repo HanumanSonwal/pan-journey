@@ -7,7 +7,7 @@ import bookingData from "./data/Busflightherodata";
 
 export default function ComingSoonSection() {
   return (
-    <section className="mt-[-10px] overflow-hidden bg-[#F3F4F6] px-4 md:pt-15">
+    <section className="mt-[-10px] overflow-hidden !bg-[#EDF7FF] px-4 md:pt-15">
       <div className="mx-auto ml-25 w-[88.72%] md:ml-4 md:w-[95%] lg:ml-25 lg:w-[87%]">
         {/* Cards */}
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:gap-12">

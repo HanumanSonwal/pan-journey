@@ -7,17 +7,24 @@ import { useEffect, useRef } from "react";
 
 export function AuthProvider({ children }) {
   const { setUser, clearUser, setLoading, isLoading } = useAuthStore();
+
   const hasFetched = useRef(false);
 
   useEffect(() => {
+    let mounted = true;
+
     if (hasFetched.current) return;
     hasFetched.current = true;
 
     const fetchUser = async () => {
-      setLoading(true);
+      if (mounted) {
+        setLoading(true);
+      }
 
       try {
         const res = await getMe();
+
+        if (!mounted) return;
 
         if (res?.success && res?.data?.user) {
           setUser(res.data.user);
@@ -25,14 +32,22 @@ export function AuthProvider({ children }) {
           clearUser();
         }
       } catch {
-        clearUser();
+        if (mounted) {
+          clearUser();
+        }
       } finally {
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchUser();
-  }, []);
+
+    return () => {
+      mounted = false;
+    };
+  }, [setUser, clearUser, setLoading]);
 
   if (isLoading) return <GlobalLoader />;
 

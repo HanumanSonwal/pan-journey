@@ -46,7 +46,7 @@ const faqData = [
 
 export default function FAQSection() {
   return (
-    <section className="bg-[#F5F7F9] px-4 py-16 md:py-24">
+    <section className="bg-[#EDF7FF] px-4 py-16 md:py-24">
       <div className="mx-auto max-w-5xl !mt-[-95]">
         {/* Heading */}
         <SectionHeading

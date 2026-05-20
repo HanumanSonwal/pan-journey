@@ -1,24 +1,33 @@
 "use client";
 
+
 import BookingWebsiteLoader from "@/components/common/BookingWebsiteLoader";
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
 
 const LoaderContext = createContext();
-
-export const useLoader = () => useContext(LoaderContext);
 
 export default function LoaderProvider({ children }) {
   const [loading, setLoading] = useState(false);
 
-  // 🔥 IMPORTANT ADD THIS
-  useEffect(() => {
-    window.__loader = { setLoading };
-  }, [setLoading]);
+  const value = useMemo(
+    () => ({
+      loading,
+      setLoading,
+    }),
+    [loading]
+  );
 
   return (
-    <LoaderContext.Provider value={{ loading, setLoading }}>
+    <LoaderContext.Provider value={value}>
       {loading && <BookingWebsiteLoader />}
       {children}
     </LoaderContext.Provider>
   );
 }
+
+export const useLoader = () => useContext(LoaderContext);
