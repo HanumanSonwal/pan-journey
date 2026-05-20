@@ -371,6 +371,7 @@ export default function MarkupFormModal({ open, setOpen, editData }) {
                   }}
                 >
                   <InputNumber
+                    size="large"
                     min={0}
                     style={{
                       width: "100%",
@@ -378,7 +379,7 @@ export default function MarkupFormModal({ open, setOpen, editData }) {
                     placeholder="Enter markup"
                   />
 
-                  <Button disabled>
+                  <Button size="large" disabled>
                     {markupType === "percentage" ? "%" : "₹"}
                   </Button>
                 </Space.Compact>

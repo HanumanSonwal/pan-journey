@@ -10,14 +10,15 @@ export const createMarkupApi = async (data) => {
 
 // ================= GET ALL =================
 
-export const getMarkupsApi = async () => {
+export const getMarkupsApi = async (params = {}) => {
   const res = await api.get("/markup/getAllMarkups", {
+    params,
+
     skipToast: true,
   });
 
   return res?.data?.data || [];
 };
-
 // ================= UPDATE =================
 
 export const updateMarkupApi = async ({ id, data }) => {

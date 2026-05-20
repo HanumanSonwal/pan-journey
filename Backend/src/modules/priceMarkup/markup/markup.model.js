@@ -25,6 +25,7 @@ const markupSchema = new mongoose.Schema(
     cityId: String,
     hotelId: String,
     cityName:String,
+    hotelName:String,
 
     isActive: {
       type: Boolean,
