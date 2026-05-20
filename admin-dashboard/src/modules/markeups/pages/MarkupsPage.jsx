@@ -29,11 +29,28 @@ export default function MarkupsPage() {
 
   // ================= API =================
 
-  const { markups, isLoading, deleteMarkup, updateStatus } = useMarkups({
-    status: statusFilter === "all" ? "" : statusFilter,
-    level: levelFilter === "all" ? "" : levelFilter,
-    search: showSearch ? debouncedSearch : "",
-  });
+  const queryParams = {
+    ...(statusFilter !== "all" && {
+      isActive: statusFilter,
+    }),
+
+    ...(levelFilter !== "all" && {
+      level: levelFilter,
+    }),
+
+    ...(showSearch &&
+      debouncedSearch && {
+        search: debouncedSearch,
+      }),
+  };
+
+  const {
+    markups,
+    isLoading,
+
+    deleteMarkup,
+    updateStatus,
+  } = useMarkups(queryParams);
 
   // ================= EDIT =================
 

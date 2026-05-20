@@ -5,7 +5,7 @@ const markupSchema = new mongoose.Schema(
   {
     level: {
       type: String,
-      enum: ["worldwide", "country", "state", "city", "hotel","servicetax"],
+      enum: ["worldwide", "country", "state", "city", "hotel", "serviceTax"],
       required: true,
     },
 
@@ -24,15 +24,15 @@ const markupSchema = new mongoose.Schema(
     stateName: String,
     cityId: String,
     hotelId: String,
-    cityName:String,
-    hotelName:String,
+    cityName: String,
+    hotelName: String,
 
     isActive: {
       type: Boolean,
       default: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 /////////////////////////////////////////////////////////
@@ -42,31 +42,37 @@ const markupSchema = new mongoose.Schema(
 /* 🌍 Worldwide unique */
 markupSchema.index(
   { level: 1 },
-  { unique: true, partialFilterExpression: { level: "worldwide", isActive: true } }
+  {
+    unique: true,
+    partialFilterExpression: { level: "worldwide", isActive: true },
+  },
 );
 
 /* 🌎 Country unique */
 markupSchema.index(
   { level: 1, countryCode: 1 },
-  { unique: true, partialFilterExpression: { level: "country", isActive: true } }
+  {
+    unique: true,
+    partialFilterExpression: { level: "country", isActive: true },
+  },
 );
 
 /* 🏞 State unique */
 markupSchema.index(
   { level: 1, countryCode: 1, stateName: 1 },
-  { unique: true, partialFilterExpression: { level: "state", isActive: true } }
+  { unique: true, partialFilterExpression: { level: "state", isActive: true } },
 );
 
 /* 🏙 City unique */
 markupSchema.index(
   { level: 1, cityId: 1 },
-  { unique: true, partialFilterExpression: { level: "city", isActive: true } }
+  { unique: true, partialFilterExpression: { level: "city", isActive: true } },
 );
 
 /* 🏨 Hotel unique */
 markupSchema.index(
   { level: 1, hotelId: 1 },
-  { unique: true, partialFilterExpression: { level: "hotel", isActive: true } }
+  { unique: true, partialFilterExpression: { level: "hotel", isActive: true } },
 );
 
 /////////////////////////////////////////////////////////

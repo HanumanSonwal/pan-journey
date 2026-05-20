@@ -47,16 +47,17 @@ export default function MarkupFilters({
       label: "All Status",
       value: "all",
     },
+
     {
       label: "Active",
-      value: "active",
+      value: true,
     },
+
     {
       label: "Inactive",
-      value: "inactive",
+      value: false,
     },
   ];
-
   const getSearchPlaceholder = () => {
     switch (levelFilter) {
       case "country":

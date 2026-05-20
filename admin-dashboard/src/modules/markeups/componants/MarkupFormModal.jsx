@@ -21,7 +21,7 @@ import {
   Typography,
 } from "antd";
 
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useMarkups } from "../hooks/useMarkups";
 import LevelFields from "./LevelFields";
 const { Text, Title } = Typography;
@@ -59,6 +59,12 @@ const LEVEL_OPTIONS = [
     value: "hotel",
     icon: <HomeOutlined />,
     color: "#eb2f96",
+  },
+  {
+    label: "Service Tax",
+    value: "serviceTax",
+    icon: <PercentageOutlined />,
+    color: "#722ed1",
   },
 ];
 
@@ -100,31 +106,6 @@ export default function MarkupFormModal({ open, setOpen, editData }) {
       form.resetFields();
     }
   }, [editData, open, form]);
-
-  // ================= PREVIEW =================
-
-  const targetPreview = useMemo(() => {
-    if (level === "worldwide") {
-      return "All Locations";
-    }
-    if (level === "country") {
-      return countryCode || "-";
-    }
-    if (level === "state") {
-      return `${stateName || "-"}, ${countryCode || "-"}`;
-    }
-    if (level === "city" && cityData) {
-      const city = JSON.parse(cityData);
-
-      return city?.cityName;
-    }
-    if (level === "hotel" && hotelData) {
-      const hotel = JSON.parse(hotelData);
-
-      return hotel?.hotelName;
-    }
-    return "-";
-  }, [level, countryCode, stateName, cityData, hotelData]);
 
   // ================= SUBMIT =================
 
