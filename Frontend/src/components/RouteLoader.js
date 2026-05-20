@@ -9,14 +9,21 @@ export default function RouteLoader() {
   const { setLoading } = useLoader();
 
   useEffect(() => {
+    let mounted = true;
+
     setLoading(true);
 
     const timer = setTimeout(() => {
-      setLoading(false);
+      if (mounted) {
+        setLoading(false);
+      }
     }, 500);
 
-    return () => clearTimeout(timer);
-  }, [pathname]);
+    return () => {
+      mounted = false;
+      clearTimeout(timer);
+    };
+  }, [pathname, setLoading]);
 
   return null;
 }

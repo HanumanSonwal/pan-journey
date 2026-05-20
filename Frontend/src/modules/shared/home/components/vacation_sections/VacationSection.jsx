@@ -12,14 +12,14 @@ export default function VacationSection() {
   const [activeTab, setActiveTab] = useState("beach");
 
   return (
-    <SectionWrapper className="bg-[#edf7ff] mt-[-3]">
-      <div className="mt-[-20px] md:mt-[40px] lg:mt-[80px] xl:mt-[56px] ">
+    <SectionWrapper className="bg-[#edf7ff] mt-[-4px] ">
+      <div className="mt-[-20px] md:mt-[120px] lg:mt-[220px] xl:mt-[96px] 2xl:mt-[96px] ">
         <SectionHeading
           title="Places As Per Your Vibe"
           description="We're committed to offering more than just products— we provide exceptional experiences."
         />
       </div>
-      <div className="scrollbar-hide mb-10 flex justify-center overflow-x-auto">
+      <div className="scrollbar-hide mb-8 flex justify-center overflow-x-auto mt-19">
         <ButtonTab
           tabs={tabs}
           activeTab={activeTab}

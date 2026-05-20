@@ -168,7 +168,7 @@ function DestinationSearchField({
       },
 
       {
-        label: "Hotels",
+        label:"Hotels",
 
         options: buildOptions(
           sortedSearchResults.filter((item) => item.type === "Hotel"),

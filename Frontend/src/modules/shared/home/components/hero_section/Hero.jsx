@@ -25,7 +25,7 @@ export default function Hero() {
   const { searchData } = useHotelSearchStore();
   const ActiveForm = FORM_MAP[activeTab];
 
-  console.log(searchData,  "in home  page");
+  console.log(searchData, "in home  page");
 
   const handleSearch = () => {
     const query = new URLSearchParams({
@@ -45,13 +45,13 @@ export default function Hero() {
     <section className="relative w-full bg-[#EDF7FF] pb-60 md:pb-60 lg:pb-40 xl:pb-54">
       <div className={styles.heroBg} />
       <div className="absolute top-[35%] left-1/2 h-[60%] w-[85.83%] -translate-x-1/2 px-4 max-lg:top-[32%] max-lg:w-[92%] max-md:top-[25%] max-md:w-[95%] xl:top-[40%]">
-        <div className="w-full rounded-[10px] bg-white !pb-14 shadow-2xl max-lg:p-6 max-md:p-4 md:p-8">
+        <div className="w-full rounded-[10px] bg-white !pb-21 shadow-2xl max-lg:p-6 max-md:p-4 md:p-8">
           <Tabs
             tabs={HOME_TABS}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
           />
-          <h2 className="mb-2 text-center text-xl font-bold text-[#72C0F0] max-lg:text-[28px] max-md:text-[22px] md:text-3xl">
+          <h2 className="mb-2 text-center text-xl font-bold text-[#72C0F0] max-lg:text-[28px] max-md:text-[22px] md:text-3xl ">
             Find What You Are Looking For
           </h2>
           {ActiveForm && <ActiveForm />}

@@ -1,31 +1,29 @@
 "use client";
 
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-import { Spin } from "antd";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
 import { useDestinations } from "@/modules/shared/home/hooks/useDestinations";
-import { useLoader } from "@/providers/LoaderProvider";
 import { VacationsimageMap } from "../data/VacationsData";
 
 export default function VacationType({ activeTab }) {
   const [index, setIndex] = useState(0);
   const [perPage, setPerPage] = useState(4);
+  const [mounted, setMounted] = useState(false);
 
   // API DATA
-  const { data = [], isLoading } = useDestinations(activeTab);
+  const { data = [] } = useDestinations(activeTab);
 
-  // GLOBAL LOADER
-  const { setLoading } = useLoader();
-
-  // 🔥 CONNECT API LOADER TO GLOBAL LOADER
+  // FIX HYDRATION
   useEffect(() => {
-    setLoading(isLoading);
-  }, [isLoading, setLoading]);
+    setMounted(true);
+  }, []);
 
   // RESPONSIVE
   useEffect(() => {
+    if (!mounted) return;
+
     const updatePerPage = () => {
       const width = window.innerWidth;
 
@@ -39,10 +37,13 @@ export default function VacationType({ activeTab }) {
     };
 
     updatePerPage();
+
     window.addEventListener("resize", updatePerPage);
 
-    return () => window.removeEventListener("resize", updatePerPage);
-  }, []);
+    return () => {
+      window.removeEventListener("resize", updatePerPage);
+    };
+  }, [mounted]);
 
   // RESET SLIDER ON TAB CHANGE
   useEffect(() => {
@@ -63,17 +64,11 @@ export default function VacationType({ activeTab }) {
     }
   };
 
-  // ONLY VISIBLE ITEMS
+  // VISIBLE DATA
   const visibleData = data.slice(index, index + perPage);
 
-  // LOADING
-  if (isLoading) {
-    return (
-      <div className="flex h-[350px] items-center justify-center">
-        <Spin size="large" />
-      </div>
-    );
-  }
+  // PREVENT HYDRATION ERROR
+  if (!mounted) return null;
 
   return (
     <div className="px-2 py-2">
@@ -82,27 +77,28 @@ export default function VacationType({ activeTab }) {
         <button
           onClick={prev}
           disabled={index === 0}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-xl shadow-sm transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-30"
+          className="flex h-10 w-10 items-center justify-center !text-[27px] !text-black"
         >
           <LeftOutlined />
         </button>
 
         {/* CARDS */}
         <div className="flex-1 overflow-hidden">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {visibleData.map((item, idx) => {
               const image =
                 VacationsimageMap?.[activeTab]?.[
-                  (index + idx) % VacationsimageMap?.[activeTab]?.length
+                  (index + idx) %
+                    VacationsimageMap?.[activeTab]?.length
                 ];
 
               return (
                 <div
                   key={item.id || idx}
-                  className="overflow-hidden rounded-2xl bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg"
+                  className="overflow-hidden rounded-[5px] bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg"
                 >
                   {/* IMAGE */}
-                  <div className="relative h-[290px] overflow-hidden">
+                  <div className="relative h-[310px] overflow-hidden">
                     <Image
                       src={image}
                       alt={item.name}
@@ -115,20 +111,38 @@ export default function VacationType({ activeTab }) {
                     />
                   </div>
 
-                  <div className="bg-[#F5F5F5] px-4 py-5 text-center">
-                    <h2 className="mb-2 text-lg font-semibold text-gray-800">
+                  {/* CONTENT */}
+                  <div className="mt-[-10px] bg-[#FFFFFF] px-4 py-5 text-center">
+                    <h2 className="text-[14px] font-semibold text-gray-900 sm:text-[16px] md:text-[18px] lg:text-[20px] xl:text-[22px]">
                       {item.name}
                     </h2>
 
-                    <p className="mb-3 text-sm text-gray-600">
+                    <p className="mt-[-7px] text-gray-800 sm:text-[11px] md:text-[12px] lg:text-[14px] xl:text-[16px]">
                       {item.City}
                     </p>
 
-                    <button className="flex w-full items-center justify-center gap-1 text-sm font-medium text-[#5FA8C9] transition hover:text-[#3D8FB3]">
+                    <button
+                      className="
+                        mt-[-9px]
+                        flex
+                        w-full
+                        items-center
+                        justify-center
+                        gap-1
+                        font-medium
+                        text-[#5FA8C9]
+                        transition
+                        hover:text-[#3D8FB3]
+                        text-[14px]
+                        sm:text-[16px]
+                        md:text-[18px]
+                        lg:text-[20px]
+                      "
+                    >
                       View Details →
                     </button>
 
-                    <div className="mx-auto mt-2 w-20 border-b border-dotted border-[#5FA8C9]" />
+                    <div className="mx-auto mt-1 w-24 border-b border-dotted border-[#5FA8C9] sm:w-28 md:w-32 lg:w-36 xl:w-40" />
                   </div>
                 </div>
               );
@@ -140,7 +154,7 @@ export default function VacationType({ activeTab }) {
         <button
           onClick={next}
           disabled={index + perPage >= data.length}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-xl shadow-sm transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-30"
+          className="flex h-10 w-10 items-center justify-center !text-[27px] !text-black"
         >
           <RightOutlined />
         </button>

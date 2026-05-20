@@ -5,13 +5,13 @@ import { Spin } from "antd";
 
 export default function BookingWebsiteLoader() {
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className="fixed inset-0 z-[999999] flex items-center justify-center bg-white">
       <Spin
         indicator={
           <LoadingOutlined
             style={{
               fontSize: 40,
-              color: "#0077b6", // loader color
+              color: "#0077b6",
             }}
             spin
           />
