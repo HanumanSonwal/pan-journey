@@ -12,7 +12,7 @@ export const applyPricing = async (supplierData, hotelMeta) => {
       countryCode,
     });
 
-    // 💰 get service tax (global)
+    // 💰 get service tax (global)0
     const serviceTaxDoc = await getServiceTax();
 
     const markupValue = markupDoc?.markupValue || 0;
