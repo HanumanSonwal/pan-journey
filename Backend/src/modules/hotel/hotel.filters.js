@@ -29,3 +29,5 @@ export const filterHotels = (hotels, filters = {}) => {
 
   return filtered;
 };
+
+

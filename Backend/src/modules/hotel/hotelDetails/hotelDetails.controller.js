@@ -1,4 +1,4 @@
-import { fetchSupplierHotelDetails } from "./hotelDetails.service.js";
+import { fetchHotelDetailsFromSupplier } from "../hotelDetails/hotelDetails.service.js";
 import { sendSuccess, sendError } from "../../../utils/response/ApiResponse.js";
 
 export const getHotelDetails = async (req, res) => {
@@ -9,21 +9,13 @@ export const getHotelDetails = async (req, res) => {
       return sendError(res, "hotelKey and searchKey are required", 400);
     }
 
-    const supplierResponse = await fetchSupplierHotelDetails({
+    const data = await fetchHotelDetailsFromSupplier({
       hotelKey,
       searchKey,
     });
 
-    // 🧠 Extract only useful data for frontend
-    const hotelDetails = supplierResponse?.HotelDetails || supplierResponse;
-
-    return sendSuccess(
-      res,
-      "Hotel details fetched successfully",
-      hotelDetails
-    );
-
-  } catch (error) {
-    return sendError(res, error.message);
+    return sendSuccess(res, "Hotel details fetched from supplier", data);
+  } catch (err) {
+    return sendError(res, err.message);
   }
 };
