@@ -88,8 +88,8 @@ export default function VacationType({ activeTab }) {
             {visibleData.map((item, idx) => {
               const image =
                 VacationsimageMap?.[activeTab]?.[
-                  (index + idx) %
-                    VacationsimageMap?.[activeTab]?.length
+                (index + idx) %
+                VacationsimageMap?.[activeTab]?.length
                 ];
 
               return (
@@ -123,20 +123,19 @@ export default function VacationType({ activeTab }) {
 
                     <button
                       className="
-                        mt-[-9px]
-                        flex
-                        w-full
-                        items-center
-                        justify-center
-                        gap-1
-                        font-medium
-                        text-[#5FA8C9]
-                        transition
-                        hover:text-[#3D8FB3]
-                        text-[14px]
-                        sm:text-[16px]
-                        md:text-[18px]
-                        lg:text-[20px]
+                  flex
+  w-full
+  items-center
+  justify-center
+  gap-1
+  font-medium
+  !text-[#5FA8C9]
+  !text-[14px]
+  transition
+  hover:text-[#3D8FB3]
+  sm:!text-[16px]
+  md:!text-[18px]
+  lg:!text-[22px]
                       "
                     >
                       View Details →
