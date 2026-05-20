@@ -14,6 +14,7 @@ import userRoutes from "./modules/user/user.routes.js";
 import countryRoutes from "./modules/priceMarkup/countryData/country.routes.js";
 import stateRoutes from "./modules/priceMarkup/stateData/state.routes.js";
 import markeupRoutes from "./modules/priceMarkup/markup/markup.routes.js";
+import hotelDetails from "./modules/hotel/hotelDetails/hotel.routes.js";
 
 import customerProfileRoutes from "./modules/auth/customer-auth/customer-documents/customerDocument.routes.js";
 import testRoutes from "./test.routes.js";
@@ -60,6 +61,7 @@ app.use("/api/v1", destinationRoutes);
 app.use("/api/v1/customer", customerProfileRoutes);
 app.use("/api/v1", countryRoutes);
 app.use("/api/v1/states", stateRoutes);
+app.use("/api/v1", hotelDetails);
 app.use(errorHandler);
 
 export default app;

@@ -6,7 +6,6 @@ export const getMarkup = async ({
   stateName,
   countryCode,
 }) => {
-
   // 1️⃣ HOTEL LEVEL
   let markup = await Markup.findOne({
     level: "hotel",
@@ -47,6 +46,17 @@ export const getMarkup = async ({
     level: "worldwide",
     isActive: true,
   });
+  const serviceTax = await getServiceTax();
 
-  return markup;
+  return {
+    markup,
+    serviceTax,
+  };
+};
+
+export const getServiceTax = async () => {
+  return await Markup.findOne({
+    level: "servicetax",
+    isActive: true,
+  });
 };

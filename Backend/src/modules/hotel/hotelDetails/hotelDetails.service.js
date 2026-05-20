@@ -1,29 +1,22 @@
-import { getAuthHeader, supplierAPI } from "../../../config/supplierApi.js";
+import { supplierAPI } from "../../../config/supplierApi.js";
+import { getAuthHeader } from "../../../config/supplierAuth.service.js";
 
-export const fetchSupplierHotelDetails = async ({ hotelKey, searchKey }) => {
+export const fetchHotelDetailsFromSupplier = async ({ hotelKey, searchKey }) => {
   try {
     const payload = {
-      ...getAuthHeader(), // ✅ reuse auth header
+      ...getAuthHeader(),
       HotelKey: hotelKey,
       SearchKey: searchKey,
     };
 
-    console.log("🏨 HOTEL DETAILS PAYLOAD:", payload);
-
-    const { data } = await supplierAPI.post("/HotelDetails", payload);
-
-    // ❌ Supplier error handling
-    if (data?.ResponseHeader?.ErrorCode !== "0") {
-      console.error("❌ Supplier Error:", data?.ResponseHeader);
-      throw new Error(data?.ResponseHeader?.ErrorDesc || "Supplier error");
-    }
+    const { data } = await supplierAPI.post(
+      "/JSONService/HotelDetails",
+      payload
+    );
 
     return data;
   } catch (error) {
-    console.error(
-      "❌ Supplier HotelDetails Error:",
-      error?.response?.data || error.message,
-    );
-    throw new Error("Supplier hotel details failed");
+    console.error("Supplier Hotel Detail Error:", error?.response?.data || error.message);
+    throw new Error("Supplier HotelDetails API failed");
   }
 };
