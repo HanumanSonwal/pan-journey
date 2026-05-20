@@ -55,23 +55,55 @@ export const getAllMarkups = async (req, res) => {
         }
       }
     );
+// 3️⃣ Dynamic SEARCH based on level
+if (search) {
+  const regex = new RegExp(search, "i");
 
+  let searchMatch = {};
+
+  if (level === "country") {
+    searchMatch = { countryName: regex };
+  }
+
+  if (level === "state") {
+    searchMatch = { stateName: regex };
+  }
+
+  if (level === "city") {
+    searchMatch = { cityName: regex };
+  }
+
+  if (level === "hotel") {
+    searchMatch = {
+      $or: [
+        { hotelName: regex },
+        { hotelId: regex }
+      ]
+    };
+  }
+
+  // worldwide -> no search
+
+  if (Object.keys(searchMatch).length > 0) {
+    pipeline.push({ $match: searchMatch });
+  }
+}
     // 3️⃣ Dynamic SEARCH based on level
-    if (search) {
-      const regex = new RegExp(search, "i");
+    // if (search) {
+    //   const regex = new RegExp(search, "i");
 
-      pipeline.push({
-        $match: {
-          $or: [
-            { countryName: regex }, // country level search
-            { stateName: regex },   // state level search
-            { cityName: regex },    // city level search
-            { hotelName: regex },   // hotel level search
-            { hotelId: regex }
-          ]
-        }
-      });
-    }
+    //   pipeline.push({
+    //     $match: {
+    //       $or: [
+    //         { countryName: regex }, // country level search
+    //         { stateName: regex },   // state level search
+    //         { cityName: regex },    // city level search
+    //         { hotelName: regex },   // hotel level search
+    //         { hotelId: regex }
+    //       ]
+    //     }
+    //   });
+    // }
 
     // 4️⃣ Remove extra join data
     pipeline.push({
