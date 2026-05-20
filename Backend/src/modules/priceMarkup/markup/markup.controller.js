@@ -1,39 +1,29 @@
 import { sendError, sendSuccess } from "../../../utils/response/ApiResponse.js";
 import Markup from "./markup.model.js";
 
-// export const createMarkup = async (req, res) => {
-//   try {
-//     const markup = await Markup.create(req.body);
 
-//     return sendSuccess(res, "Markup created successfully", markup, null, 201);
-//   } catch (err) {
-//     return sendError(res, "Failed to create markup", 500, err.message);
-//   }
-// };
-// export const getAllMarkups = async (req, res) => {
-//   try {
-//     const markups = await Markup.find().sort({ createdAt: -1 });
-
-//     return sendSuccess(res, "Markup list fetched", markups);
-//   } catch (err) {
-//     return sendError(res, "Failed to fetch markups", 500, err.message);
-//   }
-// };
 
 export const getAllMarkups = async (req, res) => {
   try {
-    const { level, search } = req.query;
+    const { level, search, isActive } = req.query;
 
     const pipeline = [];
 
-    // 1️⃣ Level filter (optional)
+    // 1️⃣ Level filter
     if (level) {
       pipeline.push({
         $match: { level }
       });
     }
 
-    // 2️⃣ Join countries collection
+    // 2️⃣ isActive filter (NEW)
+    if (isActive !== undefined) {
+      pipeline.push({
+        $match: { isActive: isActive === "true" }
+      });
+    }
+
+    // 3️⃣ Join countries collection
     pipeline.push(
       {
         $lookup: {
@@ -55,64 +45,46 @@ export const getAllMarkups = async (req, res) => {
         }
       }
     );
-// 3️⃣ Dynamic SEARCH based on level
-if (search) {
-  const regex = new RegExp(search, "i");
 
-  let searchMatch = {};
+    // 4️⃣ Dynamic SEARCH based on level
+    if (search) {
+      const regex = new RegExp(search, "i");
+      let searchMatch = {};
 
-  if (level === "country") {
-    searchMatch = { countryName: regex };
-  }
+      if (level === "country") {
+        searchMatch = { countryName: regex };
+      }
 
-  if (level === "state") {
-    searchMatch = { stateName: regex };
-  }
+      if (level === "state") {
+        searchMatch = { stateName: regex };
+      }
 
-  if (level === "city") {
-    searchMatch = { cityName: regex };
-  }
+      if (level === "city") {
+        searchMatch = { cityName: regex };
+      }
 
-  if (level === "hotel") {
-    searchMatch = {
-      $or: [
-        { hotelName: regex },
-        { hotelId: regex }
-      ]
-    };
-  }
+      if (level === "hotel") {
+        searchMatch = {
+          $or: [
+            { hotelName: regex },
+            { hotelId: regex }
+          ]
+        };
+      }
 
-  // worldwide -> no search
+      if (Object.keys(searchMatch).length > 0) {
+        pipeline.push({ $match: searchMatch });
+      }
+    }
 
-  if (Object.keys(searchMatch).length > 0) {
-    pipeline.push({ $match: searchMatch });
-  }
-}
-    // 3️⃣ Dynamic SEARCH based on level
-    // if (search) {
-    //   const regex = new RegExp(search, "i");
-
-    //   pipeline.push({
-    //     $match: {
-    //       $or: [
-    //         { countryName: regex }, // country level search
-    //         { stateName: regex },   // state level search
-    //         { cityName: regex },    // city level search
-    //         { hotelName: regex },   // hotel level search
-    //         { hotelId: regex }
-    //       ]
-    //     }
-    //   });
-    // }
-
-    // 4️⃣ Remove extra join data
+    // 5️⃣ Remove extra join data
     pipeline.push({
       $project: {
         countryData: 0
       }
     });
 
-    // 5️⃣ Sort latest first
+    // 6️⃣ Sort latest first
     pipeline.push({
       $sort: { createdAt: -1 }
     });
