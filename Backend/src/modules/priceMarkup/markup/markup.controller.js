@@ -197,71 +197,6 @@ export const createMarkup = async (req, res) => {
     return sendError(res, "Failed to create markup", 500, err.message);
   }
 };
-
-// export const createMarkup = async (req, res) => {
-//   try {
-//     const { level, countryCode, stateName, cityId, hotelId } = req.body;
-
-//     // 🔎 Build uniqueness filter based on level
-//     let filter = { level };
-
-//     if (level === "country") filter.countryCode = countryCode;
-//     if (level === "state") {
-//       filter.countryCode = countryCode;
-//       filter.stateName = stateName;
-//     }
-//     if (level === "city") filter.cityId = cityId;
-//     if (level === "hotel") filter.hotelId = hotelId;
-
-//     // 🔴 Check if markup already exists
-//     const existing = await Markup.findOne(filter);
-
-//     if (existing) {
-//       return sendError(
-//         res,
-//         "Markup already exists. Please update the existing markup.",
-//         400,
-//       );
-//     }
-
-//     // ✅ Create new markup
-//     const markup = await Markup.create(req.body);
-
-//     return sendSuccess(res, "Markup created successfully", markup, null, 201);
-//   } catch (err) {
-//     return sendError(res, "Failed to create markup", 500, err.message);
-//   }
-// };
-
-// PUT /markups/:id
-// export const updateMarkup = async (req, res) => {
-//   try {
-//     const { level, markupType, markupValue, isActive } = req.body;
-
-//     // full payload required
-//     if (!level || !markupType || markupValue === undefined) {
-//       return sendError(res, "All fields are required for PUT", 400);
-//     }
-
-//     const markup = await Markup.findByIdAndUpdate(
-//       req.params.id,
-//       {
-//         level,
-//         markupType,
-//         markupValue,
-//         isActive,
-//       },
-//       { new: true, runValidators: true },
-//     );
-
-//     if (!markup) return sendError(res, "Markup not found", 404);
-
-//     return sendSuccess(res, "Markup fully updated", markup);
-//   } catch (err) {
-//     return sendError(res, "Failed to update markup", 500, err.message);
-//   }
-// };
-// PATCH /markups/:id/status
 export const updateMarkup = async (req, res) => {
   try {
     const {
@@ -273,6 +208,7 @@ export const updateMarkup = async (req, res) => {
       endDate,
     } = req.body;
 
+    // ✅ Required fields
     if (!level || !markupType || markupValue === undefined) {
       return sendError(res, "All fields are required for PUT", 400);
     }
@@ -288,23 +224,49 @@ export const updateMarkup = async (req, res) => {
       }
     }
 
-    // ✅ Auto active calculation
-    const now = new Date();
+    // ✅ Convert dates properly
+    let formattedStartDate = startDate
+      ? new Date(startDate)
+      : null;
 
-    let autoActive = isActive;
+    let formattedEndDate = endDate
+      ? new Date(endDate)
+      : null;
 
-    if (startDate && endDate) {
-      autoActive =
-        isActive &&
-        new Date(startDate) <= now &&
-        new Date(endDate) >= now;
+    // ✅ Full end day support
+    if (formattedEndDate) {
+      formattedEndDate.setHours(23, 59, 59, 999);
     }
 
+    // ✅ Current time
+    const now = new Date();
+
+    // ✅ Manual status default true
+    const manualStatus = isActive ?? true;
+
+    // ✅ Date range validation
+    const withinDateRange =
+      !formattedStartDate ||
+      !formattedEndDate ||
+      (
+        formattedStartDate <= now &&
+        formattedEndDate >= now
+      );
+
+    // ✅ Final status
+    const finalStatus =
+      manualStatus && withinDateRange;
+
+    // ✅ Update
     const markup = await Markup.findByIdAndUpdate(
       req.params.id,
       {
         ...req.body,
-        isActive: autoActive,
+
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
+
+        isActive: finalStatus,
       },
       {
         new: true,
@@ -312,16 +274,27 @@ export const updateMarkup = async (req, res) => {
       }
     );
 
+    // ✅ Not found
     if (!markup) {
       return sendError(res, "Markup not found", 404);
     }
 
-    return sendSuccess(res, "Markup fully updated", markup);
+    return sendSuccess(
+      res,
+      "Markup fully updated",
+      markup
+    );
 
   } catch (err) {
-    return sendError(res, "Failed to update markup", 500, err.message);
+    return sendError(
+      res,
+      "Failed to update markup",
+      500,
+      err.message
+    );
   }
 };
+
 export const toggleMarkupStatus = async (req, res) => {
   try {
     const { isActive } = req.body;
