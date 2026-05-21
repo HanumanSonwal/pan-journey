@@ -26,6 +26,8 @@ const markupSchema = new mongoose.Schema(
     hotelId: String,
     cityName:String,
     hotelName:String,
+   startDate: Date,
+    endDate: Date,
 
     isActive: {
       type: Boolean,
