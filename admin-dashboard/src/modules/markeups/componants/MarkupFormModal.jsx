@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  EnvironmentOutlined,
-  GlobalOutlined,
-  HomeOutlined,
-  PercentageOutlined,
-  ShopOutlined,
-} from "@ant-design/icons";
+import { PercentageOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 
 import {
@@ -23,61 +17,16 @@ import {
 } from "antd";
 
 import { useEffect } from "react";
+import { LEVEL_OPTIONS } from "../data/MarkupsData";
 import { useMarkups } from "../hooks/useMarkups";
 import LevelFields from "./LevelFields";
 const { Text, Title } = Typography;
-const LEVEL_OPTIONS = [
-  {
-    label: "Worldwide",
-    value: "worldwide",
-    icon: <GlobalOutlined />,
-    color: "#722ed1",
-  },
-
-  {
-    label: "Country",
-    value: "country",
-    icon: <EnvironmentOutlined />,
-    color: "#1677ff",
-  },
-
-  {
-    label: "State",
-    value: "state",
-    icon: <EnvironmentOutlined />,
-    color: "#fa8c16",
-  },
-
-  {
-    label: "City",
-    value: "city",
-    icon: <ShopOutlined />,
-    color: "#13c2c2",
-  },
-
-  {
-    label: "Hotel",
-    value: "hotel",
-    icon: <HomeOutlined />,
-    color: "#eb2f96",
-  },
-  {
-    label: "Service Tax",
-    value: "serviceTax",
-    icon: <PercentageOutlined />,
-    color: "#722ed1",
-  },
-];
 
 export default function MarkupFormModal({ open, setOpen, editData }) {
   const [form] = Form.useForm();
   const level = Form.useWatch("level", form);
   const markupType = Form.useWatch("markupType", form);
   const markupValue = Form.useWatch("markupValue", form);
-  const countryCode = Form.useWatch("countryCode", form);
-  const stateName = Form.useWatch("stateName", form);
-  const cityData = Form.useWatch("cityData", form);
-  const hotelData = Form.useWatch("hotelData", form);
   const { createMarkup, updateMarkup } = useMarkups();
 
   // ================= EDIT =================
@@ -108,7 +57,6 @@ export default function MarkupFormModal({ open, setOpen, editData }) {
           : undefined,
 
         addDateRange: !!editData?.startDate && !!editData?.endDate,
-
         dateRange:
           editData?.startDate && editData?.endDate
             ? [dayjs(editData?.startDate), dayjs(editData?.endDate)]
@@ -141,6 +89,16 @@ export default function MarkupFormModal({ open, setOpen, editData }) {
       values.hotelName = parsedHotel?.hotelName;
       delete values.hotelData;
     }
+    if (values?.dateRange) {
+      values.startDate = values.dateRange[0]?.toISOString();
+      values.endDate = values.dateRange[1]?.toISOString();
+      delete values.dateRange;
+    }
+
+    if (!values?.addDateRange) {
+      values.startDate = null;
+      values.endDate = null;
+    }
 
     // UPDATE
 
@@ -149,19 +107,6 @@ export default function MarkupFormModal({ open, setOpen, editData }) {
         id: editData?._id,
         data: values,
       });
-    }
-    if (values?.dateRange) {
-      values.startDate = values.dateRange[0]?.toISOString();
-
-      values.endDate = values.dateRange[1]?.toISOString();
-
-      delete values.dateRange;
-    }
-
-    if (!values?.addDateRange) {
-      values.startDate = null;
-
-      values.endDate = null;
     }
 
     // CREATE
@@ -292,8 +237,6 @@ export default function MarkupFormModal({ open, setOpen, editData }) {
             </Row>
           </Form.Item>
         </div>
-
-        {/* ================= LOCATION ================= */}
 
         {/* ================= LOCATION ================= */}
 

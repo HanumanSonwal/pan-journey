@@ -78,11 +78,8 @@ export const useMarkups = (params = {}) => {
   });
   return {
     markups: data?.markups || [],
-
     meta: data?.meta || {},
-
     isLoading,
-
     createMarkup,
     updateMarkup,
     deleteMarkup,

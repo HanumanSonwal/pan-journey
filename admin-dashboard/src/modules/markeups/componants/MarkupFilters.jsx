@@ -3,6 +3,7 @@
 import { ClearOutlined } from "@ant-design/icons";
 
 import { Button, Col, Input, Row, Select } from "antd";
+import { levelOptions, statusOptions } from "../data/MarkupsData";
 
 export default function MarkupFilters({
   statusFilter,
@@ -15,53 +16,6 @@ export default function MarkupFilters({
   hasActiveFilters,
   handleResetFilters,
 }) {
-  const levelOptions = [
-    {
-      label: "All Levels",
-      value: "all",
-    },
-    {
-      label: "Worldwide",
-      value: "worldwide",
-    },
-    {
-      label: "Country",
-      value: "country",
-    },
-    {
-      label: "State",
-      value: "state",
-    },
-    {
-      label: "City",
-      value: "city",
-    },
-    {
-      label: "Hotel",
-      value: "hotel",
-    },
-    {
-      label: "serviceTax",
-      value: "serviceTax",
-    },
-  ];
-
-  const statusOptions = [
-    {
-      label: "All Status",
-      value: "all",
-    },
-
-    {
-      label: "Active",
-      value: true,
-    },
-
-    {
-      label: "Inactive",
-      value: false,
-    },
-  ];
   const getSearchPlaceholder = () => {
     switch (levelFilter) {
       case "country":

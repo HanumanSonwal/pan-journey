@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  DeleteOutlined,
-  EditOutlined,
-  GlobalOutlined,
-} from "@ant-design/icons";
-
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import {
   Button,
   Empty,
@@ -16,7 +11,7 @@ import {
   Tooltip,
   Typography,
 } from "antd";
-
+import { getLevelConfig } from "../data/MarkupsData";
 const { Text } = Typography;
 
 export default function MarkupTable({
@@ -29,189 +24,135 @@ export default function MarkupTable({
   setLimit,
   deleteMarkup,
   updateStatus,
-
   handleEdit,
 }) {
-  // ================= TARGET =================
-
   const renderTarget = (record) => {
-    const containerStyle = {
-      display: "flex",
-      flexDirection: "column",
-      gap: 4,
-      minWidth: 0,
+    const formatDate = (date) => {
+      if (!date) return null;
+      return new Date(date).toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+      });
     };
 
-    const tagStyle = {
-      width: "fit-content",
-      margin: 0,
-      borderRadius: 999,
-      fontWeight: 600,
-      paddingInline: 10,
-    };
+    const config = getLevelConfig(record)[record?.level];
+    if (!config) return "-";
+    const hasDateRange = record?.startDate && record?.endDate;
 
-    const secondaryTextStyle = {
-      fontSize: 12,
-      lineHeight: 1.2,
-    };
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 8,
+          minWidth: 0,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-start",
+            gap: 10,
+            minWidth: 0,
+          }}
+        >
+          {/* TAG */}
 
-    // ================= WORLDWIDE =================
-
-    if (record?.level === "worldwide") {
-      return (
-        <div style={containerStyle}>
-          <Tag icon={<GlobalOutlined />} color="purple" style={tagStyle}>
-            Worldwide
-          </Tag>
-
-          <Text
-            strong
+          <Tag
+            icon={config?.icon}
+            color={config?.color}
             style={{
-              fontSize: 14,
+              margin: 0,
+              borderRadius: 999,
+              fontWeight: 600,
+              paddingInline: 10,
+              height: 26,
+              display: "flex",
+              alignItems: "center",
+              fontSize: 11,
+              flexShrink: 0,
             }}
           >
-            Global Pricing
-          </Text>
-
-          <Text type="secondary" style={secondaryTextStyle}>
-            Applied on all locations
-          </Text>
-        </div>
-      );
-    }
-
-    // ================= COUNTRY =================
-
-    if (record?.level === "country") {
-      return (
-        <div style={containerStyle}>
-          <Tag color="blue" style={tagStyle}>
-            Country
+            {config?.label}
           </Tag>
 
-          <Text
-            strong
+          {/* CONTENT */}
+
+          <div
             style={{
-              fontSize: 14,
+              display: "flex",
+              flexDirection: "column",
+              gap: 3,
+              minWidth: 0,
+              flex: 1,
             }}
           >
-            {record?.countryName || record?.countryCode}
-          </Text>
+            {/* TITLE */}
 
-          <Text type="secondary" style={secondaryTextStyle}>
-            Country level pricing
-          </Text>
+            <Text
+              strong
+              style={{
+                fontSize: 14,
+                lineHeight: 1.35,
+                wordBreak: "break-word",
+              }}
+            >
+              {config?.value}
+            </Text>
+
+            {/* SUBTITLE */}
+
+            <Text
+              type="secondary"
+              style={{
+                fontSize: 12,
+                lineHeight: 1.4,
+              }}
+            >
+              {config?.subtitle}
+            </Text>
+          </div>
         </div>
-      );
-    }
 
-    // ================= STATE =================
+        {/* ================= BOTTOM ================= */}
 
-    if (record?.level === "state") {
-      return (
-        <div style={containerStyle}>
-          <Tag color="orange" style={tagStyle}>
-            State
-          </Tag>
-
-          <Text
-            strong
-            style={{
-              fontSize: 14,
-            }}
-          >
-            {record?.stateName}
-          </Text>
-
-          <Text type="secondary" style={secondaryTextStyle}>
-            {record?.countryCode}
-          </Text>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
+        >
+          {hasDateRange ? (
+            <Tag
+              color="gold"
+              style={{
+                margin: 0,
+                borderRadius: 999,
+                fontSize: 11,
+                paddingInline: 10,
+                fontWeight: 500,
+              }}
+            >
+              {formatDate(record?.startDate)} → {formatDate(record?.endDate)}
+            </Tag>
+          ) : (
+            <Tag
+              style={{
+                margin: 0,
+                borderRadius: 999,
+                fontSize: 11,
+                paddingInline: 10,
+                color: "rgba(255,255,255,0.45)",
+                borderColor: "rgba(255,255,255,0.08)",
+                background: "transparent",
+              }}
+            >
+              No Expiry
+            </Tag>
+          )}
         </div>
-      );
-    }
-
-    // ================= CITY =================
-
-    if (record?.level === "city") {
-      return (
-        <div style={containerStyle}>
-          <Tag color="cyan" style={tagStyle}>
-            City
-          </Tag>
-
-          <Text
-            strong
-            ellipsis
-            style={{
-              fontSize: 14,
-              maxWidth: 220,
-            }}
-          >
-            {record?.cityName}
-          </Text>
-
-          <Text type="secondary" style={secondaryTextStyle}>
-            City specific pricing
-          </Text>
-        </div>
-      );
-    }
-
-    // ================= HOTEL =================
-
-    if (record?.level === "hotel") {
-      return (
-        <div style={containerStyle}>
-          <Tag color="magenta" style={tagStyle}>
-            Hotel
-          </Tag>
-
-          <Text
-            strong
-            ellipsis
-            style={{
-              fontSize: 14,
-              maxWidth: 240,
-            }}
-          >
-            {record?.hotelName}
-          </Text>
-
-          <Text type="secondary" style={secondaryTextStyle}>
-            Hotel specific pricing
-          </Text>
-        </div>
-      );
-    }
-
-    // ================= SERVICE TAX =================
-
-    if (record?.level === "serviceTax") {
-      return (
-        <div style={containerStyle}>
-          <Tag color="gold" style={tagStyle}>
-            Service Tax
-          </Tag>
-
-          <Text
-            strong
-            ellipsis
-            style={{
-              fontSize: 14,
-              maxWidth: 240,
-            }}
-          >
-            {record?.serviceTax}
-          </Text>
-
-          <Text type="secondary" style={secondaryTextStyle}>
-            Applied on total booking amount
-          </Text>
-        </div>
-      );
-    }
-
-    return "-";
+      </div>
+    );
   };
 
   // ================= COLUMNS =================
@@ -344,23 +285,15 @@ export default function MarkupTable({
       }}
       pagination={{
         current: page,
-
         pageSize: limit,
-
         total: meta?.totalRecords || 0,
-
         showSizeChanger: true,
-
         pageSizeOptions: ["10", "20", "50", "100"],
-
         onChange: (current, pageSize) => {
           setPage(current);
-
           setLimit(pageSize);
         },
-
         showTotal: (total, range) => `${range[0]}-${range[1]} of ${total}`,
-
         responsive: true,
       }}
       locale={{
