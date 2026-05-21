@@ -5,7 +5,7 @@ const markupSchema = new mongoose.Schema(
   {
     level: {
       type: String,
-      enum: ["worldwide", "country", "state", "city", "hotel","servicetax"],
+      enum: ["worldwide", "country", "state", "city", "hotel","serviceTax"],
       required: true,
     },
 
