@@ -122,68 +122,206 @@ export const getAllMarkups = async (req, res) => {
 
 export const createMarkup = async (req, res) => {
   try {
-    const { level, countryCode, stateName, cityId, hotelId } = req.body;
+    const {
+      level,
+      countryCode,
+      stateName,
+      cityId,
+      hotelId,
+      startDate,
+      endDate,
+    } = req.body;
 
-    // 🔎 Build uniqueness filter based on level
+    // ✅ Date validation
+    if (startDate && endDate) {
+      if (new Date(startDate) > new Date(endDate)) {
+        return sendError(
+          res,
+          "Start date cannot be greater than end date",
+          400
+        );
+      }
+    }
+
+    // ✅ Auto active logic
+    const now = new Date();
+
+    let autoActive = true;
+
+    if (startDate && endDate) {
+      autoActive =
+        new Date(startDate) <= now &&
+        new Date(endDate) >= now;
+    }
+
+    // 🔎 uniqueness filter
     let filter = { level };
 
     if (level === "country") filter.countryCode = countryCode;
+
     if (level === "state") {
       filter.countryCode = countryCode;
       filter.stateName = stateName;
     }
+
     if (level === "city") filter.cityId = cityId;
+
     if (level === "hotel") filter.hotelId = hotelId;
 
-    // 🔴 Check if markup already exists
+    // 🔴 existing check
     const existing = await Markup.findOne(filter);
 
     if (existing) {
       return sendError(
         res,
-        "Markup already exists. Please update the existing markup.",
-        400,
+        "Markup already exists. Please update existing markup.",
+        400
       );
     }
 
-    // ✅ Create new markup
-    const markup = await Markup.create(req.body);
+    // ✅ create
+    const markup = await Markup.create({
+      ...req.body,
+      isActive: autoActive,
+    });
 
-    return sendSuccess(res, "Markup created successfully", markup, null, 201);
+    return sendSuccess(
+      res,
+      "Markup created successfully",
+      markup,
+      null,
+      201
+    );
+
   } catch (err) {
     return sendError(res, "Failed to create markup", 500, err.message);
   }
 };
 
+// export const createMarkup = async (req, res) => {
+//   try {
+//     const { level, countryCode, stateName, cityId, hotelId } = req.body;
+
+//     // 🔎 Build uniqueness filter based on level
+//     let filter = { level };
+
+//     if (level === "country") filter.countryCode = countryCode;
+//     if (level === "state") {
+//       filter.countryCode = countryCode;
+//       filter.stateName = stateName;
+//     }
+//     if (level === "city") filter.cityId = cityId;
+//     if (level === "hotel") filter.hotelId = hotelId;
+
+//     // 🔴 Check if markup already exists
+//     const existing = await Markup.findOne(filter);
+
+//     if (existing) {
+//       return sendError(
+//         res,
+//         "Markup already exists. Please update the existing markup.",
+//         400,
+//       );
+//     }
+
+//     // ✅ Create new markup
+//     const markup = await Markup.create(req.body);
+
+//     return sendSuccess(res, "Markup created successfully", markup, null, 201);
+//   } catch (err) {
+//     return sendError(res, "Failed to create markup", 500, err.message);
+//   }
+// };
+
 // PUT /markups/:id
+// export const updateMarkup = async (req, res) => {
+//   try {
+//     const { level, markupType, markupValue, isActive } = req.body;
+
+//     // full payload required
+//     if (!level || !markupType || markupValue === undefined) {
+//       return sendError(res, "All fields are required for PUT", 400);
+//     }
+
+//     const markup = await Markup.findByIdAndUpdate(
+//       req.params.id,
+//       {
+//         level,
+//         markupType,
+//         markupValue,
+//         isActive,
+//       },
+//       { new: true, runValidators: true },
+//     );
+
+//     if (!markup) return sendError(res, "Markup not found", 404);
+
+//     return sendSuccess(res, "Markup fully updated", markup);
+//   } catch (err) {
+//     return sendError(res, "Failed to update markup", 500, err.message);
+//   }
+// };
+// PATCH /markups/:id/status
 export const updateMarkup = async (req, res) => {
   try {
-    const { level, markupType, markupValue, isActive } = req.body;
+    const {
+      level,
+      markupType,
+      markupValue,
+      isActive,
+      startDate,
+      endDate,
+    } = req.body;
 
-    // full payload required
     if (!level || !markupType || markupValue === undefined) {
       return sendError(res, "All fields are required for PUT", 400);
+    }
+
+    // ✅ Date validation
+    if (startDate && endDate) {
+      if (new Date(startDate) > new Date(endDate)) {
+        return sendError(
+          res,
+          "Start date cannot be greater than end date",
+          400
+        );
+      }
+    }
+
+    // ✅ Auto active calculation
+    const now = new Date();
+
+    let autoActive = isActive;
+
+    if (startDate && endDate) {
+      autoActive =
+        isActive &&
+        new Date(startDate) <= now &&
+        new Date(endDate) >= now;
     }
 
     const markup = await Markup.findByIdAndUpdate(
       req.params.id,
       {
-        level,
-        markupType,
-        markupValue,
-        isActive,
+        ...req.body,
+        isActive: autoActive,
       },
-      { new: true, runValidators: true },
+      {
+        new: true,
+        runValidators: true,
+      }
     );
 
-    if (!markup) return sendError(res, "Markup not found", 404);
+    if (!markup) {
+      return sendError(res, "Markup not found", 404);
+    }
 
     return sendSuccess(res, "Markup fully updated", markup);
+
   } catch (err) {
     return sendError(res, "Failed to update markup", 500, err.message);
   }
 };
-// PATCH /markups/:id/status
 export const toggleMarkupStatus = async (req, res) => {
   try {
     const { isActive } = req.body;

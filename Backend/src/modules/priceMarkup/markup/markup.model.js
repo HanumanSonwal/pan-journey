@@ -24,8 +24,10 @@ const markupSchema = new mongoose.Schema(
     stateName: String,
     cityId: String,
     hotelId: String,
-    cityName: String,
-    hotelName: String,
+    cityName:String,
+    hotelName:String,
+   startDate: Date,
+    endDate: Date,
 
     isActive: {
       type: Boolean,

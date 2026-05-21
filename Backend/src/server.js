@@ -2,6 +2,8 @@ import dotenv from "dotenv";
 import app from "./app.js";
 import { connectDB } from "./config/db.js";
 
+import "./modules/priceMarkup/markup/cron/markup.cron.js";
+
 dotenv.config();
 
 const PORT = process.env.PORT || 8000;
