@@ -40,6 +40,10 @@ export default function MarkupFilters({
       label: "Hotel",
       value: "hotel",
     },
+    {
+      label: "serviceTax",
+      value: "serviceTax",
+    },
   ];
 
   const statusOptions = [

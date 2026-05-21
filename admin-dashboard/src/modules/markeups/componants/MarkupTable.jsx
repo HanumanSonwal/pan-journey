@@ -180,6 +180,33 @@ export default function MarkupTable({
       );
     }
 
+    // ================= SERVICE TAX =================
+
+    if (record?.level === "serviceTax") {
+      return (
+        <div style={containerStyle}>
+          <Tag color="gold" style={tagStyle}>
+            Service Tax
+          </Tag>
+
+          <Text
+            strong
+            ellipsis
+            style={{
+              fontSize: 14,
+              maxWidth: 240,
+            }}
+          >
+            {record?.serviceTax}
+          </Text>
+
+          <Text type="secondary" style={secondaryTextStyle}>
+            Applied on total booking amount
+          </Text>
+        </div>
+      );
+    }
+
     return "-";
   };
 
