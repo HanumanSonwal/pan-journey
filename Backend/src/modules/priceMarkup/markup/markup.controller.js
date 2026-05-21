@@ -1,25 +1,27 @@
 import { sendError, sendSuccess } from "../../../utils/response/ApiResponse.js";
 import Markup from "./markup.model.js";
 
-
+import { paginateHotels } from "../../hotel/hotelPagination.js";
 
 export const getAllMarkups = async (req, res) => {
   try {
-    const { level, search, isActive } = req.query;
+    const { level, search, isActive, page = 1, limit = 10 } = req.query;
 
     const pipeline = [];
 
     // 1️⃣ Level filter
     if (level) {
       pipeline.push({
-        $match: { level }
+        $match: { level },
       });
     }
 
-    // 2️⃣ isActive filter (NEW)
+    // 2️⃣ isActive filter
     if (isActive !== undefined) {
       pipeline.push({
-        $match: { isActive: isActive === "true" }
+        $match: {
+          isActive: isActive === "true",
+        },
       });
     }
 
@@ -30,25 +32,26 @@ export const getAllMarkups = async (req, res) => {
           from: "countries",
           localField: "countryCode",
           foreignField: "countryCode",
-          as: "countryData"
-        }
+          as: "countryData",
+        },
       },
       {
         $unwind: {
           path: "$countryData",
-          preserveNullAndEmptyArrays: true
-        }
+          preserveNullAndEmptyArrays: true,
+        },
       },
       {
         $addFields: {
-          countryName: "$countryData.countryName"
-        }
-      }
+          countryName: "$countryData.countryName",
+        },
+      },
     );
 
     // 4️⃣ Dynamic SEARCH based on level
     if (search) {
       const regex = new RegExp(search, "i");
+
       let searchMatch = {};
 
       if (level === "country") {
@@ -65,39 +68,58 @@ export const getAllMarkups = async (req, res) => {
 
       if (level === "hotel") {
         searchMatch = {
-          $or: [
-            { hotelName: regex },
-            { hotelId: regex }
-          ]
+          $or: [{ hotelName: regex }, { hotelId: regex }],
         };
       }
 
       if (Object.keys(searchMatch).length > 0) {
-        pipeline.push({ $match: searchMatch });
+        pipeline.push({
+          $match: searchMatch,
+        });
       }
     }
 
     // 5️⃣ Remove extra join data
     pipeline.push({
       $project: {
-        countryData: 0
-      }
+        countryData: 0,
+      },
     });
 
     // 6️⃣ Sort latest first
     pipeline.push({
-      $sort: { createdAt: -1 }
+      $sort: {
+        createdAt: -1,
+      },
     });
 
-    const markups = await Markup.aggregate(pipeline);
+    // 🔥 Fetch all records
+    const allMarkups = await Markup.aggregate(pipeline);
 
-    return sendSuccess(res, "Markups fetched successfully", markups);
+    // 🔥 Apply pagination
+    const paginatedData = paginateHotels(allMarkups, {
+      page: Number(page),
+      limit: Number(limit),
+    });
 
+    return sendSuccess(
+      res,
+      "Markups fetched successfully",
+      paginatedData.hotels,
+      {
+        page: paginatedData.page,
+        limit: paginatedData.limit,
+        totalPages: paginatedData.totalPages,
+        totalRecords: paginatedData.totalHotels,
+      },
+    );
   } catch (err) {
     console.error(err);
+
     return sendError(res, "Failed to fetch markups", 500, err.message);
   }
 };
+
 export const createMarkup = async (req, res) => {
   try {
     const { level, countryCode, stateName, cityId, hotelId } = req.body;
@@ -120,21 +142,14 @@ export const createMarkup = async (req, res) => {
       return sendError(
         res,
         "Markup already exists. Please update the existing markup.",
-        400
+        400,
       );
     }
 
     // ✅ Create new markup
     const markup = await Markup.create(req.body);
 
-    return sendSuccess(
-      res,
-      "Markup created successfully",
-      markup,
-      null,
-      201
-    );
-
+    return sendSuccess(res, "Markup created successfully", markup, null, 201);
   } catch (err) {
     return sendError(res, "Failed to create markup", 500, err.message);
   }
