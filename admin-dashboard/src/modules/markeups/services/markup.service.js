@@ -13,11 +13,14 @@ export const createMarkupApi = async (data) => {
 export const getMarkupsApi = async (params = {}) => {
   const res = await api.get("/markup/getAllMarkups", {
     params,
-
     skipToast: true,
   });
 
-  return res?.data?.data || [];
+  return {
+    markups: res?.data?.data || [],
+
+    meta: res?.data?.meta || {},
+  };
 };
 // ================= UPDATE =================
 

@@ -7,6 +7,7 @@ import {
   PercentageOutlined,
   ShopOutlined,
 } from "@ant-design/icons";
+import dayjs from "dayjs";
 
 import {
   Button,
@@ -105,6 +106,13 @@ export default function MarkupFormModal({ open, setOpen, editData }) {
               }),
             }
           : undefined,
+
+        addDateRange: !!editData?.startDate && !!editData?.endDate,
+
+        dateRange:
+          editData?.startDate && editData?.endDate
+            ? [dayjs(editData?.startDate), dayjs(editData?.endDate)]
+            : undefined,
         markupType: editData?.markupType,
         markupValue: editData?.markupValue,
       });
@@ -141,6 +149,19 @@ export default function MarkupFormModal({ open, setOpen, editData }) {
         id: editData?._id,
         data: values,
       });
+    }
+    if (values?.dateRange) {
+      values.startDate = values.dateRange[0]?.toISOString();
+
+      values.endDate = values.dateRange[1]?.toISOString();
+
+      delete values.dateRange;
+    }
+
+    if (!values?.addDateRange) {
+      values.startDate = null;
+
+      values.endDate = null;
     }
 
     // CREATE

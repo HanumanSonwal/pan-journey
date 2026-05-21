@@ -13,7 +13,7 @@ export const useMarkups = (params = {}) => {
 
   // ================= GET =================
 
-  const { data: markups = [], isLoading } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["markups", params],
 
     queryFn: () => getMarkupsApi(params),
@@ -76,9 +76,11 @@ export const useMarkups = (params = {}) => {
       });
     },
   });
-
   return {
-    markups,
+    markups: data?.markups || [],
+
+    meta: data?.meta || {},
+
     isLoading,
 
     createMarkup,

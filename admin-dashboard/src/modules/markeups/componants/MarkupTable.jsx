@@ -22,7 +22,11 @@ const { Text } = Typography;
 export default function MarkupTable({
   markups,
   isLoading,
-
+  meta,
+  page,
+  limit,
+  setPage,
+  setLimit,
   deleteMarkup,
   updateStatus,
 
@@ -339,8 +343,25 @@ export default function MarkupTable({
         x: 820,
       }}
       pagination={{
-        pageSize: 8,
-        showSizeChanger: false,
+        current: page,
+
+        pageSize: limit,
+
+        total: meta?.totalRecords || 0,
+
+        showSizeChanger: true,
+
+        pageSizeOptions: ["10", "20", "50", "100"],
+
+        onChange: (current, pageSize) => {
+          setPage(current);
+
+          setLimit(pageSize);
+        },
+
+        showTotal: (total, range) => `${range[0]}-${range[1]} of ${total}`,
+
+        responsive: true,
       }}
       locale={{
         emptyText: <Empty description="No markups found" />,

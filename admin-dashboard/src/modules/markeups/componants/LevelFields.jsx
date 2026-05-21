@@ -1,5 +1,13 @@
 "use client";
-import { Col, Form, Row, Select } from "antd";
+import {
+  Checkbox,
+  Col,
+  DatePicker,
+  Form,
+  Row,
+  Select,
+} from "antd";
+import dayjs from "dayjs";
 import { useMemo, useState } from "react";
 import { useDebounce } from "use-debounce";
 import { useLocations } from "../hooks/useLocations";
@@ -18,6 +26,11 @@ export default function LevelFields({ level }) {
 
   const form = Form.useFormInstance();
   const countryCode = Form.useWatch("countryCode", form);
+
+  const addDateRange = Form.useWatch(
+  "addDateRange",
+  form
+);
 
   // ================= COUNTRIES =================
 
@@ -234,6 +247,72 @@ export default function LevelFields({ level }) {
           </Col>
         </Row>
       )}
+
+      {/* ================= DATE RANGE ================= */}
+
+{[
+  "country",
+  "state",
+  "city",
+  "hotel",
+]?.includes(level) && (
+  <>
+    {/* CHECKBOX */}
+
+    <Row gutter={16}>
+      <Col span={24}>
+        <Form.Item
+          name="addDateRange"
+          valuePropName="checked"
+          style={{
+            marginBottom: 14,
+          }}
+        >
+          <Checkbox>
+            Add Date Range
+          </Checkbox>
+        </Form.Item>
+      </Col>
+    </Row>
+
+    {/* DATE RANGE */}
+
+    {addDateRange && (
+      <Row gutter={16}>
+        <Col span={24}>
+          <Form.Item
+            label="Date Range"
+            name="dateRange"
+            rules={[
+              {
+                required: true,
+                message:
+                  "Please select date range",
+              },
+            ]}
+          >
+            <DatePicker.RangePicker
+              size="large"
+              style={{
+                width: "100%",
+              }}
+              format="DD MMM YYYY"
+              disabledDate={(
+                current
+              ) =>
+                current &&
+                current <
+                  dayjs().startOf(
+                    "day"
+                  )
+              }
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+    )}
+  </>
+)}
     </>
   );
 }

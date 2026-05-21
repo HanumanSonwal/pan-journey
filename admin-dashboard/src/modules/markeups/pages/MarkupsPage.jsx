@@ -14,6 +14,10 @@ export default function MarkupsPage() {
   const [search, setSearch] = useState("");
   const [levelFilter, setLevelFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+
+  const [page, setPage] = useState(1);
+
+  const [limit, setLimit] = useState(10);
   const [debouncedSearch] = useDebounce(search, 500);
   const showSearch = !["all", "worldwide"].includes(levelFilter);
   const hasActiveFilters =
@@ -30,6 +34,9 @@ export default function MarkupsPage() {
   // ================= API =================
 
   const queryParams = {
+    page,
+    limit,
+
     ...(statusFilter !== "all" && {
       isActive: statusFilter,
     }),
@@ -46,6 +53,8 @@ export default function MarkupsPage() {
 
   const {
     markups,
+    meta,
+
     isLoading,
 
     deleteMarkup,
@@ -94,6 +103,11 @@ export default function MarkupsPage() {
 
         <MarkupTable
           markups={markups}
+          meta={meta}
+          page={page}
+          limit={limit}
+          setPage={setPage}
+          setLimit={setLimit}
           isLoading={isLoading}
           deleteMarkup={deleteMarkup}
           updateStatus={updateStatus}
