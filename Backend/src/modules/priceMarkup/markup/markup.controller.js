@@ -5,20 +5,14 @@ import { paginateHotels } from "../../hotel/hotelPagination.js";
 
 export const getAllMarkups = async (req, res) => {
   try {
-    const {
-      level,
-      search,
-      isActive,
-      page = 1,
-      limit = 10
-    } = req.query;
+    const { level, search, isActive, page = 1, limit = 10 } = req.query;
 
     const pipeline = [];
 
     // 1️⃣ Level filter
     if (level) {
       pipeline.push({
-        $match: { level }
+        $match: { level },
       });
     }
 
@@ -26,8 +20,8 @@ export const getAllMarkups = async (req, res) => {
     if (isActive !== undefined) {
       pipeline.push({
         $match: {
-          isActive: isActive === "true"
-        }
+          isActive: isActive === "true",
+        },
       });
     }
 
@@ -38,20 +32,20 @@ export const getAllMarkups = async (req, res) => {
           from: "countries",
           localField: "countryCode",
           foreignField: "countryCode",
-          as: "countryData"
-        }
+          as: "countryData",
+        },
       },
       {
         $unwind: {
           path: "$countryData",
-          preserveNullAndEmptyArrays: true
-        }
+          preserveNullAndEmptyArrays: true,
+        },
       },
       {
         $addFields: {
-          countryName: "$countryData.countryName"
-        }
-      }
+          countryName: "$countryData.countryName",
+        },
+      },
     );
 
     // 4️⃣ Dynamic SEARCH based on level
@@ -74,16 +68,13 @@ export const getAllMarkups = async (req, res) => {
 
       if (level === "hotel") {
         searchMatch = {
-          $or: [
-            { hotelName: regex },
-            { hotelId: regex }
-          ]
+          $or: [{ hotelName: regex }, { hotelId: regex }],
         };
       }
 
       if (Object.keys(searchMatch).length > 0) {
         pipeline.push({
-          $match: searchMatch
+          $match: searchMatch,
         });
       }
     }
@@ -91,15 +82,15 @@ export const getAllMarkups = async (req, res) => {
     // 5️⃣ Remove extra join data
     pipeline.push({
       $project: {
-        countryData: 0
-      }
+        countryData: 0,
+      },
     });
 
     // 6️⃣ Sort latest first
     pipeline.push({
       $sort: {
-        createdAt: -1
-      }
+        createdAt: -1,
+      },
     });
 
     // 🔥 Fetch all records
@@ -108,7 +99,7 @@ export const getAllMarkups = async (req, res) => {
     // 🔥 Apply pagination
     const paginatedData = paginateHotels(allMarkups, {
       page: Number(page),
-      limit: Number(limit)
+      limit: Number(limit),
     });
 
     return sendSuccess(
@@ -119,117 +110,16 @@ export const getAllMarkups = async (req, res) => {
         page: paginatedData.page,
         limit: paginatedData.limit,
         totalPages: paginatedData.totalPages,
-        totalRecords: paginatedData.totalHotels
-      }
+        totalRecords: paginatedData.totalHotels,
+      },
     );
-
   } catch (err) {
     console.error(err);
 
-    return sendError(
-      res,
-      "Failed to fetch markups",
-      500,
-      err.message
-    );
+    return sendError(res, "Failed to fetch markups", 500, err.message);
   }
 };
 
-// export const getAllMarkups = async (req, res) => {
-//   try {
-//     const { level, search, isActive } = req.query;
-
-//     const pipeline = [];
-
-//     // 1️⃣ Level filter
-//     if (level) {
-//       pipeline.push({
-//         $match: { level }
-//       });
-//     }
-
-//     // 2️⃣ isActive filter (NEW)
-//     if (isActive !== undefined) {
-//       pipeline.push({
-//         $match: { isActive: isActive === "true" }
-//       });
-//     }
-
-//     // 3️⃣ Join countries collection
-//     pipeline.push(
-//       {
-//         $lookup: {
-//           from: "countries",
-//           localField: "countryCode",
-//           foreignField: "countryCode",
-//           as: "countryData"
-//         }
-//       },
-//       {
-//         $unwind: {
-//           path: "$countryData",
-//           preserveNullAndEmptyArrays: true
-//         }
-//       },
-//       {
-//         $addFields: {
-//           countryName: "$countryData.countryName"
-//         }
-//       }
-//     );
-
-//     // 4️⃣ Dynamic SEARCH based on level
-//     if (search) {
-//       const regex = new RegExp(search, "i");
-//       let searchMatch = {};
-
-//       if (level === "country") {
-//         searchMatch = { countryName: regex };
-//       }
-
-//       if (level === "state") {
-//         searchMatch = { stateName: regex };
-//       }
-
-//       if (level === "city") {
-//         searchMatch = { cityName: regex };
-//       }
-
-//       if (level === "hotel") {
-//         searchMatch = {
-//           $or: [
-//             { hotelName: regex },
-//             { hotelId: regex }
-//           ]
-//         };
-//       }
-
-//       if (Object.keys(searchMatch).length > 0) {
-//         pipeline.push({ $match: searchMatch });
-//       }
-//     }
-
-//     // 5️⃣ Remove extra join data
-//     pipeline.push({
-//       $project: {
-//         countryData: 0
-//       }
-//     });
-
-//     // 6️⃣ Sort latest first
-//     pipeline.push({
-//       $sort: { createdAt: -1 }
-//     });
-
-//     const markups = await Markup.aggregate(pipeline);
-
-//     return sendSuccess(res, "Markups fetched successfully", markups);
-
-//   } catch (err) {
-//     console.error(err);
-//     return sendError(res, "Failed to fetch markups", 500, err.message);
-//   }
-// };
 export const createMarkup = async (req, res) => {
   try {
     const { level, countryCode, stateName, cityId, hotelId } = req.body;
@@ -252,21 +142,14 @@ export const createMarkup = async (req, res) => {
       return sendError(
         res,
         "Markup already exists. Please update the existing markup.",
-        400
+        400,
       );
     }
 
     // ✅ Create new markup
     const markup = await Markup.create(req.body);
 
-    return sendSuccess(
-      res,
-      "Markup created successfully",
-      markup,
-      null,
-      201
-    );
-
+    return sendSuccess(res, "Markup created successfully", markup, null, 201);
   } catch (err) {
     return sendError(res, "Failed to create markup", 500, err.message);
   }
