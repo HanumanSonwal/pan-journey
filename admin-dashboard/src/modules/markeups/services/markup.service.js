@@ -2,7 +2,7 @@ import api from "@/services/api";
 
 export const createMarkupApi = async (data) => {
   const res = await api.post("/markup/createMarkup", data, {
-    skipToast: true,
+    // skipToast: true,
   });
 
   return res?.data;
@@ -23,7 +23,7 @@ export const getMarkupsApi = async (params = {}) => {
 
 export const updateMarkupApi = async ({ id, data }) => {
   const res = await api.put(`/markup/${id}`, data, {
-    skipToast: true,
+    // skipToast: true,
   });
 
   return res?.data;
@@ -33,7 +33,7 @@ export const updateMarkupApi = async ({ id, data }) => {
 
 export const deleteMarkupApi = async (id) => {
   const res = await api.delete(`/markup/${id}`, {
-    skipToast: true,
+    // skipToast: true,
   });
 
   return res?.data;
@@ -43,7 +43,7 @@ export const deleteMarkupApi = async (id) => {
 
 export const updateMarkupStatusApi = async ({ id, data }) => {
   const res = await api.patch(`/markup/status/${id}`, data, {
-    skipToast: true,
+    // skipToast: true,
   });
 
   return res?.data;

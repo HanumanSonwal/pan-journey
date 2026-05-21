@@ -88,16 +88,22 @@ export default function MarkupFormModal({ open, setOpen, editData }) {
         countryCode: editData?.countryCode,
         stateName: editData?.stateName,
         cityData: editData?.cityId
-          ? JSON.stringify({
-              cityId: editData?.cityId,
-              cityName: editData?.cityName,
-            })
+          ? {
+              label: editData?.cityName,
+              value: JSON.stringify({
+                cityId: editData?.cityId,
+                cityName: editData?.cityName,
+              }),
+            }
           : undefined,
         hotelData: editData?.hotelId
-          ? JSON.stringify({
-              hotelId: editData?.hotelId,
-              hotelName: editData?.hotelName,
-            })
+          ? {
+              label: editData?.hotelName,
+              value: JSON.stringify({
+                hotelId: editData?.hotelId,
+                hotelName: editData?.hotelName,
+              }),
+            }
           : undefined,
         markupType: editData?.markupType,
         markupValue: editData?.markupValue,
@@ -113,7 +119,7 @@ export default function MarkupFormModal({ open, setOpen, editData }) {
     // CITY
 
     if (values?.cityData) {
-      const parsedCity = JSON.parse(values.cityData);
+      const parsedCity = JSON.parse(values.cityData.value);
       values.cityId = parsedCity?.cityId;
       values.cityName = parsedCity?.cityName;
       delete values.cityData;
@@ -122,7 +128,7 @@ export default function MarkupFormModal({ open, setOpen, editData }) {
     // HOTEL
 
     if (values?.hotelData) {
-      const parsedHotel = JSON.parse(values.hotelData);
+      const parsedHotel = JSON.parse(values.hotelData.value);
       values.hotelId = parsedHotel?.hotelId;
       values.hotelName = parsedHotel?.hotelName;
       delete values.hotelData;
@@ -268,23 +274,27 @@ export default function MarkupFormModal({ open, setOpen, editData }) {
 
         {/* ================= LOCATION ================= */}
 
-        <div
-          style={{
-            marginBottom: 18,
-          }}
-        >
-          <Text
-            strong
+        {/* ================= LOCATION ================= */}
+
+        {["country", "state", "city", "hotel"]?.includes(level) && (
+          <div
             style={{
-              display: "block",
-              marginBottom: 12,
+              marginBottom: 18,
             }}
           >
-            Location Details
-          </Text>
+            <Text
+              strong
+              style={{
+                display: "block",
+                marginBottom: 12,
+              }}
+            >
+              Location Details
+            </Text>
 
-          <LevelFields level={level} />
-        </div>
+            <LevelFields level={level} />
+          </div>
+        )}
 
         {/* ================= MARKUP CONFIG ================= */}
 
@@ -352,6 +362,7 @@ export default function MarkupFormModal({ open, setOpen, editData }) {
                   }}
                 >
                   <InputNumber
+                    value={markupValue}
                     size="large"
                     min={0}
                     style={{

@@ -179,6 +179,7 @@ export default function LevelFields({ level }) {
               <Select
                 size="large"
                 showSearch
+                labelInValue
                 allowClear
                 placeholder="Search City"
                 loading={locationsLoading}
@@ -216,6 +217,7 @@ export default function LevelFields({ level }) {
                 size="large"
                 showSearch
                 allowClear
+                labelInValue
                 placeholder="Search Hotel"
                 loading={locationsLoading}
                 onSearch={setCityHotelSearch}
