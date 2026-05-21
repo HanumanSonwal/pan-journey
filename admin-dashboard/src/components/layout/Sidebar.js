@@ -1,11 +1,11 @@
 "use client";
 
 import { useTheme } from "@/context/ThemeContext";
-import { useFilteredMenu } from "@/modules/shared/hooks/useFilteredMenu";
 import { logoutUser } from "@/modules/auth/api/auth.service";
 import { useAuthStore } from "@/modules/auth/store/auth.store";
+import { useFilteredMenu } from "@/modules/shared/hooks/useFilteredMenu";
 import { LogoutOutlined, SettingOutlined } from "@ant-design/icons";
-import { Avatar, Layout, Menu, theme } from "antd";
+import { Layout, Menu, theme } from "antd";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -123,35 +123,6 @@ const Sidebar = ({ collapsed }) => {
         </div>
 
         <div style={{ marginTop: "auto" }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              padding: "12px 8px",
-              marginBottom: 8,
-            }}
-          >
-            <Avatar
-              style={{
-                background: "linear-gradient(135deg, #FF3B30, #0B5FFF)",
-              }}
-            >
-              {user?.name?.charAt(0)?.toUpperCase() || "U"}
-            </Avatar>
-
-            {!collapsed && (
-              <div style={{ lineHeight: 1.2 }}>
-                <div style={{ fontSize: 14, fontWeight: 500 }}>
-                  {user?.name || "User"}
-                </div>
-                <div style={{ fontSize: 12, color: colorTextSecondary }}>
-                  {user?.role || "User"}
-                </div>
-              </div>
-            )}
-          </div>
-
           <Menu
             mode="inline"
             items={bottomItems}

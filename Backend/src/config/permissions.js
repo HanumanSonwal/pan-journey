@@ -9,6 +9,8 @@ export const PERMISSIONS = {
 
   staff: ["read", "write", "update", "delete"],
 
+  markups: ["read", "write", "update", "delete"],
+
   calendar: ["read"],
 
   revenue: ["read"],

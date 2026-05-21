@@ -19,6 +19,11 @@ export const moduleConfig = {
     actions: ["read", "write", "update", "delete"],
   },
 
+  Markups: {
+    label: "Markups",
+    actions: ["read", "write", "update", "delete"],
+  },
+
   calendar: {
     label: "Calendar",
     actions: ["read"],
