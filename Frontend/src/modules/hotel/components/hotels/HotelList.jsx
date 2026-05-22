@@ -79,10 +79,13 @@ function HotelList({ searchData, filters, sort }) {
       new Map(allHotels.map((hotel) => [hotel.hotelId, hotel])).values(),
     );
   }, [data]);
+
+  console.log("HOTELS in hotelList page ", hotels);
   const mappedHotels = useMemo(() => {
     return hotels.map((hotel) => ({
       id: hotel.hotelId,
       name: hotel.hotelName || "Hotel Name",
+      hotelkey: hotel.hotelkey || hotel.hotelkey || hotel.hotelkey || "",
       facilities: hotel.facilities || [],
       location: hotel.location || hotel.address || "Location",
       latitude: hotel.latitude || 0,
@@ -94,6 +97,10 @@ function HotelList({ searchData, filters, sort }) {
       oldPrice:
         hotel.oldPrice || (hotel.price ? Number(hotel.price) + 1500 : 0),
       propertyType: hotel.propertyType || "Hotel",
+      searchKey:
+        data?.pages?.[0]?.data?.searchKey ||
+        data?.pages?.[0]?.data?.SearchKey ||
+        "",
       image:
         hotel.image ||
         hotel.thumbnail ||
@@ -115,7 +122,7 @@ function HotelList({ searchData, filters, sort }) {
       freeCancellation: hotel.freeCancellation || false,
       tax: hotel.tax || 0,
     }));
-  }, [hotels]);
+  }, [hotels, data]);
 
   // LOADING
   if (isLoading) {

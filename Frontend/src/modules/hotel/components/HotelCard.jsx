@@ -1,7 +1,9 @@
 "use client";
 
+import { useSelectedHotelStore } from "@/modules/hotel/store/selectedHotel.store";
+import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
 import ImageGallery from "@/modules/profile/components/ImageGallery";
-
+import HotelBookingComingSoonModal from "@/modules/shared/home/components/HotelBookingComingSoonModal";
 import {
   EnvironmentOutlined,
   HeartOutlined,
@@ -11,15 +13,20 @@ import {
 
 import { useRouter } from "next/navigation";
 import { memo, useMemo, useState } from "react";
-import HotelBookingComingSoonModal from "../../shared/home/components/HotelBookingComingSoonModal";
 function HotelCard({ hotel }) {
   const router = useRouter();
   const [openModal, setOpenModal] = useState(false);
   const [showAllFacilities, setShowAllFacilities] = useState(false);
+  const { setSelectedHotel } = useSelectedHotelStore();
 
+  console.log("🚀 ~ file: HotelCard.jsx:18 ~ HotelCard ~ hotel:", hotel);
+
+  const { searchData } = useHotelSearchStore();
   const rating = useMemo(() => {
     return Number(hotel.rating) || Number(hotel.starRating) || 4.0;
   }, [hotel.rating, hotel.starRating]);
+
+  console.log("serchdata in card" ,searchData);
 
   const reviews = useMemo(() => {
     return hotel.reviews && hotel.reviews > 0
@@ -70,10 +77,44 @@ function HotelCard({ hotel }) {
     return hotel.location || hotel.address || "Prime Location";
   }, [hotel.location, hotel.address]);
 
+  // const handleNavigate = () => {
+  //   // setOpenModal(true);
+  //   router.push(`/hotel-details`);
+  //   // router.push(`/hotel-details/${hotel.id}`);
+  // };
+
+  // const handleNavigate = () => {
+  //   setSelectedHotel({
+  //     hotelKey: hotel.hotelKey,
+  //     searchKey: hotel.searchKey,
+  //     hotelMeta: {
+  //       hotelId: hotel.hotelId,
+  //     },
+  //   });
+
+  //   router.push("/hotel-details");
+  // };
+
   const handleNavigate = () => {
-    // setOpenModal(true);
-    router.push(`/hotel-details`);
-    // router.push(`/hotel-details/${hotel.id}`);
+    console.log("HOTEL OBJECT", hotel);
+
+    setSelectedHotel({
+      hotelKey: hotel?.hotelkey || hotel?.hotelkey,
+
+      searchKey: hotel?.searchKey || hotel?.SearchKey,
+
+      hotelMeta: {
+        hotelId: hotel?.hotelId || hotel?.id,
+
+        cityName: searchData?.cityData?.id,
+
+        stateName: searchData?.cityData?.state,
+
+        countryCode: searchData?.cityData?.country,
+      },
+    });
+
+    router.push("/hotel-details");
   };
 
   const visibleFacilities = useMemo(() => {
