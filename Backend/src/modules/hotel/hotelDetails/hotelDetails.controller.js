@@ -43,13 +43,10 @@ export const getHotelDetails = async (req, res) => {
     });
 
     // 2️⃣ Apply markup + service tax
-    const pricing = await applyPricing(supplierData, hotelMeta);
+  const pricingData = await applyPricing(supplierData, hotelMeta);
 
     // 3️⃣ Final response
-    return sendSuccess(res, "Hotel details fetched", {
-      supplierData,
-      pricing,
-    });
+   return sendSuccess(res, "Hotel details fetched", pricingData);
 
   } catch (err) {
     return sendError(res, err.message);
