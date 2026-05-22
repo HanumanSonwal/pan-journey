@@ -56,7 +56,7 @@ export const getMarkup = async ({
 
 export const getServiceTax = async () => {
   return await Markup.findOne({
-    level: "servicetax",
+    level: "serviceTax",
     isActive: true,
   });
 };
