@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 
-import BookingDetailsTab from "../components/BookingDetailsTab";
-import BookingHistoryTab from "../components/BookingHistoryTab";
-import DocumentsTab from "../components/DocumentsTab";
-import HelpSupportPage from "../components/HelpSupportPage";
+import BookingDetailsTab from "../../components/BookingDetailsTab";
+import BookingHistoryTab from "../../components/BookingHistoryTab";
+import DocumentsTab from "../../components/DocumentsTab";
+import HelpSupportPage from "../../components/HelpSupportPage";
 
-import ProfileOverview from "../components/ ProfileOverview";
-import Sidebar from "../components/Sidebar";
-import WishlistTab from "../components/WishlistTab";
+import ProfileOverview from "../../components/ ProfileOverview";
+import Sidebar from "../../components/Sidebar";
+import WishlistTab from "../../components/WishlistTab";
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("profile");

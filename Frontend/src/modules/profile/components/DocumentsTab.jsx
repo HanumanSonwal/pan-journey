@@ -108,13 +108,13 @@ export default function DocumentsTab() {
     <>
       {/* TITLE */}
 
-      <div className="flex items-center justify-between bg-white px-6 py-4 text-gray-900">
+      <div className="flex items-center justify-between !bg-white px-6 py-4 text-gray-900">
         <h2 className="mb-0! text-[22px] font-bold text-gray-900">
           My Profile
         </h2>
       </div>
 
-      <div className="rounded-xl p-6 text-gray-900 shadow">
+      <div className=" p-6 text-gray-900 shadow !bg-white ">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="font-semibold">Documents</h3>
 
