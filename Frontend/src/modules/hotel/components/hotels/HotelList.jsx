@@ -3,8 +3,8 @@
 import HotelContentLoader from "@/components/common/loder/HotelContentLoader";
 import dayjs from "dayjs";
 import { memo, useEffect, useMemo, useRef } from "react";
-import HotelCard from "../../../shared/home/components/HotelCard";
 import { useInfiniteHotels } from "../../hooks/useInfiniteHotels";
+import HotelCard from "../HotelCard";
 function HotelList({ searchData, filters, sort }) {
   const payload = useMemo(() => {
     if (!searchData?.cityData?.id) {

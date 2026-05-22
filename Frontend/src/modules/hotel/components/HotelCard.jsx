@@ -11,7 +11,7 @@ import {
 
 import { useRouter } from "next/navigation";
 import { memo, useMemo, useState } from "react";
-import HotelBookingComingSoonModal from "./HotelBookingComingSoonModal";
+import HotelBookingComingSoonModal from "../../shared/home/components/HotelBookingComingSoonModal";
 function HotelCard({ hotel }) {
   const router = useRouter();
   const [openModal, setOpenModal] = useState(false);
@@ -71,7 +71,8 @@ function HotelCard({ hotel }) {
   }, [hotel.location, hotel.address]);
 
   const handleNavigate = () => {
-    setOpenModal(true);
+    // setOpenModal(true);
+    router.push(`/hotel-details`);
     // router.push(`/hotel-details/${hotel.id}`);
   };
 
