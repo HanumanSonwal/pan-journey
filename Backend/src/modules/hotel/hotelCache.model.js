@@ -1,8 +1,6 @@
 // modules/hotel/hotel.cache.model.js
 import mongoose from "mongoose";
 
-
-
 const hotelCacheSchema = new mongoose.Schema(
   {
     cityId: String,
@@ -13,15 +11,15 @@ const hotelCacheSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-      searchKey: String, 
+    searchKey: String,
 
     createdAt: {
       type: Date,
       default: Date.now,
-      expires: 60 * 60 * 24, // 24h TTL
+      expires: 60 * 30, // 24h TTL
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("HotelCache", hotelCacheSchema);
