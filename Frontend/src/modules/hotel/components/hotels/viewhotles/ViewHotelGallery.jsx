@@ -18,10 +18,10 @@ const ViewHotelGallery = ({ images = [], onOpen }) => {
   );
   const totalPhotos = galleryImages?.length || 0;
   return (
-    <div className="grid h-[430px] grid-cols-1 gap-3 md:grid-cols-2">
+    <div className="grid h-[480px] grid-cols-1 gap-3 md:grid-cols-2">
       <div
         onClick={onOpen}
-        className="relative cursor-pointer overflow-hidden rounded-2xl"
+        className="relative cursor-pointer overflow-hidden rounded"
       >
         <Image
           src={mainImage}
@@ -36,7 +36,7 @@ const ViewHotelGallery = ({ images = [], onOpen }) => {
       <div className="flex h-full flex-col gap-3">
         <div
           onClick={onOpen}
-          className="relative flex-1 cursor-pointer overflow-hidden rounded-2xl"
+          className="relative flex-1 cursor-pointer overflow-hidden rounded"
         >
           <Image
             src={topRightImage}
@@ -49,7 +49,7 @@ const ViewHotelGallery = ({ images = [], onOpen }) => {
 
         <div
           onClick={onOpen}
-          className="relative flex-1 cursor-pointer overflow-hidden rounded-2xl"
+          className="relative flex-1 cursor-pointer overflow-hidden rounded"
         >
           <Image
             src={bottomRightImage}
@@ -60,7 +60,7 @@ const ViewHotelGallery = ({ images = [], onOpen }) => {
           />
 
           <div className="absolute inset-0 flex items-center justify-center bg-black/45">
-            <div className="rounded-2xl bg-black/35 px-5 py-4 text-center text-white backdrop-blur-md">
+            <div className="rounded bg-black/35 px-5 py-4 text-center text-white backdrop-blur-md">
               <p className="text-2xl font-semibold">{totalPhotos}+</p>
               <p className="text-sm opacity-90">Photos</p>
             </div>

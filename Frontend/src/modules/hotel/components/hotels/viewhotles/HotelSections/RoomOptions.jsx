@@ -34,11 +34,11 @@ const RoomOptions = ({ ratePlans = [] }) => {
         return (
           <div
             key={index}
-            className="overflow-hidden rounded-3xl border border-gray-200 bg-white text-[#0f172a]! shadow-sm"
+            className="overflow-hidden rounded border border-gray-200 bg-white text-[#0f172a]! shadow-sm"
           >
-            <div className="grid grid-cols-1 gap-6 p-5 lg:grid-cols-4">
+            <div className="grid items-stretch gap-5 p-5 lg:grid-cols-[280px_1fr_280px]">
               {/* IMAGE */}
-              <div className="relative h-[260px] overflow-hidden rounded-2xl">
+              <div className="relative h-[240px] overflow-hidden rounded lg:h-full lg:min-h-[260px]">
                 <Image
                   src={image}
                   alt="room"
@@ -49,13 +49,13 @@ const RoomOptions = ({ ratePlans = [] }) => {
               </div>
 
               {/* ROOM DETAILS */}
-              <div className="lg:col-span-2">
+              <div>
                 {/* Top Badges */}
                 <div className="flex flex-wrap gap-2">
                   <span
                     className={`rounded-full px-3 py-1 text-xs font-medium ${
                       refundable
-                        ? "bg-green-200 text-green-700"
+                        ? "bg-green-100 text-green-700"
                         : "bg-red-100 text-red-600"
                     }`}
                   >
@@ -63,29 +63,29 @@ const RoomOptions = ({ ratePlans = [] }) => {
                   </span>
 
                   {detail?.RoomAvailability && (
-                    <span className="rounded-full bg-blue-200 px-3 py-1 text-xs text-blue-600">
+                    <span className="rounded-full bg-blue-100 px-3 py-1 text-xs text-blue-600">
                       Available
                     </span>
                   )}
 
                   {payAtHotel ? (
-                    <span className="rounded-full bg-purple-200 px-3 py-1 text-xs text-purple-600">
+                    <span className="rounded-full bg-purple-100 px-3 py-1 text-xs text-purple-600">
                       Pay at Hotel
                     </span>
                   ) : (
-                    <span className="rounded-full bg-orange-200 px-3 py-1 text-xs text-orange-600">
+                    <span className="rounded-full bg-orange-100 px-3 py-1 text-xs text-orange-600">
                       Prepaid
                     </span>
                   )}
 
                   {panRequired && (
-                    <span className="rounded-full bg-yellow-200 px-3 py-1 text-xs text-yellow-700">
+                    <span className="rounded-full bg-yellow-100 px-3 py-1 text-xs text-yellow-700">
                       PAN Required
                     </span>
                   )}
 
                   {ccRequired && (
-                    <span className="rounded-full bg-red-200 px-3 py-1 text-xs text-red-600">
+                    <span className="rounded-full bg-red-100 px-3 py-1 text-xs text-red-600">
                       Credit Card Required
                     </span>
                   )}
@@ -111,7 +111,7 @@ const RoomOptions = ({ ratePlans = [] }) => {
 
                 {/* Inclusion */}
                 {!!detail?.Inclusion && (
-                  <div className="mt-4 flex flex-wrap gap-2">
+                  <div className="my-4 flex flex-wrap gap-2">
                     {detail?.Inclusion?.split(",")
                       ?.map((i) => i.trim())
                       ?.filter((i) => i.length > 0)
@@ -125,89 +125,116 @@ const RoomOptions = ({ ratePlans = [] }) => {
                       ))}
                   </div>
                 )}
-
-                {/* Cancellation */}
-                {!!detail?.CancellationPolicy && (
-                  <div className="rounded-2xl bg-[#fff7ed] p-3">
-                    <p className="text-sm font-semibold text-[#9a3412]">
-                      Cancellation Policy
-                    </p>
-
-                    <div
-                      className="mt-2 text-sm text-[#7c2d12]"
-                      dangerouslySetInnerHTML={{
-                        __html: detail?.CancellationPolicy,
-                      }}
-                    />
-                  </div>
-                )}
               </div>
 
               {/* PRICE */}
-              <div className="rounded-2xl border border-gray-100 bg-[#fafafa] p-4">
+              <div className="flex h-full flex-col rounded border border-gray-100 bg-[#fafafa] p-4 lg:sticky lg:top-24">
                 <p className="mb-4 text-xs font-semibold tracking-wide text-gray-400 uppercase">
                   Price Breakdown
                 </p>
 
                 <div className="space-y-3 text-sm">
-                  <div className="flex justify-between">
+                  {/* Basic */}
+                  <div className="flex items-center justify-between">
                     <span className="text-gray-500">Basic Price</span>
 
-                    <span>₹{basicAmount}</span>
+                    <span className="font-medium text-gray-700">
+                      ₹ {Number(basicAmount || 0).toLocaleString("en-IN")}
+                    </span>
                   </div>
 
-                  <div className="flex justify-between">
+                  {/* Tax */}
+                  <div className="flex items-center justify-between">
                     <span className="text-gray-500">Tax</span>
 
-                    <span>₹{tax}</span>
+                    <span className="font-medium text-gray-700">
+                      ₹ {Number(tax || 0).toLocaleString("en-IN")}
+                    </span>
                   </div>
 
+                  {/* GST */}
                   {!!gst && (
-                    <div className="flex justify-between">
+                    <div className="flex items-center justify-between">
                       <span className="text-gray-500">GST</span>
 
-                      <span>₹{gst}</span>
+                      <span className="font-medium text-gray-700">
+                        ₹ {Number(gst).toLocaleString("en-IN")}
+                      </span>
                     </div>
                   )}
 
+                  {/* Service Fee */}
                   {!!serviceFee && (
-                    <div className="flex justify-between">
+                    <div className="flex items-center justify-between">
                       <span className="text-gray-500">Service Fee</span>
 
-                      <span>₹{serviceFee}</span>
+                      <span className="font-medium text-gray-700">
+                        ₹ {Number(serviceFee).toLocaleString("en-IN")}
+                      </span>
                     </div>
                   )}
 
-                  <div className="border-t pt-3">
-                    <div className="flex justify-between">
-                      <span className="font-medium text-gray-600">
-                        Total Price
-                      </span>
+                  {/* Total */}
+                  <div className="border-t border-dashed pt-3">
+                    <div className="flex items-end justify-between">
+                      <div>
+                        <p className="text-[11px] tracking-wide text-gray-400 uppercase">
+                          Total Price
+                        </p>
 
-                      <span className="text-xl font-bold text-[#0f172a]">
-                        ₹{totalAmount}
+                        <p className="mt-1 text-xs text-gray-500">
+                          Taxes included
+                        </p>
+                      </div>
+
+                      <span className="text-2xl leading-none font-bold text-[#0f172a]">
+                        ₹ {Number(totalAmount || 0).toLocaleString("en-IN")}
                       </span>
                     </div>
-
-                    <p className="mt-1 text-xs text-gray-500">Taxes included</p>
                   </div>
                 </div>
 
+                {/* Button */}
                 <Button
                   type="primary"
                   size="large"
-                  className="!mt-5 !h-[48px] w-full !rounded-2xl"
+                  className="!mt-5 !h-[48px] w-full !rounded-lg !border-0 !font-medium !shadow-md hover:!opacity-95"
+                  style={{
+                    background:
+                      "linear-gradient(180deg,#72C0F0 0%,#0F6A75 100%)",
+                  }}
                 >
                   Select Room
                 </Button>
               </div>
             </div>
+            {/* Cancellation Full Width */}
+            {!!detail?.CancellationPolicy && (
+              <div className="mx-5 mt-2 mb-5 rounded border border-[#fde7cf] bg-[#fffaf5] p-5 shadow-sm">
+                {/* Header */}
+                <div className=" flex items-center gap-4">
+                  <div className="h-2 w-2 rounded-full bg-[#ea580c]" />
+
+                  <p className=" mb-0! font-semibold text-[#9a3412]">
+                    Cancellation Policy
+                  </p>
+                </div>
+
+                {/* Content */}
+                <div
+                  className="space-y-2 text-sm leading-6 text-[#7c2d12]"
+                  dangerouslySetInnerHTML={{
+                    __html: detail?.CancellationPolicy,
+                  }}
+                />
+              </div>
+            )}
           </div>
         );
       })}
 
       {!ratePlans.length && (
-        <div className="rounded-3xl border border-dashed p-8 text-center text-gray-500">
+        <div className="rounded border border-dashed p-8 text-center text-gray-500">
           No rooms available
         </div>
       )}

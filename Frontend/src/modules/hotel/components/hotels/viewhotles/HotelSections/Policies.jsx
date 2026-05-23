@@ -60,8 +60,8 @@ const Policies = ({ ratePlans = [] }) => {
   return (
     <div className="space-y-6">
       {/* Cancellation */}
-      <div className="rounded-3xl border border-red-100 bg-red-50 p-6 shadow-sm">
-        <div className="mb-4 flex items-center gap-3">
+      <div className="rounded border border-red-100 bg-red-50 p-6 shadow-sm">
+        <div className=" flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-red-100 text-lg text-red-600">
             <FileProtectOutlined />
           </div>
@@ -86,7 +86,7 @@ const Policies = ({ ratePlans = [] }) => {
       </div>
 
       {/* Property Policies */}
-      <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="rounded border border-gray-200 bg-white p-6 shadow-sm">
         <div className="mb-6">
           <h2 className="text-xl font-semibold text-gray-800">
             Property Policies
@@ -104,12 +104,12 @@ const Policies = ({ ratePlans = [] }) => {
             return (
               <div
                 key={i}
-                className={`rounded-2xl border p-4 ${color.bg} ${color.border}`}
+                className={`rounded border p-4 ${color.bg} ${color.border}`}
               >
                 <div className="flex items-start gap-4">
                   {/* Icon */}
                   <div
-                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white text-lg shadow-sm ${color.icon}`}
+                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded bg-white text-lg shadow-sm ${color.icon}`}
                   >
                     {getIcon(item.type)}
                   </div>
@@ -128,7 +128,7 @@ const Policies = ({ ratePlans = [] }) => {
           })}
 
           {!essential.length && (
-            <div className="rounded-2xl border border-dashed p-6 text-center text-gray-500">
+            <div className="rounded border border-dashed p-6 text-center text-gray-500">
               No policy information available
             </div>
           )}

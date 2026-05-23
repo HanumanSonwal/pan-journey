@@ -1,5 +1,10 @@
 "use client";
 
+import {
+  CheckCircleOutlined,
+  HeartOutlined,
+  ShareAltOutlined,
+} from "@ant-design/icons";
 import { Card, Spin } from "antd";
 import { useMemo, useState } from "react";
 import SearchBar from "../components/hotels/SearchBar";
@@ -14,7 +19,7 @@ import { useHotelDetails } from "../hooks/useHotelDetails";
 import { useSelectedHotelStore } from "../store/selectedHotel.store";
 
 const HotelDetails = () => {
-  const [activeTab, setActiveTab] = useState("Room Options");
+  const [activeTab, setActiveTab] = useState("Rooms");
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const { selectedHotel } = useSelectedHotelStore();
 
@@ -80,15 +85,63 @@ const HotelDetails = () => {
       <div className="mx-auto w-full max-w-7xl px-2 pb-8 sm:px-4 md:px-6">
         {/* Top Card */}
         <div className="-mt-10">
-          <Card className="overflow-hidden rounded-2xl border-0 shadow-lg">
+          <Card className="overflow-hidden rounded border-0 shadow-lg">
+            {/* Hotel Header */}
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              {/* LEFT */}
+              <div className="flex min-w-0 items-start gap-3">
+                {/* Verified */}
+                <div className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#eef8fd]">
+                  <CheckCircleOutlined className="text-[18px] text-[#5bb7ec]!" />
+                </div>
+
+                <div className="min-w-0">
+                  {/* Hotel Name */}
+                  <div className="flex flex-wrap items-center gap-3">
+                    <h1 className="mb-1! text-[26px] leading-tight font-semibold text-[#303030]">
+                      {supplierData?.HotelName || "Hotel Name"}
+                    </h1>
+                  </div>
+
+                  {/* City */}
+                  <p className="mt-1! text-sm text-gray-500">
+                    {[supplierData?.City, supplierData?.Country]
+                      .filter(Boolean)
+                      .join(", ")}
+                  </p>
+                </div>
+              </div>
+
+              {/* RIGHT ACTIONS */}
+              <div className="flex items-center gap-3">
+                {/* Wishlist */}
+                <button
+                  onClick={() => console.log("wishlist clicked")}
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-[#d7e7f3] bg-white text-[#66b8ec] shadow-sm transition hover:border-[#0ea5e9] hover:bg-[#eef8fd]"
+                >
+                  <HeartOutlined className="text-[20px]" />
+                </button>
+
+                {/* Share */}
+                <button
+                  onClick={() => console.log("share clicked")}
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-[#d7e7f3] bg-white text-[#66b8ec] shadow-sm transition hover:border-[#0ea5e9] hover:bg-[#eef8fd]"
+                >
+                  <ShareAltOutlined className="text-[19px]" />
+                </button>
+              </div>
+            </div>
             {/* Gallery + Price */}
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+            <div className="grid grid-cols-1 items-stretch gap-4 lg:grid-cols-3">
               {/* Gallery */}
               <div className="lg:col-span-2">
                 <ViewHotelGallery
                   images={hotelImages}
                   onOpen={() => setIsGalleryOpen(true)}
                 />
+                <div className="mt-6">
+                  <ViewHotelTabs supplierData={supplierData} />
+                </div>
               </div>
 
               {/* Price Card */}
@@ -99,11 +152,6 @@ const HotelDetails = () => {
                   supplierData={supplierData}
                 />
               </div>
-            </div>
-
-            {/* Tabs */}
-            <div className="mt-6">
-              <ViewHotelTabs supplierData={supplierData} />
             </div>
 
             {/* Hotel Info */}

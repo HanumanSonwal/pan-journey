@@ -11,7 +11,7 @@ const FeesRules = ({ ratePlans = [] }) => {
     <div className="space-y-5">
       {/* Additional Charges */}
       {!!charges && (
-        <div className="rounded-3xl border border-red-100 bg-red-50 p-5">
+        <div className="rounded border border-red-100 bg-red-50 p-5">
           <h3 className="mb-2 text-lg font-semibold text-red-700">
             Additional Charges
           </h3>
@@ -22,7 +22,7 @@ const FeesRules = ({ ratePlans = [] }) => {
 
       {/* Mandatory */}
       {!!mandatory && (
-        <div className="rounded-3xl border border-orange-100 bg-orange-50 p-5">
+        <div className="rounded border border-orange-100 bg-orange-50 p-5">
           <h3 className="mb-2 text-lg font-semibold text-orange-700">
             Mandatory Fees
           </h3>
@@ -33,7 +33,7 @@ const FeesRules = ({ ratePlans = [] }) => {
 
       {/* Optional */}
       {!!optional && (
-        <div className="rounded-3xl border border-blue-100 bg-blue-50 p-5">
+        <div className="rounded border border-blue-100 bg-blue-50 p-5">
           <h3 className="mb-2 text-lg font-semibold text-blue-700">
             Optional Fees
           </h3>
@@ -43,7 +43,7 @@ const FeesRules = ({ ratePlans = [] }) => {
       )}
 
       {!charges && !mandatory && !optional && (
-        <div className="rounded-3xl border border-dashed p-8 text-center text-gray-500">
+        <div className="rounded border border-dashed p-8 text-center text-gray-500">
           No fees information available
         </div>
       )}

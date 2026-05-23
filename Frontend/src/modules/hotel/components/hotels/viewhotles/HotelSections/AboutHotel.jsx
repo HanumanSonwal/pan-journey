@@ -3,36 +3,61 @@
 import { BankOutlined, InfoCircleOutlined } from "@ant-design/icons";
 
 const AboutHotel = ({ about }) => {
+  const hasAbout = about?.trim();
+
   return (
-    <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
+    <div className="overflow-hidden rounded border border-gray-200 bg-white shadow-sm">
       {/* Header */}
-      <div className="mb-5 flex items-center gap-4">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#eef8fd] text-[20px] text-[#0ea5e9]">
-          <BankOutlined />
-        </div>
+      <div className="border-b border-[#e9f2f8] bg-[#f7fcff] px-5 py-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded bg-[#eaf6fd] text-[#0ea5e9]">
+            <BankOutlined className="text-[18px]" />
+          </div>
 
-        <div>
-          <h2 className="text-xl font-semibold text-gray-800">About Hotel</h2>
+          <div>
+            <h2 className="text-[18px] font-semibold text-gray-800">
+              About Hotel
+            </h2>
 
-          <p className="mt-1 text-sm text-gray-500">
-            Property overview & stay information
-          </p>
+            <p className="mt-1 text-xs text-gray-500">
+              Property overview & stay information
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Content Card */}
-      <div className="rounded-2xl border border-[#e8f2f8] bg-[#f9fcfe] p-5">
-        <div className="mb-3 flex items-center gap-2 text-[#0ea5e9]">
-          <InfoCircleOutlined />
+      {/* Body */}
+      <div className="p-4">
+        <div className="rounded border border-[#e7f3fb] bg-[#f9fcfe] p-4">
+          {/* Small Label */}
+          <div className="mb-3 flex items-center gap-2 text-[#0ea5e9]">
+            <InfoCircleOutlined />
 
-          <span className="text-sm font-medium">Hotel Information</span>
+            <span className="text-sm font-medium">Hotel Information</span>
+          </div>
+
+          {/* Description */}
+          <p className="leading-7 whitespace-pre-line text-gray-600">
+            {hasAbout
+              ? about
+              : "No hotel description available for this property."}
+          </p>
         </div>
 
-        <p className="leading-8 whitespace-pre-line text-gray-600">
-          {about?.trim()
-            ? about
-            : "No hotel description available for this property."}
-        </p>
+        {/* Bottom Info Strip */}
+        <div className="mt-4 flex flex-wrap gap-2">
+          <span className="rounded-full bg-[#eef8fd] px-3 py-1 text-xs text-[#0ea5e9]">
+            Property Overview
+          </span>
+
+          <span className="rounded-full bg-[#f3f4f6] px-3 py-1 text-xs text-gray-500">
+            Stay Details
+          </span>
+
+          <span className="rounded-full bg-[#f3f4f6] px-3 py-1 text-xs text-gray-500">
+            Guest Information
+          </span>
+        </div>
       </div>
     </div>
   );

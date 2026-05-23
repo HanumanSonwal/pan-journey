@@ -18,11 +18,16 @@ const sectionIds = {
   "About Hotel": "about-section",
 };
 
-const HotelSectionsTabs = ({ activeTab, setActiveTab }) => {
+const HotelSectionsTabs = ({ activeTab = "Rooms", setActiveTab }) => {
+  const currentTab = activeTab || "Rooms";
+
   const handleScroll = (tab) => {
     setActiveTab(tab);
+
     const id = sectionIds[tab];
+
     const element = document.getElementById(id);
+
     if (element) {
       element.scrollIntoView({
         behavior: "smooth",
@@ -32,10 +37,11 @@ const HotelSectionsTabs = ({ activeTab, setActiveTab }) => {
   };
 
   return (
-    <div className="sticky top-[72px] z-30 overflow-hidden rounded-2xl border border-gray-200 bg-white text-[#0ea5e9] shadow-sm">
+    <div className="sticky top-[72px] z-30 overflow-hidden rounded border border-gray-200 bg-white text-[#0ea5e9] shadow-sm">
       <div className="scrollbar-hide flex overflow-x-auto">
         {tabs.map((tab) => {
-          const active = activeTab === tab;
+          const active = currentTab === tab;
+
           return (
             <button
               key={tab}
@@ -45,6 +51,7 @@ const HotelSectionsTabs = ({ activeTab, setActiveTab }) => {
               }`}
             >
               {tab}
+
               {active && (
                 <span className="absolute bottom-0 left-0 h-[3px] w-full rounded-full bg-[#0ea5e9]" />
               )}
