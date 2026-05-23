@@ -1,33 +1,56 @@
 "use client";
 
 const tabs = [
-  "Room Options",
+  "Rooms",
   "Amenities",
-  "Food & Dining",
+  "Policies",
+  "Fees & Rules",
   "Location",
-  "Guest Reviews",
-  "Property Policies",
-  "Similar Properties",
+  "About Hotel",
 ];
 
+const sectionIds = {
+  Rooms: "rooms-section",
+  Amenities: "amenities-section",
+  Policies: "policies-section",
+  "Fees & Rules": "fees-section",
+  Location: "location-section",
+  "About Hotel": "about-section",
+};
+
 const HotelSectionsTabs = ({ activeTab, setActiveTab }) => {
+  const handleScroll = (tab) => {
+    setActiveTab(tab);
+    const id = sectionIds[tab];
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
+
   return (
-    <div className="border-b bg-[#f7f7f7] px-4">
-      <div className="flex gap-6 overflow-x-auto justify-evenly">
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`py-4 whitespace-nowrap text-sm font-medium border-b-2
-              ${
-                activeTab === tab
-                  ? "!text-[#2a85c8] border-[#2a85c8]"
-                  : "!text-gray-700 border-transparent"
+    <div className="sticky top-[72px] z-30 overflow-hidden rounded-2xl border border-gray-200 bg-white text-[#0ea5e9] shadow-sm">
+      <div className="scrollbar-hide flex overflow-x-auto">
+        {tabs.map((tab) => {
+          const active = activeTab === tab;
+          return (
+            <button
+              key={tab}
+              onClick={() => handleScroll(tab)}
+              className={`relative min-w-max flex-1 px-5 py-4 text-sm font-medium whitespace-nowrap transition duration-300 md:min-w-[160px] ${
+                active ? "text-[#0ea5e9]" : "text-gray-600 hover:text-[#0ea5e9]"
               }`}
-          >
-            {tab}
-          </button>
-        ))}
+            >
+              {tab}
+              {active && (
+                <span className="absolute bottom-0 left-0 h-[3px] w-full rounded-full bg-[#0ea5e9]" />
+              )}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

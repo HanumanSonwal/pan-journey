@@ -1,42 +1,50 @@
 "use client";
 
-
-
+import AboutHotel from "./HotelSections/AboutHotel";
 import Amenities from "./HotelSections/Amenities";
+import FeesRules from "./HotelSections/FeesRules";
 import LocationSection from "./HotelSections/LocationSection";
+import Policies from "./HotelSections/Policies";
 import RoomOptions from "./HotelSections/RoomOptions";
 
-// import LocationSection from "./LocationSection";
-// import GuestReviews from "./GuestReviews";
-// import Policies from "./Policies";
-// import SimilarProperties from "./SimilarProperties";
+const HotelSectionsContent = ({
+  supplierData = {},
+  ratePlans = [],
+  amenities = [],
+}) => {
+  return (
+    <div className="space-y-6">
+      {/* Rooms */}
+      <section id="rooms-section" className="scroll-mt-36">
+        <RoomOptions ratePlans={ratePlans} />
+      </section>
 
-const HotelSectionsContent = ({ activeTab }) => {
-  switch (activeTab) {
-    case "Room Options":
-      return <RoomOptions />;
+      {/* Amenities */}
+      <section id="amenities-section" className="scroll-mt-36">
+        <Amenities amenities={amenities} />
+      </section>
 
-    case "Amenities":
-      return <Amenities />;
+      {/* Policies */}
+      <section id="policies-section" className="scroll-mt-36">
+        <Policies ratePlans={ratePlans} />
+      </section>
 
-    //case "Food & Dining":
-      //return <FoodDining />;
+      {/* Fees */}
+      <section id="fees-section" className="scroll-mt-36">
+        <FeesRules ratePlans={ratePlans} />
+      </section>
 
-     case "Location":
-      return <LocationSection />;
+      {/* Location */}
+      <section id="location-section" className="scroll-mt-36">
+        <LocationSection supplierData={supplierData} />
+      </section>
 
-    // case "Guest Reviews":
-    //   return <GuestReviews />;
-
-    // case "Property Policies":
-    //   return <Policies />;
-
-    // case "Similar Properties":
-    //   return <SimilarProperties />;
-
-    default:
-      return <RoomOptions />;
-  }
+      {/* About */}
+      <section id="about-section" className="scroll-mt-36">
+        <AboutHotel about={supplierData?.AboutHotel} />
+      </section>
+    </div>
+  );
 };
 
 export default HotelSectionsContent;
