@@ -209,7 +209,7 @@ export default function WishlistTab() {
                 <div className="flex flex-col justify-between border-t border-[#ECECEC] px-2 py-2 md:w-[220px] md:border-t-0 md:border-l">
 
                   {/* ICONS + RATING */}
-                  <div className="flex items-center justify-between gap-3 md:flex-col md:items-end">
+                  <div className="flex items-center justify-between gap-5 md:flex-col md:items-end">
 
                     {/* ICONS */}
                     <div className="flex gap-2">
@@ -221,7 +221,7 @@ export default function WishlistTab() {
                           }`}
                       >
                         {likedItems[item.id] ? (
-                          <HeartFilled className="text-[15px] text-white" />
+                          <HeartFilled className="text-[15px] text-white " />
                         ) : (
                           <HeartOutlined className="text-[15px] text-[#72C0F0]" />
                         )}
@@ -236,9 +236,9 @@ export default function WishlistTab() {
                     </div>
 
                     {/* RATING */}
-                    <div className="w-[145px] rounded-[8px] border border-[#72C0F0] bg-[#F8FDFF] px-2 py-1">
+                    <div className="w-[145px] rounded-[8px] border border-[#72C0F0] bg-[#F8FDFF] px-2 py-1  ">
                       <div className="flex items-center justify-between">
-                        <p className="m-0 text-[11px] font-semibold text-[#72C0F0]">
+                        <p className="!m-0 text-[11px] font-semibold text-[#72C0F0]">
                           Very Good
                         </p>
 
@@ -247,27 +247,27 @@ export default function WishlistTab() {
                         </div>
                       </div>
 
-                      <p className="mt-[2px] text-center text-[10px] text-[#444]">
+                      <p className="mt-[2px] text-center text-[10px] !text-[#444]">
                         ({item.reviews} Ratings)
                       </p>
                     </div>
                   </div>
 
                   {/* PRICE */}
-                  <div className="mt-2 flex flex-col items-end">
-                    <p className="text-[10px] text-[#A0A0A0] line-through sm:text-[11px]">
+                  <div className=" flex flex-col items-end  ">
+                    <p className="!text-[13px] text-[#A0A0A0] line-through sm:text-[11px] ">
                       ₹ {item.oldPrice}
                     </p>
 
-                    <h1 className="text-[24px] font-bold leading-none text-[#333] sm:text-[28px]">
+                    <h1 className="text-[24px] font-bold leading-none text-[#333] sm:text-[28px] !mt-[-13px] ">
                       ₹ {item.price}
                     </h1>
 
-                    <p className="mt-[1px] text-[10px] text-[#666]">
+                    <p className=" text-[13px] !text-[#666] !mt-[-13px]">
                       + ₹97 taxes & fees
                     </p>
 
-                    <p className="text-[9px] text-[#888]">
+                    <p className="!text-[13px]  !text-[#888] !mt-[-13px]">
                       Per Night
                     </p>
                   </div>

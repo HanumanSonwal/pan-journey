@@ -341,7 +341,7 @@ export default function BookingDetailsTab({ booking, onBack }) {
                     </h3>
 
                     {guest.role && (
-                      <span className="text-[#3b82b6]text-[11px] w-fit rounded-full bg-[#edf7ff] px-2.5 py-[3px] font-medium">
+                      <span className="!text-[#3b82b6] !text-[11px] w-fit rounded-full bg-[#edf7ff] px-2.5 py-[3px] font-medium ml-[25px]">
                         {guest.role}
                       </span>
                     )}
@@ -390,32 +390,29 @@ export default function BookingDetailsTab({ booking, onBack }) {
               return (
                 <div
                   key={index}
-                  className={`flex items-start justify-between gap-4 sm:items-center ${
-                    item.total ? "mt-5 border-t border-gray-200 pt-5" : "mb-5"
-                  }`}
+                  className={`flex items-start justify-between gap-4 sm:items-center ${item.total ? "mt-5 border-t border-gray-200 pt-5" : "mb-5"
+                    }`}
                 >
                   {/* LABEL */}
                   <p
-                    className={`leading-relaxed ${
-                      item.total
-                        ? "text-[18px] font-bold text-gray-900 md:text-[20px]"
-                        : isDiscount
-                          ? "text-[14px] text-gray-700 md:text-[15px]"
-                          : "text-[14px] text-gray-700 md:text-[15px]"
-                    }`}
+                    className={`leading-relaxed ${item.total
+                      ? "text-[18px] font-bold text-gray-900 md:text-[20px]"
+                      : isDiscount
+                        ? "text-[14px] text-gray-700 md:text-[15px]"
+                        : "text-[14px] text-gray-700 md:text-[15px]"
+                      }`}
                   >
                     {item.label}
                   </p>
 
                   {/* VALUE */}
                   <p
-                    className={`shrink-0 text-right leading-none ${
-                      item.total
-                        ? "text-[18px] font-bold text-gray-900 md:text-[18px]"
-                        : isDiscount
-                          ? "text-[15px] font-semibold text-[#22c55e] md:text-[16px]"
-                          : "text-[15px] font-semibold text-gray-800 md:text-[16px]"
-                    }`}
+                    className={`shrink-0 text-right leading-none ${item.total
+                      ? "text-[18px] font-bold text-gray-900 md:text-[18px]"
+                      : isDiscount
+                        ? "text-[15px] font-semibold text-[#22c55e] md:text-[16px]"
+                        : "text-[15px] font-semibold text-gray-800 md:text-[16px]"
+                      }`}
                   >
                     {item.value}
                   </p>
