@@ -110,9 +110,9 @@ export default function DateRangeField({
   // DEFAULT PREMIUM UI
   // =========================
   return (
-    <div className="relative z-50 h-[82px] rounded-2xl border border-gray-200 bg-white px-3 py-2 shadow-sm transition-all duration-200 hover:border-[#0077b6] hover:shadow-md">
+    <div className="relative z-50 h-[82px] rounded border border-gray-200 bg-white px-3 py-2 shadow-sm transition-all duration-200 hover:border-[#0077b6] hover:shadow-md">
       {/* LABEL */}
-      <span className="absolute -top-2.5 left-4 rounded-md bg-white px-2 text-[14px] font-semibold tracking-wide text-[#0F6A75]">
+      <span className="absolute -top-2.5 left-4 rounded bg-white px-2 text-[14px] font-semibold tracking-wide text-[#0F6A75]">
         Check In - Check Out
       </span>
       {/* DISPLAY */}
@@ -141,7 +141,7 @@ export default function DateRangeField({
           </span>
         </div>
         {/* CENTER */}
-        <div className="mx-3 flex h-9 w-9 items-center justify-center rounded-full bg-[#e6f4fb]">
+        <div className="mx-3 flex h-9 w-9 items-center justify-center rounded bg-[#e6f4fb]">
           <span className="text-lg font-bold text-[#0077b6]">→</span>
         </div>
         {/* CHECK OUT */}
@@ -167,7 +167,7 @@ export default function DateRangeField({
         </div>
         {/* NIGHTS */}
         {nights > 0 && (
-          <div className="ml-3 rounded-full bg-[#0077b6] px-3 py-1 text-xs font-bold text-white shadow-sm">
+          <div className="ml-3 rounded bg-[#0077b6] px-3 py-1 text-xs font-bold text-white shadow-sm">
             {nights}N
           </div>
         )}

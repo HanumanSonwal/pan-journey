@@ -18,7 +18,7 @@ const ViewHotelGallery = ({ images = [], onOpen }) => {
   );
   const totalPhotos = galleryImages?.length || 0;
   return (
-    <div className="grid h-[480px] grid-cols-1 gap-3 md:grid-cols-2">
+    <div className="grid h-full grid-cols-1 gap-3 md:grid-cols-2">
       <div
         onClick={onOpen}
         className="relative cursor-pointer overflow-hidden rounded"

@@ -172,7 +172,7 @@ export default function HotelContent() {
                 return value.map((v, i) => (
                   <div
                     key={`${key}-${i}`}
-                    className="flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-xs text-blue-600"
+                    className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
                   >
                     {v}
 
@@ -200,7 +200,7 @@ export default function HotelContent() {
               return (
                 <div
                   key={key}
-                  className="flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-xs text-blue-600"
+                  className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
                 >
                   {label}
 
@@ -214,7 +214,7 @@ export default function HotelContent() {
 
             {/* PRICE CHIP */}
             {(filters?.minPrice || filters?.maxPrice) && (
-              <div className="flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-xs text-blue-600">
+              <div className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600">
                 ₹{filters?.minPrice || 0}
                 {" - "}₹{filters?.maxPrice || 50000}
                 <CloseOutlined
@@ -234,7 +234,7 @@ export default function HotelContent() {
             {hasActiveFilters && (
               <button
                 onClick={clearAll}
-                className="rounded-full bg-red-100 px-3 py-1 text-xs text-red-600! transition hover:bg-red-200"
+                className="rounded bg-red-100 px-3 py-1 text-xs text-red-600! transition hover:bg-red-200"
               >
                 Clear All
               </button>

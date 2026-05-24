@@ -105,7 +105,7 @@ export default function SearchBar({ onSearch }) {
             <button
               type="button"
               onClick={handleSearch}
-              className="h-[50px] w-full rounded-lg bg-[#0f766e] text-sm font-semibold tracking-wide text-white transition-all duration-200 hover:bg-[#0d5f58] active:scale-[0.98]"
+              className="h-[50px] w-full rounded bg-[#0f766e] text-sm font-semibold tracking-wide text-white transition-all duration-200 hover:bg-[#0d5f58] active:scale-[0.98]"
             >
               SEARCH
             </button>

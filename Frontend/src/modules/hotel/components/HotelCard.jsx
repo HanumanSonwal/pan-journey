@@ -26,7 +26,7 @@ function HotelCard({ hotel }) {
     return Number(hotel.rating) || Number(hotel.starRating) || 4.0;
   }, [hotel.rating, hotel.starRating]);
 
-  console.log("serchdata in card" ,searchData);
+  console.log("serchdata in card", searchData);
 
   const reviews = useMemo(() => {
     return hotel.reviews && hotel.reviews > 0
@@ -77,43 +77,19 @@ function HotelCard({ hotel }) {
     return hotel.location || hotel.address || "Prime Location";
   }, [hotel.location, hotel.address]);
 
-  // const handleNavigate = () => {
-  //   // setOpenModal(true);
-  //   router.push(`/hotel-details`);
-  //   // router.push(`/hotel-details/${hotel.id}`);
-  // };
-
-  // const handleNavigate = () => {
-  //   setSelectedHotel({
-  //     hotelKey: hotel.hotelKey,
-  //     searchKey: hotel.searchKey,
-  //     hotelMeta: {
-  //       hotelId: hotel.hotelId,
-  //     },
-  //   });
-
-  //   router.push("/hotel-details");
-  // };
-
   const handleNavigate = () => {
     console.log("HOTEL OBJECT", hotel);
 
     setSelectedHotel({
       hotelKey: hotel?.hotelkey || hotel?.hotelkey,
-
       searchKey: hotel?.searchKey || hotel?.SearchKey,
-
       hotelMeta: {
         hotelId: hotel?.hotelId || hotel?.id,
-
         cityName: searchData?.cityData?.id,
-
         stateName: searchData?.cityData?.state,
-
         countryCode: searchData?.cityData?.country,
       },
     });
-
     router.push("/hotel-details");
   };
 
@@ -132,14 +108,14 @@ function HotelCard({ hotel }) {
             handleNavigate();
           }
         }}
-        className="cursor-pointer overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-[1px_4px_4px_4px_#00000014] transition-all duration-300 hover:-translate-y-[2px]"
+        className="cursor-pointer overflow-hidden rounded border border-gray-200 bg-white shadow-[1px_4px_4px_4px_#00000014] transition-all duration-300 hover:-translate-y-[2px]"
       >
         <div className="flex flex-col lg:flex-row">
           <div className="w-full p-3 lg:w-[320px]">
             {hotelImages.length > 1 ? (
               <ImageGallery images={hotelImages} />
             ) : (
-              <div className="overflow-hidden rounded-xl">
+              <div className="overflow-hidden rounded">
                 <img
                   src={hotelImages[0]}
                   alt={hotel.name}
@@ -160,7 +136,7 @@ function HotelCard({ hotel }) {
 
                   <div className="mt-2 flex flex-wrap items-center gap-3">
                     {stars > 0 && (
-                      <div className="flex items-center gap-1 rounded-md border border-yellow-200 bg-yellow-50 px-2.5 py-1">
+                      <div className="flex items-center gap-1 rounded border border-yellow-200 bg-yellow-50 px-2.5 py-1">
                         <div className="flex items-center gap-[2px]">
                           {Array.from({
                             length: stars,
@@ -231,7 +207,7 @@ function HotelCard({ hotel }) {
                     {visibleFacilities.map((tag, i) => (
                       <span
                         key={i}
-                        className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-[11px] font-medium text-gray-700!"
+                        className="rounded border border-gray-200 bg-gray-50 px-3 py-1.5 text-[11px] font-medium text-gray-700!"
                       >
                         {tag}
                       </span>
@@ -245,7 +221,7 @@ function HotelCard({ hotel }) {
 
                           setShowAllFacilities(!showAllFacilities);
                         }}
-                        className="rounded-lg bg-[#edf7ff] px-3 py-1.5 text-[11px] font-semibold text-[#0077b6]! transition-all hover:bg-[#dcefff]"
+                        className="rounded bg-[#edf7ff] px-3 py-1.5 text-[11px] font-semibold text-[#0077b6]! transition-all hover:bg-[#dcefff]"
                       >
                         {showAllFacilities
                           ? "View Less"
@@ -260,7 +236,7 @@ function HotelCard({ hotel }) {
 
           <div className="flex w-full flex-col justify-between border-t border-gray-100 p-4 lg:w-[260px] lg:border-t-0 lg:border-l">
             <div className="flex justify-end">
-              <div className="flex w-[170px] flex-col gap-1 rounded-md border border-blue-100 bg-blue-50 px-2 py-2">
+              <div className="flex w-[170px] flex-col gap-1 rounded border border-blue-100 bg-blue-50 px-2 py-2">
                 <div className="flex items-center justify-between">
                   <p className="m-0 text-[14px] font-semibold text-[#72C0F0]">
                     {ratingLabel}

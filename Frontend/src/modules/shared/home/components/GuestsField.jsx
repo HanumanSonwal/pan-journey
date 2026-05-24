@@ -83,7 +83,7 @@ function GuestsField({
   const dropdownContent = (
     <div
       onClick={(e) => e.stopPropagation()}
-      className="w-[340px] rounded-2xl bg-white"
+      className="w-[340px] rounded bg-white"
     >
       {/* ROOM */}
       <Counter
@@ -122,7 +122,7 @@ function GuestsField({
               {(safeValue.childAges || []).map((age, i) => (
                 <div
                   key={i}
-                  className="flex min-w-0 items-center justify-between gap-2 rounded-xl border border-[#e3f0f5] bg-[#fafefe] px-2.5 py-2"
+                  className="flex min-w-0 items-center justify-between gap-2 rounded border border-[#e3f0f5] bg-[#fafefe] px-2.5 py-2"
                 >
                   <span className="shrink-0 text-[12px] font-medium text-gray-800">
                     Child {i + 1}
@@ -131,7 +131,7 @@ function GuestsField({
                   <select
                     value={age || ""}
                     onChange={(e) => updateChildAge(i, Number(e.target.value))}
-                    className={`h-[34px] min-w-[96px] rounded-lg border px-2 text-[12px] transition-all outline-none ${
+                    className={`h-[34px] min-w-[96px] rounded border px-2 text-[12px] transition-all outline-none ${
                       !age
                         ? "border-red-300 bg-red-50 text-red-500"
                         : "border-gray-300 bg-white text-gray-900"
@@ -156,7 +156,7 @@ function GuestsField({
 
       {/* PETS */}
       <div className="my-4 border-t pt-4">
-        <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-[#d8edf5] bg-[#fafdff] p-3.5">
+        <label className="flex cursor-pointer items-start gap-3 rounded border border-[#d8edf5] bg-[#fafdff] p-3.5">
           <input
             type="checkbox"
             checked={safeValue.pets || false}
@@ -180,7 +180,7 @@ function GuestsField({
       <Button
         disabled={!childAgesValid}
         onClick={handleApply}
-        className="mt-4 h-[50px] w-full rounded-2xl text-[15px] font-bold tracking-wide !text-white transition-all duration-300 hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
+        className="mt-4 h-[50px] w-full rounded text-[15px] font-bold tracking-wide !text-white transition-all duration-300 hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
         style={{
           background: "linear-gradient(135deg, #72C0F0 0%, #0F6A75 100%)",
         }}

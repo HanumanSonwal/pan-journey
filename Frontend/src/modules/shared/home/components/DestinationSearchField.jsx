@@ -212,12 +212,12 @@ function DestinationSearchField({
   return (
     <div
       title={value?.city || ""}
-      className={`relative w-full min-w-0 rounded-xl border border-gray-300 px-3 py-3 transition-all hover:border-[#0077b6] ${wrapperClassName}`}
+      className={`relative w-full min-w-0 rounded border border-gray-300 px-3 py-3 transition-all hover:border-[#0077b6] ${wrapperClassName}`}
       style={{ height }}
     >
       {/* LABEL */}
       {!compact && (
-        <span className="absolute -top-2.5 left-4 rounded-md bg-white px-2 text-[14px] font-semibold tracking-wide text-[#0F6A75]">
+        <span className="absolute -top-2.5 left-4 rounded bg-white px-2 text-[14px] font-semibold tracking-wide text-[#0F6A75]">
           City, Property name or Location
         </span>
       )}

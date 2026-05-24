@@ -10,12 +10,14 @@ import { useMemo, useState } from "react";
 import SearchBar from "../components/hotels/SearchBar";
 import HotelSectionsContent from "../components/hotels/viewhotles/HotelSectionsContent";
 import HotelSectionsTabs from "../components/hotels/viewhotles/HotelSectionsTabs";
+import SessionExpiredModal from "../components/hotels/viewhotles/SessionExpiredModal";
 import ViewHotelGallery from "../components/hotels/viewhotles/ViewHotelGallery";
 import ViewHotelInfo from "../components/hotels/viewhotles/ViewHotelInfo";
 import ViewHotelModal from "../components/hotels/viewhotles/ViewHotelModal";
 import ViewHotelPriceCard from "../components/hotels/viewhotles/ViewHotelPriceCard";
 import ViewHotelTabs from "../components/hotels/viewhotles/ViewHotelTabs";
 import { useHotelDetails } from "../hooks/useHotelDetails";
+import { useHotelSessionRecovery } from "../hooks/useHotelSessionRecovery";
 import { useSelectedHotelStore } from "../store/selectedHotel.store";
 
 const HotelDetails = () => {
@@ -41,8 +43,16 @@ const HotelDetails = () => {
   const supplierData = hotelDetails?.supplierData || {};
   const pricingSummary = hotelDetails?.pricingSummary || {};
   const hotelImages = supplierData?.HotelGallery || [];
-  const ratePlans = supplierData?.RatePlanRecommendations || [];
+  const rawRatePlans = supplierData?.RatePlanRecommendations;
+
+  const ratePlans = rawRatePlans || [];
   const amenities = supplierData?.Amenities?.split(",")?.filter(Boolean) || [];
+
+  const { sessionExpired, reloadingHotels, handleReloadHotels } =
+    useHotelSessionRecovery({
+      hotelDetails,
+      rawRatePlans,
+    });
 
   if (isLoading) {
     return (
@@ -132,9 +142,9 @@ const HotelDetails = () => {
               </div>
             </div>
             {/* Gallery + Price */}
-            <div className="grid grid-cols-1 items-stretch gap-4 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:items-stretch">
               {/* Gallery */}
-              <div className="lg:col-span-2">
+              <div className="flex flex-col lg:col-span-2">
                 <ViewHotelGallery
                   images={hotelImages}
                   onOpen={() => setIsGalleryOpen(true)}
@@ -187,6 +197,11 @@ const HotelDetails = () => {
         open={isGalleryOpen}
         images={hotelImages}
         onClose={() => setIsGalleryOpen(false)}
+      />
+      <SessionExpiredModal
+        open={sessionExpired}
+        loading={reloadingHotels}
+        onReload={handleReloadHotels}
       />
     </div>
   );
