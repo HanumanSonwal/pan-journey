@@ -28,10 +28,11 @@ const HotelDetails = () => {
   const payload = useMemo(() => {
     if (!selectedHotel) return null;
     return {
-      hotelKey: selectedHotel?.hotelKey,
-      searchKey: selectedHotel?.searchKey,
-      hotelMeta: {
+      // hotelKey: selectedHotel?.hotelKey,
+      // searchKey: selectedHotel?.searchKey,
         hotelId: selectedHotel?.hotelMeta?.hotelId,
+
+      hotelMeta: {
         cityName: selectedHotel?.hotelMeta?.cityName,
         stateName: selectedHotel?.hotelMeta?.stateName,
         countryCode: selectedHotel?.hotelMeta?.countryCode,
