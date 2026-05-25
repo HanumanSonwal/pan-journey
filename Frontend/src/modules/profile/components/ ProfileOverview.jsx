@@ -18,6 +18,7 @@ import dayjs from "dayjs";
 
 import {
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
@@ -33,8 +34,6 @@ import RHFDatePicker from "@/components/ui/RHFinputs/RHFDatePicker";
 import RHFInput from "@/components/ui/RHFinputs/RHFInput";
 import RHFSelect from "@/components/ui/RHFinputs/RHFSelect";
 
-import { api } from "@/services/axios";
-
 import {
   useProfile,
   useSendEmailOtp,
@@ -44,101 +43,382 @@ import {
   useVerifyMobile,
 } from "../hooks/useProfile";
 
+// ================= COUNTRY + STATE + CITY DATA =================
+
+const countryStateCityData = {
+  India: {
+    Rajasthan: [
+      "Jaipur",
+      "Jodhpur",
+      "Kota",
+      "Ajmer",
+      "Udaipur",
+      "Bikaner",
+    ],
+
+    Gujarat: [
+      "Ahmedabad",
+      "Surat",
+      "Rajkot",
+      "Vadodara",
+    ],
+
+    Maharashtra: [
+      "Mumbai",
+      "Pune",
+      "Nagpur",
+      "Nashik",
+    ],
+  },
+
+  "United States": {
+    California: [
+      "Los Angeles",
+      "San Francisco",
+      "San Diego",
+      "Sacramento",
+    ],
+
+    Texas: [
+      "Houston",
+      "Dallas",
+      "Austin",
+      "San Antonio",
+    ],
+
+    Florida: [
+      "Miami",
+      "Orlando",
+      "Tampa",
+      "Jacksonville",
+    ],
+  },
+
+  Canada: {
+    Ontario: [
+      "Toronto",
+      "Ottawa",
+      "Hamilton",
+    ],
+
+    Alberta: [
+      "Calgary",
+      "Edmonton",
+    ],
+  },
+
+  Australia: {
+    Victoria: [
+      "Melbourne",
+    ],
+
+    Queensland: [
+      "Brisbane",
+      "Gold Coast",
+    ],
+  },
+
+  "United Kingdom": {
+    England: [
+      "London",
+      "Manchester",
+      "Liverpool",
+    ],
+
+    Scotland: [
+      "Edinburgh",
+      "Glasgow",
+    ],
+  },
+};
+
+// ================= GENDER OPTIONS =================
+
+const genderOptions = [
+  {
+    label: "Male",
+    value: "Male",
+  },
+
+  {
+    label: "Female",
+    value: "Female",
+  },
+
+  {
+    label: "Other",
+    value: "Other",
+  },
+];
+
 // ================= SCHEMA =================
 
-const schema = z.object({
-  firstName: z
-    .string()
-    .trim()
-    .min(1, "First name required"),
+const schema = z
+  .object({
+    firstName: z
+      .string()
+      .trim()
+      .min(
+        1,
+        "First name required"
+      )
+      .max(
+        50,
+        "Maximum 50 characters allowed"
+      )
+      .regex(
+        /^[A-Za-z\s]+$/,
+        "Only alphabets are allowed"
+      ),
 
-  lastName: z.string().optional(),
+    lastName: z
+      .string()
+      .trim()
+      .max(
+        50,
+        "Maximum 50 characters allowed"
+      )
+      .regex(
+        /^[A-Za-z\s]*$/,
+        "Only alphabets are allowed"
+      )
+      .optional(),
 
-  gender: z
-    .string()
-    .min(1, "Select gender"),
-
-  // ✅ EMAIL FIX
-  email: z
-    .string()
-    .trim()
-    .min(1, "Email is required")
-    .email("Invalid email address"),
-
-  // ✅ MOBILE FIX
-  mobile: z
-    .string()
-    .trim()
-    .min(1, "Mobile number is required")
-    .regex(
-      /^[6-9]\d{9}$/,
-      "Invalid mobile number"
+    gender: z.enum(
+      [
+        "Male",
+        "Female",
+        "Other",
+      ],
+      {
+        errorMap: () => ({
+          message:
+            "Please select valid gender",
+        }),
+      }
     ),
 
-  city: z
-    .string()
-    .min(1, "City required"),
+    email: z
+      .string()
+      .trim()
+      .min(
+        1,
+        "Email is required"
+      )
+      .email(
+        "Invalid email address"
+      ),
 
-  state: z
-    .string()
-    .min(1, "State required"),
+    mobile: z
+      .string()
+      .trim()
+      .min(
+        1,
+        "Mobile number is required"
+      )
+      .regex(
+        /^[6-9]\d{9}$/,
+        "Invalid mobile number"
+      ),
 
-  nationality: z
-    .string()
-    .nullable()
-    .optional(),
+    nationality: z
+      .string()
+      .min(
+        1,
+        "Nationality required"
+      ),
 
-  maritalStatus: z
-    .string()
-    .nullable()
-    .optional(),
+    state: z
+      .string()
+      .min(
+        1,
+        "State required"
+      ),
 
-  dateOfBirth: z
-    .any()
-    .nullable()
-    .optional(),
+    city: z
+      .string()
+      .min(
+        1,
+        "City required"
+      ),
 
-  anniversary: z
-    .any()
-    .nullable()
-    .optional(),
-});
+    maritalStatus: z.enum(
+      [
+        "Single",
+        "Married",
+        "Divorced",
+        "Widowed",
+      ],
+      {
+        errorMap: () => ({
+          message:
+            "Please select marital status",
+        }),
+      }
+    ),
+
+    dateOfBirth: z
+      .any()
+      .nullable()
+      .refine(
+        (date) => {
+          if (!date) return false;
+
+          return dayjs(
+            date
+          ).isBefore(
+            dayjs(),
+            "day"
+          );
+        },
+        {
+          message:
+            "Future date not allowed",
+        }
+      ),
+
+    anniversary: z
+      .any()
+      .nullable()
+      .optional(),
+  })
+
+  .refine(
+    (data) => {
+      if (
+        !data.nationality ||
+        !data.state ||
+        !data.city
+      ) {
+        return true;
+      }
+
+      return (
+        countryStateCityData[
+          data.nationality
+        ]?.[
+          data.state
+        ]?.includes(
+          data.city
+        ) || false
+      );
+    },
+    {
+      message:
+        "Selected city does not belong to selected state",
+      path: ["city"],
+    }
+  )
+
+  .refine(
+    (data) => {
+      if (
+        data.maritalStatus ===
+        "Single"
+      ) {
+        return !data.anniversary;
+      }
+
+      return true;
+    },
+    {
+      message:
+        "Single person cannot add anniversary date",
+      path: ["anniversary"],
+    }
+  )
+
+  .refine(
+    (data) => {
+      if (
+        !data.dateOfBirth ||
+        !data.anniversary
+      ) {
+        return true;
+      }
+
+      return dayjs(
+        data.anniversary
+      ).isAfter(
+        dayjs(data.dateOfBirth),
+        "day"
+      );
+    },
+    {
+      message:
+        "Anniversary cannot be before date of birth",
+      path: ["anniversary"],
+    }
+  )
+
+  .refine(
+    (data) => {
+      if (!data.anniversary)
+        return true;
+
+      return dayjs(
+        data.anniversary
+      ).isBefore(
+        dayjs(),
+        "day"
+      );
+    },
+    {
+      message:
+        "Anniversary cannot be in future",
+      path: ["anniversary"],
+    }
+  );
 
 export default function ProfileOverview() {
-  const { data: user } = useProfile();
+  const { data: user } =
+    useProfile();
 
-  const updateProfile = useUpdateProfile();
+  const updateProfile =
+    useUpdateProfile();
 
-  const sendEmailOtp = useSendEmailOtp();
-  const verifyEmail = useVerifyEmail();
+  const sendEmailOtp =
+    useSendEmailOtp();
 
-  const sendMobileOtp = useSendMobileOtp();
-  const verifyMobile = useVerifyMobile();
+  const verifyEmail =
+    useVerifyEmail();
 
-  const [isEdit, setIsEdit] = useState(false);
+  const sendMobileOtp =
+    useSendMobileOtp();
 
-  const [emailOtp, setEmailOtp] = useState("");
-  const [mobileOtp, setMobileOtp] = useState("");
+  const verifyMobile =
+    useVerifyMobile();
 
-  const [showEmailOtp, setShowEmailOtp] =
+  const [isEdit, setIsEdit] =
     useState(false);
 
-  const [showMobileOtp, setShowMobileOtp] =
-    useState(false);
+  const [emailOtp, setEmailOtp] =
+    useState("");
 
-  const [emailVerified, setEmailVerified] =
-    useState(false);
+  const [
+    mobileOtp,
+    setMobileOtp,
+  ] = useState("");
 
-  const [mobileVerified, setMobileVerified] =
-    useState(false);
+  const [
+    showEmailOtp,
+    setShowEmailOtp,
+  ] = useState(false);
 
-  // ================= CITY / STATE OPTIONS =================
+  const [
+    showMobileOtp,
+    setShowMobileOtp,
+  ] = useState(false);
 
-  const [cityOptions, setCityOptions] =
-    useState([]);
+  const [
+    emailVerified,
+    setEmailVerified,
+  ] = useState(false);
 
-  const [stateOptions, setStateOptions] =
-    useState([]);
+  const [
+    mobileVerified,
+    setMobileVerified,
+  ] = useState(false);
 
   // ================= FORM =================
 
@@ -155,10 +435,10 @@ export default function ProfileOverview() {
       mobile: "",
       city: "",
       state: "",
-      dateOfBirth: null,
-      anniversary: null,
       nationality: "",
       maritalStatus: "",
+      dateOfBirth: null,
+      anniversary: null,
     },
   });
 
@@ -168,49 +448,150 @@ export default function ProfileOverview() {
     reset,
     getValues,
     trigger,
-    formState: { errors },
+    setValue,
   } = methods;
 
-  // ================= API CALL =================
+  // ================= WATCHERS =================
+
+  const email = useWatch({
+    control,
+    name: "email",
+  });
+
+  const mobile = useWatch({
+    control,
+    name: "mobile",
+  });
+
+  const selectedCountry =
+    useWatch({
+      control,
+      name: "nationality",
+    });
+
+  const selectedState =
+    useWatch({
+      control,
+      name: "state",
+    });
+
+  const maritalStatus =
+    useWatch({
+      control,
+      name: "maritalStatus",
+    });
+
+  // ================= FILTERED STATE OPTIONS =================
+
+  const filteredStateOptions =
+    useMemo(() => {
+      if (
+        !selectedCountry
+      )
+        return [];
+
+      return Object.keys(
+        countryStateCityData[
+          selectedCountry
+        ] || {}
+      ).map((state) => ({
+        label: state,
+        value: state,
+      }));
+    }, [selectedCountry]);
+
+  // ================= FILTERED CITY OPTIONS =================
+
+  const filteredCityOptions =
+    useMemo(() => {
+      if (
+        !selectedCountry ||
+        !selectedState
+      )
+        return [];
+
+      return (
+        countryStateCityData[
+          selectedCountry
+        ]?.[
+          selectedState
+        ] || []
+      ).map((city) => ({
+        label: city,
+        value: city,
+      }));
+    }, [
+      selectedCountry,
+      selectedState,
+    ]);
+
+  // ================= RESET STATE + CITY =================
 
   useEffect(() => {
-    const fetchLocations = async () => {
-      try {
-        const stateRes =
-          await api.get("/states");
+    setValue(
+      "state",
+      ""
+    );
 
-        const formattedStates =
-          stateRes?.data?.map((item) => ({
-            label: item?.name,
-            value: item?.name,
-          })) || [];
+    setValue(
+      "city",
+      ""
+    );
+  }, [
+    selectedCountry,
+    setValue,
+  ]);
 
-        setStateOptions(formattedStates);
+  useEffect(() => {
+    setValue(
+      "city",
+      ""
+    );
+  }, [
+    selectedState,
+    setValue,
+  ]);
 
-        const cityRes =
-          await api.get("/cities");
+  // ================= RESET ANNIVERSARY =================
 
-        const formattedCities =
-          cityRes?.data?.map((item) => ({
-            label: item?.name,
-            value: item?.name,
-          })) || [];
+  useEffect(() => {
+    if (
+      maritalStatus ===
+      "Single"
+    ) {
+      setValue(
+        "anniversary",
+        null
+      );
+    }
+  }, [
+    maritalStatus,
+    setValue,
+  ]);
 
-        setCityOptions(formattedCities);
-      } catch (error) {
-        console.log(
-          "LOCATION API ERROR",
-          error
-        );
-      }
-    };
+  // ================= RESET OTP =================
 
-    fetchLocations();
-  }, []);
+  useEffect(() => {
+    setEmailVerified(false);
+
+    setEmailOtp("");
+
+    setShowEmailOtp(false);
+  }, [email]);
+
+  useEffect(() => {
+    setMobileVerified(false);
+
+    setMobileOtp("");
+
+    setShowMobileOtp(false);
+  }, [mobile]);
 
   // ================= SPLIT NAME =================
 
-  const splitName = (fullName) => {
+  const splitName = (
+    fullName
+  ) => {
     if (!fullName) {
       return {
         firstName: "",
@@ -219,11 +600,17 @@ export default function ProfileOverview() {
     }
 
     const parts =
-      fullName.trim().split(/\s+/);
+      fullName
+        .trim()
+        .split(/\s+/);
 
     return {
-      firstName: parts[0] || "",
-      lastName: parts.slice(1).join(" "),
+      firstName:
+        parts[0] || "",
+
+      lastName: parts
+        .slice(1)
+        .join(" "),
     };
   };
 
@@ -232,42 +619,60 @@ export default function ProfileOverview() {
   useEffect(() => {
     if (!user) return;
 
-    const { firstName, lastName } =
-      splitName(user.name);
+    const {
+      firstName,
+      lastName,
+    } = splitName(user.name);
 
     reset({
       firstName,
       lastName,
 
-      gender: user.gender || "",
+      gender:
+        user.gender || "",
 
-      email: user.email || "",
+      email:
+        user.email || "",
 
-      mobile: user.mobile || "",
+      mobile:
+        user.mobile || "",
 
-      city: user.city || "",
+      city:
+        user.city || "",
 
-      state: user.state || "",
+      state:
+        user.state || "",
 
       nationality:
-        user.nationality || "",
+        user.nationality ||
+        "",
 
       maritalStatus:
-        user.maritalStatus || "",
+        user.maritalStatus ||
+        "",
 
-      dateOfBirth: user.dateOfBirth
-        ? dayjs(user.dateOfBirth)
-        : null,
+      dateOfBirth:
+        user.dateOfBirth
+          ? dayjs(
+              user.dateOfBirth
+            )
+          : null,
 
-      anniversary: user.anniversary
-        ? dayjs(user.anniversary)
-        : null,
+      anniversary:
+        user.anniversary
+          ? dayjs(
+              user.anniversary
+            )
+          : null,
     });
   }, [user, reset]);
 
-  // ================= SUBMIT =================
+  // ================= PAYLOAD =================
 
-  const buildPayload = (data, user) => {
+  const buildPayload = (
+    data,
+    user
+  ) => {
     return {
       name: [
         data.firstName,
@@ -287,121 +692,58 @@ export default function ProfileOverview() {
       state: data.state,
 
       nationality:
-        data.nationality || null,
+        data.nationality,
 
       maritalStatus:
-        data.maritalStatus || null,
+        data.maritalStatus,
 
-      dateOfBirth: data.dateOfBirth
-        ? dayjs(
-            data.dateOfBirth
-          ).toISOString()
-        : user?.dateOfBirth || null,
+      dateOfBirth:
+        data.dateOfBirth
+          ? dayjs(
+              data.dateOfBirth
+            ).toISOString()
+          : user?.dateOfBirth ||
+            null,
 
-      anniversary: data.anniversary
-        ? dayjs(
-            data.anniversary
-          ).toISOString()
-        : user?.anniversary || null,
+      anniversary:
+        data.anniversary
+          ? dayjs(
+              data.anniversary
+            ).toISOString()
+          : null,
     };
   };
 
-  const onSubmit = (data) => {
-    const payload = buildPayload(
-      data,
-      user
+  // ================= SUBMIT =================
+
+  const onSubmit = (
+    data
+  ) => {
+    const payload =
+      buildPayload(
+        data,
+        user
+      );
+
+    updateProfile.mutate(
+      payload,
+      {
+        onSuccess: () => {
+          message.success(
+            "Profile updated successfully"
+          );
+
+          setIsEdit(false);
+        },
+
+        onError: () => {
+          message.error(
+            "Failed to update profile"
+          );
+        },
+      }
     );
-
-    updateProfile.mutate(payload, {
-      onSuccess: () => {
-        message.success(
-          "Profile updated successfully"
-        );
-
-        setIsEdit(false);
-      },
-
-      onError: () => {
-        message.error(
-          "Failed to update profile"
-        );
-      },
-    });
   };
-
-  // ================= CANCEL =================
-
-  const handleCancel = () => {
-    if (!user) return;
-
-    const { firstName, lastName } =
-      splitName(user.name);
-
-    reset({
-      firstName,
-      lastName,
-
-      gender: user.gender || "",
-
-      email: user.email || "",
-
-      mobile: user.mobile || "",
-
-      city: user.city || "",
-
-      state: user.state || "",
-
-      nationality:
-        user.nationality || "",
-
-      maritalStatus:
-        user.maritalStatus || "",
-
-      dateOfBirth: user.dateOfBirth
-        ? dayjs(user.dateOfBirth)
-        : null,
-
-      anniversary: user.anniversary
-        ? dayjs(user.anniversary)
-        : null,
-    });
-
-    setIsEdit(false);
-
-    setEmailOtp("");
-    setMobileOtp("");
-
-    setShowEmailOtp(false);
-    setShowMobileOtp(false);
-  };
-
-  // ================= WATCHERS =================
-
-  const email = useWatch({
-    control,
-    name: "email",
-  });
-
-  const mobile = useWatch({
-    control,
-    name: "mobile",
-  });
-
-  useEffect(() => {
-    setEmailVerified(false);
-
-    setEmailOtp("");
-
-    setShowEmailOtp(false);
-  }, [email]);
-
-  useEffect(() => {
-    setMobileVerified(false);
-
-    setMobileOtp("");
-
-    setShowMobileOtp(false);
-  }, [mobile]);
 
   // ================= VIEW FIELD =================
 
@@ -437,22 +779,6 @@ export default function ProfileOverview() {
 
   return (
     <div className="min-h-screen">
-      <style jsx global>{`
-        .edit-mode .ant-form-item-label {
-          display: none !important;
-        }
-
-        .edit-mode .ant-form-item {
-          margin-bottom: 14px !important;
-        }
-
-        .edit-mode
-          .ant-form-item-explain-error {
-          font-size: 12px !important;
-          margin-top: 3px !important;
-        }
-      `}</style>
-
       <div className="bg-white p-5">
         <div className="mb-8 flex items-center justify-between">
           <h2 className="text-[20px] font-semibold text-[#1f1f1f]">
@@ -461,27 +787,29 @@ export default function ProfileOverview() {
 
           {!isEdit && (
             <Button
-              icon={<EditOutlined />}
+              icon={
+                <EditOutlined />
+              }
               onClick={() =>
                 setIsEdit(true)
               }
-              className="!h-[42px] !rounded-md !border-[#222] !px-5"
             >
               Edit Details
             </Button>
           )}
         </div>
 
-        <FormProvider {...methods}>
+        <FormProvider
+          {...methods}
+        >
           <form
-            onSubmit={handleSubmit(onSubmit)}
-            className={
-              isEdit ? "edit-mode" : ""
-            }
+            onSubmit={handleSubmit(
+              onSubmit
+            )}
           >
-            <div className="grid grid-cols-1 gap-x-12 gap-y-8 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
 
-              <div className="w-full">
+              <div>
                 {isEdit ? (
                   <RHFInput
                     name="firstName"
@@ -497,7 +825,7 @@ export default function ProfileOverview() {
                 )}
               </div>
 
-              <div className="w-full">
+              <div>
                 {isEdit ? (
                   <RHFInput
                     name="lastName"
@@ -513,26 +841,15 @@ export default function ProfileOverview() {
                 )}
               </div>
 
-              <div className="w-full">
+              <div>
                 {isEdit ? (
                   <RHFSelect
                     name="gender"
                     label="Gender"
                     placeholder="Select Gender"
-                    options={[
-                      {
-                        label: "Male",
-                        value: "Male",
-                      },
-                      {
-                        label: "Female",
-                        value: "Female",
-                      },
-                      {
-                        label: "Other",
-                        value: "Other",
-                      },
-                    ]}
+                    options={
+                      genderOptions
+                    }
                   />
                 ) : (
                   <ViewField
@@ -544,23 +861,21 @@ export default function ProfileOverview() {
                 )}
               </div>
 
-              <div className="w-full">
+              {/* DOB */}
+
+              <div>
                 {isEdit ? (
                   <RHFDatePicker
-                    name="dateOfBirth"
-                    label="Birth Date"
-                    placeholder="Select Birth Date"
-                    disabledDate={(
-                      current
-                    ) =>
-                      current &&
-                      current >=
-                        dayjs().endOf(
-                          "day"
-                        )
-                    }
-                    showToday={false}
-                  />
+  name="dateOfBirth"
+  label="Birth Date"
+  placeholder="Select Birth Date"
+  showToday={false}
+  disabledDate={(current) =>
+    current &&
+    current >= dayjs().endOf("day")
+  }
+/>
+                  
                 ) : (
                   <ViewField
                     label="Birth Date"
@@ -572,22 +887,24 @@ export default function ProfileOverview() {
                 )}
               </div>
 
-              <div className="w-full">
+              <div>
                 {isEdit ? (
                   <RHFSelect
                     name="nationality"
                     label="Nationality"
                     placeholder="Select Country"
-                    options={[
-                      {
-                        label: "India",
-                        value: "India",
-                      },
-                      {
-                        label: "USA",
-                        value: "USA",
-                      },
-                    ]}
+                    options={Object.keys(
+                      countryStateCityData
+                    ).map(
+                      (
+                        country
+                      ) => ({
+                        label:
+                          country,
+                        value:
+                          country,
+                      })
+                    )}
                   />
                 ) : (
                   <ViewField
@@ -599,7 +916,61 @@ export default function ProfileOverview() {
                 )}
               </div>
 
-              <div className="w-full">
+              <div>
+                {isEdit ? (
+                  <RHFSelect
+                    name="state"
+                    label="State"
+                    placeholder={
+                      selectedCountry
+                        ? "Select State"
+                        : "Select Country First"
+                    }
+                    disabled={
+                      !selectedCountry
+                    }
+                    options={
+                      filteredStateOptions
+                    }
+                  />
+                ) : (
+                  <ViewField
+                    label="State"
+                    value={getValues(
+                      "state"
+                    )}
+                  />
+                )}
+              </div>
+
+              <div>
+                {isEdit ? (
+                  <RHFSelect
+                    name="city"
+                    label="City"
+                    placeholder={
+                      selectedState
+                        ? "Select City"
+                        : "Select State First"
+                    }
+                    disabled={
+                      !selectedState
+                    }
+                    options={
+                      filteredCityOptions
+                    }
+                  />
+                ) : (
+                  <ViewField
+                    label="City"
+                    value={getValues(
+                      "city"
+                    )}
+                  />
+                )}
+              </div>
+
+              <div>
                 {isEdit ? (
                   <RHFSelect
                     name="maritalStatus"
@@ -607,12 +978,31 @@ export default function ProfileOverview() {
                     placeholder="Select Status"
                     options={[
                       {
-                        label: "Single",
-                        value: "Single",
+                        label:
+                          "Single",
+                        value:
+                          "Single",
                       },
+
                       {
-                        label: "Married",
-                        value: "Married",
+                        label:
+                          "Married",
+                        value:
+                          "Married",
+                      },
+
+                      {
+                        label:
+                          "Divorced",
+                        value:
+                          "Divorced",
+                      },
+
+                      {
+                        label:
+                          "Widowed",
+                        value:
+                          "Widowed",
                       },
                     ]}
                   />
@@ -626,22 +1016,24 @@ export default function ProfileOverview() {
                 )}
               </div>
 
-              <div className="w-full">
+              <div>
                 {isEdit ? (
                   <RHFDatePicker
                     name="anniversary"
-                    label="Anniversary Date"
-                    placeholder="Select Anniversary Date"
-                    disabledDate={(
-                      current
-                    ) =>
+                    label="Anniversary"
+                    placeholder="Select Anniversary"
+                    disabled={
+                      maritalStatus ===
+                      "Single"
+                    }
+                    showToday={false}
+                    disabledDate={(current) =>
                       current &&
                       current >
                         dayjs().endOf(
                           "day"
                         )
                     }
-                    showToday={false}
                   />
                 ) : (
                   <ViewField
@@ -653,60 +1045,18 @@ export default function ProfileOverview() {
                   />
                 )}
               </div>
-
-              <div className="w-full">
-                {isEdit ? (
-                  <RHFSelect
-                    name="city"
-                    label="City"
-                    placeholder="Select City"
-                    options={cityOptions}
-                  />
-                ) : (
-                  <ViewField
-                    label="City"
-                    value={getValues(
-                      "city"
-                    )}
-                  />
-                )}
-              </div>
-
-              <div className="w-full">
-                {isEdit ? (
-                  <RHFSelect
-                    name="state"
-                    label="State"
-                    placeholder="Select State"
-                    options={stateOptions}
-                  />
-                ) : (
-                  <ViewField
-                    label="State"
-                    value={getValues(
-                      "state"
-                    )}
-                  />
-                )}
-              </div>
             </div>
 
             <Divider className="!my-8" />
 
-            <div className="mb-6">
-              <h2 className="text-[20px] font-semibold text-[#1f1f1f]">
-                Contact Details
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-1 gap-x-12 gap-y-8 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 
               {/* EMAIL */}
 
-              <div className="w-full">
+              <div>
                 {isEdit ? (
                   <>
-                    <div className="flex items-end gap-2">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
                       <div className="w-full">
                         <RHFInput
                           name="email"
@@ -715,21 +1065,18 @@ export default function ProfileOverview() {
                       </div>
 
                       <Button
-                        type="default"
-                        className="!h-[42px] !px-5"
+                        className="!h-[42px] !min-w-[110px]"
                         disabled={
                           emailVerified
                         }
                         onClick={async () => {
-
-                          // ✅ VALIDATION FIX
-
                           const valid =
                             await trigger(
                               "email"
                             );
 
-                          if (!valid) return;
+                          if (!valid)
+                            return;
 
                           sendEmailOtp.mutate(
                             {
@@ -749,7 +1096,7 @@ export default function ProfileOverview() {
                       </Button>
 
                       {emailVerified && (
-                        <CheckCircleFilled className="mb-3 text-lg text-green-500" />
+                        <CheckCircleFilled className="mb-[10px] text-[18px] text-green-500" />
                       )}
                     </div>
 
@@ -758,9 +1105,15 @@ export default function ProfileOverview() {
                         <Input
                           className="!h-[42px]"
                           placeholder="6 digit OTP"
-                          maxLength={6}
-                          value={emailOtp}
-                          onChange={(e) =>
+                          maxLength={
+                            6
+                          }
+                          value={
+                            emailOtp
+                          }
+                          onChange={(
+                            e
+                          ) =>
                             setEmailOtp(
                               e.target.value.replace(
                                 /\D/g,
@@ -780,6 +1133,7 @@ export default function ProfileOverview() {
                               message.error(
                                 "Enter valid OTP"
                               );
+
                               return;
                             }
 
@@ -827,10 +1181,10 @@ export default function ProfileOverview() {
 
               {/* MOBILE */}
 
-              <div className="w-full">
+              <div>
                 {isEdit ? (
                   <>
-                    <div className="flex items-end gap-2">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
                       <div className="w-full">
                         <RHFInput
                           name="mobile"
@@ -839,20 +1193,18 @@ export default function ProfileOverview() {
                       </div>
 
                       <Button
-                        className="!h-[42px] !px-5"
+                        className="!h-[42px] !min-w-[110px]"
                         disabled={
                           mobileVerified
                         }
                         onClick={async () => {
-
-                          // ✅ VALIDATION FIX
-
                           const valid =
                             await trigger(
                               "mobile"
                             );
 
-                          if (!valid) return;
+                          if (!valid)
+                            return;
 
                           sendMobileOtp.mutate(
                             {
@@ -872,7 +1224,7 @@ export default function ProfileOverview() {
                       </Button>
 
                       {mobileVerified && (
-                        <CheckCircleFilled className="mb-3 text-lg text-green-500" />
+                        <CheckCircleFilled className="mb-[10px] text-[18px] text-green-500" />
                       )}
                     </div>
 
@@ -881,9 +1233,15 @@ export default function ProfileOverview() {
                         <Input
                           className="!h-[42px]"
                           placeholder="6 digit OTP"
-                          maxLength={6}
-                          value={mobileOtp}
-                          onChange={(e) =>
+                          maxLength={
+                            6
+                          }
+                          value={
+                            mobileOtp
+                          }
+                          onChange={(
+                            e
+                          ) =>
                             setMobileOtp(
                               e.target.value.replace(
                                 /\D/g,
@@ -903,6 +1261,7 @@ export default function ProfileOverview() {
                               message.error(
                                 "Enter valid OTP"
                               );
+
                               return;
                             }
 
@@ -952,8 +1311,9 @@ export default function ProfileOverview() {
             {isEdit && (
               <div className="mt-8 flex gap-3">
                 <Button
-                  className="!h-[42px] !px-6"
-                  onClick={handleCancel}
+                  onClick={() =>
+                    setIsEdit(false)
+                  }
                 >
                   Cancel
                 </Button>
@@ -961,7 +1321,6 @@ export default function ProfileOverview() {
                 <Button
                   htmlType="submit"
                   type="primary"
-                  className="!h-[42px] !border-none !px-6"
                   loading={
                     updateProfile.isPending
                   }
