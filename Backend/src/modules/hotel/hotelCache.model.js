@@ -16,10 +16,10 @@ const hotelCacheSchema = new mongoose.Schema(
     createdAt: {
       type: Date,
       default: Date.now,
-      expires: 60 * 30, // 24h TTL
+      expires: 60 * 30 , // 24h TTL
     },
   },
-  { timestamps: true },
+ 
 );
 
 export default mongoose.model("HotelCache", hotelCacheSchema);
