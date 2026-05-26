@@ -207,9 +207,9 @@ function GuestsField({
       </div>
     ) : (
       <div
-        className={`relative min-w-0 rounded-xl border border-gray-300 px-3 py-3 transition-all hover:border-[#0077b6]`}
+        className={`relative min-w-0 rounded border border-gray-300 px-3 py-3 transition-all hover:border-[#0077b6]`}
       >
-        <span className="absolute -top-2.5 left-4 rounded-md bg-white px-2 text-[14px] font-semibold tracking-wide text-[#0F6A75]">
+        <span className="absolute -top-2.5 left-4 rounded bg-white px-2 text-[14px] font-semibold tracking-wide text-[#0F6A75]">
           Rooms & Guests
         </span>
 
@@ -305,7 +305,7 @@ const Counter = memo(function Counter({ label, sub, value = 0, onChange }) {
             e.stopPropagation();
             onChange?.(value - 1);
           }}
-          className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#d6e9f2]"
+          className="flex h-9 w-9 items-center justify-center rounded border border-[#d6e9f2]"
         >
           -
         </Button>
@@ -317,7 +317,7 @@ const Counter = memo(function Counter({ label, sub, value = 0, onChange }) {
             e.stopPropagation();
             onChange?.(value + 1);
           }}
-          className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#d6e9f2]"
+          className="flex h-9 w-9 items-center justify-center rounded border border-[#d6e9f2]"
         >
           +
         </Button>

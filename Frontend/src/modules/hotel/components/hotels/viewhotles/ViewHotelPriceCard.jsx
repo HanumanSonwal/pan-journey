@@ -127,10 +127,11 @@ const ViewHotelPriceCard = ({ ratePlans = [], onBookNow }) => {
         <Button
           type="primary"
           size="large"
-          className="!h-[48px] flex-1 !rounded !border-0 !shadow-md hover:!opacity-95"
-          style={{
-            background: "linear-gradient(180deg, #72C0F0 0%, #0F6A75 100%)",
-          }}
+          // className="!h-[48px] flex-1 !rounded !border-0 !shadow-md hover:!opacity-95"
+          // style={{
+          //   background: "linear-gradient(180deg, #72C0F0 0%, #0F6A75 100%)",
+          // }}
+          className="!h-[48px] w-full rounded! bg-[#0f766e]! text-sm font-semibold tracking-wide text-white! transition-all duration-200 hover:bg-[#0d5f58] active:scale-[0.98]"
         >
           Book Now
         </Button>
