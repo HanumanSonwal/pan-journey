@@ -28,10 +28,7 @@ const HotelDetails = () => {
   const payload = useMemo(() => {
     if (!selectedHotel) return null;
     return {
-      // hotelKey: selectedHotel?.hotelKey,
-      // searchKey: selectedHotel?.searchKey,
-        hotelId: selectedHotel?.hotelMeta?.hotelId,
-
+      hotelId: selectedHotel?.hotelMeta?.hotelId,
       hotelMeta: {
         cityName: selectedHotel?.hotelMeta?.cityName,
         stateName: selectedHotel?.hotelMeta?.stateName,
@@ -41,11 +38,11 @@ const HotelDetails = () => {
   }, [selectedHotel]);
 
   const { data: hotelDetails, isLoading, error } = useHotelDetails(payload);
-  const supplierData = hotelDetails?.supplierData || {};
+
+  const supplierData = hotelDetails?.supplierResponse || {};
   const pricingSummary = hotelDetails?.pricingSummary || {};
   const hotelImages = supplierData?.HotelGallery || [];
   const rawRatePlans = supplierData?.RatePlanRecommendations;
-
   const ratePlans = rawRatePlans || [];
   const amenities = supplierData?.Amenities?.split(",")?.filter(Boolean) || [];
 
@@ -89,32 +86,23 @@ const HotelDetails = () => {
 
   return (
     <div className="min-h-screen w-full bg-[#eaf3f9]">
-      {/* Search Bar */}
       <SearchBar />
-
-      {/* Main Wrapper */}
       <div className="mx-auto w-full max-w-7xl px-2 pb-8 sm:px-4 md:px-6">
-        {/* Top Card */}
         <div className="-mt-10">
           <Card className="overflow-hidden rounded border-0 shadow-lg">
-            {/* Hotel Header */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-              {/* LEFT */}
               <div className="flex min-w-0 items-start gap-3">
-                {/* Verified */}
                 <div className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#eef8fd]">
                   <CheckCircleOutlined className="text-[18px] text-[#5bb7ec]!" />
                 </div>
 
                 <div className="min-w-0">
-                  {/* Hotel Name */}
                   <div className="flex flex-wrap items-center gap-3">
                     <h1 className="mb-1! text-[26px] leading-tight font-semibold text-[#303030]">
                       {supplierData?.HotelName || "Hotel Name"}
                     </h1>
                   </div>
 
-                  {/* City */}
                   <p className="mt-1! text-sm text-gray-500">
                     {[supplierData?.City, supplierData?.Country]
                       .filter(Boolean)
@@ -123,9 +111,7 @@ const HotelDetails = () => {
                 </div>
               </div>
 
-              {/* RIGHT ACTIONS */}
               <div className="flex items-center gap-3">
-                {/* Wishlist */}
                 <button
                   onClick={() => console.log("wishlist clicked")}
                   className="flex h-11 w-11 items-center justify-center rounded-full border border-[#d7e7f3] bg-white text-[#66b8ec] shadow-sm transition hover:border-[#0ea5e9] hover:bg-[#eef8fd]"
@@ -133,7 +119,6 @@ const HotelDetails = () => {
                   <HeartOutlined className="text-[20px]" />
                 </button>
 
-                {/* Share */}
                 <button
                   onClick={() => console.log("share clicked")}
                   className="flex h-11 w-11 items-center justify-center rounded-full border border-[#d7e7f3] bg-white text-[#66b8ec] shadow-sm transition hover:border-[#0ea5e9] hover:bg-[#eef8fd]"

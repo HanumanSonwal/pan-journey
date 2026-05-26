@@ -18,6 +18,14 @@ const nextConfig = {
         protocol: "https",
         hostname: "i.travelapi.com",
       },
+      {
+        protocol: "https",
+        hostname: "media-cdn.tripadvisor.com",
+      },
+      {
+        protocol: "https",
+        hostname: "placehold.co",
+      },
     ],
   },
 };

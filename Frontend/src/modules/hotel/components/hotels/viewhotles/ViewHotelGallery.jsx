@@ -7,7 +7,7 @@ const ViewHotelGallery = ({ images = [], onOpen }) => {
 
   const getHDImage = (url) => {
     if (!url) return "https://placehold.co/1000x700?text=Hotel";
-    return url.replace("_b.", "_z.");
+    return url.replace("_t.", "_y.").replace("_b.", "_y.");
   };
   const mainImage = getHDImage(galleryImages?.[0]?.ImageURL);
   const topRightImage = getHDImage(

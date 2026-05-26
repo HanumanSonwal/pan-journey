@@ -11,9 +11,8 @@ export const useHotelDetails = (payload) => {
     queryFn: () => HotelDetailApi(payload),
 
     enabled:
-      !!payload?.hotelKey &&
-      !!payload?.searchKey &&
-      !!payload?.hotelMeta?.hotelId,
+      !!payload?.hotelId &&
+      !!payload?.hotelMeta,
 
     staleTime: 1000 * 60 * 5,
 
