@@ -21,7 +21,13 @@ const ViewHotelGallery = ({ images = [], onOpen }) => {
     <div className="grid h-full grid-cols-1 gap-3 md:grid-cols-2">
       <div
         onClick={onOpen}
-        className="relative cursor-pointer overflow-hidden rounded"
+        className="relative cursor-pointer overflow-hidden rounded
+        h-[260px]
+sm:h-[320px]
+md:h-[420px]
+lg:h-[520px]
+xl:h-full
+2xl:h-full"
       >
         <Image
           src={mainImage}
