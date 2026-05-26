@@ -28,8 +28,6 @@ import {
   useWatch,
 } from "react-hook-form";
 
-import { z } from "zod";
-
 import RHFDatePicker from "@/components/ui/RHFinputs/RHFDatePicker";
 import RHFInput from "@/components/ui/RHFinputs/RHFInput";
 import RHFSelect from "@/components/ui/RHFinputs/RHFSelect";
@@ -43,332 +41,13 @@ import {
   useVerifyMobile,
 } from "../hooks/useProfile";
 
-// ================= COUNTRY + STATE + CITY DATA =================
+import {
+  countryStateCityData,
+  genderOptions,
+  maritalStatusOptions,
+} from "@/modules/shared/home/components/data/profileData";
 
-const countryStateCityData = {
-  India: {
-    Rajasthan: [
-      "Jaipur",
-      "Jodhpur",
-      "Kota",
-      "Ajmer",
-      "Udaipur",
-      "Bikaner",
-    ],
-
-    Gujarat: [
-      "Ahmedabad",
-      "Surat",
-      "Rajkot",
-      "Vadodara",
-    ],
-
-    Maharashtra: [
-      "Mumbai",
-      "Pune",
-      "Nagpur",
-      "Nashik",
-    ],
-  },
-
-  "United States": {
-    California: [
-      "Los Angeles",
-      "San Francisco",
-      "San Diego",
-      "Sacramento",
-    ],
-
-    Texas: [
-      "Houston",
-      "Dallas",
-      "Austin",
-      "San Antonio",
-    ],
-
-    Florida: [
-      "Miami",
-      "Orlando",
-      "Tampa",
-      "Jacksonville",
-    ],
-  },
-
-  Canada: {
-    Ontario: [
-      "Toronto",
-      "Ottawa",
-      "Hamilton",
-    ],
-
-    Alberta: [
-      "Calgary",
-      "Edmonton",
-    ],
-  },
-
-  Australia: {
-    Victoria: [
-      "Melbourne",
-    ],
-
-    Queensland: [
-      "Brisbane",
-      "Gold Coast",
-    ],
-  },
-
-  "United Kingdom": {
-    England: [
-      "London",
-      "Manchester",
-      "Liverpool",
-    ],
-
-    Scotland: [
-      "Edinburgh",
-      "Glasgow",
-    ],
-  },
-};
-
-// ================= GENDER OPTIONS =================
-
-const genderOptions = [
-  {
-    label: "Male",
-    value: "Male",
-  },
-
-  {
-    label: "Female",
-    value: "Female",
-  },
-
-  {
-    label: "Other",
-    value: "Other",
-  },
-];
-
-// ================= SCHEMA =================
-
-const schema = z
-  .object({
-    firstName: z
-      .string()
-      .trim()
-      .min(
-        1,
-        "First name required"
-      )
-      .max(
-        50,
-        "Maximum 50 characters allowed"
-      )
-      .regex(
-        /^[A-Za-z\s]+$/,
-        "Only alphabets are allowed"
-      ),
-
-    lastName: z
-      .string()
-      .trim()
-      .max(
-        50,
-        "Maximum 50 characters allowed"
-      )
-      .regex(
-        /^[A-Za-z\s]*$/,
-        "Only alphabets are allowed"
-      )
-      .optional(),
-
-    gender: z.enum(
-      [
-        "Male",
-        "Female",
-        "Other",
-      ],
-      {
-        errorMap: () => ({
-          message:
-            "Please select valid gender",
-        }),
-      }
-    ),
-
-    email: z
-      .string()
-      .trim()
-      .min(
-        1,
-        "Email is required"
-      )
-      .email(
-        "Invalid email address"
-      ),
-
-    mobile: z
-      .string()
-      .trim()
-      .min(
-        1,
-        "Mobile number is required"
-      )
-      .regex(
-        /^[6-9]\d{9}$/,
-        "Invalid mobile number"
-      ),
-
-    nationality: z
-      .string()
-      .min(
-        1,
-        "Nationality required"
-      ),
-
-    state: z
-      .string()
-      .min(
-        1,
-        "State required"
-      ),
-
-    city: z
-      .string()
-      .min(
-        1,
-        "City required"
-      ),
-
-    maritalStatus: z.enum(
-      [
-        "Single",
-        "Married",
-        "Divorced",
-        "Widowed",
-      ],
-      {
-        errorMap: () => ({
-          message:
-            "Please select marital status",
-        }),
-      }
-    ),
-
-    dateOfBirth: z
-      .any()
-      .nullable()
-      .refine(
-        (date) => {
-          if (!date) return false;
-
-          return dayjs(
-            date
-          ).isBefore(
-            dayjs(),
-            "day"
-          );
-        },
-        {
-          message:
-            "Future date not allowed",
-        }
-      ),
-
-    anniversary: z
-      .any()
-      .nullable()
-      .optional(),
-  })
-
-  .refine(
-    (data) => {
-      if (
-        !data.nationality ||
-        !data.state ||
-        !data.city
-      ) {
-        return true;
-      }
-
-      return (
-        countryStateCityData[
-          data.nationality
-        ]?.[
-          data.state
-        ]?.includes(
-          data.city
-        ) || false
-      );
-    },
-    {
-      message:
-        "Selected city does not belong to selected state",
-      path: ["city"],
-    }
-  )
-
-  .refine(
-    (data) => {
-      if (
-        data.maritalStatus ===
-        "Single"
-      ) {
-        return !data.anniversary;
-      }
-
-      return true;
-    },
-    {
-      message:
-        "Single person cannot add anniversary date",
-      path: ["anniversary"],
-    }
-  )
-
-  .refine(
-    (data) => {
-      if (
-        !data.dateOfBirth ||
-        !data.anniversary
-      ) {
-        return true;
-      }
-
-      return dayjs(
-        data.anniversary
-      ).isAfter(
-        dayjs(data.dateOfBirth),
-        "day"
-      );
-    },
-    {
-      message:
-        "Anniversary cannot be before date of birth",
-      path: ["anniversary"],
-    }
-  )
-
-  .refine(
-    (data) => {
-      if (!data.anniversary)
-        return true;
-
-      return dayjs(
-        data.anniversary
-      ).isBefore(
-        dayjs(),
-        "day"
-      );
-    },
-    {
-      message:
-        "Anniversary cannot be in future",
-      path: ["anniversary"],
-    }
-  );
+import { profileSchema } from "./schema/profileValidation";
 
 export default function ProfileOverview() {
   const { data: user } =
@@ -423,7 +102,8 @@ export default function ProfileOverview() {
   // ================= FORM =================
 
   const methods = useForm({
-    resolver: zodResolver(schema),
+    resolver:
+      zodResolver(profileSchema),
 
     mode: "onSubmit",
 
@@ -485,14 +165,12 @@ export default function ProfileOverview() {
 
   const filteredStateOptions =
     useMemo(() => {
-      if (
-        !selectedCountry
-      )
+      if (!selectedCountry)
         return [];
 
       return Object.keys(
         countryStateCityData[
-          selectedCountry
+        selectedCountry
         ] || {}
       ).map((state) => ({
         label: state,
@@ -512,9 +190,9 @@ export default function ProfileOverview() {
 
       return (
         countryStateCityData[
-          selectedCountry
+        selectedCountry
         ]?.[
-          selectedState
+        selectedState
         ] || []
       ).map((city) => ({
         label: city,
@@ -654,15 +332,15 @@ export default function ProfileOverview() {
       dateOfBirth:
         user.dateOfBirth
           ? dayjs(
-              user.dateOfBirth
-            )
+            user.dateOfBirth
+          )
           : null,
 
       anniversary:
         user.anniversary
           ? dayjs(
-              user.anniversary
-            )
+            user.anniversary
+          )
           : null,
     });
   }, [user, reset]);
@@ -700,16 +378,16 @@ export default function ProfileOverview() {
       dateOfBirth:
         data.dateOfBirth
           ? dayjs(
-              data.dateOfBirth
-            ).toISOString()
+            data.dateOfBirth
+          ).toISOString()
           : user?.dateOfBirth ||
-            null,
+          null,
 
       anniversary:
         data.anniversary
           ? dayjs(
-              data.anniversary
-            ).toISOString()
+            data.anniversary
+          ).toISOString()
           : null,
     };
   };
@@ -861,21 +539,23 @@ export default function ProfileOverview() {
                 )}
               </div>
 
-              {/* DOB */}
-
               <div>
                 {isEdit ? (
                   <RHFDatePicker
-  name="dateOfBirth"
-  label="Birth Date"
-  placeholder="Select Birth Date"
-  showToday={false}
-  disabledDate={(current) =>
-    current &&
-    current >= dayjs().endOf("day")
-  }
-/>
-                  
+                    name="dateOfBirth"
+                    label="Birth Date"
+                    placeholder="Select Birth Date"
+                    showToday={false}
+                    disabledDate={(
+                      current
+                    ) =>
+                      current &&
+                      current >=
+                      dayjs().endOf(
+                        "day"
+                      )
+                    }
+                  />
                 ) : (
                   <ViewField
                     label="Birth Date"
@@ -976,35 +656,9 @@ export default function ProfileOverview() {
                     name="maritalStatus"
                     label="Marital Status"
                     placeholder="Select Status"
-                    options={[
-                      {
-                        label:
-                          "Single",
-                        value:
-                          "Single",
-                      },
-
-                      {
-                        label:
-                          "Married",
-                        value:
-                          "Married",
-                      },
-
-                      {
-                        label:
-                          "Divorced",
-                        value:
-                          "Divorced",
-                      },
-
-                      {
-                        label:
-                          "Widowed",
-                        value:
-                          "Widowed",
-                      },
-                    ]}
+                    options={
+                      maritalStatusOptions
+                    }
                   />
                 ) : (
                   <ViewField
@@ -1027,12 +681,14 @@ export default function ProfileOverview() {
                       "Single"
                     }
                     showToday={false}
-                    disabledDate={(current) =>
+                    disabledDate={(
+                      current
+                    ) =>
                       current &&
                       current >
-                        dayjs().endOf(
-                          "day"
-                        )
+                      dayjs().endOf(
+                        "day"
+                      )
                     }
                   />
                 ) : (
