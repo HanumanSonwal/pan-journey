@@ -3,6 +3,7 @@ import {
   CalendarOutlined,
   DashboardOutlined,
   DollarOutlined,
+  FileTextOutlined,
   UserAddOutlined,
   UserOutlined,
 } from "@ant-design/icons";
@@ -47,6 +48,31 @@ export const menuItems = [
     icon: <CalendarOutlined />,
     label: <Link href="/dashboard/Markups">Markups</Link>,
     module: "Markups", // ✅ FIX
+  },
+
+  {
+    key: "/dashboard/cms",
+    icon: <FileTextOutlined />,
+    label: "CMS",
+    children: [
+      {
+        key: "/dashboard/cms/pages",
+        label: <Link href="/dashboard/cms/pages">Pages</Link>,
+        module: "cmsPages",
+      },
+
+      {
+        key: "/dashboard/cms/hotel-seo",
+        label: <Link href="/dashboard/cms/hotel-seo">Hotel SEO</Link>,
+        module: "hotelSeo",
+      },
+
+      {
+        key: "/dashboard/cms/city-seo",
+        label: <Link href="/dashboard/cms/city-seo">City SEO</Link>,
+        module: "citySeo",
+      },
+    ],
   },
 
   {

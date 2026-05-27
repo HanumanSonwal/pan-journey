@@ -7,17 +7,19 @@ import authRoutes from "./modules/auth/admin-auth/auth.routes.js";
 import otpRoutes from "./modules/auth/customer-auth/auth.routes.js";
 import profileRoutes from "./modules/auth/customer-auth/customerProfile/profile.routes.js";
 import citySearch from "./modules/citysearch/supplierCity.routes.js";
+import cmsRoutes from "./modules/cms/cms.routes.js";
+import dashboardhotelsearch from "./modules/dashboardHotellSearch/hotel.routes.js";
 import destinationRoutes from "./modules/exploreDesitanation/desitanation.routes.js";
 import hotelSearch from "./modules/hotel/hotel.route.js";
-import roleRoutes from "./modules/role/role.routes.js";
-import userRoutes from "./modules/user/user.routes.js";
-import countryRoutes from "./modules/priceMarkup/countryData/country.routes.js";
-import stateRoutes from "./modules/priceMarkup/stateData/state.routes.js";
-import markeupRoutes from "./modules/priceMarkup/markup/markup.routes.js";
 import hotelDetails from "./modules/hotel/hotelDetails/hotel.routes.js";
 import bookingRoutes from "./modules/hotel/hotelTempBooking/booking.routes.js";
-import dashboardhotelsearch from "./modules/dashboardHotellSearch/hotel.routes.js";
 import seoContentRoutes from "./modules/hotel/seo/hotelcityseo/seoContent.routes.js";
+import mediaRoutes from "./modules/media/media.routes.js";
+import countryRoutes from "./modules/priceMarkup/countryData/country.routes.js";
+import markeupRoutes from "./modules/priceMarkup/markup/markup.routes.js";
+import stateRoutes from "./modules/priceMarkup/stateData/state.routes.js";
+import roleRoutes from "./modules/role/role.routes.js";
+import userRoutes from "./modules/user/user.routes.js";
 
 import customerProfileRoutes from "./modules/auth/customer-auth/customer-documents/customerDocument.routes.js";
 import testRoutes from "./test.routes.js";
@@ -39,7 +41,7 @@ app.use(
       "https://panjourney.com",
     ],
     credentials: true,
-  })
+  }),
 );
 
 app.use(cookieParser());
@@ -47,13 +49,15 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/media", mediaRoutes);
 
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/seo-content", seoContentRoutes);
+app.use("/api/v1/cms", cmsRoutes);
 app.use("/api/v1/roles", roleRoutes);
 app.use("/api/v1/Seacrhcity", citySearch);
 app.use("/api/v1/Hotels", hotelSearch);
-app.use( "/api/booking",bookingRoutes);
+app.use("/api/booking", bookingRoutes);
 
 app.use("/api/v1/customer/auth/", otpRoutes);
 app.use("/api/v1/customer/profile", profileRoutes);
