@@ -1,92 +1,92 @@
-// import { supplierAPI } from "../../config/supplierApi.js";
-// import { getAuthHeader } from "../../config/supplierAuth.service.js";
+// // import { supplierAPI } from "../../config/supplierApi.js";
+// // import { getAuthHeader } from "../../config/supplierAuth.service.js";
 
-// export const hotelSearchService = async ({
-//   checkInDate,
-//   checkOutDate,
-//   rooms,
-//   destination,
-//   destinationId,
-//   roomCount,
-// }) => {
-//   try {
-//     const payload = {
-//       ...getAuthHeader(),
+// // export const hotelSearchService = async ({
+// //   checkInDate,
+// //   checkOutDate,
+// //   rooms,
+// //   destination,
+// //   destinationId,
+// //   roomCount,
+// // }) => {
+// //   try {
+// //     const payload = {
+// //       ...getAuthHeader(),
 
-//       HotelSeedValue: "",
+// //       HotelSeedValue: "",
 
-//       CheckInDate: checkInDate,
-//       CheckOutDate: checkOutDate,
+// //       CheckInDate: checkInDate,
+// //       CheckOutDate: checkOutDate,
 
-//       HotelRoomDetail: rooms,
+// //       HotelRoomDetail: rooms,
 
-//       fullName: destination,
-//       id: destinationId,
+// //       fullName: destination,
+// //       id: destinationId,
 
-//       RoomCount: roomCount,
-//     };
+// //       RoomCount: roomCount,
+// //     };
 
-//     const { data } = await supplierAPI.post(
-//       "/HotelHost/HotelNewAPIService.svc/JSONService/HotelSearch",
-//       payload
-//     );
+// //     const { data } = await supplierAPI.post(
+// //       "/HotelHost/HotelNewAPIService.svc/JSONService/HotelSearch",
+// //       payload
+// //     );
 
-//     return data;
-//   } catch (error) {
-//     throw error.response?.data || error.message;
-//   }
-// };
+// //     return data;
+// //   } catch (error) {
+// //     throw error.response?.data || error.message;
+// //   }
+// // };
 
-// import { supplierAPI } from "../../config/supplierApi.js";
-// import { getAuthHeader } from "../../config/supplierAuth.service.js";
+// // import { supplierAPI } from "../../config/supplierApi.js";
+// // import { getAuthHeader } from "../../config/supplierAuth.service.js";
 
-// export const hotelSearchService = async (body) => {
-//   try {
-//     const payload = {
-//       ...getAuthHeader(),
+// // export const hotelSearchService = async (body) => {
+// //   try {
+// //     const payload = {
+// //       ...getAuthHeader(),
 
-//       HotelSeedValue: "",
+// //       HotelSeedValue: "",
 
-//       CheckInDate: body.checkInDate,
-//       CheckOutDate: body.checkOutDate,
+// //       CheckInDate: body.checkInDate,
+// //       CheckOutDate: body.checkOutDate,
 
-//       HotelRoomDetail: body.rooms,
+// //       HotelRoomDetail: body.rooms,
 
-//       fullName: body.destination,
-//       id: body.destinationId,
+// //       fullName: body.destination,
+// //       id: body.destinationId,
 
-//       RoomCount: body.roomCount,
-//     };
+// //       RoomCount: body.roomCount,
+// //     };
 
-//     console.log(
-//       "FINAL PAYLOAD =>",
-//       JSON.stringify(payload, null, 2)
-//     );
+// //     console.log(
+// //       "FINAL PAYLOAD =>",
+// //       JSON.stringify(payload, null, 2)
+// //     );
 
-//     const response = await supplierAPI.post(
-//       "/JSONService/HotelSearch",
-//       payload
-//     );
+// //     const response = await supplierAPI.post(
+// //       "/JSONService/HotelSearch",
+// //       payload
+// //     );
 
-//     console.log("SUPPLIER RESPONSE =>", response.data);
+// //     console.log("SUPPLIER RESPONSE =>", response.data);
 
-//     return response.data;
-//   } catch (error) {
-//     console.log("FULL ERROR =>");
+// //     return response.data;
+// //   } catch (error) {
+// //     console.log("FULL ERROR =>");
 
-//     if (error.response) {
-//       console.log(error.response.data);
-//       console.log(error.response.status);
-//       console.log(error.response.headers);
+// //     if (error.response) {
+// //       console.log(error.response.data);
+// //       console.log(error.response.status);
+// //       console.log(error.response.headers);
 
-//       throw error.response.data;
-//     }
+// //       throw error.response.data;
+// //     }
 
-//     console.log(error.message);
+// //     console.log(error.message);
 
-//     throw error.message;
-//   }
-// };
+// //     throw error.message;
+// //   }
+// // };
 
 import { supplierAPI } from "../../config/supplierApi.js";
 import { getAuthHeader } from "../../config/supplierAuth.service.js";

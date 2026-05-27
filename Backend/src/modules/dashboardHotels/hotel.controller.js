@@ -1,40 +1,40 @@
-// import { hotelSearchService } from "./hotel.service.js";
-// import { sendSuccess, sendError } from "../../utils/response/ApiResponse.js";
+// // import { hotelSearchService } from "./hotel.service.js";
+// // import { sendSuccess, sendError } from "../../utils/response/ApiResponse.js";
 
-// export const hotelSearch = async (req, res) => {
-//   try {
-//     const {
-//       checkInDate,
-//       checkOutDate,
-//       rooms,
-//       destination,
-//       destinationId,
-//       roomCount,
-//     } = req.body;
+// // export const hotelSearch = async (req, res) => {
+// //   try {
+// //     const {
+// //       checkInDate,
+// //       checkOutDate,
+// //       rooms,
+// //       destination,
+// //       destinationId,
+// //       roomCount,
+// //     } = req.body;
 
-//     const response = await hotelSearchService({
-//       checkInDate,
-//       checkOutDate,
-//       rooms,
-//       destination,
-//       destinationId,
-//       roomCount,
-//     });
+// //     const response = await hotelSearchService({
+// //       checkInDate,
+// //       checkOutDate,
+// //       rooms,
+// //       destination,
+// //       destinationId,
+// //       roomCount,
+// //     });
 
-//     return sendSuccess(
-//       res,
-//       "Hotel search fetched successfully",
-//       response
-//     );
-//   } catch (error) {
-//     return sendError(
-//       res,
-//       "Failed to fetch hotel search",
-//       500,
-//       error
-//     );
-//   }
-// };
+// //     return sendSuccess(
+// //       res,
+// //       "Hotel search fetched successfully",
+// //       response
+// //     );
+// //   } catch (error) {
+// //     return sendError(
+// //       res,
+// //       "Failed to fetch hotel search",
+// //       500,
+// //       error
+// //     );
+// //   }
+// // };
 
 import { hotelSearchService } from "./hotel.service.js";
 import { sendSuccess, sendError } from "../../utils/response/ApiResponse.js";

@@ -8,7 +8,7 @@ import otpRoutes from "./modules/auth/customer-auth/auth.routes.js";
 import profileRoutes from "./modules/auth/customer-auth/customerProfile/profile.routes.js";
 import citySearch from "./modules/citysearch/supplierCity.routes.js";
 import cmsRoutes from "./modules/cms/cms.routes.js";
-import dashboardhotelsearch from "./modules/dashboardHotellSearch/hotel.routes.js";
+import dashboardhotelsearch from "./modules/dashboardHotels/hotel.routes.js";
 import destinationRoutes from "./modules/exploreDesitanation/desitanation.routes.js";
 import hotelSearch from "./modules/hotel/hotel.route.js";
 import hotelDetails from "./modules/hotel/hotelDetails/hotel.routes.js";
