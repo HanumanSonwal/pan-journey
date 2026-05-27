@@ -198,11 +198,12 @@ const RoomOptions = ({ ratePlans = [] }) => {
                 <Button
                   type="primary"
                   size="large"
-                  className="!mt-5 !h-[48px] w-full !rounded-lg !border-0 !font-medium !shadow-md hover:!opacity-95"
-                  style={{
-                    background:
-                      "linear-gradient(180deg,#72C0F0 0%,#0F6A75 100%)",
-                  }}
+                  className="!mt-5 !h-[48px] w-full rounded! bg-[#0f766e]! text-sm font-semibold tracking-wide text-white! transition-all duration-200 hover:bg-[#0d5f58] active:scale-[0.98]"
+                  // className="!mt-5 !h-[48px] w-full !rounded-lg !border-0 !font-medium !shadow-md hover:!opacity-95"
+                  // style={{
+                  //   background:
+                  //     "linear-gradient(180deg,#72C0F0 0%,#0F6A75 100%)",
+                  // }}
                 >
                   Select Room
                 </Button>
@@ -212,10 +213,10 @@ const RoomOptions = ({ ratePlans = [] }) => {
             {!!detail?.CancellationPolicy && (
               <div className="mx-5 mt-2 mb-5 rounded border border-[#fde7cf] bg-[#fffaf5] p-5 shadow-sm">
                 {/* Header */}
-                <div className=" flex items-center gap-4">
+                <div className="flex items-center gap-4">
                   <div className="h-2 w-2 rounded-full bg-[#ea580c]" />
 
-                  <p className=" mb-0! font-semibold text-[#9a3412]">
+                  <p className="mb-0! font-semibold text-[#9a3412]">
                     Cancellation Policy
                   </p>
                 </div>

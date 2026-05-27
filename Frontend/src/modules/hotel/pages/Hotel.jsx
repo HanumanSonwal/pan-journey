@@ -35,15 +35,10 @@ const defaultFilters = {
 
 export default function HotelContent() {
   const searchParams = useSearchParams();
-
   const [mounted, setMounted] = useState(false);
-
   const [draftSearchData, setDraftSearchData] = useState(defaultSearchData);
-
   const [searchData, setSearchData] = useState(defaultSearchData);
-
   const [filters, setFilters] = useState(defaultFilters);
-
   const [sort, setSort] = useState("recommended");
 
   // MOUNT

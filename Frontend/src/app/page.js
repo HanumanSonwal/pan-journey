@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
-
 import Herobanner from "@/modules/shared/home/components/cashback_sections/OfferBanner";
 import ComingSoonSection from "@/modules/shared/home/components/ComingSoonSection";
 import DestinationsSection from "@/modules/shared/home/components/DestinationsSection";

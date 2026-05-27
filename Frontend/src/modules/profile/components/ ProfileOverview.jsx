@@ -1,32 +1,11 @@
 "use client";
 
-import {
-  CheckCircleFilled,
-  EditOutlined,
-} from "@ant-design/icons";
-
+import { CheckCircleFilled, EditOutlined } from "@ant-design/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-import {
-  Button,
-  Divider,
-  Input,
-  message,
-} from "antd";
-
+import { Button, Divider, Input, message } from "antd";
 import dayjs from "dayjs";
-
-import {
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-
-import {
-  FormProvider,
-  useForm,
-  useWatch,
-} from "react-hook-form";
+import { memo, useEffect, useMemo, useState } from "react";
+import { FormProvider, useForm, useWatch } from "react-hook-form";
 
 import RHFDatePicker from "@/components/ui/RHFinputs/RHFDatePicker";
 import RHFInput from "@/components/ui/RHFinputs/RHFInput";
@@ -49,246 +28,349 @@ import {
 
 import { profileSchema } from "./schema/profileValidation";
 
+const ViewField = memo(({ label, value, type }) => (
+  <div className="space-y-[2px]">
+    <p className="text-[14px] font-medium text-[#4b4b4b]">{label}</p>
+    <p className="text-[16px] font-semibold text-[#1f1f1f]">
+      {value !== null && value !== undefined && value !== "" ? (
+        type === "date" ? (
+          dayjs(value).format("DD MMM YYYY")
+        ) : (
+          String(value)
+        )
+      ) : (
+        <span className="text-[13px] font-medium text-[#63B3ED]">
+          Add {label}
+        </span>
+      )}
+    </p>
+  </div>
+));
+
+const VerifySection = ({
+  name,
+  label,
+  verified,
+  otp,
+  setOtp,
+  showOtp,
+  setShowOtp,
+  trigger,
+  formValues,
+  sendOtp,
+  verifyOtp,
+  setVerified,
+}) => {
+  const handleSendOtp = async () => {
+    if (sendOtp.isPending) return;
+
+    const valid = await trigger(name);
+
+    if (!valid) return;
+
+    sendOtp.mutate({
+      [name]: formValues[name],
+    });
+
+    setShowOtp(true);
+  };
+  const handleVerifyOtp = () => {
+    if (verifyOtp.isPending) return;
+
+    if (otp.length !== 6) {
+      message.error("Enter valid OTP");
+      return;
+    }
+
+    verifyOtp.mutate(
+      {
+        [name]: formValues[name],
+        otp,
+      },
+      {
+        onSuccess: () => {
+          setVerified(true);
+          setShowOtp(false);
+
+          message.success(`${label} verified`);
+        },
+      },
+    );
+  };
+  return (
+    <>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
+        <div className="w-full">
+          <RHFInput name={name} label={label} />
+        </div>
+
+        <Button
+          className="!h-[42px] !min-w-[110px]"
+          disabled={verified}
+          loading={sendOtp.isPending}
+          onClick={handleSendOtp}
+        >
+          Verify
+        </Button>
+
+        {verified && (
+          <CheckCircleFilled className="mb-[10px] text-[18px] text-green-500" />
+        )}
+      </div>
+
+      {showOtp && (
+        <div className="mt-2 flex gap-2">
+          <Input
+            className="!h-[42px]"
+            placeholder="6 digit OTP"
+            maxLength={6}
+            value={otp}
+            onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
+          />
+
+          <Button
+            className="!h-[42px] !px-5"
+            loading={verifyOtp.isPending}
+            onClick={handleVerifyOtp}
+          >
+            OK
+          </Button>
+        </div>
+      )}
+    </>
+  );
+};
+
+const defaultValues = {
+  firstName: "",
+  lastName: "",
+  gender: "",
+  email: "",
+  mobile: "",
+  city: "",
+  state: "",
+  nationality: "",
+  maritalStatus: "",
+  dateOfBirth: null,
+  anniversary: null,
+};
+
+const toOptions = (arr = []) =>
+  arr.map((item) => ({
+    label: item,
+    value: item,
+  }));
+
+const profileFields = ({
+  selectedCountry,
+  selectedState,
+  filteredStateOptions,
+  filteredCityOptions,
+  maritalStatus,
+}) => [
+  {
+    name: "firstName",
+    label: "First Name",
+    component: RHFInput,
+  },
+  {
+    name: "lastName",
+    label: "Last Name",
+    component: RHFInput,
+  },
+  {
+    name: "gender",
+    label: "Gender",
+    component: RHFSelect,
+    props: {
+      placeholder: "Select Gender",
+      options: genderOptions,
+    },
+  },
+  {
+    name: "dateOfBirth",
+    label: "Birth Date",
+    component: RHFDatePicker,
+    type: "date",
+    props: {
+      placeholder: "Select Birth Date",
+      showToday: false,
+      disabledDate: (current) => current && current >= dayjs().endOf("day"),
+    },
+  },
+  {
+    name: "nationality",
+    label: "Nationality",
+    component: RHFSelect,
+    props: {
+      placeholder: "Select Country",
+      options: Object.keys(countryStateCityData).map((country) => ({
+        label: country,
+        value: country,
+      })),
+    },
+  },
+  {
+    name: "state",
+    label: "State",
+    component: RHFSelect,
+    props: {
+      placeholder: selectedCountry ? "Select State" : "Select Country First",
+      disabled: !selectedCountry,
+      options: filteredStateOptions,
+    },
+  },
+  {
+    name: "city",
+    label: "City",
+    component: RHFSelect,
+    props: {
+      placeholder: selectedState ? "Select City" : "Select State First",
+      disabled: !selectedState,
+      options: filteredCityOptions,
+    },
+  },
+  {
+    name: "maritalStatus",
+    label: "Marital Status",
+    component: RHFSelect,
+    props: {
+      placeholder: "Select Status",
+      options: maritalStatusOptions,
+    },
+  },
+  {
+    name: "anniversary",
+    label: "Anniversary",
+    component: RHFDatePicker,
+    type: "date",
+    props: {
+      placeholder: "Select Anniversary",
+      disabled: maritalStatus === "Single",
+      showToday: false,
+      disabledDate: (current) => current && current > dayjs().endOf("day"),
+    },
+  },
+];
+
 export default function ProfileOverview() {
-  const { data: user } =
-    useProfile();
-
-  const updateProfile =
-    useUpdateProfile();
-
-  const sendEmailOtp =
-    useSendEmailOtp();
-
-  const verifyEmail =
-    useVerifyEmail();
-
-  const sendMobileOtp =
-    useSendMobileOtp();
-
-  const verifyMobile =
-    useVerifyMobile();
-
-  const [isEdit, setIsEdit] =
-    useState(false);
-
-  const [emailOtp, setEmailOtp] =
-    useState("");
-
-  const [
-    mobileOtp,
-    setMobileOtp,
-  ] = useState("");
-
-  const [
-    showEmailOtp,
-    setShowEmailOtp,
-  ] = useState(false);
-
-  const [
-    showMobileOtp,
-    setShowMobileOtp,
-  ] = useState(false);
-
-  const [
-    emailVerified,
-    setEmailVerified,
-  ] = useState(false);
-
-  const [
-    mobileVerified,
-    setMobileVerified,
-  ] = useState(false);
+  const { data: user } = useProfile();
+  const updateProfile = useUpdateProfile();
+  const sendEmailOtp = useSendEmailOtp();
+  const verifyEmail = useVerifyEmail();
+  const sendMobileOtp = useSendMobileOtp();
+  const verifyMobile = useVerifyMobile();
+  const [isEdit, setIsEdit] = useState(false);
+  const [emailOtp, setEmailOtp] = useState("");
+  const [mobileOtp, setMobileOtp] = useState("");
+  const [showEmailOtp, setShowEmailOtp] = useState(false);
+  const [showMobileOtp, setShowMobileOtp] = useState(false);
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [mobileVerified, setMobileVerified] = useState(false);
 
   // ================= FORM =================
 
   const methods = useForm({
-    resolver:
-      zodResolver(profileSchema),
-
+    resolver: zodResolver(profileSchema),
     mode: "onSubmit",
-
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      gender: "",
-      email: "",
-      mobile: "",
-      city: "",
-      state: "",
-      nationality: "",
-      maritalStatus: "",
-      dateOfBirth: null,
-      anniversary: null,
-    },
+    defaultValues,
   });
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    getValues,
-    trigger,
-    setValue,
-  } = methods;
+  const { control, handleSubmit, reset, trigger, setValue } = methods;
 
   // ================= WATCHERS =================
 
-  const email = useWatch({
+  const formValues = useWatch({
     control,
-    name: "email",
   });
 
-  const mobile = useWatch({
-    control,
-    name: "mobile",
-  });
-
-  const selectedCountry =
-    useWatch({
-      control,
-      name: "nationality",
-    });
-
-  const selectedState =
-    useWatch({
-      control,
-      name: "state",
-    });
-
-  const maritalStatus =
-    useWatch({
-      control,
-      name: "maritalStatus",
-    });
+  const {
+    email,
+    mobile,
+    nationality: selectedCountry,
+    state: selectedState,
+    maritalStatus,
+  } = formValues;
 
   // ================= FILTERED STATE OPTIONS =================
 
-  const filteredStateOptions =
-    useMemo(() => {
-      if (!selectedCountry)
-        return [];
-
-      return Object.keys(
-        countryStateCityData[
-        selectedCountry
-        ] || {}
-      ).map((state) => ({
-        label: state,
-        value: state,
-      }));
-    }, [selectedCountry]);
+  const filteredStateOptions = useMemo(
+    () => toOptions(Object.keys(countryStateCityData[selectedCountry] || {})),
+    [selectedCountry],
+  );
 
   // ================= FILTERED CITY OPTIONS =================
 
-  const filteredCityOptions =
-    useMemo(() => {
-      if (
-        !selectedCountry ||
-        !selectedState
-      )
-        return [];
+  const filteredCityOptions = useMemo(
+    () =>
+      toOptions(countryStateCityData[selectedCountry]?.[selectedState] || []),
+    [selectedCountry, selectedState],
+  );
 
-      return (
-        countryStateCityData[
-        selectedCountry
-        ]?.[
-        selectedState
-        ] || []
-      ).map((city) => ({
-        label: city,
-        value: city,
-      }));
-    }, [
+  const fields = useMemo(
+    () =>
+      profileFields({
+        selectedCountry,
+        selectedState,
+        filteredStateOptions,
+        filteredCityOptions,
+        maritalStatus,
+      }),
+    [
       selectedCountry,
       selectedState,
-    ]);
+      filteredStateOptions,
+      filteredCityOptions,
+      maritalStatus,
+    ],
+  );
 
   // ================= RESET STATE + CITY =================
+  useEffect(() => {
+    if (!isEdit) return;
+
+    setValue("state", "");
+    setValue("city", "");
+  }, [selectedCountry]);
 
   useEffect(() => {
-    setValue(
-      "state",
-      ""
-    );
+    if (!isEdit || !selectedState) return;
 
-    setValue(
-      "city",
-      ""
-    );
-  }, [
-    selectedCountry,
-    setValue,
-  ]);
-
-  useEffect(() => {
-    setValue(
-      "city",
-      ""
-    );
-  }, [
-    selectedState,
-    setValue,
-  ]);
+    setValue("city", "");
+  }, [selectedState]);
 
   // ================= RESET ANNIVERSARY =================
 
   useEffect(() => {
-    if (
-      maritalStatus ===
-      "Single"
-    ) {
-      setValue(
-        "anniversary",
-        null
-      );
+    if (maritalStatus === "Single") {
+      setValue("anniversary", null);
     }
-  }, [
-    maritalStatus,
-    setValue,
-  ]);
+  }, [maritalStatus, setValue]);
 
   // ================= RESET OTP =================
 
+  const resetOtpState = (setVerified, setOtp, setShow) => {
+    setVerified(false);
+    setOtp("");
+    setShow(false);
+  };
+
   useEffect(() => {
-    setEmailVerified(false);
-
-    setEmailOtp("");
-
-    setShowEmailOtp(false);
+    resetOtpState(setEmailVerified, setEmailOtp, setShowEmailOtp);
   }, [email]);
 
   useEffect(() => {
-    setMobileVerified(false);
-
-    setMobileOtp("");
-
-    setShowMobileOtp(false);
+    resetOtpState(setMobileVerified, setMobileOtp, setShowMobileOtp);
   }, [mobile]);
 
   // ================= SPLIT NAME =================
 
-  const splitName = (
-    fullName
-  ) => {
-    if (!fullName) {
-      return {
-        firstName: "",
-        lastName: "",
-      };
-    }
-
-    const parts =
-      fullName
-        .trim()
-        .split(/\s+/);
+  const splitName = (name = "") => {
+    const [firstName, ...last] = name.trim().split(/\s+/);
 
     return {
-      firstName:
-        parts[0] || "",
-
-      lastName: parts
-        .slice(1)
-        .join(" "),
+      firstName: firstName || "",
+      lastName: last.join(" "),
     };
   };
 
@@ -297,163 +379,54 @@ export default function ProfileOverview() {
   useEffect(() => {
     if (!user) return;
 
-    const {
-      firstName,
-      lastName,
-    } = splitName(user.name);
+    const nameData = splitName(user.name);
 
     reset({
-      firstName,
-      lastName,
-
-      gender:
-        user.gender || "",
-
-      email:
-        user.email || "",
-
-      mobile:
-        user.mobile || "",
-
-      city:
-        user.city || "",
-
-      state:
-        user.state || "",
-
-      nationality:
-        user.nationality ||
-        "",
-
-      maritalStatus:
-        user.maritalStatus ||
-        "",
-
-      dateOfBirth:
-        user.dateOfBirth
-          ? dayjs(
-            user.dateOfBirth
-          )
-          : null,
-
-      anniversary:
-        user.anniversary
-          ? dayjs(
-            user.anniversary
-          )
-          : null,
+      ...defaultValues,
+      ...nameData,
+      gender: user.gender || "",
+      email: user.email || "",
+      mobile: user.mobile || "",
+      city: user.city || "",
+      state: user.state || "",
+      nationality: user.nationality || "",
+      maritalStatus: user.maritalStatus || "",
+      dateOfBirth: user.dateOfBirth ? dayjs(user.dateOfBirth) : null,
+      anniversary: user.anniversary ? dayjs(user.anniversary) : null,
     });
   }, [user, reset]);
 
   // ================= PAYLOAD =================
 
-  const buildPayload = (
-    data,
-    user
-  ) => {
-    return {
-      name: [
-        data.firstName,
-        data.lastName,
-      ]
-        .filter(Boolean)
-        .join(" "),
-
-      email: data.email,
-
-      mobile: data.mobile,
-
-      gender: data.gender,
-
-      city: data.city,
-
-      state: data.state,
-
-      nationality:
-        data.nationality,
-
-      maritalStatus:
-        data.maritalStatus,
-
-      dateOfBirth:
-        data.dateOfBirth
-          ? dayjs(
-            data.dateOfBirth
-          ).toISOString()
-          : user?.dateOfBirth ||
-          null,
-
-      anniversary:
-        data.anniversary
-          ? dayjs(
-            data.anniversary
-          ).toISOString()
-          : null,
-    };
-  };
+  const buildPayload = (data, user) => ({
+    name: [data.firstName, data.lastName].filter(Boolean).join(" "),
+    email: data.email,
+    mobile: data.mobile,
+    gender: data.gender,
+    city: data.city,
+    state: data.state,
+    nationality: data.nationality,
+    maritalStatus: data.maritalStatus,
+    dateOfBirth: data.dateOfBirth
+      ? dayjs(data.dateOfBirth).toISOString()
+      : user?.dateOfBirth || null,
+    anniversary: data.anniversary
+      ? dayjs(data.anniversary).toISOString()
+      : null,
+  });
 
   // ================= SUBMIT =================
 
-  const onSubmit = (
-    data
-  ) => {
-    const payload =
-      buildPayload(
-        data,
-        user
-      );
-
-    updateProfile.mutate(
-      payload,
-      {
-        onSuccess: () => {
-          message.success(
-            "Profile updated successfully"
-          );
-
-          setIsEdit(false);
-        },
-
-        onError: () => {
-          message.error(
-            "Failed to update profile"
-          );
-        },
-      }
-    );
-  };
+  const onSubmit = (data) =>
+    updateProfile.mutate(buildPayload(data, user), {
+      onSuccess: () => {
+        message.success("Profile updated successfully");
+        setIsEdit(false);
+      },
+      onError: () => message.error("Failed to update profile"),
+    });
 
   // ================= VIEW FIELD =================
-
-  const ViewField = ({
-    label,
-    value,
-    type,
-  }) => {
-    return (
-      <div className="space-y-[2px]">
-        <p className="text-[14px] font-medium text-[#4b4b4b]">
-          {label}
-        </p>
-
-        <p className="text-[16px] font-semibold text-[#1f1f1f]">
-          {value ? (
-            type === "date" ? (
-              dayjs(value).format(
-                "DD MMM YYYY"
-              )
-            ) : (
-              value.toString()
-            )
-          ) : (
-            <span className="text-[13px] font-medium text-[#63B3ED]">
-              Add {label}
-            </span>
-          )}
-        </p>
-      </div>
-    );
-  };
 
   return (
     <div className="min-h-screen">
@@ -464,374 +437,55 @@ export default function ProfileOverview() {
           </h2>
 
           {!isEdit && (
-            <Button
-              icon={
-                <EditOutlined />
-              }
-              onClick={() =>
-                setIsEdit(true)
-              }
-            >
+            <Button icon={<EditOutlined />} onClick={() => setIsEdit(true)}>
               Edit Details
             </Button>
           )}
         </div>
 
-        <FormProvider
-          {...methods}
-        >
-          <form
-            onSubmit={handleSubmit(
-              onSubmit
-            )}
-          >
+        <FormProvider {...methods}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-
-              <div>
-                {isEdit ? (
-                  <RHFInput
-                    name="firstName"
-                    label="First Name"
-                  />
-                ) : (
-                  <ViewField
-                    label="First Name"
-                    value={getValues(
-                      "firstName"
+              {fields.map(
+                ({ name, label, component: Component, type, props }) => (
+                  <div key={name}>
+                    {isEdit ? (
+                      <Component name={name} label={label} {...props} />
+                    ) : (
+                      <ViewField
+                        label={label}
+                        value={formValues[name]}
+                        type={type}
+                      />
                     )}
-                  />
-                )}
-              </div>
-
-              <div>
-                {isEdit ? (
-                  <RHFInput
-                    name="lastName"
-                    label="Last Name"
-                  />
-                ) : (
-                  <ViewField
-                    label="Last Name"
-                    value={getValues(
-                      "lastName"
-                    )}
-                  />
-                )}
-              </div>
-
-              <div>
-                {isEdit ? (
-                  <RHFSelect
-                    name="gender"
-                    label="Gender"
-                    placeholder="Select Gender"
-                    options={
-                      genderOptions
-                    }
-                  />
-                ) : (
-                  <ViewField
-                    label="Gender"
-                    value={getValues(
-                      "gender"
-                    )}
-                  />
-                )}
-              </div>
-
-              <div>
-                {isEdit ? (
-                  <RHFDatePicker
-                    name="dateOfBirth"
-                    label="Birth Date"
-                    placeholder="Select Birth Date"
-                    showToday={false}
-                    disabledDate={(
-                      current
-                    ) =>
-                      current &&
-                      current >=
-                      dayjs().endOf(
-                        "day"
-                      )
-                    }
-                  />
-                ) : (
-                  <ViewField
-                    label="Birth Date"
-                    value={getValues(
-                      "dateOfBirth"
-                    )}
-                    type="date"
-                  />
-                )}
-              </div>
-
-              <div>
-                {isEdit ? (
-                  <RHFSelect
-                    name="nationality"
-                    label="Nationality"
-                    placeholder="Select Country"
-                    options={Object.keys(
-                      countryStateCityData
-                    ).map(
-                      (
-                        country
-                      ) => ({
-                        label:
-                          country,
-                        value:
-                          country,
-                      })
-                    )}
-                  />
-                ) : (
-                  <ViewField
-                    label="Nationality"
-                    value={getValues(
-                      "nationality"
-                    )}
-                  />
-                )}
-              </div>
-
-              <div>
-                {isEdit ? (
-                  <RHFSelect
-                    name="state"
-                    label="State"
-                    placeholder={
-                      selectedCountry
-                        ? "Select State"
-                        : "Select Country First"
-                    }
-                    disabled={
-                      !selectedCountry
-                    }
-                    options={
-                      filteredStateOptions
-                    }
-                  />
-                ) : (
-                  <ViewField
-                    label="State"
-                    value={getValues(
-                      "state"
-                    )}
-                  />
-                )}
-              </div>
-
-              <div>
-                {isEdit ? (
-                  <RHFSelect
-                    name="city"
-                    label="City"
-                    placeholder={
-                      selectedState
-                        ? "Select City"
-                        : "Select State First"
-                    }
-                    disabled={
-                      !selectedState
-                    }
-                    options={
-                      filteredCityOptions
-                    }
-                  />
-                ) : (
-                  <ViewField
-                    label="City"
-                    value={getValues(
-                      "city"
-                    )}
-                  />
-                )}
-              </div>
-
-              <div>
-                {isEdit ? (
-                  <RHFSelect
-                    name="maritalStatus"
-                    label="Marital Status"
-                    placeholder="Select Status"
-                    options={
-                      maritalStatusOptions
-                    }
-                  />
-                ) : (
-                  <ViewField
-                    label="Marital Status"
-                    value={getValues(
-                      "maritalStatus"
-                    )}
-                  />
-                )}
-              </div>
-
-              <div>
-                {isEdit ? (
-                  <RHFDatePicker
-                    name="anniversary"
-                    label="Anniversary"
-                    placeholder="Select Anniversary"
-                    disabled={
-                      maritalStatus ===
-                      "Single"
-                    }
-                    showToday={false}
-                    disabledDate={(
-                      current
-                    ) =>
-                      current &&
-                      current >
-                      dayjs().endOf(
-                        "day"
-                      )
-                    }
-                  />
-                ) : (
-                  <ViewField
-                    label="Anniversary"
-                    value={getValues(
-                      "anniversary"
-                    )}
-                    type="date"
-                  />
-                )}
-              </div>
+                  </div>
+                ),
+              )}
             </div>
 
             <Divider className="!my-8" />
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-
               {/* EMAIL */}
 
               <div>
                 {isEdit ? (
-                  <>
-                    <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
-                      <div className="w-full">
-                        <RHFInput
-                          name="email"
-                          label="Email"
-                        />
-                      </div>
-
-                      <Button
-                        className="!h-[42px] !min-w-[110px]"
-                        disabled={
-                          emailVerified
-                        }
-                        onClick={async () => {
-                          const valid =
-                            await trigger(
-                              "email"
-                            );
-
-                          if (!valid)
-                            return;
-
-                          sendEmailOtp.mutate(
-                            {
-                              email:
-                                getValues(
-                                  "email"
-                                ),
-                            }
-                          );
-
-                          setShowEmailOtp(
-                            true
-                          );
-                        }}
-                      >
-                        Verify
-                      </Button>
-
-                      {emailVerified && (
-                        <CheckCircleFilled className="mb-[10px] text-[18px] text-green-500" />
-                      )}
-                    </div>
-
-                    {showEmailOtp && (
-                      <div className="mt-2 flex gap-2">
-                        <Input
-                          className="!h-[42px]"
-                          placeholder="6 digit OTP"
-                          maxLength={
-                            6
-                          }
-                          value={
-                            emailOtp
-                          }
-                          onChange={(
-                            e
-                          ) =>
-                            setEmailOtp(
-                              e.target.value.replace(
-                                /\D/g,
-                                ""
-                              )
-                            )
-                          }
-                        />
-
-                        <Button
-                          className="!h-[42px] !px-5"
-                          onClick={() => {
-                            if (
-                              emailOtp.length !==
-                              6
-                            ) {
-                              message.error(
-                                "Enter valid OTP"
-                              );
-
-                              return;
-                            }
-
-                            verifyEmail.mutate(
-                              {
-                                email:
-                                  getValues(
-                                    "email"
-                                  ),
-                                otp: emailOtp,
-                              },
-                              {
-                                onSuccess:
-                                  () => {
-                                    setEmailVerified(
-                                      true
-                                    );
-
-                                    setShowEmailOtp(
-                                      false
-                                    );
-
-                                    message.success(
-                                      "Email verified"
-                                    );
-                                  },
-                              }
-                            );
-                          }}
-                        >
-                          OK
-                        </Button>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <ViewField
+                  <VerifySection
+                    name="email"
                     label="Email"
-                    value={getValues(
-                      "email"
-                    )}
+                    verified={emailVerified}
+                    otp={emailOtp}
+                    setOtp={setEmailOtp}
+                    showOtp={showEmailOtp}
+                    setShowOtp={setShowEmailOtp}
+                    trigger={trigger}
+                    formValues={formValues}
+                    sendOtp={sendEmailOtp}
+                    verifyOtp={verifyEmail}
+                    setVerified={setEmailVerified}
                   />
+                ) : (
+                  <ViewField label="Email" value={formValues.email} />
                 )}
               </div>
 
@@ -839,151 +493,35 @@ export default function ProfileOverview() {
 
               <div>
                 {isEdit ? (
-                  <>
-                    <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
-                      <div className="w-full">
-                        <RHFInput
-                          name="mobile"
-                          label="Mobile Number"
-                        />
-                      </div>
-
-                      <Button
-                        className="!h-[42px] !min-w-[110px]"
-                        disabled={
-                          mobileVerified
-                        }
-                        onClick={async () => {
-                          const valid =
-                            await trigger(
-                              "mobile"
-                            );
-
-                          if (!valid)
-                            return;
-
-                          sendMobileOtp.mutate(
-                            {
-                              mobile:
-                                getValues(
-                                  "mobile"
-                                ),
-                            }
-                          );
-
-                          setShowMobileOtp(
-                            true
-                          );
-                        }}
-                      >
-                        Verify
-                      </Button>
-
-                      {mobileVerified && (
-                        <CheckCircleFilled className="mb-[10px] text-[18px] text-green-500" />
-                      )}
-                    </div>
-
-                    {showMobileOtp && (
-                      <div className="mt-2 flex gap-2">
-                        <Input
-                          className="!h-[42px]"
-                          placeholder="6 digit OTP"
-                          maxLength={
-                            6
-                          }
-                          value={
-                            mobileOtp
-                          }
-                          onChange={(
-                            e
-                          ) =>
-                            setMobileOtp(
-                              e.target.value.replace(
-                                /\D/g,
-                                ""
-                              )
-                            )
-                          }
-                        />
-
-                        <Button
-                          className="!h-[42px] !px-5"
-                          onClick={() => {
-                            if (
-                              mobileOtp.length !==
-                              6
-                            ) {
-                              message.error(
-                                "Enter valid OTP"
-                              );
-
-                              return;
-                            }
-
-                            verifyMobile.mutate(
-                              {
-                                mobile:
-                                  getValues(
-                                    "mobile"
-                                  ),
-                                otp: mobileOtp,
-                              },
-                              {
-                                onSuccess:
-                                  () => {
-                                    setMobileVerified(
-                                      true
-                                    );
-
-                                    setShowMobileOtp(
-                                      false
-                                    );
-
-                                    message.success(
-                                      "Mobile verified"
-                                    );
-                                  },
-                              }
-                            );
-                          }}
-                        >
-                          OK
-                        </Button>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <ViewField
+                  <VerifySection
+                    name="mobile"
                     label="Mobile Number"
-                    value={getValues(
-                      "mobile"
-                    )}
+                    verified={mobileVerified}
+                    otp={mobileOtp}
+                    setOtp={setMobileOtp}
+                    showOtp={showMobileOtp}
+                    setShowOtp={setShowMobileOtp}
+                    trigger={trigger}
+                    formValues={formValues}
+                    sendOtp={sendMobileOtp}
+                    verifyOtp={verifyMobile}
+                    setVerified={setMobileVerified}
                   />
+                ) : (
+                  <ViewField label="Mobile Number" value={formValues.mobile} />
                 )}
               </div>
             </div>
 
             {isEdit && (
               <div className="mt-8 flex gap-3">
-                <Button
-                  onClick={() =>
-                    setIsEdit(false)
-                  }
-                >
-                  Cancel
-                </Button>
+                <Button onClick={() => setIsEdit(false)}>Cancel</Button>
 
                 <Button
                   htmlType="submit"
                   type="primary"
-                  loading={
-                    updateProfile.isPending
-                  }
-                  style={{
-                    background:
-                      "linear-gradient(180deg, #72C0F0 0%, #0F6A75 100%)",
-                  }}
+                  loading={updateProfile.isPending}
+                  className="bg-[linear-gradient(180deg,#72C0F0_0%,#0F6A75_100%)]"
                 >
                   Save Changes
                 </Button>

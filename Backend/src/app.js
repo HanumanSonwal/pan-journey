@@ -16,6 +16,8 @@ import stateRoutes from "./modules/priceMarkup/stateData/state.routes.js";
 import markeupRoutes from "./modules/priceMarkup/markup/markup.routes.js";
 import hotelDetails from "./modules/hotel/hotelDetails/hotel.routes.js";
 import bookingRoutes from "./modules/hotel/hotelTempBooking/booking.routes.js";
+import dashboardhotelsearch from "./modules/dashboardHotellSearch/hotel.routes.js";
+import seoContentRoutes from "./modules/hotel/seo/hotelcityseo/seoContent.routes.js";
 
 import customerProfileRoutes from "./modules/auth/customer-auth/customer-documents/customerDocument.routes.js";
 import testRoutes from "./test.routes.js";
@@ -47,7 +49,7 @@ app.use(express.json());
 app.use("/api/v1/auth", authRoutes);
 
 app.use("/api/v1/users", userRoutes);
-
+app.use("/api/v1/seo-content", seoContentRoutes);
 app.use("/api/v1/roles", roleRoutes);
 app.use("/api/v1/Seacrhcity", citySearch);
 app.use("/api/v1/Hotels", hotelSearch);
@@ -62,6 +64,7 @@ app.use("/api/v1", destinationRoutes);
 app.use("/api/v1/customer", customerProfileRoutes);
 app.use("/api/v1", countryRoutes);
 app.use("/api/v1/states", stateRoutes);
+app.use("/api/v1/", dashboardhotelsearch);
 app.use("/api/v1", hotelDetails);
 app.use(errorHandler);
 
