@@ -6,6 +6,7 @@ import QueryProvider from "@/providers/QueryProvider";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import "antd/dist/reset.css";
 import { Geist, Geist_Mono, Jost, Roboto } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Providers from "./providers";
 
@@ -46,6 +47,21 @@ export default function RootLayout({ children }) {
     >
       <head>
         <link rel="preload" as="image" href="/images/homepage/home.svg" />
+
+        {/* Google Analytics */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-DYY7076V0W"
+          strategy="afterInteractive"
+        />
+
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-DYY7076V0W');
+    `}
+        </Script>
       </head>
       <body className="flex min-h-full flex-col">
         <LoaderProvider>

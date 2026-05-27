@@ -1,17 +1,14 @@
-// routes/seoContent.routes.js
-
 import express from "express";
 
 import {
   createSEOContent,
+  deleteSEOContent,
   getAllSEOContents,
   getSingleSEOContent,
   updateSEOContent,
-  deleteSEOContent,
 } from "../hotelcityseo/seoContent.controller.js";
 
 const router = express.Router();
-
 
 // CREATE
 router.post("/", createSEOContent);
