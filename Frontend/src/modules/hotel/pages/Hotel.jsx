@@ -7,6 +7,7 @@ import HotelList from "../components/hotels/HotelList";
 import SearchBar from "../components/hotels/SearchBar";
 import SidebarFilters from "../components/SidebarFilters";
 import SortBar from "../components/SortBar";
+import CMSContentRenderer from "@/modules/cms/components/renderer/CMSContentRenderer";
 
 const defaultSearchData = {
   city: "",
@@ -32,7 +33,7 @@ const defaultFilters = {
   locations: [],
 };
 
-export default function HotelContent({ initialSearchData = null }) {
+export default function HotelContent({ initialSearchData = null, cms = null }) {
   const searchParams = useSearchParams();
   const [mounted, setMounted] = useState(false);
   const [draftSearchData, setDraftSearchData] = useState(
@@ -144,6 +145,13 @@ export default function HotelContent({ initialSearchData = null }) {
           <SortBar sort={sort} setSort={setSort} />
 
           <HotelList searchData={searchData} filters={filters} sort={sort} />
+
+          {/* CMS SEO CONTENT */}
+          {cms && (
+            <div className="mt-8">
+              <CMSContentRenderer cms={cms} />
+            </div>
+          )}
         </div>
       </div>
     </div>

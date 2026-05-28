@@ -2,19 +2,60 @@ export const buildCmsMetadata = (cms) => {
   if (!cms) {
     return {};
   }
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.NEXTAUTH_URL ||
+    "http://localhost:3000";
+
   const slug = cms?.slug || "";
-  const canonical = `${siteUrl}${slug.startsWith("/") ? "" : "/"}${slug}`;
+
+  /*
+CANONICAL
+*/
+  let canonical = siteUrl;
+
+  switch (cms?.entityType) {
+    case "hotelCity":
+      canonical = `${siteUrl}/hotels/${slug}`;
+      break;
+
+    case "hotel":
+      canonical = `${siteUrl}/hotel-details/${slug}`;
+      break;
+
+    case "city":
+      canonical = `${siteUrl}/hotels/${slug}`;
+      break;
+
+    case "marketing":
+      canonical = `${siteUrl}/${slug}`;
+      break;
+
+    case "static":
+      canonical = `${siteUrl}/${slug}`;
+      break;
+
+    default:
+      canonical = `${siteUrl}/${slug}`;
+  }
+  /*
+  BASIC
+  */
   const title = cms?.metaTitle || cms?.title || "PAN Journey";
+
   const description =
     cms?.metaDescription ||
     "Find hotels, destinations and travel experiences on PAN Journey.";
-  const keywords = cms?.keywords || [];
+
+  const keywords = Array.isArray(cms?.keywords) ? cms.keywords : [];
+
   const image =
     cms?.data?.heroImage ||
     cms?.data?.bannerImage ||
     cms?.data?.coverImage ||
     "/images/default-og.jpg";
+
   const robots =
     cms?.isPublished === false
       ? {
@@ -28,7 +69,12 @@ export const buildCmsMetadata = (cms) => {
 
   return {
     /*
-    BASIC
+    BASE
+    */
+    metadataBase: new URL(siteUrl),
+
+    /*
+    BASIC SEO
     */
     title,
     description,
@@ -38,13 +84,28 @@ export const buildCmsMetadata = (cms) => {
     CANONICAL
     */
     alternates: {
-      canonical,
+      canonical: new URL(canonical),
     },
 
     /*
     ROBOTS
     */
     robots,
+
+    /*
+    AUTHOR
+    */
+    authors: [
+      {
+        name: "PAN Journey",
+      },
+    ],
+
+    creator: "PAN Journey",
+
+    publisher: "PAN Journey",
+
+    category: "travel",
 
     /*
     OPEN GRAPH
@@ -56,6 +117,7 @@ export const buildCmsMetadata = (cms) => {
       siteName: "PAN Journey",
       type: "website",
       locale: "en_IN",
+
       images: image
         ? [
             {
@@ -79,25 +141,7 @@ export const buildCmsMetadata = (cms) => {
     },
 
     /*
-    AUTHOR / PUBLISHER
-    */
-    authors: [
-      {
-        name: "PAN Journey",
-      },
-    ],
-
-    publisher: "PAN Journey",
-
-    /*
     EXTRA
-    */
-    metadataBase: new URL(siteUrl),
-
-    category: "travel",
-
-    /*
-    SCHEMA JSON-LD
     */
     other: {
       schema: cms?.schema ? JSON.stringify(cms.schema) : null,
