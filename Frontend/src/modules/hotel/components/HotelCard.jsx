@@ -48,8 +48,8 @@ function HotelCard({ hotel }) {
 
     return [
       hotel.image ||
-        hotel.images?.[0] ||
-        "https://images.unsplash.com/photo-1566073771259-6a8506099945",
+      hotel.images?.[0] ||
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945",
     ];
   }, [hotel.images, hotel.image]);
 
@@ -188,18 +188,7 @@ function HotelCard({ hotel }) {
                   </div>
                 </div>
 
-                <div
-                  className="flex items-center gap-3 pt-1 text-[18px] text-gray-400"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <button className="transition-all hover:text-red-500">
-                    <HeartOutlined />
-                  </button>
 
-                  <button className="transition-all hover:text-[#0077b6]">
-                    <ShareAltOutlined />
-                  </button>
-                </div>
               </div>
               {facilities?.length > 0 && (
                 <div className="mt-5">
@@ -235,6 +224,18 @@ function HotelCard({ hotel }) {
           </div>
 
           <div className="flex w-full flex-col justify-between border-t border-gray-100 p-4 lg:w-[260px] lg:border-t-0 lg:border-l">
+            <div
+              className="mb-1 flex justify-end gap-3 pt-1 !pb-1 text-[24px] text-gray-700"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button className="transition-all hover:text-red-500">
+                <HeartOutlined />
+              </button>
+
+              <button className="transition-all hover:text-[#0077b6]">
+                <ShareAltOutlined />
+              </button>
+            </div>
             <div className="flex justify-end">
               <div className="flex w-[170px] flex-col gap-1 rounded border border-blue-100 bg-blue-50 px-2 py-2">
                 <div className="flex items-center justify-between">
