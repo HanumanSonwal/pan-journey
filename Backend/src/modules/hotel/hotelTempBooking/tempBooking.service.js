@@ -2,55 +2,42 @@ import Booking from "./tempBooking.model.js";
 
 import { hotelTempBookingAPI } from "./hotelTempBooking.service.js";
 
-export const createTempBooking =
-  async (payload) => {
+export const createTempBooking = async (payload) => {
+  const supplierResponse = await hotelTempBookingAPI(
+    payload.rawSupplierPayload,
+  );
 
-    const supplierResponse =
-      await hotelTempBookingAPI(payload);
+  // supplier response handle
+  if (!supplierResponse || supplierResponse.Status !== true) {
+    throw new Error(supplierResponse?.Message || "Temp booking failed");
+  }
 
-    // supplier response handle
-    if (
-      !supplierResponse ||
-      supplierResponse.Status !== true
-    ) {
-      throw new Error(
-        supplierResponse?.Message ||
-        "Temp booking failed"
-      );
-    }
+  // expiry after 30 mins
+  const expiresAt = new Date(Date.now() + 30 * 60 * 1000);
 
-    // expiry after 30 mins
-    const expiresAt = new Date(
-      Date.now() + 30 * 60 * 1000
-    );
+  const booking = await Booking.create({
+    bookingStatus: "TEMP",
 
-    const booking =
-      await Booking.create({
+    tempBookingId: supplierResponse?.TempBookingId,
 
-        bookingStatus: "TEMP",
+    searchKey: payload.searchKey,
 
-        tempBookingId:
-          supplierResponse?.TempBookingId,
+    hotelKey: payload.hotelKey,
 
-        searchKey: payload.searchKey,
+    recommendationId: payload.recommendationId,
 
-        hotelKey: payload.hotelKey,
+    customer: payload.customer,
 
-        recommendationId:
-          payload.recommendationId,
+    occupants: payload.occupants,
 
-        customer: payload.customer,
+    pricing: payload.pricing,
 
-        occupants: payload.occupants,
+    hotel: payload.hotel,
 
-        pricing: payload.pricing,
+    supplierResponse,
 
-        hotel: payload.hotel,
+    expiresAt,
+  });
 
-        supplierResponse,
-
-        expiresAt,
-      });
-
-    return booking;
-  };
+  return booking;
+};

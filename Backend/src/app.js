@@ -12,7 +12,8 @@ import dashboardhotelsearch from "./modules/dashboardHotels/hotel.routes.js";
 import destinationRoutes from "./modules/exploreDesitanation/desitanation.routes.js";
 import hotelSearch from "./modules/hotel/hotel.route.js";
 import hotelDetails from "./modules/hotel/hotelDetails/hotel.routes.js";
-import bookingRoutes from "./modules/hotel/hotelTempBooking/booking.routes.js";
+import tempbookingRoutes from "./modules/hotel/hotelTempBooking/booking.routes.js";
+import dashboardhotelsearch from "./modules/dashboardHotellSearch/hotel.routes.js";
 import seoContentRoutes from "./modules/hotel/seo/hotelcityseo/seoContent.routes.js";
 import mediaRoutes from "./modules/media/media.routes.js";
 import countryRoutes from "./modules/priceMarkup/countryData/country.routes.js";
@@ -57,7 +58,7 @@ app.use("/api/v1/cms", cmsRoutes);
 app.use("/api/v1/roles", roleRoutes);
 app.use("/api/v1/Seacrhcity", citySearch);
 app.use("/api/v1/Hotels", hotelSearch);
-app.use("/api/booking", bookingRoutes);
+app.use( "/api/v1",tempbookingRoutes);
 
 app.use("/api/v1/customer/auth/", otpRoutes);
 app.use("/api/v1/customer/profile", profileRoutes);
