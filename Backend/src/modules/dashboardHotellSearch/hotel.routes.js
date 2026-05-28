@@ -1,8 +1,8 @@
 import express from "express";
-import { hotelSearch } from "./hotel.controller.js";
+import { hotelSearchController } from "./searchcontoroller.js";
 
 const router = express.Router();
 
-router.post("/dashboardHotelSearch", hotelSearch);
+router.post("/dashboardHotelSearch", hotelSearchController);
 
 export default router;

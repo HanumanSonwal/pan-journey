@@ -66,7 +66,7 @@ export const createSEOContent = async (req, res) => {
 export const getAllSEOContents = async (req, res) => {
   try {
 
-    const { type, name } = req.query;
+    const { type, slug } = req.query;
 
     const filter = {};
 
@@ -74,9 +74,9 @@ export const getAllSEOContents = async (req, res) => {
       filter.type = type;
     }
 
-    if (name) {
-      filter.name = {
-        $regex: name,
+    if (slug) {
+      filter.slug = {
+        $regex: slug,
         $options: "i",
       };
     }
