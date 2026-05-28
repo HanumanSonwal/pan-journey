@@ -30,9 +30,9 @@ export default function CMSHotelSelector({ form }) {
         const res = await api.post(
           "/admin/hotels/search",
           {
-            destination: cityMeta.destination,
+            fullName: cityMeta.destination,
 
-            destinationId: cityMeta.destinationId,
+            id: cityMeta.destinationId,
           },
           {
             skipToast: true,
