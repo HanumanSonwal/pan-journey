@@ -1,9 +1,8 @@
 import { serverApi } from "@/services/serverApi";
 
-export const getCmsBySlug = async ({ slug, type }) => {
-  const response = await serverApi.get(
-    `/seo-content?type=${type}&slug=${slug}`,
-  );
-
-  return response?.data;
+export const getCmsBySlug = async (slug) => {
+  console.log("CMS API CALL:", slug);
+  const response = await serverApi.get(`/cms/page/${slug}`);
+  console.log("CMS API RESPONSE:", response.data);
+  return response?.data?.data;
 };

@@ -5,23 +5,13 @@ import { notFound } from "next/navigation";
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-
-  const cms = await fetchCmsBySlug({
-    slug,
-    type: "hotel",
-  });
-
+  const cms = await fetchCmsBySlug(slug);
+  if (!cms) return {};
   return buildCmsMetadata(cms);
 }
-
 export default async function CMSPage({ params }) {
   const { slug } = await params;
-
-  const cms = await fetchCmsBySlug({
-    slug,
-    type: "hotel",
-  });
-
+  const cms = await fetchCmsBySlug(slug);
   if (!cms) {
     notFound();
   }

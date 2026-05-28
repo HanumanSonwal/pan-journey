@@ -1,25 +1,43 @@
-import HeroBlock from "./blocks/HeroBlock";
-import FAQBlock from "./blocks/FAQBlock";
 import ContentBlock from "./blocks/ContentBlock";
+import HeroBlock from "./blocks/HeroBlock";
+import MarketingBlock from "./blocks/MarketingBlock";
 
 export default function CMSContentRenderer({
   cms,
 }) {
   if (!cms) return null;
 
-  return (
-    <>
-      <HeroBlock
-        data={cms.heroSection}
-      />
+  const template =
+    cms?.template;
 
-      <ContentBlock
-        content={cms.content}
-      />
+  const data =
+    cms?.data || {};
 
-      <FAQBlock
-        faq={cms.faq}
-      />
-    </>
-  );
+  switch (
+    template
+  ) {
+    case "heroContent":
+      return (
+        <HeroBlock
+          data={data}
+        />
+      );
+
+    case "marketing":
+      return (
+        <MarketingBlock
+          data={data}
+        />
+      );
+
+    case "content":
+    default:
+      return (
+        <ContentBlock
+          content={
+            data?.content
+          }
+        />
+      );
+  }
 }

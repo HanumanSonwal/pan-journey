@@ -2,14 +2,15 @@
 
 import { useEffect } from "react";
 
-import { message } from "antd";
+import { App } from "antd";
 import { useRouter } from "next/navigation";
 
-import { useCMS } from "./useCMS";
 import { getCMSPageApi } from "../api/cms.service";
+import { useCMS } from "./useCMS";
 
 export default function useCMSForm({ id, form }) {
   const router = useRouter();
+  const { message } = App.useApp();
 
   const { createCMS, updateCMS } = useCMS();
 
@@ -50,10 +51,23 @@ export default function useCMSForm({ id, form }) {
   const handleSubmit = async (values) => {
     try {
       const payload = {
-        ...values,
+        title: values.title,
+        slug: values.slug,
+        template: values.template,
+        entityType: values.entityType,
+        entityId: values.entityId,
+        metaTitle: values.metaTitle,
+        metaDescription: values.metaDescription,
+        isPublished: values.isPublished,
 
         keywords:
           values?.keywords?.split(",")?.map((item) => item.trim()) || [],
+
+        data: {
+          ...(values?.data || {}),
+
+          cityMeta: values?.cityMeta || null,
+        },
       };
 
       console.log("CMS PAYLOAD:", payload);

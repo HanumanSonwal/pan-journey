@@ -1,4 +1,4 @@
-export const generateSlug = (text = "") => {
+export const slugify = (text = "") => {
   return text
     .toLowerCase()
     .trim()
