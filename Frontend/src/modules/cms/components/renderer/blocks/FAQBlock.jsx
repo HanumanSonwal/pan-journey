@@ -1,25 +1,18 @@
-"use client";
-
-import { Collapse } from "antd";
-
-export default function FAQBlock({ faq }) {
-  if (!faq?.length) return null;
-
-  const items = faq.map((item, index) => ({
-    key: index,
-    label: item.question,
-    children: <p>{item.answer}</p>,
-  }));
+export default function FAQBlock({ data }) {
+  if (!data?.items?.length) return null;
 
   return (
-    <section className="cms-faq">
-      <div className="container">
-        <h2>FAQs</h2>
+    <section className="container py-5">
+      {data?.title && <h2 className="mb-4">{data.title}</h2>}
 
-        <Collapse
-          items={items}
-          accordion
-        />
+      <div className="d-flex flex-column gap-4">
+        {data.items.map((item, index) => (
+          <div key={index}>
+            <h5>{item?.question}</h5>
+
+            <p>{item?.answer}</p>
+          </div>
+        ))}
       </div>
     </section>
   );

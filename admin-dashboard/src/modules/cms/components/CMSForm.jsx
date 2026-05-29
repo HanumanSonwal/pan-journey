@@ -1,12 +1,11 @@
 "use client";
 
-import { Button, Col, Form, Input, Row, Select, Switch } from "antd";
+import { Button, Card, Col, Form, Input, Row, Select, Switch } from "antd";
 
-import CMSImageUpload from "./CMSImageUpload";
 import CMSSeoFields from "./CMSSeoFields";
 
 import useCMSForm from "../hooks/useCMSForm";
-import TiptapEditor from "./editor/TiptapEditor";
+import CMSBlocksBuilder from "./CMSBlocksBuilder";
 import CMSCitySelector from "./entity-selector/CMSCitySelector";
 import CMSHotelSelector from "./entity-selector/CMSHotelSelector";
 
@@ -31,124 +30,127 @@ export default function CMSForm({ id }) {
         entityType: "static",
       }}
     >
-      <Row gutter={24}>
+      <Row gutter={[24, 24]}>
         {/* LEFT */}
 
         <Col xs={24} lg={16}>
-          <Form.Item
-            name="title"
-            label="Title"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
+          <Card
+            style={{
+              borderRadius: 16,
+            }}
           >
-            <Input />
-          </Form.Item>
+            <Form.Item
+              name="title"
+              label="Page Title"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Input placeholder="Enter page title" size="large" />
+            </Form.Item>
 
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
-                name="template"
-                label="Template"
-                rules={[
-                  {
-                    required: true,
-                  },
-                ]}
-              >
-                <Select
-                  options={[
+            <Row gutter={16}>
+              <Col xs={24} md={16}>
+                <Form.Item
+                  name="entityType"
+                  label="Entity Type"
+                  rules={[
                     {
-                      value: "content",
-                      label: "Content",
-                    },
-
-                    {
-                      value: "heroContent",
-                      label: "Hero Content",
-                    },
-
-                    {
-                      value: "marketing",
-                      label: "Marketing",
+                      required: true,
                     },
                   ]}
-                />
-              </Form.Item>
-            </Col>
+                >
+                  <Select
+                    size="large"
+                    options={[
+                      {
+                        value: "static",
+                        label: "Static Page",
+                      },
+                      {
+                        value: "hotelCity",
+                        label: "City SEO",
+                      },
+                      {
+                        value: "hotel",
+                        label: "Hotel SEO",
+                      },
+                      {
+                        value: "marketing",
+                        label: "Marketing",
+                      },
+                    ]}
+                  />
+                </Form.Item>
+              </Col>
 
-            <Col span={12}>
-              <Form.Item
-                name="entityType"
-                label="Entity Type"
-                rules={[
-                  {
-                    required: true,
-                  },
-                ]}
-              >
-                <Select
-                  options={[
-                    {
-                      value: "static",
-                      label: "Static Page",
-                    },
+              <Col xs={24} md={8}>
+                <Form.Item
+                  name="isPublished"
+                  label="Published"
+                  valuePropName="checked"
+                >
+                  <Switch />
+                </Form.Item>
+              </Col>
+            </Row>
 
-                    {
-                      value: "hotelCity",
-                      label: "City SEO",
-                    },
+            {showCity && <CMSCitySelector form={form} />}
 
-                    {
-                      value: "hotel",
-                      label: "Hotel SEO",
-                    },
+            {showHotel && <CMSHotelSelector form={form} />}
 
-                    {
-                      value: "marketing",
-                      label: "Marketing",
-                    },
-                  ]}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
+            {showEntityId && (
+              <>
+                <Form.Item name="entityId" hidden>
+                  <Input />
+                </Form.Item>
 
-          {showCity && <CMSCitySelector form={form} />}
-          {showHotel && <CMSHotelSelector form={form} />}
-          {showEntityId && (
-            <>
-              <Form.Item name="entityId" hidden>
-                <Input />
-              </Form.Item>
+                <Form.Item name="cityMeta" hidden>
+                  <Input />
+                </Form.Item>
+              </>
+            )}
+          </Card>
 
-              <Form.Item name="cityMeta" hidden>
-                <Input />
-              </Form.Item>
-            </>
-          )}
-          <CMSImageUpload form={form} />
-          <Form.Item name={["data", "content"]} label="Content">
-            <TiptapEditor />
-          </Form.Item>
+          <div
+            style={{
+              marginTop: 20,
+            }}
+          >
+            <CMSBlocksBuilder form={form} />
+          </div>
         </Col>
 
+        {/* RIGHT */}
+
         <Col xs={24} lg={8}>
-          <CMSSeoFields />
-
-          <Form.Item
-            name="isPublished"
-            label="Published"
-            valuePropName="checked"
+          <div
+            style={{
+              position: "sticky",
+              top: 20,
+            }}
           >
-            <Switch />
-          </Form.Item>
+            <Card
+              title="SEO Settings"
+              style={{
+                borderRadius: 16,
+              }}
+            >
+              <CMSSeoFields />
 
-          <Button type="primary" htmlType="submit" block loading={isSubmitting}>
-            {id ? "Update Page" : "Create Page"}
-          </Button>
+              <Button
+                type="primary"
+                htmlType="submit"
+                block
+                size="large"
+                loading={isSubmitting}
+              >
+                {id ? "Update Page" : "Create Page"}
+              </Button>
+            </Card>
+          </div>
         </Col>
       </Row>
     </Form>

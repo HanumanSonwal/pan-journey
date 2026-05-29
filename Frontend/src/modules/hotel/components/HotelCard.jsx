@@ -100,7 +100,7 @@ function HotelCard({ hotel }) {
         countryCode: searchData?.cityData?.country,
       },
     });
-    router.push(`/hotel-details/${citySlug}/${hotelSlug}?hid=${hotelId}`);
+    router.push(`/hotel-details/${citySlug}/${hotelSlug}`);
   };
 
   const visibleFacilities = useMemo(() => {

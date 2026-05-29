@@ -1,40 +1,27 @@
 "use client";
 
-import { useEffect } from "react";
-
 import { App } from "antd";
 import { useRouter } from "next/navigation";
-
+import { useEffect } from "react";
 import { getCMSPageApi } from "../api/cms.service";
 import { useCMS } from "./useCMS";
 
 export default function useCMSForm({ id, form }) {
   const router = useRouter();
   const { message } = App.useApp();
-
   const { createCMS, updateCMS } = useCMS();
 
-  /*
-  EDIT PREFILL
-  */
   useEffect(() => {
     if (!id) return;
 
     const load = async () => {
       try {
         const page = await getCMSPageApi(id);
-
-        console.log("CMS EDIT DATA:", page);
-
         form.setFieldsValue({
           ...page,
-
           keywords: page?.keywords?.join(", "),
-
           cityMeta: page?.cityMeta,
-
           selectedCity: page?.selectedCity,
-
           selectedHotel: page?.selectedHotel,
         });
       } catch {
@@ -45,43 +32,34 @@ export default function useCMSForm({ id, form }) {
     load();
   }, [id, form]);
 
-  /*
-  SUBMIT
-  */
   const handleSubmit = async (values) => {
+    const formValues = form.getFieldsValue(true);
     try {
       const payload = {
-        title: values.title,
-        slug: values.slug,
-        template: values.template,
-        entityType: values.entityType,
-        entityId: values.entityId,
-        metaTitle: values.metaTitle,
-        metaDescription: values.metaDescription,
-        isPublished: values.isPublished,
-
+        title: formValues.title,
+        slug: formValues.slug,
+        template: formValues.template,
+        entityType: formValues.entityType,
+        entityId: formValues.entityId,
+        metaTitle: formValues.metaTitle,
+        metaDescription: formValues.metaDescription,
+        isPublished: formValues.isPublished,
         keywords:
-          values?.keywords?.split(",")?.map((item) => item.trim()) || [],
-
+          formValues?.keywords?.split(",")?.map((item) => item.trim()) || [],
         data: {
-          ...(values?.data || {}),
-
-          cityMeta: values?.cityMeta || null,
+          ...(formValues?.data || {}),
+          cityMeta: formValues?.cityMeta || null,
         },
       };
-
-      console.log("CMS PAYLOAD:", payload);
 
       if (id) {
         await updateCMS.mutateAsync({
           id,
           data: payload,
         });
-
         message.success("Page updated successfully");
       } else {
         await createCMS.mutateAsync(payload);
-
         message.success("Page created successfully");
       }
 
@@ -90,10 +68,8 @@ export default function useCMSForm({ id, form }) {
       console.log(err);
     }
   };
-
   return {
     handleSubmit,
-
     isSubmitting: createCMS.isPending || updateCMS.isPending,
   };
 }

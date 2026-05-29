@@ -1,5 +1,4 @@
-import Script from "next/script";
-
+import CMSContentRenderer from "@/modules/cms/components/renderer/CMSContentRenderer";
 import { buildCmsMetadata } from "@/modules/cms/helpers/cmsSeo";
 import { fetchCmsBySlug } from "@/modules/cms/services/cmsFetch";
 import HotelContent from "@/modules/hotel/pages/Hotel";
@@ -11,14 +10,14 @@ export async function generateMetadata({ params }) {
   const cms = await fetchCmsBySlug(slug);
 
   /*
-  CMS SEO
+    CMS SEO
   */
   if (cms) {
     return buildCmsMetadata(cms);
   }
 
   /*
-  DEFAULT SEO
+    DEFAULT SEO
   */
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
@@ -91,34 +90,32 @@ export default async function Page({ params }) {
   let cityId = "";
 
   /*
-  CMS FOUND
+    CMS FOUND
   */
   if (cms && cms?.data?.cityMeta?.destinationId) {
     cityName = cms?.data?.cityMeta?.destination || cityName;
-
     cityId = cms?.data?.cityMeta?.destinationId;
   } else {
     /*
-    FALLBACK
+      FALLBACK
     */
     const destinations = await searchDestinationServer(cityName);
 
     const matchedCity = destinations?.[0];
 
     cityName = matchedCity?.destination || cityName;
-
     cityId = matchedCity?.id || "";
   }
 
   /*
-  CITY SCHEMA
+    CITY SCHEMA
   */
   const schema = {
     "@context": "https://schema.org",
 
     "@graph": [
       /*
-      BREADCRUMB
+        BREADCRUMB
       */
       {
         "@type": "BreadcrumbList",
@@ -148,7 +145,7 @@ export default async function Page({ params }) {
       },
 
       /*
-      COLLECTION PAGE
+        COLLECTION PAGE
       */
       {
         "@type": "CollectionPage",
@@ -163,7 +160,7 @@ export default async function Page({ params }) {
       },
 
       /*
-      ORGANIZATION
+        ORGANIZATION
       */
       {
         "@type": "Organization",
@@ -191,18 +188,47 @@ export default async function Page({ params }) {
     pets: false,
   };
 
+  /*
+  FAQ SCHEMA
+*/
+  const faqBlock = cms?.data?.blocks?.find((b) => b?.type === "faq");
+
+  console.log("FAQ BLOCK:", faqBlock);
+
+  const faqItems = faqBlock?.data?.items || faqBlock?.data?.faqs || [];
+
+  if (faqItems.length) {
+    schema["@graph"].push({
+      "@type": "FAQPage",
+
+      mainEntity: faqItems.map((item) => ({
+        "@type": "Question",
+
+        name: item?.question || "",
+
+        acceptedAnswer: {
+          "@type": "Answer",
+
+          text: item?.answer || "",
+        },
+      })),
+    });
+  }
+
   return (
     <>
-      <Script
-        id="city-schema"
+      <script
         type="application/ld+json"
-        strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(schema),
         }}
       />
 
       <HotelContent initialSearchData={initialSearchData} cms={cms} />
+
+      {/* CITY CMS */}
+
+      {cms && <CMSContentRenderer cms={cms} />}
     </>
   );
 }

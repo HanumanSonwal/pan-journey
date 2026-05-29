@@ -3,6 +3,7 @@ import Header from "@/components/common/Header";
 import ProfileCompletionHandler from "@/modules/auth/components/ProfileCompletionHandler";
 import LoaderProvider from "@/providers/LoaderProvider";
 import QueryProvider from "@/providers/QueryProvider";
+import "@/styles/cms-content.css";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import "antd/dist/reset.css";
 import { Geist, Geist_Mono, Jost, Roboto } from "next/font/google";
@@ -63,10 +64,7 @@ export default function RootLayout({ children }) {
     >
       <head>
         {/* Viewport */}
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1"
-        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         {/* Preload */}
         <link rel="preload" as="image" href="/images/homepage/home.svg" />

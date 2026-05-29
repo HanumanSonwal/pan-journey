@@ -1,3 +1,4 @@
+import CMSPageLayout from "@/modules/cms/components/CMSPageLayout";
 import CMSContentRenderer from "@/modules/cms/components/renderer/CMSContentRenderer";
 import { buildCmsMetadata } from "@/modules/cms/helpers/cmsSeo";
 import { fetchCmsBySlug } from "@/modules/cms/services/cmsFetch";
@@ -16,5 +17,9 @@ export default async function CMSPage({ params }) {
     notFound();
   }
 
-  return <CMSContentRenderer cms={cms} />;
+return (
+  <CMSPageLayout cms={cms}>
+    <CMSContentRenderer cms={cms} />
+  </CMSPageLayout>
+);
 }
