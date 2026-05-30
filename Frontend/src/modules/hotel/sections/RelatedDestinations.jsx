@@ -17,7 +17,7 @@ export default function RelatedDestinations({ currentCity }) {
   ).slice(0, 6);
 
   return (
-    <div className="rounded-2xl bg-white p-6 shadow-sm">
+    <div className="rounded bg-white p-6 shadow-sm">
       <h3 className="mb-4 text-xl font-semibold text-gray-900">
         Popular Hotel Destinations
       </h3>
@@ -27,7 +27,7 @@ export default function RelatedDestinations({ currentCity }) {
           <Link
             key={city}
             href={`/hotels/${city.toLowerCase()}`}
-            className="rounded-full bg-sky-50 px-4 py-2 text-sm text-sky-700 transition hover:bg-sky-100"
+            className="rounded bg-sky-50 px-4 py-2 text-sm text-sky-700 transition hover:bg-sky-100"
           >
             Hotels in {city}
           </Link>

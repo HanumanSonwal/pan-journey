@@ -1,6 +1,6 @@
-import CMSPageLayout from "@/modules/cms/components/CMSPageLayout";
-import CMSContentRenderer from "@/modules/cms/components/renderer/CMSContentRenderer";
-import { buildCmsMetadata } from "@/modules/cms/helpers/cmsSeo";
+import CMSPageLayout from "@/modules/cms/layouts/CMSPageLayout";
+import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
+import { buildCmsMetadata } from "@/modules/cms/seo/cmsSeo";
 import { fetchCmsBySlug } from "@/modules/cms/services/cmsFetch";
 import { notFound } from "next/navigation";
 
@@ -17,9 +17,9 @@ export default async function CMSPage({ params }) {
     notFound();
   }
 
-return (
-  <CMSPageLayout cms={cms}>
-    <CMSContentRenderer cms={cms} />
-  </CMSPageLayout>
-);
+  return (
+    <CMSPageLayout cms={cms}>
+      <CMSContentRenderer cms={cms} />
+    </CMSPageLayout>
+  );
 }

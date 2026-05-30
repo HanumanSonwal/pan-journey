@@ -1,4 +1,4 @@
-import { getAllCmsPages } from "@/modules/cms/api/cms.service";
+import { getAllCmsPages } from "@/modules/cms/services/cms.service";
 
 export default async function sitemap() {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";

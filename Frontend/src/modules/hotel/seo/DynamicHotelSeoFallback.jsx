@@ -4,7 +4,7 @@ export default function DynamicHotelSeoFallback({ hotelName, cityName }) {
   return (
     <section className="mt-8 space-y-6">
       {/* ABOUT */}
-      <div className="rounded-2xl bg-white p-6 shadow-sm">
+      <div className="rounded bg-white p-6 shadow-sm">
         <h2 className="mb-3 text-2xl font-semibold text-gray-900">
           About {hotelName}
         </h2>
@@ -19,7 +19,7 @@ export default function DynamicHotelSeoFallback({ hotelName, cityName }) {
       </div>
 
       {/* WHY STAY */}
-      <div className="rounded-2xl bg-white p-6 shadow-sm">
+      <div className="rounded bg-white p-6 shadow-sm">
         <h3 className="mb-4 text-xl font-semibold text-gray-900">
           Why Stay at {hotelName}
         </h3>
@@ -34,7 +34,7 @@ export default function DynamicHotelSeoFallback({ hotelName, cityName }) {
       </div>
 
       {/* FAQ */}
-      <div className="rounded-2xl bg-white p-6 shadow-sm">
+      <div className="rounded bg-white p-6 shadow-sm">
         <h3 className="mb-4 text-xl font-semibold text-gray-900">
           Hotel Booking FAQs
         </h3>

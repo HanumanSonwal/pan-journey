@@ -4,7 +4,7 @@ import HotelContentLoader from "@/components/common/loder/HotelContentLoader";
 import dayjs from "dayjs";
 import { memo, useEffect, useMemo, useRef } from "react";
 import { useInfiniteHotels } from "../../hooks/useInfiniteHotels";
-import HotelCard from "../HotelCard";
+import HotelCard from "../../cards/HotelCard";
 function HotelList({ searchData, filters, sort }) {
   const payload = useMemo(() => {
     if (!searchData?.cityData?.id) {
@@ -54,20 +54,32 @@ function HotelList({ searchData, filters, sort }) {
   const loadMoreRef = useRef(null);
 
   useEffect(() => {
-    if (!loadMoreRef.current) return;
+    const target = loadMoreRef.current;
+
+    if (!target) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
-        const firstEntry = entries[0];
-        if (firstEntry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+        const entry = entries[0];
+
+        if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
           fetchNextPage();
         }
       },
       {
-        threshold: 0.2,
+        /*
+          EARLY TRIGGER
+        */
+        rootMargin: "400px 0px",
+
+        threshold: 0,
       },
     );
-    observer.observe(loadMoreRef.current);
+
+    observer.observe(target);
+
     return () => {
+      observer.unobserve(target);
       observer.disconnect();
     };
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);

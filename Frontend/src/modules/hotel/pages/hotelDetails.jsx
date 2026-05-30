@@ -8,10 +8,11 @@ import {
 import { Card, Spin } from "antd";
 import { useMemo, useState } from "react";
 
-import CMSContentRenderer from "@/modules/cms/components/renderer/CMSContentRenderer";
+import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
 import { useHotelDetails } from "@/modules/hotel/hooks/useHotelDetails";
 import { useSelectedHotelStore } from "@/modules/hotel/store/selectedHotel.store";
-import DynamicHotelSeoFallback from "../components/DynamicHotelSeoFallback";
+import DynamicHotelSeoFallback from "../seo/DynamicHotelSeoFallback";
+import HotelCmsSection from "../sections/HotelCmsSection";
 import SearchBar from "../components/hotels/SearchBar";
 import HotelSectionsContent from "../components/hotels/viewhotles/HotelSectionsContent";
 import HotelSectionsTabs from "../components/hotels/viewhotles/HotelSectionsTabs";
@@ -21,8 +22,8 @@ import ViewHotelInfo from "../components/hotels/viewhotles/ViewHotelInfo";
 import ViewHotelModal from "../components/hotels/viewhotles/ViewHotelModal";
 import ViewHotelPriceCard from "../components/hotels/viewhotles/ViewHotelPriceCard";
 import ViewHotelTabs from "../components/hotels/viewhotles/ViewHotelTabs";
-import RelatedHotels from "../components/RelatedHotels";
 import { useHotelSearchStore } from "../store/serchData.store";
+import RelatedHotels from "../sections/RelatedHotels";
 
 function HotelDetails({ initialPayload = null, cms = null }) {
   const { selectedHotel } = useSelectedHotelStore();
@@ -175,20 +176,23 @@ function HotelDetails({ initialPayload = null, cms = null }) {
             hotelDetails={hotelDetails}
           />
         </div>
-        <div className="mt-8 text-black">
-          {cms ? (
-            <CMSContentRenderer cms={cms} />
-          ) : (
-            <DynamicHotelSeoFallback
-              hotelName={supplierData?.HotelName}
-              cityName={supplierData?.City}
-            />
-          )}
-        </div>
+        <HotelCmsSection>
+          <div className="text-black">
+            {cms ? (
+              <CMSContentRenderer cms={cms} />
+            ) : (
+              <DynamicHotelSeoFallback
+                hotelName={supplierData?.HotelName}
+                cityName={supplierData?.City}
+              />
+            )}
+          </div>
+        </HotelCmsSection>
 
         <RelatedHotels
           cityId={searchData?.cityData?.id}
           currentHotelId={payload?.hotelId}
+          cityName={supplierData?.City}
         />
       </div>
 

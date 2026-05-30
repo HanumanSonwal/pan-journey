@@ -1,8 +1,8 @@
-import { buildCmsMetadata } from "@/modules/cms/helpers/cmsSeo";
+import { buildCmsMetadata } from "@/modules/cms/seo/cmsSeo";
 import {
   buildHotelDescription,
   buildHotelTitle,
-} from "@/modules/cms/helpers/hotelSeo";
+} from "@/modules/cms/seo/hotelSeo";
 import { fetchCmsBySlug } from "@/modules/cms/services/cmsFetch";
 import HotelDetails from "@/modules/hotel/pages/hotelDetails";
 
@@ -127,16 +127,52 @@ export default async function Page({ params, searchParams }) {
 
       {
         "@type": "Hotel",
+
         name: hotelName,
+
         description:
           cms?.metaDescription ||
           "Hotel details and booking information on PAN Journey.",
+
         url: `${siteUrl}/hotel-details/${city}/${slug}`,
+
+        image: cms?.data?.hotelMeta?.image || cms?.data?.hotelMeta?.images?.[0],
+
         address: {
           "@type": "PostalAddress",
+
           addressLocality:
             cms?.data?.cityMeta?.destination || city?.replace(/-/g, " "),
         },
+
+        starRating: cms?.data?.hotelMeta?.starRating
+          ? {
+              "@type": "Rating",
+              ratingValue: cms?.data?.hotelMeta?.starRating,
+            }
+          : undefined,
+
+        priceRange: cms?.data?.hotelMeta?.priceRange || undefined,
+
+        amenityFeature: cms?.data?.hotelMeta?.amenities?.length
+          ? cms.data.hotelMeta.amenities.map((item) => ({
+              "@type": "LocationFeatureSpecification",
+
+              name: item,
+              value: true,
+            }))
+          : undefined,
+
+        aggregateRating: cms?.data?.hotelMeta?.rating
+          ? {
+              "@type": "AggregateRating",
+
+              ratingValue: cms.data.hotelMeta.rating,
+
+              reviewCount: cms.data.hotelMeta.reviews || 1,
+            }
+          : undefined,
+
         publisher: {
           "@type": "Organization",
 
