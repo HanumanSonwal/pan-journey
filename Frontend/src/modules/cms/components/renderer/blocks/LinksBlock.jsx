@@ -7,7 +7,7 @@ export default function LinksBlock({ data }) {
     <section
       style={{
         background: "#fff",
-        padding: "70px 0",
+        padding: "40px 10%",
         borderTop: "1px solid #E5E7EB",
       }}
     >

@@ -1,11 +1,9 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
-
 import CMSContentRenderer from "@/modules/cms/components/renderer/CMSContentRenderer";
 import { CloseOutlined } from "@ant-design/icons";
-import DynamicSeoFallback from "../components/DynamicSeoFallback";
+import { useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import HotelList from "../components/hotels/HotelList";
 import SearchBar from "../components/hotels/SearchBar";
 import SidebarFilters from "../components/SidebarFilters";
@@ -151,17 +149,10 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
           {/* ACTIVE FILTERS */}
           <div className="mt-3 mb-4 flex flex-wrap gap-2">
             {activeFilters.map(([key, value]) => {
-              // SKIP INACTIVE FILTERS
-              if (!isFilterActive(value)) {
-                return null;
-              }
+              if (!isFilterActive(value)) return null;
 
-              // HIDE PRICE KEYS
-              if (key === "minPrice" || key === "maxPrice") {
-                return null;
-              }
+              if (key === "minPrice" || key === "maxPrice") return null;
 
-              // ARRAY FILTERS
               if (Array.isArray(value)) {
                 return value.map((v, i) => (
                   <div
@@ -169,7 +160,6 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
                     className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
                   >
                     {v}
-
                     <CloseOutlined
                       className="cursor-pointer text-xs"
                       onClick={() => removeFilter(key, v)}
@@ -178,15 +168,12 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
                 ));
               }
 
-              // LABEL
               let label = value;
 
-              // FREE CANCELLATION
               if (key === "freeCancellation") {
                 label = "Free Cancellation";
               }
 
-              // STAR RATING
               if (key === "starRating") {
                 label = `${value} Star`;
               }
@@ -197,7 +184,6 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
                   className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
                 >
                   {label}
-
                   <CloseOutlined
                     className="cursor-pointer text-xs"
                     onClick={() => removeFilter(key)}
@@ -206,35 +192,32 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
               );
             })}
 
-            {/* PRICE CHIP */}
             {(filters?.minPrice || filters?.maxPrice) && (
               <div className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600">
                 ₹{filters?.minPrice || 0}
                 {" - "}₹{filters?.maxPrice || 50000}
                 <CloseOutlined
                   className="cursor-pointer text-xs"
-                  onClick={() => {
+                  onClick={() =>
                     setFilters((prev) => ({
                       ...prev,
                       minPrice: "",
                       maxPrice: "",
-                    }));
-                  }}
+                    }))
+                  }
                 />
               </div>
             )}
 
-            {/* CLEAR ALL */}
             {hasActiveFilters && (
               <button
                 onClick={clearAll}
-                className="rounded bg-red-100 px-3 py-1 text-xs text-red-600! transition hover:bg-red-200"
+                className="rounded !bg-red-200 px-3 py-1 text-xs text-red-600 transition hover:bg-red-200"
               >
                 Clear All
               </button>
             )}
           </div>
-
           <HotelList searchData={searchData} filters={filters} sort={sort} />
 
           {/* CMS / Dynamic SEO */}
