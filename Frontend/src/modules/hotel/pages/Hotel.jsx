@@ -1,9 +1,9 @@
 "use client";
 
+import CMSContentRenderer from "@/modules/cms/components/renderer/CMSContentRenderer";
 import { CloseOutlined } from "@ant-design/icons";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-
 import HotelList from "../components/hotels/HotelList";
 import SearchBar from "../components/hotels/SearchBar";
 import SidebarFilters from "../components/SidebarFilters";
@@ -33,21 +33,29 @@ const defaultFilters = {
   locations: [],
 };
 
-export default function HotelContent() {
+export default function HotelContent({ initialSearchData = null, cms = null }) {
   const searchParams = useSearchParams();
   const [mounted, setMounted] = useState(false);
-  const [draftSearchData, setDraftSearchData] = useState(defaultSearchData);
-  const [searchData, setSearchData] = useState(defaultSearchData);
+  const [draftSearchData, setDraftSearchData] = useState(
+    initialSearchData || defaultSearchData,
+  );
+  const [searchData, setSearchData] = useState(
+    initialSearchData || defaultSearchData,
+  );
   const [filters, setFilters] = useState(defaultFilters);
   const [sort, setSort] = useState("recommended");
-
-  // MOUNT
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // INITIAL URL DATA
+  // SEO ROUTE SUPPORT
   useEffect(() => {
+    if (initialSearchData) {
+      setDraftSearchData(initialSearchData);
+      setSearchData(initialSearchData);
+      return;
+    }
+
     if (!mounted) return;
 
     const initialData = {
@@ -63,19 +71,14 @@ export default function HotelContent() {
       childAges: [],
       pets: searchParams.get("pets") === "true",
     };
-
     setDraftSearchData(initialData);
     setSearchData(initialData);
-  }, [mounted, searchParams]);
+  }, [mounted, searchParams, initialSearchData]);
 
-  // SEARCH
   const handleSearch = useCallback(() => {
     setSearchData(draftSearchData);
-
-    console.log("🚀 FINAL SEARCH:", draftSearchData);
   }, [draftSearchData]);
 
-  // CHECK FILTER ACTIVE
   const isFilterActive = useCallback((value) => {
     if (
       value === "" ||
@@ -93,7 +96,6 @@ export default function HotelContent() {
     return true;
   }, []);
 
-  // REMOVE SINGLE FILTER
   const removeFilter = useCallback((key, value) => {
     setFilters((prev) => {
       const updated = {
@@ -112,17 +114,14 @@ export default function HotelContent() {
     });
   }, []);
 
-  // CLEAR ALL FILTERS
   const clearAll = useCallback(() => {
     setFilters(defaultFilters);
   }, []);
 
-  // ACTIVE FILTERS
   const activeFilters = useMemo(() => {
     return Object.entries(filters);
   }, [filters]);
 
-  // HAS ANY ACTIVE FILTER
   const hasActiveFilters = useMemo(() => {
     return activeFilters.some(([_, value]) => isFilterActive(value));
   }, [activeFilters, isFilterActive]);
@@ -131,7 +130,6 @@ export default function HotelContent() {
 
   return (
     <div className="bg-[#edf7ff]">
-      {/* SEARCH BAR */}
       <SearchBar
         draftSearchData={draftSearchData}
         setDraftSearchData={setDraftSearchData}
@@ -139,30 +137,19 @@ export default function HotelContent() {
       />
 
       <div className="relative mx-auto mt-[-48px] flex max-w-7xl gap-4 p-3 md:flex-nowrap">
-        {/* SIDEBAR */}
         <div className="sticky top-4 max-h-[calc(100vh-20px)] w-full overflow-y-auto sm:w-64 md:w-72">
           <SidebarFilters filters={filters} setFilters={setFilters} />
         </div>
 
-        {/* MAIN */}
         <div className="min-w-0 flex-1">
-          {/* SORT */}
           <SortBar sort={sort} setSort={setSort} />
-
           {/* ACTIVE FILTERS */}
           <div className="mt-3 mb-4 flex flex-wrap gap-2">
             {activeFilters.map(([key, value]) => {
-              // SKIP INACTIVE FILTERS
-              if (!isFilterActive(value)) {
-                return null;
-              }
+              if (!isFilterActive(value)) return null;
 
-              // HIDE PRICE KEYS
-              if (key === "minPrice" || key === "maxPrice") {
-                return null;
-              }
+              if (key === "minPrice" || key === "maxPrice") return null;
 
-              // ARRAY FILTERS
               if (Array.isArray(value)) {
                 return value.map((v, i) => (
                   <div
@@ -170,7 +157,6 @@ export default function HotelContent() {
                     className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
                   >
                     {v}
-
                     <CloseOutlined
                       className="cursor-pointer text-xs"
                       onClick={() => removeFilter(key, v)}
@@ -179,15 +165,12 @@ export default function HotelContent() {
                 ));
               }
 
-              // LABEL
               let label = value;
 
-              // FREE CANCELLATION
               if (key === "freeCancellation") {
                 label = "Free Cancellation";
               }
 
-              // STAR RATING
               if (key === "starRating") {
                 label = `${value} Star`;
               }
@@ -198,7 +181,6 @@ export default function HotelContent() {
                   className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
                 >
                   {label}
-
                   <CloseOutlined
                     className="cursor-pointer text-xs"
                     onClick={() => removeFilter(key)}
@@ -207,37 +189,40 @@ export default function HotelContent() {
               );
             })}
 
-            {/* PRICE CHIP */}
             {(filters?.minPrice || filters?.maxPrice) && (
               <div className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600">
                 ₹{filters?.minPrice || 0}
                 {" - "}₹{filters?.maxPrice || 50000}
                 <CloseOutlined
                   className="cursor-pointer text-xs"
-                  onClick={() => {
+                  onClick={() =>
                     setFilters((prev) => ({
                       ...prev,
                       minPrice: "",
                       maxPrice: "",
-                    }));
-                  }}
+                    }))
+                  }
                 />
               </div>
             )}
 
-            {/* CLEAR ALL */}
             {hasActiveFilters && (
               <button
                 onClick={clearAll}
-                className="rounded bg-red-100 px-3 py-1 text-xs text-red-600! transition hover:bg-red-200"
+                className="rounded !bg-red-200 px-3 py-1 text-xs text-red-600 transition hover:bg-red-200"
               >
                 Clear All
               </button>
             )}
           </div>
-
-          {/* HOTEL LIST */}
           <HotelList searchData={searchData} filters={filters} sort={sort} />
+
+          {/* CMS SEO CONTENT */}
+          {cms && (
+            <div className="mt-8">
+              <CMSContentRenderer cms={cms} />
+            </div>
+          )}
         </div>
       </div>
     </div>
