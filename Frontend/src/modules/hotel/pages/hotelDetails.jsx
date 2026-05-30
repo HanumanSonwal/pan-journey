@@ -21,6 +21,7 @@ import ViewHotelInfo from "../components/hotels/viewhotles/ViewHotelInfo";
 import ViewHotelModal from "../components/hotels/viewhotles/ViewHotelModal";
 import ViewHotelPriceCard from "../components/hotels/viewhotles/ViewHotelPriceCard";
 import ViewHotelTabs from "../components/hotels/viewhotles/ViewHotelTabs";
+import RelatedHotels from "../components/RelatedHotels";
 import { useHotelSearchStore } from "../store/serchData.store";
 
 function HotelDetails({ initialPayload = null, cms = null }) {
@@ -57,6 +58,8 @@ function HotelDetails({ initialPayload = null, cms = null }) {
       searchKey: selectedHotel?.searchKey,
     };
   }, [selectedHotel, initialPayload, searchData]);
+
+  console.log("DETAIL PAYLOAD", payload);
 
   const { data, isLoading, isFetching, refetch } = useHotelDetails(payload);
 
@@ -182,6 +185,11 @@ function HotelDetails({ initialPayload = null, cms = null }) {
             />
           )}
         </div>
+
+        <RelatedHotels
+          cityId={searchData?.cityData?.id}
+          currentHotelId={payload?.hotelId}
+        />
       </div>
 
       {/* Gallery Modal */}
