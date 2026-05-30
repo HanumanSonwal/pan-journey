@@ -168,13 +168,19 @@ export const deleteCMSPage = async (id) => {
 /*
 GET BY SLUG
 */
-export const getCMSPageBySlug = async (slug) => {
-  console.log("CMS SLUG:", slug);
+export const getCMSPageBySlug = async (slug, preview = false) => {
+  console.log("CMS SLUG:", slug, "PREVIEW:", preview);
 
-  const page = await CMSPage.findOne({
-    slug,
-    isPublished: true,
-  });
+  const filter = preview
+    ? {
+        slug,
+      }
+    : {
+        slug,
+        isPublished: true,
+      };
+
+  const page = await CMSPage.findOne(filter);
 
   console.log("CMS PAGE:", page);
 

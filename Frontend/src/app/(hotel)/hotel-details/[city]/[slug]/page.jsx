@@ -1,35 +1,81 @@
 import { buildCmsMetadata } from "@/modules/cms/helpers/cmsSeo";
+import {
+  buildHotelDescription,
+  buildHotelTitle,
+} from "@/modules/cms/helpers/hotelSeo";
 import { fetchCmsBySlug } from "@/modules/cms/services/cmsFetch";
 import HotelDetails from "@/modules/hotel/pages/hotelDetails";
 
-export async function generateMetadata({ params }) {
+export async function generateMetadata({ params, searchParams }) {
   const { slug, city } = await params;
-  const cms = await fetchCmsBySlug(slug);
+
+  const query = await searchParams;
+
+  const preview = query?.preview === "true";
+
+  const cms = await fetchCmsBySlug(slug, preview);
 
   if (cms) {
-    return buildCmsMetadata(cms);
+    const metadata = buildCmsMetadata(cms);
+
+    if (preview) {
+      metadata.robots = {
+        index: false,
+        follow: false,
+        googleBot: {
+          index: false,
+          follow: false,
+        },
+      };
+    }
+
+    return metadata;
   }
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   const hotelSlug =
     slug?.replace(/-/g, " ")?.replace(/\b\w/g, (l) => l.toUpperCase()) ||
     "Hotel";
   const canonical = `${siteUrl}/hotel-details/${city}/${slug}`;
+  const cityName =
+    city?.replace(/-/g, " ")?.replace(/\b\w/g, (l) => l.toUpperCase()) || "";
   return {
     metadataBase: new URL(siteUrl),
-    title: `${hotelSlug} | PAN Journey`,
-    description: `Book ${hotelSlug} with verified hotel details and best prices on PAN Journey.`,
+    title: buildHotelTitle(hotelSlug, cityName),
+    description: buildHotelDescription(hotelSlug, city),
     alternates: {
       canonical,
     },
-    robots: {
-      index: true,
-      follow: true,
-    },
+    robots: preview
+      ? {
+          index: false,
+          follow: false,
+          googleBot: {
+            index: false,
+            follow: false,
+          },
+        }
+      : {
+          index: true,
+          follow: true,
+        },
     authors: [
       {
         name: "PAN Journey",
       },
     ],
+    openGraph: {
+      title: buildHotelTitle(hotelSlug, cityName),
+      description: buildHotelDescription(hotelSlug, city),
+      url: canonical,
+      siteName: "PAN Journey",
+      type: "website",
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title: buildHotelTitle(hotelSlug, cityName),
+      description: buildHotelDescription(hotelSlug, city),
+    },
     creator: "PAN Journey",
     publisher: "PAN Journey",
   };
@@ -39,7 +85,9 @@ export default async function Page({ params, searchParams }) {
   const { slug, city } = await params;
   const query = await searchParams;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-  const cms = await fetchCmsBySlug(slug);
+  const preview = query?.preview === "true";
+
+  const cms = await fetchCmsBySlug(slug, preview);
   const hotelName =
     cms?.data?.hotelMeta?.hotelName ||
     slug?.replace(/-/g, " ")?.replace(/\b\w/g, (l) => l.toUpperCase());

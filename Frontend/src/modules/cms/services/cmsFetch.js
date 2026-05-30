@@ -1,15 +1,15 @@
 import { getCmsBySlug } from "../api/cms.service";
 
-export const fetchCmsBySlug = async (slug) => {
+export const fetchCmsBySlug = async (slug, preview = false) => {
   try {
-    const data = await getCmsBySlug(slug);
+    const data = await getCmsBySlug(slug, preview);
+    console.log("CMS FETCH", slug, "PREVIEW:", preview);
     console.log("CMS FETCH DATA", data);
     return data;
   } catch (error) {
-    console.log("CMS FETCH ERROR", error?.response?.status);
-    console.log("CMS FETCH MESSAGE", error?.response?.data);
+    console.log("CMS FETCH ERROR STATUS", error?.response?.status);
+    console.log("CMS FETCH ERROR DATA", error?.response?.data);
     console.log("FULL ERROR", error);
-
     return null;
   }
 };

@@ -2,16 +2,16 @@
 
 import { Button, Card, Col, Form, Input, Row, Select, Switch } from "antd";
 
-import CMSSeoFields from "./CMSSeoFields";
-
 import useCMSForm from "../hooks/useCMSForm";
 import CMSBlocksBuilder from "./CMSBlocksBuilder";
+import CMSSeoFields from "./CMSSeoFields";
 import CMSCitySelector from "./entity-selector/CMSCitySelector";
 import CMSHotelSelector from "./entity-selector/CMSHotelSelector";
 
 export default function CMSForm({ id }) {
   const [form] = Form.useForm();
   const entityType = Form.useWatch("entityType", form);
+  const title = Form.useWatch("title", form);
   const { handleSubmit, isSubmitting } = useCMSForm({
     id,
     form,
@@ -19,6 +19,42 @@ export default function CMSForm({ id }) {
   const showCity = entityType === "hotelCity" || entityType === "hotel";
   const showHotel = entityType === "hotel";
   const showEntityId = entityType === "hotelCity" || entityType === "hotel";
+
+  /*
+    PREVIEW
+  */
+  const handlePreview = () => {
+    const values = form.getFieldsValue(true);
+    const slug =
+      values?.slug ||
+      values?.title
+        ?.toLowerCase()
+        ?.trim()
+        ?.replace(/[^a-z0-9\s-]/g, "")
+        ?.replace(/\s+/g, "-");
+
+    /*
+    SAVE FIRST
+  */
+    if (!id) {
+      message.warning("Save draft before preview");
+      return;
+    }
+    if (!slug) {
+      message.warning("Missing page slug");
+      return;
+    }
+    const frontendUrl =
+      process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+    let previewUrl = `${frontendUrl}/${slug}?preview=true`;
+    if (values.entityType === "hotelCity") {
+      previewUrl = `${frontendUrl}/hotels/${slug}?preview=true`;
+    }
+    if (values.entityType === "hotel") {
+      previewUrl = `${frontendUrl}/hotel/${slug}?preview=true`;
+    }
+    window.open(previewUrl, "_blank");
+  };
 
   return (
     <Form
@@ -49,6 +85,23 @@ export default function CMSForm({ id }) {
               ]}
             >
               <Input placeholder="Enter page title" size="large" />
+            </Form.Item>
+
+            <Form.Item label="Slug">
+              <Input
+                size="large"
+                disabled
+                placeholder="Auto generated"
+                value={
+                  form.getFieldValue("slug") ||
+                  title
+                    ?.toLowerCase()
+                    ?.trim()
+                    ?.replace(/[^a-z0-9\s-]/g, "")
+                    ?.replace(/\s+/g, "-") ||
+                  ""
+                }
+              />
             </Form.Item>
 
             <Row gutter={16}>
@@ -98,9 +151,7 @@ export default function CMSForm({ id }) {
             </Row>
 
             {showCity && <CMSCitySelector form={form} />}
-
             {showHotel && <CMSHotelSelector form={form} />}
-
             {showEntityId && (
               <>
                 <Form.Item name="entityId" hidden>
@@ -140,15 +191,32 @@ export default function CMSForm({ id }) {
             >
               <CMSSeoFields />
 
-              <Button
-                type="primary"
-                htmlType="submit"
-                block
-                size="large"
-                loading={isSubmitting}
+              <div
+                style={{
+                  display: "flex",
+                  gap: 12,
+                  marginTop: 12,
+                }}
               >
-                {id ? "Update Page" : "Create Page"}
-              </Button>
+                <Button
+                  block
+                  size="large"
+                  onClick={handlePreview}
+                  disabled={!id}
+                >
+                  Preview
+                </Button>
+
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  block
+                  size="large"
+                  loading={isSubmitting}
+                >
+                  {id ? "Update Page" : "Create Page"}
+                </Button>
+              </div>
             </Card>
           </div>
         </Col>

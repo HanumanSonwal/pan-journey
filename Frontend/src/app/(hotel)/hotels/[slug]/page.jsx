@@ -1,13 +1,19 @@
-import CMSContentRenderer from "@/modules/cms/components/renderer/CMSContentRenderer";
+import {
+  buildHotelDescription,
+  buildHotelKeywords,
+  buildHotelTitle,
+} from "@/modules/cms/helpers/cmsDynamicSeo";
 import { buildCmsMetadata } from "@/modules/cms/helpers/cmsSeo";
 import { fetchCmsBySlug } from "@/modules/cms/services/cmsFetch";
 import HotelContent from "@/modules/hotel/pages/Hotel";
 import { searchDestinationServer } from "@/modules/hotel/services/search.server";
 
-export async function generateMetadata({ params }) {
+export async function generateMetadata({ params, searchParams }) {
   const { slug } = await params;
-
-  const cms = await fetchCmsBySlug(slug);
+  const query = await searchParams;
+  const preview = query?.preview === "true";
+  const cms = await fetchCmsBySlug(slug, preview);
+  console.log("METADATA PREVIEW:", preview);
 
   /*
     CMS SEO
@@ -20,50 +26,42 @@ export async function generateMetadata({ params }) {
     DEFAULT SEO
   */
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-
   const cityName =
     slug?.replace(/-/g, " ")?.replace(/\b\w/g, (l) => l.toUpperCase()) ||
     "Hotels";
-
   const canonical = `${siteUrl}/hotels/${slug}`;
-
   return {
     metadataBase: new URL(siteUrl),
-
-    title: `Hotels in ${cityName} | PAN Journey`,
-
-    description: `Find hotels in ${cityName} with verified listings, best prices and travel insights on PAN Journey.`,
-
-    keywords: [
-      `${cityName} hotels`,
-      `Hotels in ${cityName}`,
-      `${cityName} stay`,
-      "hotel booking",
-      "PAN Journey",
-    ],
-
+    title: buildHotelTitle(cityName),
+    description: buildHotelDescription(cityName),
+    keywords: buildHotelKeywords(cityName),
     alternates: {
       canonical,
     },
 
-    robots: {
-      index: true,
-      follow: true,
-    },
-
+    robots: preview
+      ? {
+          index: false,
+          follow: false,
+          googleBot: {
+            index: false,
+            follow: false,
+          },
+        }
+      : {
+          index: true,
+          follow: true,
+        },
     authors: [
       {
         name: "PAN Journey",
       },
     ],
-
     creator: "PAN Journey",
-
     publisher: "PAN Journey",
-
     openGraph: {
-      title: `Hotels in ${cityName} | PAN Journey`,
-      description: `Find hotels in ${cityName} with verified listings and best prices.`,
+      title: buildHotelTitle(cityName),
+      description: buildHotelDescription(cityName),
       url: canonical,
       siteName: "PAN Journey",
       type: "website",
@@ -71,18 +69,23 @@ export async function generateMetadata({ params }) {
 
     twitter: {
       card: "summary_large_image",
-      title: `Hotels in ${cityName} | PAN Journey`,
-      description: `Find hotels in ${cityName} with verified listings and best prices.`,
+      title: buildHotelTitle(cityName),
+      description: buildHotelDescription(cityName),
     },
   };
 }
 
-export default async function Page({ params }) {
+export default async function Page({ params, searchParams }) {
   const { slug } = await params;
+
+  const query = await searchParams;
+  const preview = query?.preview === "true";
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-  const cms = await fetchCmsBySlug(slug);
+  const cms = await fetchCmsBySlug(slug, preview);
+
+  console.log("PAGE PREVIEW:", preview);
 
   let cityName =
     slug?.replace(/-/g, " ")?.replace(/\b\w/g, (l) => l.toUpperCase()) || "";
@@ -94,6 +97,7 @@ export default async function Page({ params }) {
   */
   if (cms && cms?.data?.cityMeta?.destinationId) {
     cityName = cms?.data?.cityMeta?.destination || cityName;
+
     cityId = cms?.data?.cityMeta?.destinationId;
   } else {
     /*
@@ -104,6 +108,7 @@ export default async function Page({ params }) {
     const matchedCity = destinations?.[0];
 
     cityName = matchedCity?.destination || cityName;
+
     cityId = matchedCity?.id || "";
   }
 
@@ -114,9 +119,6 @@ export default async function Page({ params }) {
     "@context": "https://schema.org",
 
     "@graph": [
-      /*
-        BREADCRUMB
-      */
       {
         "@type": "BreadcrumbList",
 
@@ -127,14 +129,12 @@ export default async function Page({ params }) {
             name: "Home",
             item: siteUrl,
           },
-
           {
             "@type": "ListItem",
             position: 2,
             name: "Hotels",
             item: `${siteUrl}/hotels`,
           },
-
           {
             "@type": "ListItem",
             position: 3,
@@ -144,9 +144,6 @@ export default async function Page({ params }) {
         ],
       },
 
-      /*
-        COLLECTION PAGE
-      */
       {
         "@type": "CollectionPage",
 
@@ -159,9 +156,6 @@ export default async function Page({ params }) {
           `Find hotels in ${cityName} with best prices on PAN Journey.`,
       },
 
-      /*
-        ORGANIZATION
-      */
       {
         "@type": "Organization",
 
@@ -189,13 +183,27 @@ export default async function Page({ params }) {
   };
 
   /*
-  FAQ SCHEMA
-*/
+    FAQ SCHEMA
+  */
   const faqBlock = cms?.data?.blocks?.find((b) => b?.type === "faq");
 
-  console.log("FAQ BLOCK:", faqBlock);
+  let faqItems = faqBlock?.data?.items || faqBlock?.data?.faqs || [];
 
-  const faqItems = faqBlock?.data?.items || faqBlock?.data?.faqs || [];
+  /*
+  FALLBACK FAQ
+*/
+  if (!faqItems.length) {
+    faqItems = [
+      {
+        question: `What are the best areas to stay in ${cityName}?`,
+        answer: `The best area depends on your travel needs, budget and nearby attractions in ${cityName}.`,
+      },
+      {
+        question: `When should I book hotels in ${cityName}?`,
+        answer: `Booking early is generally recommended during weekends, holidays and peak travel seasons.`,
+      },
+    ];
+  }
 
   if (faqItems.length) {
     schema["@graph"].push({
@@ -225,10 +233,6 @@ export default async function Page({ params }) {
       />
 
       <HotelContent initialSearchData={initialSearchData} cms={cms} />
-
-      {/* CITY CMS */}
-
-      {cms && <CMSContentRenderer cms={cms} />}
     </>
   );
 }

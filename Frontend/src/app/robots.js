@@ -6,9 +6,16 @@ export default function robots() {
       {
         userAgent: "*",
 
-        allow: "/",
+        allow: ["/"],
 
-        disallow: ["/dashboard/", "/admin/", "/api/", "/profile/", "/booking/"],
+        disallow: [
+          "/dashboard/",
+          "/admin/",
+          "/api/",
+          "/profile/",
+          "/booking/",
+          "/preview/",
+        ],
       },
     ],
 

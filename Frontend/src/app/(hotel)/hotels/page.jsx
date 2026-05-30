@@ -1,3 +1,10 @@
+import {
+  buildHotelDescription,
+  buildHotelKeywords,
+  buildHotelTitle,
+} from "@/modules/cms/helpers/cmsDynamicSeo";
+import { buildCmsMetadata } from "@/modules/cms/helpers/cmsSeo";
+import { fetchCmsBySlug } from "@/modules/cms/services/cmsFetch";
 import HotelContent from "@/modules/hotel/pages/Hotel";
 import { Suspense } from "react";
 
@@ -11,7 +18,7 @@ export async function generateMetadata({ searchParams }) {
   const cityName = rawCity?.split(",")?.[0]?.trim() || "Hotels";
 
   /*
-  SLUG
+    CITY SLUG
   */
   const citySlug = cityName
     ?.toLowerCase()
@@ -19,7 +26,19 @@ export async function generateMetadata({ searchParams }) {
     ?.replace(/\s+/g, "-");
 
   /*
-  CANONICAL -> SEO PAGE
+    CMS FETCH
+  */
+  const cms = citySlug ? await fetchCmsBySlug(citySlug) : null;
+
+  /*
+    CMS SEO
+  */
+  if (cms) {
+    return buildCmsMetadata(cms);
+  }
+
+  /*
+    DEFAULT SEO
   */
   const canonical = citySlug
     ? `${siteUrl}/hotels/${citySlug}`
@@ -27,33 +46,35 @@ export async function generateMetadata({ searchParams }) {
 
   return {
     metadataBase: new URL(siteUrl),
+    title: buildHotelTitle(cityName),
 
-    title: `Hotels in ${cityName} | PAN Journey`,
+    description: buildHotelDescription(cityName),
 
-    description: `Search hotels in ${cityName} with verified listings, best prices and travel insights on PAN Journey.`,
+    keywords: buildHotelKeywords(cityName),
 
     alternates: {
       canonical,
     },
 
-    robots: {
-      index: true,
-      follow: true,
-    },
-
-    authors: [
-      {
-        name: "PAN Journey",
-      },
-    ],
-
-    creator: "PAN Journey",
-
-    publisher: "PAN Journey",
+    robots: preview
+      ? {
+          index: false,
+          follow: false,
+          googleBot: {
+            index: false,
+            follow: false,
+          },
+        }
+      : {
+          index: true,
+          follow: true,
+        },
 
     openGraph: {
-      title: `Hotels in ${cityName} | PAN Journey`,
-      description: `Search hotels in ${cityName} with verified listings and best prices.`,
+      title: buildHotelTitle(cityName),
+
+      description: buildHotelDescription(cityName),
+
       url: canonical,
       siteName: "PAN Journey",
       type: "website",
@@ -61,10 +82,31 @@ export async function generateMetadata({ searchParams }) {
   };
 }
 
-export default function Page() {
+export default async function Page({ searchParams }) {
+  const query = await searchParams;
+
+  const rawCity = query?.city || "";
+
+  const cityName = rawCity?.split(",")?.[0]?.trim() || "";
+
+  /*
+    CITY SLUG
+  */
+  const citySlug = cityName
+    ?.toLowerCase()
+    ?.replace(/[^a-z0-9\s-]/g, "")
+    ?.replace(/\s+/g, "-");
+
+  /*
+    CMS FETCH
+  */
+  const cms = citySlug ? await fetchCmsBySlug(citySlug) : null;
+
+  console.log("SEARCH PAGE CMS:", cms);
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <HotelContent />
+      <HotelContent cms={cms} />
     </Suspense>
   );
 }

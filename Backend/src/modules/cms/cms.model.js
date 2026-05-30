@@ -29,11 +29,11 @@ const cmsSchema = new mongoose.Schema(
       default: null,
     },
 
-    template: {
-      type: String,
-      required: true,
-      enum: Object.keys(CMS_TEMPLATES),
-    },
+    // template: {
+    //   type: String,
+    //   required: true,
+    //   enum: Object.keys(CMS_TEMPLATES),
+    // },
 
     metaTitle: {
       type: String,

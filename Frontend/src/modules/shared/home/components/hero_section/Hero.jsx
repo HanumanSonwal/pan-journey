@@ -29,7 +29,13 @@ export default function Hero() {
 
   const handleSearch = () => {
     const query = new URLSearchParams({
-      city: searchData?.city || "",
+      city:
+        searchData?.city
+          ?.split(",")?.[0]
+          ?.trim()
+          ?.toLowerCase()
+          ?.replace(/[^a-z0-9\s-]/g, "")
+          ?.replace(/\s+/g, "-") || "",
       cityId: searchData?.cityData?.id || "",
       checkIn: searchData?.checkIn || "",
       checkOut: searchData?.checkOut || "",
@@ -51,7 +57,7 @@ export default function Hero() {
             activeTab={activeTab}
             setActiveTab={setActiveTab}
           />
-          <h2 className="mb-2 text-center text-xl font-bold text-[#72C0F0] max-lg:text-[28px] max-md:text-[22px] md:text-3xl ">
+          <h2 className="mb-2 text-center text-xl font-bold text-[#72C0F0] max-lg:text-[28px] max-md:text-[22px] md:text-3xl">
             Find What You Are Looking For
           </h2>
           {ActiveForm && <ActiveForm />}

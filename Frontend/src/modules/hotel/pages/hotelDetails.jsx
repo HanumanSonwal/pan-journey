@@ -8,6 +8,10 @@ import {
 import { Card, Spin } from "antd";
 import { useMemo, useState } from "react";
 
+import CMSContentRenderer from "@/modules/cms/components/renderer/CMSContentRenderer";
+import { useHotelDetails } from "@/modules/hotel/hooks/useHotelDetails";
+import { useSelectedHotelStore } from "@/modules/hotel/store/selectedHotel.store";
+import DynamicHotelSeoFallback from "../components/DynamicHotelSeoFallback";
 import SearchBar from "../components/hotels/SearchBar";
 import HotelSectionsContent from "../components/hotels/viewhotles/HotelSectionsContent";
 import HotelSectionsTabs from "../components/hotels/viewhotles/HotelSectionsTabs";
@@ -17,10 +21,6 @@ import ViewHotelInfo from "../components/hotels/viewhotles/ViewHotelInfo";
 import ViewHotelModal from "../components/hotels/viewhotles/ViewHotelModal";
 import ViewHotelPriceCard from "../components/hotels/viewhotles/ViewHotelPriceCard";
 import ViewHotelTabs from "../components/hotels/viewhotles/ViewHotelTabs";
-
-import CMSContentRenderer from "@/modules/cms/components/renderer/CMSContentRenderer";
-import { useHotelDetails } from "@/modules/hotel/hooks/useHotelDetails";
-import { useSelectedHotelStore } from "@/modules/hotel/store/selectedHotel.store";
 import { useHotelSearchStore } from "../store/serchData.store";
 
 function HotelDetails({ initialPayload = null, cms = null }) {
@@ -173,7 +173,14 @@ function HotelDetails({ initialPayload = null, cms = null }) {
           />
         </div>
         <div className="mt-8 text-black">
-          <CMSContentRenderer cms={cms} />
+          {cms ? (
+            <CMSContentRenderer cms={cms} />
+          ) : (
+            <DynamicHotelSeoFallback
+              hotelName={supplierData?.HotelName}
+              cityName={supplierData?.City}
+            />
+          )}
         </div>
       </div>
 
