@@ -1,41 +1,33 @@
-
 import { supplierAPI } from "../../../config/supplierApi.js";
 import { getAuthHeader } from "../../../config/supplierAuth.service.js";
 import HotelCache from "../hotelCache.model.js";
 
-export const fetchHotelDetailsFromSupplier = async ({
-  hotelId,
-  hotelMeta,
-}) => {
+export const fetchHotelDetailsFromSupplier = async ({ hotelId, hotelMeta }) => {
   try {
-
     // 1️⃣ Find cache using hotelKeys only
-//    const hotelCache = await HotelCache.findOne({
-//   "hotels.hotelId": String(hotelId),
-//   isComplete: true,
-// });
+    //    const hotelCache = await HotelCache.findOne({
+    //   "hotels.hotelId": String(hotelId),
+    //   isComplete: true,
+    // });
 
-// if (!hotelCache) {
-//   throw new Error("Hotel not found");
-// }
-const hotelCache = await HotelCache.findOne({
-  "hotels.hotelId": String(hotelId),
-  isComplete: true,
-});
-const sample = await HotelCache.findOne();
+    // if (!hotelCache) {
+    //   throw new Error("Hotel not found");
+    // }
+    const hotelCache = await HotelCache.findOne({
+      "hotels.hotelId": String(hotelId),
+      // isComplete: true,
+    });
+    const sample = await HotelCache.findOne();
 
-console.log(sample.hotels[1]);
-console.log("HOTEL ID =>", hotelId);
-console.log("TYPE =>", typeof hotelId);
-if (!hotelCache) {
-  throw new Error("Hotel not found");
-}
-    
+    console.log(sample.hotels[1]);
+    console.log("HOTEL ID =>", hotelId);
+    console.log("TYPE =>", typeof hotelId);
+    if (!hotelCache) {
+      throw new Error("Hotel not found");
+    }
 
     // 2️⃣ Find hotel inside hotels array
-    const hotel = hotelCache.hotels.find(
-      (h) => h.hotelId === String(hotelId)
-    );
+    const hotel = hotelCache.hotels.find((h) => h.hotelId === String(hotelId));
 
     if (!hotel) {
       throw new Error("Hotel not found");
@@ -57,7 +49,7 @@ if (!hotelCache) {
     // 5️⃣ Call supplier API
     const { data } = await supplierAPI.post(
       "/JSONService/HotelDetails",
-      payload
+      payload,
     );
 
     return {
@@ -66,16 +58,12 @@ if (!hotelCache) {
       hotelMeta,
       supplierResponse: data,
     };
-
   } catch (error) {
-
     console.error(
       "Supplier Hotel Detail Error:",
-      error?.response?.data || error.message
+      error?.response?.data || error.message,
     );
 
-    throw new Error(
-      error.message || "Supplier HotelDetails API failed"
-    );
+    throw new Error(error.message || "Supplier HotelDetails API failed");
   }
 };

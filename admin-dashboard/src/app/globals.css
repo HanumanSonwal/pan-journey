@@ -186,3 +186,29 @@ body {
 .ant-menu-submenu-title:hover {
   background: rgba(22, 119, 255, 0.08) !important;
 }
+
+/* DARK MODE */
+.jodit-dark .jodit-container {
+  background: #111827 !important;
+  border-color: #374151 !important;
+}
+
+.jodit-dark .jodit-toolbar__box {
+  background: #1f2937 !important;
+}
+
+.jodit-dark .jodit-wysiwyg {
+  background: #111827 !important;
+  color: #f9fafb !important;
+}
+
+.jodit-dark .jodit-status-bar {
+  background: #1f2937 !important;
+  color: #f9fafb !important;
+}
+
+/* LIGHT MODE */
+.jodit-light .jodit-wysiwyg {
+  background: #ffffff !important;
+  color: #111827 !important;
+}
