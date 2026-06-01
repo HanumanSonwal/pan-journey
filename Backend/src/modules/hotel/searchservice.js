@@ -9,6 +9,8 @@ import { paginateHotels } from "./hotelPagination.js";
 import { fetchRemainingHotelsInBackground } from "./supplierPagination.service.js";
 import { getCurrencyRate }
 from "../currencyConverter/currency.service.js";
+import { getMarkup } from "../priceMarkup/markup/markup.service.js";
+import { applyMarkup } from "../priceMarkup/markup/pricing.service.js";
 
 import { convertHotelPrices , getCurrencySymbol}
 from "../currencyConverter/currency.helper.js";
@@ -325,18 +327,68 @@ export const searchHotelsFromSupplier = async (
   from: "INR",
   to: body.currency,
 });
+console.log("\n💰 AFTER CURRENCY CONVERSION");
+console.log({
+  hotelId: hotelsData?.[0]?.hotelId,
+  hotelName: hotelsData?.[0]?.hotelName,
+  originalPrice: hotelsData?.[0]?.originalPrice,
+  convertedPrice: hotelsData?.[0]?.price,
+  originalTax: hotelsData?.[0]?.originalTax,
+  convertedTax: hotelsData?.[0]?.tax,
+  currency: body.currency,
+  rate,
+});
 
 hotelsData = convertHotelPrices({
   hotels: hotelsData,
   rate,
   currency: body.currency,
 });
+const markupResult = await getMarkup({
+  cityName: body.cityName,
+  stateName: body.stateName,
+  countryCode: body.countryCode,
+});
+console.log("\n🏷️ MARKUP RESULT");
+console.log(JSON.stringify(markupResult, null, 2));
+const markup = markupResult?.markup;
+const serviceTax = markupResult?.serviceTax;
+
+if (markup) {
+    console.log("\n🏷️ BEFORE MARKUP");
+  console.log({
+    hotelId: hotelsData?.[0]?.hotelId,
+    hotelName: hotelsData?.[0]?.hotelName,
+    price: hotelsData?.[0]?.price,
+    tax: hotelsData?.[0]?.tax,
+  });
+
+  hotelsData = hotelsData.map((hotel) =>
+    applyMarkup(hotel, markup)
+  );
+   console.log("\n🏷️ AFTER MARKUP");
+  console.log({
+    hotelId: hotelsData?.[0]?.hotelId,
+    hotelName: hotelsData?.[0]?.hotelName,
+    supplierPrice: hotelsData?.[0]?.supplierPrice,
+    finalPrice: hotelsData?.[0]?.price,
+    supplierTax: hotelsData?.[0]?.supplierTax,
+    finalTax: hotelsData?.[0]?.tax,
+  });
+}
 hotelsData = hotelsData.map((hotel) => ({
   ...hotel,
   price: (hotel.price || 0) * body.RoomCount,
   tax: (hotel.tax || 0) * body.RoomCount,
 }));
-
+console.log("\n🛏️ AFTER ROOM MULTIPLIER");
+console.log({
+  roomCount: body.RoomCount,
+  hotelId: hotelsData?.[0]?.hotelId,
+  hotelName: hotelsData?.[0]?.hotelName,
+  finalPrice: hotelsData?.[0]?.price,
+  finalTax: hotelsData?.[0]?.tax,
+});
   console.log("\n🔍 PIPELINE START");
 
   console.log(
@@ -399,6 +451,13 @@ hotelsData = hotelsData.map((hotel) => ({
 
   currencySymbol:
     getCurrencySymbol(body.currency),
+      markupApplied: markup
+    ? {
+        level: markup.level,
+        type: markup.type,
+        value: markup.value,
+      }
+    : null,
 
   searchKey: cache.searchKey,
 
