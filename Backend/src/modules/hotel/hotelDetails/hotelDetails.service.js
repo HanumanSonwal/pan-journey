@@ -9,18 +9,9 @@ export const fetchHotelDetailsFromSupplier = async ({
 }) => {
   try {
 
-    // 1️⃣ Find cache using hotelKeys only
-//    const hotelCache = await HotelCache.findOne({
-//   "hotels.hotelId": String(hotelId),
-//   isComplete: true,
-// });
-
-// if (!hotelCache) {
-//   throw new Error("Hotel not found");
-// }
+   
 const hotelCache = await HotelCache.findOne({
-  "hotels.hotelId": String(hotelId),
-  isComplete: true,
+  "hotels.hotelId": String(hotelId)
 });
 const sample = await HotelCache.findOne();
 
