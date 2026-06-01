@@ -8,19 +8,15 @@ export default async function sitemap() {
   try {
     cmsPages = await getAllCmsPages();
   } catch (err) {
-    console.log("SITEMAP CMS ERROR", err);
+    console.log("SITEMAP CMS ERROR:", err);
   }
 
-  /*
-  STATIC ROUTES
-  */
   const staticRoutes = [
     {
       url: siteUrl,
       lastModified: new Date(),
       priority: 1,
     },
-
     {
       url: `${siteUrl}/hotels`,
       lastModified: new Date(),
@@ -28,43 +24,49 @@ export default async function sitemap() {
     },
   ];
 
-  /*
-  CMS ROUTES
-  */
   const cmsRoutes =
-    cmsPages.map((page) => {
-      let url = siteUrl;
+    cmsPages
+      ?.map((page) => {
+        let url = siteUrl;
 
-      switch (page?.entityType) {
-        case "hotelCity":
-        case "city":
-          url = `${siteUrl}/hotels/${page.slug}`;
-          break;
+        switch (page?.entityType) {
+          case "hotelCity":
+          case "city":
+            url = `${siteUrl}/hotels/${page.slug}`;
+            break;
 
-        case "hotel":
-          const citySlug =
-            page?.data?.cityMeta?.destination
+          case "hotel": {
+            const citySlug = page?.data?.cityMeta?.destination
               ?.split(",")?.[0]
               ?.trim()
               ?.toLowerCase()
               ?.replace(/[^a-z0-9\s-]/g, "")
-              ?.replace(/\s+/g, "-") || "";
+              ?.replace(/\s+/g, "-");
 
-          url = `${siteUrl}/hotel-details/${citySlug}/${page.slug}`;
-          break;
+            if (!citySlug) {
+              console.log(
+                "❌ HOTEL SKIPPED - NO CITY:",
+                page.slug,
+                page.entityId,
+              );
+              return null;
+            }
 
-        default:
-          url = `${siteUrl}/${page.slug}`;
-      }
+            url = `${siteUrl}/hotel-details/${citySlug}/${page.slug}`;
+            break;
+          }
 
-      return {
-        url,
+          default:
+            url = `${siteUrl}/${page.slug}`;
+        }
 
-        lastModified: page.updatedAt || new Date(),
-
-        priority: page.entityType === "hotel" ? 0.9 : 0.8,
-      };
-    }) || [];
+        return {
+          url,
+          lastModified: page?.updatedAt || new Date(),
+          priority: page?.entityType === "hotel" ? 0.9 : 0.8,
+        };
+      })
+      .filter(Boolean) || [];
 
   return [...staticRoutes, ...cmsRoutes];
 }
