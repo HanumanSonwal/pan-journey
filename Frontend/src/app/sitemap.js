@@ -11,6 +11,9 @@ export default async function sitemap() {
     console.log("SITEMAP CMS ERROR:", err);
   }
 
+  /*
+   STATIC APP ROUTES
+  */
   const staticRoutes = [
     {
       url: siteUrl,
@@ -22,8 +25,31 @@ export default async function sitemap() {
       lastModified: new Date(),
       priority: 0.9,
     },
+    {
+      url: `${siteUrl}/about-us`,
+      lastModified: new Date(),
+      priority: 0.8,
+    },
+    {
+      url: `${siteUrl}/contact-us`,
+      lastModified: new Date(),
+      priority: 0.8,
+    },
+    {
+      url: `${siteUrl}/privacy-policy`,
+      lastModified: new Date(),
+      priority: 0.8,
+    },
+    {
+      url: `${siteUrl}/terms-conditions`,
+      lastModified: new Date(),
+      priority: 0.8,
+    },
   ];
 
+  /*
+   CMS ROUTES
+  */
   const cmsRoutes =
     cmsPages
       ?.map((page) => {
@@ -44,11 +70,7 @@ export default async function sitemap() {
               ?.replace(/\s+/g, "-");
 
             if (!citySlug) {
-              console.log(
-                "❌ HOTEL SKIPPED - NO CITY:",
-                page.slug,
-                page.entityId,
-              );
+              console.log("❌ HOTEL SKIPPED - NO CITY:", page.slug);
               return null;
             }
 
@@ -57,6 +79,11 @@ export default async function sitemap() {
           }
 
           default:
+            // HOME duplicate avoid
+            if (!page?.slug || page.slug === "/" || page.slug === "home") {
+              return null;
+            }
+
             url = `${siteUrl}/${page.slug}`;
         }
 
@@ -68,5 +95,14 @@ export default async function sitemap() {
       })
       .filter(Boolean) || [];
 
-  return [...staticRoutes, ...cmsRoutes];
+  /*
+   REMOVE DUPLICATES
+  */
+  const allRoutes = [...staticRoutes, ...cmsRoutes];
+
+  const uniqueRoutes = Array.from(
+    new Map(allRoutes.map((item) => [item.url, item])).values(),
+  );
+
+  return uniqueRoutes;
 }
