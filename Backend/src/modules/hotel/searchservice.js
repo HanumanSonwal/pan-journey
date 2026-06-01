@@ -10,7 +10,7 @@ import { fetchRemainingHotelsInBackground } from "./supplierPagination.service.j
 import { getCurrencyRate }
 from "../currencyConverter/currency.service.js";
 
-import { convertHotelPrices }
+import { convertHotelPrices , getCurrencySymbol}
 from "../currencyConverter/currency.helper.js";
 
 /* =====================================================
@@ -394,20 +394,27 @@ hotelsData = hotelsData.map((hotel) => ({
     "=================================================\n"
   );
 
-  return {
+ return {
+  currency: body.currency,
 
-    searchKey: cache.searchKey,
+  currencySymbol:
+    getCurrencySymbol(body.currency),
 
-    totalHotels: paginated.totalHotels,
+  searchKey: cache.searchKey,
 
-    page: paginated.page,
+  totalHotels:
+    paginated.totalHotels,
 
-    totalPage: paginated.totalPages,
+  page: paginated.page,
 
-    limit: paginated.limit,
+  totalPage:
+    paginated.totalPages,
 
-    hotels: paginated.hotels,
+  limit: paginated.limit,
 
-    isComplete: cache.isComplete,
-  };
+  hotels: paginated.hotels,
+
+  isComplete:
+    cache.isComplete,
+};
 };

@@ -4,6 +4,9 @@ import {
   sendSuccess,
   sendError,
 } from "../../utils/response/ApiResponse.js";
+import { getCurrencySymbol } from "./currency.helper.js";
+import { detectCurrencyFromIP }
+from "../currencyConverter/currency.detect.js";
 
 export const getCurrencies =
 async (req, res) => {
@@ -18,11 +21,11 @@ async (req, res) => {
       response.data.supported_codes;
 
     const formatted =
-      currencies.map((item) => ({
-        code: item[0],
-        name: item[1],
-      }));
-
+  currencies.map((item) => ({
+    code: item[0],
+    name: item[1],
+    symbol: getCurrencySymbol(item[0]),
+  }));
     return sendSuccess(
       res,
       "Currencies fetched successfully",
