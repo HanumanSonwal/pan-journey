@@ -118,7 +118,7 @@ export const mergeHotels = (data) => {
           (f) => f.FacilityName
         ) || [],
 
-      price: price?.TotalAmount || 0,
+      price: price?.BasicAmount || 0,
 
       tax: price?.TaxAmount || 0,
 
