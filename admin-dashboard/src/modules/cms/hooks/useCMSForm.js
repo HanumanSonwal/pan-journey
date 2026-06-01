@@ -38,7 +38,7 @@ export default function useCMSForm({ id, form }) {
       const payload = {
         title: formValues.title,
         slug: formValues.slug,
-        template: formValues.template,
+        // template: formValues.template,
         entityType: formValues.entityType,
         entityId: formValues.entityId,
         metaTitle: formValues.metaTitle,
