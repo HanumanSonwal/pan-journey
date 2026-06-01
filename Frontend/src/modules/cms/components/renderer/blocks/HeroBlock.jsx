@@ -11,48 +11,50 @@ export default function HeroBlock({ data }) {
 
   return (
     <section
-      className="cms-hero position-relative overflow-hidden"
+      className="cms-hero position-relative"
       style={{
-        // minHeight: 100,
+        minHeight: "clamp(280px, 60vw, 430px)",
         display: "flex",
         alignItems: "center",
-        justifyContent: "center",
-
+        width: "100%",
+        padding: "clamp(50px, 8vw, 120px) 20px",
         backgroundImage: imageUrl
           ? `
             linear-gradient(
-              rgba(15,23,42,.35),
-              rgba(15,23,42,.45)
+              rgba(255,255,255,0.55),
+              rgba(255,255,255,0.55)
             ),
             url(${imageUrl})
           `
-          : "linear-gradient(135deg,#0f172a,#1e293b)",
-
+          : "linear-gradient(135deg,#f8fafc,#e2e8f0)",
         backgroundPosition: "center",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
-
-        color: "#fff",
-        padding: "110px 20px",
       }}
     >
-      <div className="container">
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "1320px",
+          margin: "0 auto",
+          padding: "0 15px",
+        }}
+      >
         <div
           style={{
-            maxWidth: 820,
-            margin: "0 auto",
-            textAlign: "center",
+            width: "100%",
+            maxWidth: "550px",
           }}
         >
           {data?.title && (
             <h1
               style={{
-                fontSize: "clamp(2.4rem,5vw,4rem)",
+                fontSize: "clamp(1.5rem, 6vw, 2.5rem)",
+                fontWeight: 600,
+                color: "#1f1f1f",
                 lineHeight: 1.1,
-                fontWeight: 800,
-                marginBottom: 20,
-                letterSpacing: "-1px",
-                textShadow: "0 4px 18px rgba(0,0,0,.25)",
+                marginBottom: "4px",
+                wordBreak: "break-word",
               }}
             >
               {data.title}
@@ -62,13 +64,11 @@ export default function HeroBlock({ data }) {
           {data?.subtitle && (
             <p
               style={{
-                fontSize: 18,
-                lineHeight: 1.8,
-                opacity: 0.96,
-                marginBottom: 34,
-                maxWidth: 680,
-                marginInline: "auto",
-                textShadow: "0 2px 10px rgba(0,0,0,.18)",
+                fontSize: "clamp(.8rem, 2vw, 1rem)",
+                lineHeight: 1.7,
+                color: "#232323",
+                marginBottom: "20px",
+                maxWidth: "500px",
               }}
             >
               {data.subtitle}
@@ -82,24 +82,16 @@ export default function HeroBlock({ data }) {
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
-
-                minWidth: 170,
-                height: 52,
-
-                padding: "0 28px",
-
-                borderRadius: 14,
-
-                background: "linear-gradient(90deg,#2563eb,#1d4ed8)",
-
+                minHeight: "50px",
+                minWidth: "160px",
+                padding: "12px 30px",
+                background: "#000",
                 color: "#fff",
-                fontWeight: 700,
-                fontSize: 15,
                 textDecoration: "none",
-
-                boxShadow: "0 12px 28px rgba(37,99,235,.28)",
-
-                transition: "all .25s ease",
+                borderRadius: "6px",
+                fontWeight: 600,
+                fontSize: "15px",
+                transition: "all 0.3s ease",
               }}
             >
               {data.buttonText}
