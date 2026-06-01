@@ -3,6 +3,7 @@ import Header from "@/components/common/Header";
 import ProfileCompletionHandler from "@/modules/auth/components/ProfileCompletionHandler";
 import LoaderProvider from "@/providers/LoaderProvider";
 import QueryProvider from "@/providers/QueryProvider";
+import "@/styles/cms-content.css";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import "antd/dist/reset.css";
 import { Geist, Geist_Mono, Jost, Roboto } from "next/font/google";
@@ -33,9 +34,25 @@ const jost = Jost({
   weight: ["400", "500", "700"],
 });
 
+/*
+ROOT METADATA
+*/
 export const metadata = {
-  title: "Pan Journey",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+  ),
+
+  title: {
+    default: "PAN Journey",
+    template: "%s",
+  },
+
   description: "Booking platform",
+
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({ children }) {
@@ -43,9 +60,13 @@ export default function RootLayout({ children }) {
     <html
       suppressHydrationWarning
       lang="en"
-      className={` ${geistSans.variable} ${geistMono.variable} ${roboto.variable} ${jost.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${roboto.variable} ${jost.variable} h-full antialiased`}
     >
       <head>
+        {/* Viewport */}
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        {/* Preload */}
         <link rel="preload" as="image" href="/images/homepage/home.svg" />
 
         {/* Google Analytics */}
@@ -56,13 +77,14 @@ export default function RootLayout({ children }) {
 
         <Script id="google-analytics" strategy="afterInteractive">
           {`
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-DYY7076V0W');
-    `}
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-DYY7076V0W');
+          `}
         </Script>
       </head>
+
       <body className="flex min-h-full flex-col">
         <LoaderProvider>
           <AntdRegistry>

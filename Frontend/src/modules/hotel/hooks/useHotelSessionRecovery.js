@@ -2,7 +2,7 @@
 
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { searchHotels } from "../api/hotel.service";
+import { searchHotels } from "../services/hotel.service";
 import { useSelectedHotelStore } from "../store/selectedHotel.store";
 import { useHotelSearchStore } from "../store/serchData.store";
 

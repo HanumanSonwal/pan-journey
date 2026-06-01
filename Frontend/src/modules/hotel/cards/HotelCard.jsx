@@ -4,6 +4,7 @@ import { useSelectedHotelStore } from "@/modules/hotel/store/selectedHotel.store
 import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
 import ImageGallery from "@/modules/profile/components/ImageGallery";
 import HotelBookingComingSoonModal from "@/modules/shared/home/components/HotelBookingComingSoonModal";
+import { slugify } from "@/utils/slug/slugify";
 import {
   EnvironmentOutlined,
   HeartOutlined,
@@ -48,8 +49,8 @@ function HotelCard({ hotel }) {
 
     return [
       hotel.image ||
-      hotel.images?.[0] ||
-      "https://images.unsplash.com/photo-1566073771259-6a8506099945",
+        hotel.images?.[0] ||
+        "https://images.unsplash.com/photo-1566073771259-6a8506099945",
     ];
   }, [hotel.images, hotel.image]);
 
@@ -80,19 +81,43 @@ function HotelCard({ hotel }) {
   const handleNavigate = () => {
     console.log("HOTEL OBJECT", hotel);
 
+    const citySlug = slugify(
+      searchData?.city?.split(",")[0] ||
+        hotel?.cityName ||
+        hotel?.City ||
+        "hotel",
+    );
+
+    const hotelSlug = slugify(
+      hotel?.name || hotel?.hotelName || hotel?.HotelName || "hotel",
+    );
+
+    const hotelId = hotel?.hotelId || hotel?.HotelId || hotel?.id;
+
+    /*
+    IMPORTANT
+  */
     setSelectedHotel({
-      hotelKey: hotel?.hotelkey || hotel?.hotelkey,
+      hotelKey: hotel?.hotelKey || hotel?.HotelKey || hotel?.hotelkey,
+
       searchKey: hotel?.searchKey || hotel?.SearchKey,
+
       hotelMeta: {
-        hotelId: hotel?.hotelId || hotel?.id,
+        hotelId: hotel?.hotelId || hotel?.HotelId || hotel?.id,
+
         cityName: searchData?.cityData?.id,
+
         stateName: searchData?.cityData?.state,
+
         countryCode: searchData?.cityData?.country,
       },
     });
-    router.push("/hotel-details");
-  };
 
+    /*
+    PASS HID
+  */
+    router.push(`/hotel-details/${citySlug}/${hotelSlug}?hid=${hotelId}`);
+  };
   const visibleFacilities = useMemo(() => {
     return showAllFacilities ? facilities : facilities.slice(0, 4);
   }, [showAllFacilities, facilities]);
@@ -187,8 +212,6 @@ function HotelCard({ hotel }) {
                     </div>
                   </div>
                 </div>
-
-
               </div>
               {facilities?.length > 0 && (
                 <div className="mt-5">

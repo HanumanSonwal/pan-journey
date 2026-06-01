@@ -31,29 +31,17 @@ const templateFields = {
 
 export const createCMSValidation = Joi.object({
   title: Joi.string().required(),
-
   slug: Joi.string().optional(),
-
   entityType: Joi.string()
     .valid(...CMS_ENTITY_TYPES)
     .required(),
-
   entityId: Joi.string().allow("", null),
 
-  template: Joi.string()
-    .valid(...Object.keys(CMS_TEMPLATES))
-    .required(),
-
   metaTitle: Joi.string().allow(""),
-
   metaDescription: Joi.string().allow(""),
-
   keywords: Joi.array().items(Joi.string()),
-
   schema: Joi.any(),
-
   data: Joi.object(),
-
   isPublished: Joi.boolean(),
 });
 

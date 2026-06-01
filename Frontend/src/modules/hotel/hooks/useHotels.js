@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { searchHotels } from "../api/hotel.service";
+import { searchHotels } from "../services/hotel.service";
 
 export const useHotels = (params) => {
   return useQuery({

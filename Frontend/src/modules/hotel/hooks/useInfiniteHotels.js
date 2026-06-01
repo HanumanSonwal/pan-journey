@@ -2,7 +2,7 @@
 
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { searchHotels } from "../api/hotel.service";
+import { searchHotels } from "../services/hotel.service";
 
 export const useInfiniteHotels = (params) => {
   const queryKey = useMemo(() => {

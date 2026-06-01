@@ -1,11 +1,10 @@
-export const generateSlug = (
-  text = "",
-) => {
+export const generateSlug = (text = "") => {
   return text
     .toLowerCase()
     .trim()
-    .replace(/,/g, "")
-    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/&/g, "and")
+    .replace(/[^\w\s-]/g, "")
     .replace(/\s+/g, "-")
-    .replace(/-+/g, "-");
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
 };

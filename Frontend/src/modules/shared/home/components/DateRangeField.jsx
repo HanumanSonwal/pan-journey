@@ -45,7 +45,7 @@ export default function DateRangeField({
           });
         }
       }}
-      className="absolute top-[-20] left-0 h-0 w-0 opacity-0"
+      className="absolute top-[-20px] left-0 h-0 w-0 opacity-0 md:left-50 lg:left-0"
     />
   );
 

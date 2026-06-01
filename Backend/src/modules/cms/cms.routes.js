@@ -19,26 +19,63 @@ import { createCMSValidation, updateCMSValidation } from "./cms.validation.js";
 const router = express.Router();
 
 /*
- PUBLIC
+=================================
+PUBLIC
+=================================
 */
 
+/*
+GET CMS BY SLUG
+*/
 router.get("/page/:slug", getCMSBySlug);
 
+/*
+PUBLIC CMS LIST
+SITEMAP
+*/
+router.get("/public/pages", getAllCMS);
+
+/*
+CMS TEMPLATES
+*/
 router.get("/templates", getTemplates);
+
+/*
+ENTITY CMS
+PROTECTED
+*/
 router.get("/entity/:entityType/:entityId", protect, getCMSByEntityController);
 
 /*
- ADMIN
+=================================
+ADMIN
+=================================
 */
 
+/*
+CREATE
+*/
 router.post("/", protect, validate(createCMSValidation), createCMS);
 
+/*
+GET ALL
+ADMIN
+*/
 router.get("/", protect, getAllCMS);
 
+/*
+GET SINGLE
+*/
 router.get("/:id", protect, getSingleCMS);
 
+/*
+UPDATE
+*/
 router.put("/:id", protect, validate(updateCMSValidation), updateCMS);
 
+/*
+DELETE
+*/
 router.delete("/:id", protect, deleteCMS);
 
 export default router;
