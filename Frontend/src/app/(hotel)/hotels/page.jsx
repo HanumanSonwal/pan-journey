@@ -2,15 +2,15 @@ import {
   buildHotelDescription,
   buildHotelKeywords,
   buildHotelTitle,
-} from "@/modules/cms/helpers/cmsDynamicSeo";
-import { buildCmsMetadata } from "@/modules/cms/helpers/cmsSeo";
+} from "@/modules/cms/seo/cmsDynamicSeo";
+import { buildCmsMetadata } from "@/modules/cms/seo/cmsSeo";
 import { fetchCmsBySlug } from "@/modules/cms/services/cmsFetch";
 import HotelContent from "@/modules/hotel/pages/Hotel";
 import { Suspense } from "react";
 
 export async function generateMetadata({ searchParams }) {
   const query = await searchParams;
-
+  const preview = query?.preview === "true";
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
   const rawCity = query?.city || "";
@@ -34,9 +34,21 @@ export async function generateMetadata({ searchParams }) {
     CMS SEO
   */
   if (cms) {
-    return buildCmsMetadata(cms);
-  }
+    const metadata = buildCmsMetadata(cms);
 
+    if (preview) {
+      metadata.robots = {
+        index: false,
+        follow: false,
+        googleBot: {
+          index: false,
+          follow: false,
+        },
+      };
+    }
+
+    return metadata;
+  }
   /*
     DEFAULT SEO
   */

@@ -1,4 +1,4 @@
-import { getCmsBySlug } from "../api/cms.service";
+import { getCmsBySlug } from "./cms.service";
 
 export const fetchCmsBySlug = async (slug, preview = false) => {
   try {

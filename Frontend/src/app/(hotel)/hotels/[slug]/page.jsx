@@ -2,8 +2,8 @@ import {
   buildHotelDescription,
   buildHotelKeywords,
   buildHotelTitle,
-} from "@/modules/cms/helpers/cmsDynamicSeo";
-import { buildCmsMetadata } from "@/modules/cms/helpers/cmsSeo";
+} from "@/modules/cms/seo/cmsDynamicSeo";
+import { buildCmsMetadata } from "@/modules/cms/seo/cmsSeo";
 import { fetchCmsBySlug } from "@/modules/cms/services/cmsFetch";
 import HotelContent from "@/modules/hotel/pages/Hotel";
 import { searchDestinationServer } from "@/modules/hotel/services/search.server";

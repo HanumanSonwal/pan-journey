@@ -1,13 +1,15 @@
 "use client";
 
-import CMSContentRenderer from "@/modules/cms/components/renderer/CMSContentRenderer";
+import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
 import { CloseOutlined } from "@ant-design/icons";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import HotelList from "../components/hotels/HotelList";
 import SearchBar from "../components/hotels/SearchBar";
-import SidebarFilters from "../components/SidebarFilters";
+import HotelsSeoSection from "../seo/HotelsSeoSection";
+import SidebarFilters from "../cards/SidebarFilters";
 import SortBar from "../components/SortBar";
+import DynamicSeoFallback from "../seo/DynamicSeoFallback";
 
 const defaultSearchData = {
   city: "",
@@ -221,13 +223,13 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
           <HotelList searchData={searchData} filters={filters} sort={sort} />
 
           {/* CMS / Dynamic SEO */}
-          <div className="mt-8">
+          <HotelsSeoSection>
             {cms ? (
               <CMSContentRenderer cms={cms} />
             ) : (
               <DynamicSeoFallback cityName={searchData?.city} />
             )}
-          </div>
+          </HotelsSeoSection>
         </div>
       </div>
     </div>

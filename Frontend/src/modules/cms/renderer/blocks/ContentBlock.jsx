@@ -14,21 +14,9 @@ export default function ContentBlock({ content }) {
   if (!content) return null;
 
   return (
-    <section className="py-5">
-      <div
-        className="container"
-        style={{
-          maxWidth: 900,
-        }}
-      >
-        <div
-          style={{
-            background: "#fff",
-            borderRadius: 18,
-            padding: "40px 34px",
-            boxShadow: "0 10px 35px rgba(0,0,0,.06)",
-          }}
-        >
+    <section className="py-8">
+      <div className="mx-auto max-w-6xl px-4">
+        <div className="rounded border border-[#e8eef3] bg-white p-6 md:p-8">
           <div className="cms-rich-content">
             <EditorContent editor={editor} />
           </div>
