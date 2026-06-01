@@ -4,20 +4,12 @@ import HotelCache from "../hotelCache.model.js";
 
 export const fetchHotelDetailsFromSupplier = async ({ hotelId, hotelMeta }) => {
   try {
-    // 1️⃣ Find cache using hotelKeys only
-    //    const hotelCache = await HotelCache.findOne({
-    //   "hotels.hotelId": String(hotelId),
-    //   isComplete: true,
-    // });
 
-    // if (!hotelCache) {
-    //   throw new Error("Hotel not found");
-    // }
-    const hotelCache = await HotelCache.findOne({
-      "hotels.hotelId": String(hotelId),
-      // isComplete: true,
-    });
-    const sample = await HotelCache.findOne();
+   
+const hotelCache = await HotelCache.findOne({
+  "hotels.hotelId": String(hotelId)
+});
+const sample = await HotelCache.findOne();
 
     console.log(sample.hotels[1]);
     console.log("HOTEL ID =>", hotelId);

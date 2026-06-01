@@ -3,7 +3,11 @@ import mongoose from "mongoose";
 
 const hotelCacheSchema = new mongoose.Schema(
   {
-    cityId: String,
+    cityId: {
+  type: String,
+  required: true,
+  unique: true,
+},
     cityName: String,
     hotels: Array,
 
