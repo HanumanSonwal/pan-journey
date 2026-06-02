@@ -48,7 +48,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative w-full bg-[#EDF7FF] pb-60 md:pb-60 lg:pb-40 xl:pb-54">
+    <section className="relative w-full bg-[#EDF7FF] pb-60 md:pb-60 lg:pb-40 xl:pb-54" id="hero-search" >
       <div className={styles.heroBg} />
       <div className="absolute top-[35%] left-1/2 h-[60%] w-[85.83%] -translate-x-1/2 px-4 max-lg:top-[32%] max-lg:w-[92%] max-md:top-[25%] max-md:w-[95%] xl:top-[40%]">
         <div className="w-full rounded-[10px] bg-white !pb-21 shadow-2xl max-lg:p-6 max-md:p-4 md:p-8">

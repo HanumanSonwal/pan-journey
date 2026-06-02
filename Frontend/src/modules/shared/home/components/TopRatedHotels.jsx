@@ -5,11 +5,14 @@ import Image from "next/image";
 import { Card, Rate, Spin } from "antd";
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
 import { useDestinations } from "@/modules/shared/home/hooks/useDestinations";
+import { useRouter } from "next/navigation";
 
 export default function TopRatedHotels() {
   const { data = [], isLoading } = useDestinations("Toprated");
-
+  const { searchData } = useHotelSearchStore();
+  const router = useRouter();
   const [perRow, setPerRow] = useState(4);
   const [topIndex, setTopIndex] = useState(0);
   const [bottomIndex, setBottomIndex] = useState(0);
@@ -103,6 +106,21 @@ export default function TopRatedHotels() {
     }
   };
 
+  const handleSearch = (hotel) => {
+    const query = new URLSearchParams({
+      city: hotel?.name || "",
+      cityId: hotel?.id || "",
+      checkIn: searchData?.checkIn || "",
+      checkOut: searchData?.checkOut || "",
+      rooms: String(searchData?.rooms || 1),
+      adults: String(searchData?.adults || 2),
+      children: String(searchData?.children || 0),
+      pets: searchData?.pets ? "true" : "false",
+    });
+
+    router.push(`/hotels?${query.toString()}`);
+  };
+
   // LOADING
   if (isLoading) {
     return (
@@ -114,7 +132,11 @@ export default function TopRatedHotels() {
 
   // CARD
   const renderCard = (hotel, idx) => (
-    <div key={hotel.id} className="w-full flex-shrink-0 px-2 sm:w-1/2 lg:w-1/4">
+    <div
+      onClick={() => handleSearch(hotel)}
+      key={hotel.id}
+      className="w-full flex-shrink-0 px-2 sm:w-1/2 lg:w-1/4"
+    >
       <Card
         hoverable
         className="overflow-hidden rounded-2xl border-0 shadow-md transition duration-300 hover:-translate-y-1 hover:shadow-xl"
