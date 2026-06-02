@@ -8,11 +8,11 @@ export default function DynamicSeoFallback({ cityName }) {
     <section className="space-y-10">
       {/* INTRO */}
       <div>
-        <h2 className="mb-3 text-[28px] font-semibold text-[#303030]">
+        <h2 className="mb-3 text-[18px] font-semibold text-[#303030]">
           Hotels in {cityName}
         </h2>
 
-        <p className="leading-8 text-[#5f6b76]">
+        <p className="leading-6 text-[#5f6b76]">
           Looking for hotels in {cityName}? PAN Journey helps you compare hotel
           prices, explore verified stays and find accommodation that matches
           your travel plans. Whether you are planning a business trip, family
@@ -23,7 +23,7 @@ export default function DynamicSeoFallback({ cityName }) {
 
       {/* WHY BOOK */}
       <div>
-        <h3 className="mb-5 text-[22px] font-semibold text-[#303030]">
+        <h3 className="mb-5 text-[18px] font-semibold text-[#303030]">
           Why Book Hotels with PAN Journey
         </h3>
 
@@ -63,11 +63,11 @@ export default function DynamicSeoFallback({ cityName }) {
 
       {/* BOOKING TIPS */}
       <div>
-        <h3 className="mb-4 text-[22px] font-semibold text-[#303030]">
+        <h3 className="mb-4 text-[18px] font-semibold text-[#303030]">
           Hotel Booking Tips for {cityName}
         </h3>
 
-        <ul className="space-y-3 text-[#5f6b76]">
+        <ul className="space-y-2.5 text-[#5f6b76]">
           <li>
             • Compare hotels before booking to find the right balance between
             comfort and price.
@@ -86,7 +86,7 @@ export default function DynamicSeoFallback({ cityName }) {
 
       {/* FAQ */}
       <div>
-        <h3 className="mb-4 text-[22px] font-semibold text-[#303030]">
+        <h3 className="mb-3 text-[18px] font-semibold text-[#303030]">
           Frequently Asked Questions
         </h3>
 
@@ -117,7 +117,7 @@ export default function DynamicSeoFallback({ cityName }) {
 
       {/* DESTINATIONS */}
       <div>
-        <h3 className="mb-4 text-[22px] font-semibold text-[#303030]">
+        <h3 className="mb-4 text-[18px] font-semibold text-[#303030]">
           Popular Hotel Destinations
         </h3>
 

@@ -122,10 +122,8 @@ export default function TermsConditionsPage() {
             <p className="text-sm md:text-base leading-7">
               PanJourney shall not be liable for:
               <li>Any direct, indirect, incidental, or consequential damages.</li>
-              <li>
-                Losses resulting from accommodation provider actions, cancellations, delays, or service failures.</li>
-              <li>
-                Technical interruptions, system outages, or errors beyond our reasonable control.</li>
+              <li>Losses resulting from accommodation provider actions, cancellations, delays, or service failures.</li>
+              <li> Technical interruptions, system outages, or errors beyond our reasonable control.</li>
             </p>
           </div>
           <div className="space-y-2">
@@ -191,7 +189,7 @@ export default function TermsConditionsPage() {
               Address: [Your Business Address]
             </p>
           </div>
-           By continuing to use PanJourney, you agree to these Terms & Conditions.
+          By continuing to use PanJourney, you agree to these Terms & Conditions.
         </div>
       </div>
     </section>

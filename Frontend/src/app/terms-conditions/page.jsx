@@ -3,9 +3,9 @@ import TermsContent from "@/modules/shared/pages/Terms & Conditions/TermsContent
 
 
 export default function TermsConditionsPages() {
-  return<><TermsBanner />;
-  <TermsContent/>
-  </> 
+  return <><TermsBanner />
+    <TermsContent />
+  </>
 }
 
 

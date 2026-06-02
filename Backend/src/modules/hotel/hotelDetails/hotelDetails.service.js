@@ -20,7 +20,7 @@ export const fetchHotelDetailsFromSupplier = async ({
 // }
 const hotelCache = await HotelCache.findOne({
   "hotels.hotelId": String(hotelId),
-  isComplete: true,
+  //isComplete: true,
 });
 const sample = await HotelCache.findOne();
 
