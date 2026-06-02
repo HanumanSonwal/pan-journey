@@ -7,7 +7,8 @@ export const fetchHotelDetailsFromSupplier = async ({ hotelId, hotelMeta }) => {
 
    
 const hotelCache = await HotelCache.findOne({
-  "hotels.hotelId": String(hotelId)
+  "hotels.hotelId": String(hotelId),
+  //isComplete: true,
 });
 const sample = await HotelCache.findOne();
 

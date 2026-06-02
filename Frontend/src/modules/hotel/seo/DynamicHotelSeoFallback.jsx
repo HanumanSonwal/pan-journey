@@ -2,14 +2,14 @@ export default function DynamicHotelSeoFallback({ hotelName, cityName }) {
   if (!hotelName) return null;
 
   return (
-    <section className="mt-8 space-y-6">
+    <section className=" space-y-3  ">
       {/* ABOUT */}
-      <div className="rounded bg-white p-6 shadow-sm">
-        <h2 className="mb-3 text-2xl font-semibold text-gray-900">
+      <div className="rounded bg-white p-2 shadow-sm !bg-[#f7fcff]">
+        <h2 className="mb-1 text-[15px] font-semibold text-gray-900">
           About {hotelName}
         </h2>
 
-        <p className="leading-7 text-gray-600">
+        <p className=" leading-7 text-gray-600 ">
           {hotelName}
           {cityName ? ` in ${cityName}` : ""}
           offers accommodation options for travelers looking for comfort,
@@ -19,12 +19,12 @@ export default function DynamicHotelSeoFallback({ hotelName, cityName }) {
       </div>
 
       {/* WHY STAY */}
-      <div className="rounded bg-white p-6 shadow-sm">
-        <h3 className="mb-4 text-xl font-semibold text-gray-900">
+      <div className="rounded bg-white p-2 shadow-sm !bg-[#f7fcff]">
+        <h3 className="mb-1 text-[15px] font-semibold text-gray-900">
           Why Stay at {hotelName}
         </h3>
 
-        <ul className="space-y-2 text-gray-600">
+        <ul className="leading-7 text-gray-600">
           <li>• Comfortable stay options and hotel facilities.</li>
 
           <li>• Convenient location for business and leisure travelers.</li>
@@ -34,25 +34,25 @@ export default function DynamicHotelSeoFallback({ hotelName, cityName }) {
       </div>
 
       {/* FAQ */}
-      <div className="rounded bg-white p-6 shadow-sm">
-        <h3 className="mb-4 text-xl font-semibold text-gray-900">
+      <div className="rounded bg-white p-6 shadow-sm !bg-[#f7fcff]">
+        <h3 className="mb-4 text-[15px] font-semibold text-gray-900">
           Hotel Booking FAQs
         </h3>
 
         <div className="space-y-4">
           <div>
-            <h4 className="font-medium text-gray-900">
+            <h4 className="font-medium text-gray-900 text-[15px]">
               What amenities does {hotelName} offer?
             </h4>
 
-            <p className="mt-1 text-gray-600">
+            <p className="mt-1 text-gray-600 ">
               Amenities vary depending on the property and room category
               selected.
             </p>
           </div>
 
           <div>
-            <h4 className="font-medium text-gray-900">
+            <h4 className="font-medium text-gray-900 text-[15px]">
               Is {hotelName} suitable for family stays?
             </h4>
 

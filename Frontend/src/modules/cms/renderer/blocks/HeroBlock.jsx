@@ -12,7 +12,7 @@ export default function HeroBlock({ data }) {
   return (
     <section className="px-4 py-8">
       <div
-        className="cms-hero relative mx-auto overflow-hidden rounded border border-[#dbe8f1]"
+        className="cms-hero relative  overflow-hidden rounded border border-[#dbe8f1]"
         style={{
           maxWidth: 1200,
 
