@@ -10,6 +10,8 @@ import { Suspense } from "react";
 
 export async function generateMetadata({ searchParams }) {
   const query = await searchParams;
+
+  console.log("SEARCH PAGE QUERY:", query);
   const preview = query?.preview === "true";
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 

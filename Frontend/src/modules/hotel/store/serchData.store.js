@@ -4,11 +4,13 @@ import { persist } from "zustand/middleware";
 
 const defaultSearchData = {
   city: "",
-  cityData: null,
+  cityData: {
+    id: "",
+    stateName: "",
+    countryCode: "",
+  },
   checkIn: dayjs().format("YYYY-MM-DD"),
-  checkOut: dayjs()
-    .add(1, "day")
-    .format("YYYY-MM-DD"),
+  checkOut: dayjs().add(1, "day").format("YYYY-MM-DD"),
   rooms: 1,
   adults: 2,
   children: 0,
@@ -19,25 +21,30 @@ const defaultSearchData = {
 export const useHotelSearchStore = create(
   persist(
     (set) => ({
-      searchData: defaultSearchData,
-      setSearchData: (data) =>
-        set({
-          searchData: data,
-        }),
-      updateSearchData: (data) =>
+      draftSearchData: defaultSearchData,
+
+      appliedSearchData: defaultSearchData,
+
+      setDraftSearchData: (data) =>
         set((state) => ({
-          searchData: {
-            ...state.searchData,
+          draftSearchData: {
+            ...state.draftSearchData,
             ...data,
           },
         })),
-      resetSearchData: () =>
+
+      applySearch: () =>
+        set((state) => ({
+          appliedSearchData: state.draftSearchData,
+        })),
+
+      setAppliedSearchData: (data) =>
         set({
-          searchData: defaultSearchData,
+          appliedSearchData: data,
         }),
     }),
     {
       name: "hotel-search-storage",
-    }
-  )
+    },
+  ),
 );

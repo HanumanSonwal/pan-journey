@@ -3,11 +3,12 @@
 import HotelContentLoader from "@/components/common/loder/HotelContentLoader";
 import dayjs from "dayjs";
 import { memo, useEffect, useMemo, useRef } from "react";
-import { useInfiniteHotels } from "../../hooks/useInfiniteHotels";
 import HotelCard from "../../cards/HotelCard";
+import { useInfiniteHotels } from "../../hooks/useInfiniteHotels";
 function HotelList({ searchData, filters, sort }) {
+  console.log("searchData in paylaod", searchData);
   const payload = useMemo(() => {
-    if (!searchData?.cityData?.id) {
+    if (!searchData?.city && !searchData?.cityData?.id) {
       return null;
     }
 
@@ -29,6 +30,8 @@ function HotelList({ searchData, filters, sort }) {
       ],
       fullName: searchData?.city || "",
       id: searchData?.cityData?.id || "",
+      stateName: searchData?.cityData?.stateName || "",
+      countryCode: searchData?.cityData?.countryCode || "",
       RoomCount: searchData?.rooms || 1,
       filters: {
         search: filters?.search || "",

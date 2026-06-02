@@ -33,7 +33,14 @@ function DestinationSearchField({
       if (autoSelectRecent && stored.length > 0 && !value?.city) {
         onChange({
           city: stored[0]?.name || "",
-          cityData: stored[0] || null,
+
+          cityData: {
+            ...stored[0],
+
+            stateName: stored[0]?.stateName || stored[0]?.state || "",
+
+            countryCode: stored[0]?.countryCode || stored[0]?.country || "",
+          },
         });
       }
     } catch (error) {
@@ -168,7 +175,7 @@ function DestinationSearchField({
       },
 
       {
-        label:"Hotels",
+        label: "Hotels",
 
         options: buildOptions(
           sortedSearchResults.filter((item) => item.type === "Hotel"),
@@ -202,10 +209,18 @@ function DestinationSearchField({
   const handleChange = (selectedValue, option) => {
     saveRecentSearch(option?.itemData);
 
+    const item = option?.itemData;
+
     onChange({
       city: option?.searchLabel || "",
 
-      cityData: option?.itemData || null,
+      cityData: {
+        ...item,
+
+        stateName: item?.stateName || item?.state || "",
+
+        countryCode: item?.countryCode || item?.country || "",
+      },
     });
   };
 
@@ -286,13 +301,17 @@ function DestinationSearchField({
         {compact ? (
           <span
             className="ml-1 max-w-[70px] flex-shrink-0 overflow-hidden text-[11px] text-ellipsis whitespace-nowrap text-gray-400"
-            title={value?.cityData?.country || ""}
+            title={
+              value?.cityData?.country || value?.cityData?.countryCode || ""
+            }
           >
-            {value?.cityData?.country || ""}
+            {value?.cityData?.country || value?.cityData?.countryCode || ""}
           </span>
         ) : (
           <span className="text-xs text-gray-500 md:text-sm">
-            {value?.cityData?.country || "Search destinations"}
+            {value?.cityData?.country ||
+              value?.cityData?.countryCode ||
+              "Search destinations"}
           </span>
         )}
       </div>

@@ -10,7 +10,8 @@ import { useRef, useState } from "react";
 
 export default function SearchBar({ onSearch }) {
   const router = useRouter();
-  const { searchData, updateSearchData } = useHotelSearchStore();
+  const { draftSearchData, setDraftSearchData, applySearch } =
+    useHotelSearchStore();
   const [dateOpen, setDateOpen] = useState(false);
   const [guestOpen, setGuestOpen] = useState(false);
   const destinationClickedRef = useRef(false);
@@ -18,15 +19,24 @@ export default function SearchBar({ onSearch }) {
   const handleSearch = () => {
     onSearch?.();
     const query = new URLSearchParams({
-      city: searchData?.city || "",
-      cityId: searchData?.cityData?.id || "",
-      checkIn: searchData?.checkIn || "",
-      checkOut: searchData?.checkOut || "",
-      rooms: String(searchData?.rooms || 1),
-      adults: String(searchData?.adults || 2),
-      children: String(searchData?.children || 0),
-      pets: searchData?.pets ? "true" : "false",
+      city:
+        draftSearchData?.city
+          ?.split(",")?.[0]
+          ?.trim()
+          ?.toLowerCase()
+          ?.replace(/[^a-z0-9\s-]/g, "")
+          ?.replace(/\s+/g, "-") || "",
+      cityId: draftSearchData?.cityData?.id || "",
+      stateName: draftSearchData?.cityData?.stateName || "",
+      countryCode: draftSearchData?.cityData?.countryCode || "",
+      checkIn: draftSearchData?.checkIn || "",
+      checkOut: draftSearchData?.checkOut || "",
+      rooms: String(draftSearchData?.rooms || 1),
+      adults: String(draftSearchData?.adults || 2),
+      children: String(draftSearchData?.children || 0),
+      pets: draftSearchData?.pets ? "true" : "false",
     });
+    applySearch();
     router.push(`/hotels?${query.toString()}`);
   };
 
@@ -49,19 +59,25 @@ export default function SearchBar({ onSearch }) {
           >
             <DestinationSearchField
               value={{
-                city: searchData?.city,
-                cityData: searchData?.cityData,
+                city: draftSearchData?.city,
+                cityData: draftSearchData?.cityData,
               }}
               onChange={(val) => {
-                updateSearchData(val);
-                if (
-                  destinationClickedRef.current &&
-                  (val?.city || val?.cityData)
-                ) {
-                  requestAnimationFrame(() => {
-                    setDateOpen(true);
-                  });
-                }
+                setDraftSearchData({
+                  city: val?.city || "",
+
+                  cityData: {
+                    id: val?.cityData?.id || "",
+
+                    stateName:
+                      val?.cityData?.stateName || val?.cityData?.state || "",
+
+                    countryCode:
+                      val?.cityData?.countryCode ||
+                      val?.cityData?.country ||
+                      "",
+                  },
+                });
               }}
               compact
               fontSize="16px"
@@ -75,9 +91,17 @@ export default function SearchBar({ onSearch }) {
               variant="compact"
               open={dateOpen}
               setOpen={setDateOpen}
-              value={[dayjs(searchData.checkIn), dayjs(searchData.checkOut)]}
+              value={[
+                draftSearchData?.checkIn
+                  ? dayjs(draftSearchData.checkIn)
+                  : null,
+
+                draftSearchData?.checkOut
+                  ? dayjs(draftSearchData.checkOut)
+                  : null,
+              ]}
               onChange={(dates) => {
-                updateSearchData({
+                setDraftSearchData({
                   checkIn: dates?.[0]?.format("YYYY-MM-DD"),
                   checkOut: dates?.[1]?.format("YYYY-MM-DD"),
                 });
@@ -95,9 +119,9 @@ export default function SearchBar({ onSearch }) {
               variant="compact"
               open={guestOpen}
               setOpen={setGuestOpen}
-              value={searchData}
+              value={draftSearchData}
               onChange={(val) => {
-                updateSearchData(val);
+                setDraftSearchData(val);
               }}
             />
           </div>
