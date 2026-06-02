@@ -9,7 +9,7 @@ export default function AboutContent() {
         <div className="h-14 w-14 rounded-full border-4 border-white shadow-md opacity-70"></div>
       </div>
 
-      <div className="mx-auto w-full max-w-[1400px] px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
+      <div className="mx-auto w-full  px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
 
         {/* Small Heading */}
         <div className="text-center">
