@@ -103,6 +103,5 @@ export default async function sitemap() {
   const uniqueRoutes = Array.from(
     new Map(allRoutes.map((item) => [item.url, item])).values(),
   );
-
   return uniqueRoutes;
 }
