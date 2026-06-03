@@ -1,9 +1,9 @@
+import { useHotelBookingStore } from "@/modules/hotel/store/booking.store";
 import {
   ArrowRightOutlined,
   ClockCircleOutlined,
   StarFilled,
 } from "@ant-design/icons";
-
 import {
   Button,
   Card,
@@ -18,6 +18,8 @@ import {
   Tag,
   Typography,
 } from "antd";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -33,6 +35,18 @@ const BookingConfriom = () => {
     "Twin beds",
     "Airport transfer",
   ];
+
+  const { bookingData } = useHotelBookingStore();
+
+  console.log("bookingData in booking confirm", bookingData);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!bookingData) {
+      router.push("/hotels");
+    }
+  }, [bookingData]);
   return (
     <div className="bg- min-h-screen w-full px-3 py-6 md:px-6">
       <div className="mx-auto max-w-[1400px]">
@@ -445,7 +459,7 @@ const BookingConfriom = () => {
                 1 Room x 2 Night
               </Text>
 
-              <Space direction="vertical" size={0} className="w-full">
+              <Space orientation="vertical" size={0} className="w-full">
                 {[
                   {
                     label: "Base Price",
