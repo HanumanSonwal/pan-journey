@@ -4,12 +4,13 @@ import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
 import { CloseOutlined } from "@ant-design/icons";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import SidebarFilters from "../cards/SidebarFilters";
 import HotelList from "../components/hotels/HotelList";
 import SearchBar from "../components/hotels/SearchBar";
-import HotelsSeoSection from "../seo/HotelsSeoSection";
-import SidebarFilters from "../cards/SidebarFilters";
 import SortBar from "../components/SortBar";
 import DynamicSeoFallback from "../seo/DynamicSeoFallback";
+import HotelsSeoSection from "../seo/HotelsSeoSection";
+import { useHotelSearchStore } from "../store/serchData.store";
 
 const defaultSearchData = {
   city: "",
@@ -36,14 +37,19 @@ const defaultFilters = {
 };
 
 export default function HotelContent({ initialSearchData = null, cms = null }) {
+  console.log("CMS DATA in HotelContent", cms);
+  console.log("initialSearchData in HotelContent", initialSearchData);
+  const {
+    draftSearchData,
+    appliedSearchData,
+    setDraftSearchData,
+    setAppliedSearchData,
+  } = useHotelSearchStore();
   const searchParams = useSearchParams();
+
+  console.log("searchParams in HotelContent", searchParams);
   const [mounted, setMounted] = useState(false);
-  const [draftSearchData, setDraftSearchData] = useState(
-    initialSearchData || defaultSearchData,
-  );
-  const [searchData, setSearchData] = useState(
-    initialSearchData || defaultSearchData,
-  );
+
   const [filters, setFilters] = useState(defaultFilters);
   const [sort, setSort] = useState("recommended");
   useEffect(() => {
@@ -52,18 +58,20 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
 
   // SEO ROUTE SUPPORT
   useEffect(() => {
+    if (!mounted) return;
     if (initialSearchData) {
       setDraftSearchData(initialSearchData);
-      setSearchData(initialSearchData);
+
+      setAppliedSearchData(initialSearchData);
+
       return;
     }
-
-    if (!mounted) return;
-
-    const initialData = {
+    const urlData = {
       city: searchParams.get("city") || "",
       cityData: {
         id: searchParams.get("cityId") || "",
+        stateName: searchParams.get("stateName") || "",
+        countryCode: searchParams.get("countryCode") || "",
       },
       checkIn: searchParams.get("checkIn") || "",
       checkOut: searchParams.get("checkOut") || "",
@@ -73,13 +81,20 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
       childAges: [],
       pets: searchParams.get("pets") === "true",
     };
-    setDraftSearchData(initialData);
-    setSearchData(initialData);
-  }, [mounted, searchParams, initialSearchData]);
+    if (urlData.cityData.id) {
+      setDraftSearchData(urlData);
 
-  const handleSearch = useCallback(() => {
-    setSearchData(draftSearchData);
-  }, [draftSearchData]);
+      setAppliedSearchData(urlData);
+    }
+  }, [
+    mounted,
+    searchParams,
+    initialSearchData,
+    setDraftSearchData,
+    setAppliedSearchData,
+  ]);
+
+  const handleSearch = useCallback(() => {}, []);
 
   const isFilterActive = useCallback((value) => {
     if (
@@ -130,16 +145,9 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
 
   if (!mounted) return null;
 
-  console.log("HOTEL CMS:", cms);
-  console.log("CITY:", searchData?.city);
-
   return (
     <div className="bg-[#edf7ff]">
-      <SearchBar
-        draftSearchData={draftSearchData}
-        setDraftSearchData={setDraftSearchData}
-        onSearch={handleSearch}
-      />
+      <SearchBar searchData={draftSearchData} onSearch={handleSearch} />
 
       <div className="relative mx-auto mt-[-48px] flex max-w-7xl gap-4 p-3 md:flex-nowrap">
         <div className="sticky top-4 max-h-[calc(100vh-20px)] w-full overflow-y-auto sm:w-64 md:w-72">
@@ -220,14 +228,18 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
               </button>
             )}
           </div>
-          <HotelList searchData={searchData} filters={filters} sort={sort} />
+          <HotelList
+            searchData={appliedSearchData}
+            filters={filters}
+            sort={sort}
+          />
 
           {/* CMS / Dynamic SEO */}
           <HotelsSeoSection>
             {cms ? (
               <CMSContentRenderer cms={cms} />
             ) : (
-              <DynamicSeoFallback cityName={searchData?.city} />
+              <DynamicSeoFallback cityName={appliedSearchData?.city} />
             )}
           </HotelsSeoSection>
         </div>

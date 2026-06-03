@@ -6,7 +6,7 @@ export default function HotelsSeoSection({ children }) {
       <div className="overflow-hidden rounded border border-[#dbe8f1] bg-white shadow-sm">
         {/* Header */}
         <div className="border-b border-[#edf3f8] bg-[#f8fbfd] px-6 py-5 md:px-8">
-          <h2 className="text-[26px] font-semibold text-[#303030]">
+          <h2 className="text-[16px] font-semibold text-[#303030]">
             Destination Guide & Travel Insights
           </h2>
 

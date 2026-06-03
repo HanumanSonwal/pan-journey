@@ -2,7 +2,7 @@
 
 import { Button, Card, Collapse, Form, Input, Select } from "antd";
 import CMSImageUpload from "./CMSImageUpload";
-import TiptapEditor from "./editor/TiptapEditor";
+import TextEditor from "./editor/joditEditor/TextEditor";
 
 const blockOptions = [
   {
@@ -83,7 +83,7 @@ function BlockFields({ field, form }) {
 
             {type === "content" && (
               <Form.Item name={[field.name, "data", "content"]} label="Content">
-                <TiptapEditor />
+                <TextEditor />
               </Form.Item>
             )}
 
@@ -265,7 +265,7 @@ function BlockFields({ field, form }) {
                   name={[field.name, "data", "content"]}
                   label="Content"
                 >
-                  <TiptapEditor />
+                  <TextEditor />
                 </Form.Item>
 
                 <CMSImageUpload
@@ -518,21 +518,17 @@ export default function CMSBlocksBuilder({ form }) {
                 ),
 
                 children: (
-                  <>
+                  <div>
                     <Form.Item
                       name={[field.name, "type"]}
                       label="Block Type"
-                      rules={[
-                        {
-                          required: true,
-                        },
-                      ]}
+                      rules={[{ required: true }]}
                     >
                       <Select options={blockOptions} />
                     </Form.Item>
 
                     <BlockFields field={field} form={form} />
-                  </>
+                  </div>
                 ),
               };
             })}

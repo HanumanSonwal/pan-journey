@@ -22,33 +22,47 @@ export default function Hero() {
     HOME_TABS.find((t) => t.enabled)?.key,
   );
   const router = useRouter();
-  const { searchData } = useHotelSearchStore();
+  const { draftSearchData, applySearch } = useHotelSearchStore();
   const ActiveForm = FORM_MAP[activeTab];
 
-  console.log(searchData, "in home  page");
+  console.log(draftSearchData, "draft search home");
 
   const handleSearch = () => {
+    const updatedSearch = {
+      ...draftSearchData,
+      cityData: {
+        id: draftSearchData?.cityData?.id || "",
+        stateName:
+          draftSearchData?.cityData?.stateName ||
+          draftSearchData?.cityData?.state ||
+          "",
+        countryCode:
+          draftSearchData?.cityData?.countryCode ||
+          draftSearchData?.cityData?.country ||
+          "",
+      },
+    };
+    // APPLY SEARCH
+    applySearch();
     const query = new URLSearchParams({
-      city:
-        searchData?.city
-          ?.split(",")?.[0]
-          ?.trim()
-          ?.toLowerCase()
-          ?.replace(/[^a-z0-9\s-]/g, "")
-          ?.replace(/\s+/g, "-") || "",
-      cityId: searchData?.cityData?.id || "",
-      checkIn: searchData?.checkIn || "",
-      checkOut: searchData?.checkOut || "",
-      rooms: String(searchData?.rooms || 1),
-      adults: String(searchData?.adults || 2),
-      children: String(searchData?.children || 0),
-      pets: searchData?.pets ? "true" : "false",
+      city: updatedSearch?.city || "",
+      cityId: updatedSearch?.cityData?.id || "",
+      stateName: updatedSearch?.cityData?.stateName || "",
+      countryCode: updatedSearch?.cityData?.countryCode || "",
+      checkIn: updatedSearch?.checkIn || "",
+      checkOut: updatedSearch?.checkOut || "",
+      rooms: String(updatedSearch?.rooms || 1),
+      adults: String(updatedSearch?.adults || 2),
+      children: String(updatedSearch?.children || 0),
+      pets: updatedSearch?.pets ? "true" : "false",
     });
     router.push(`/hotels?${query.toString()}`);
   };
-
   return (
-    <section className="relative w-full bg-[#EDF7FF] pb-60 md:pb-60 lg:pb-40 xl:pb-54">
+    <section
+      className="relative w-full bg-[#EDF7FF] pb-60 md:pb-60 lg:pb-40 xl:pb-54"
+      id="hero-search"
+    >
       <div className={styles.heroBg} />
       <div className="absolute top-[35%] left-1/2 h-[60%] w-[85.83%] -translate-x-1/2 px-4 max-lg:top-[32%] max-lg:w-[92%] max-md:top-[25%] max-md:w-[95%] xl:top-[40%]">
         <div className="w-full rounded-[10px] bg-white !pb-21 shadow-2xl max-lg:p-6 max-md:p-4 md:p-8">

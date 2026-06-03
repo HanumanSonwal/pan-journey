@@ -105,6 +105,8 @@ export default async function Page({ params, searchParams }) {
     */
     const destinations = await searchDestinationServer(cityName);
 
+    console.log("DESTINATIONS in man page :", destinations);
+
     const matchedCity = destinations?.[0];
 
     cityName = matchedCity?.destination || cityName;
@@ -166,15 +168,23 @@ export default async function Page({ params, searchParams }) {
     ],
   };
 
+  const dayjs = require("dayjs");
+
   const initialSearchData = {
     city: cityName || "",
 
     cityData: {
       id: cityId || "",
+
+      stateName: cms?.data?.cityMeta?.stateName || "",
+
+      countryCode: cms?.data?.cityMeta?.countryCode || "",
     },
 
-    checkIn: "",
-    checkOut: "",
+    checkIn: dayjs().format("YYYY-MM-DD"),
+
+    checkOut: dayjs().add(1, "day").format("YYYY-MM-DD"),
+
     rooms: 1,
     adults: 2,
     children: 0,

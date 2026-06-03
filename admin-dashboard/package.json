@@ -26,6 +26,7 @@
     "@tiptap/starter-kit": "^3.23.6",
     "antd": "^6.3.6",
     "axios": "^1.15.1",
+    "jodit-react": "^5.3.21",
     "next": "16.2.4",
     "react": "19.2.4",
     "react-dom": "19.2.4",

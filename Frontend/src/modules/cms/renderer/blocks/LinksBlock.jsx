@@ -6,9 +6,9 @@ export default function LinksBlock({ data }) {
   return (
     <section
       style={{
-        background: "#fff",
+        background: "#EDF7FF",
         padding: "40px 10%",
-        borderTop: "1px solid #E5E7EB",
+
       }}
     >
       <div className="container">
@@ -22,10 +22,10 @@ export default function LinksBlock({ data }) {
             {group?.title && (
               <h3
                 style={{
-                  fontSize: 15,
+                  fontSize: 13,
                   fontWeight: 700,
                   textTransform: "uppercase",
-                  marginBottom: 14,
+                  marginBottom: 9,
                   color: "#111827",
                 }}
               >
@@ -45,7 +45,7 @@ export default function LinksBlock({ data }) {
                     style={{
                       color: "#374151",
                       textDecoration: "none",
-                      fontSize: 15,
+                      fontSize: 14,
                     }}
                   >
                     {item?.label}

@@ -15,11 +15,11 @@ const AboutHotel = ({ about }) => {
           </div>
 
           <div>
-            <h2 className="text-[18px] font-semibold text-gray-800">
+            <h2 className="text-[15px] font-semibold text-gray-800">
               About Hotel
             </h2>
 
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="mt-1 leading-7 text-gray-500">
               Property overview & stay information
             </p>
           </div>
@@ -33,7 +33,7 @@ const AboutHotel = ({ about }) => {
           <div className="mb-3 flex items-center gap-2 text-[#0ea5e9]">
             <InfoCircleOutlined />
 
-            <span className="text-sm font-medium">Hotel Information</span>
+            <span className="!text-[15px] font-medium">Hotel Information</span>
           </div>
 
           {/* Description */}

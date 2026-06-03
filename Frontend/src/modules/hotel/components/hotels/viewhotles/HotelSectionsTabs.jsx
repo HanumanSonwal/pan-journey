@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+
 const tabs = [
   "Rooms",
   "Amenities",
@@ -19,47 +21,128 @@ const sectionIds = {
 };
 
 const HotelSectionsTabs = ({ activeTab = "Rooms", setActiveTab }) => {
-  const currentTab = activeTab || "Rooms";
+  const [currentTab, setCurrentTab] = useState(activeTab);
 
-  const handleScroll = (tab) => {
-    setActiveTab(tab);
+  const ref = useRef(null);
+  const [isFixed, setIsFixed] = useState(false);
+  const [height, setHeight] = useState(0);
+  const [offsetTop, setOffsetTop] = useState(0);
 
-    const id = sectionIds[tab];
+  const ignoreScroll = useRef(false);
 
-    const element = document.getElementById(id);
+  // measure position
+  useEffect(() => {
+    const update = () => {
+      if (ref.current) {
+        setHeight(ref.current.offsetHeight);
+        setOffsetTop(ref.current.offsetTop);
+      }
+    };
 
-    if (element) {
-      element.scrollIntoView({
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  // sticky logic
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY >= offsetTop) {
+        setIsFixed(true);
+      } else {
+        setIsFixed(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [offsetTop]);
+
+  // 🔥 ACCURATE SCROLL SPY (MAIN FIX)
+  useEffect(() => {
+    const handleScrollSpy = () => {
+      if (ignoreScroll.current) return;
+
+      let active = currentTab;
+
+      for (const tab of tabs) {
+        const el = document.getElementById(sectionIds[tab]);
+        if (!el) continue;
+
+        const rect = el.getBoundingClientRect();
+
+        // 🔥 better detection point (center of screen)
+        if (rect.top <= 150 && rect.bottom >= 150) {
+          active = tab;
+          break;
+        }
+      }
+
+      if (active !== currentTab) {
+        setCurrentTab(active);
+        if (setActiveTab) setActiveTab(active);
+      }
+    };
+
+    window.addEventListener("scroll", handleScrollSpy);
+    return () => window.removeEventListener("scroll", handleScrollSpy);
+  }, [currentTab, setActiveTab]);
+
+  // click handler
+  const handleScrollTo = (tab) => {
+    setCurrentTab(tab);
+    if (setActiveTab) setActiveTab(tab);
+
+    const el = document.getElementById(sectionIds[tab]);
+
+    if (el) {
+      ignoreScroll.current = true;
+
+      el.scrollIntoView({
         behavior: "smooth",
         block: "start",
       });
+
+      setTimeout(() => {
+        ignoreScroll.current = false;
+      }, 800);
     }
   };
 
   return (
-    <div className="sticky top-[72px] z-30 overflow-hidden rounded border border-gray-200 bg-white text-[#0ea5e9] shadow-sm">
-      <div className="scrollbar-hide flex overflow-x-auto">
-        {tabs.map((tab) => {
-          const active = currentTab === tab;
+    <>
+      {/* prevent layout jump */}
+      {isFixed && <div style={{ height }} />}
 
-          return (
-            <button
-              key={tab}
-              onClick={() => handleScroll(tab)}
-              className={`relative min-w-max flex-1 px-5 py-4 text-sm font-medium whitespace-nowrap transition duration-300 md:min-w-[160px] ${
-                active ? "text-[#0ea5e9]" : "text-gray-600 hover:text-[#0ea5e9]"
-              }`}
-            >
-              {tab}
+      <div
+        ref={ref}
+        className={`z-[999] w-full border border-gray-200 bg-white text-[#0ea5e9] shadow-md
+        ${isFixed ? "fixed top-0 left-0" : "relative"}`}
+      >
+        <div className="flex overflow-x-auto scrollbar-hide">
+          {tabs.map((tab) => {
+            const active = currentTab === tab;
 
-              {active && (
-                <span className="absolute bottom-0 left-0 h-[3px] w-full rounded-full bg-[#0ea5e9]" />
-              )}
-            </button>
-          );
-        })}
+            return (
+              <button
+                key={tab}
+                onClick={() => handleScrollTo(tab)}
+                className={`relative min-w-max flex-1 px-6 py-5 text-[15px] font-medium whitespace-nowrap transition ${active
+                    ? "text-[#0ea5e9]"
+                    : "text-gray-600 hover:text-[#0ea5e9]"
+                  }`}
+              >
+                {tab}
+
+                {active && (
+                  <span className="absolute bottom-0 left-0 h-[3px] w-full rounded-full bg-[#0ea5e9]" />
+                )}
+              </button>
+            );
+          })}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

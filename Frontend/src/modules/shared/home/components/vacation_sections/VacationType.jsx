@@ -4,16 +4,21 @@ import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
+import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
 import { useDestinations } from "@/modules/shared/home/hooks/useDestinations";
+import { useRouter } from "next/navigation";
 import { VacationsimageMap } from "../data/VacationsData";
 
 export default function VacationType({ activeTab }) {
   const [index, setIndex] = useState(0);
   const [perPage, setPerPage] = useState(4);
   const [mounted, setMounted] = useState(false);
-
-  // API DATA
+  const router = useRouter();
   const { data = [] } = useDestinations(activeTab);
+
+  const { searchData } = useHotelSearchStore();
+
+  console.log(data, "DATA in destinations");
 
   // FIX HYDRATION
   useEffect(() => {
@@ -70,6 +75,20 @@ export default function VacationType({ activeTab }) {
   // PREVENT HYDRATION ERROR
   if (!mounted) return null;
 
+  const handleSearch = (item) => {
+    const query = new URLSearchParams({
+      city: item?.City || "",
+      cityId: item?.id || "",
+      checkIn: searchData?.checkIn || "",
+      checkOut: searchData?.checkOut || "",
+      rooms: String(searchData?.rooms || 1),
+      adults: String(searchData?.adults || 2),
+      children: String(searchData?.children || 0),
+      pets: searchData?.pets ? "true" : "false",
+    });
+
+    router.push(`/hotels?${query.toString()}`);
+  };
   return (
     <div className="px-2 py-2">
       <div className="flex items-center gap-2 sm:gap-3">
@@ -88,8 +107,7 @@ export default function VacationType({ activeTab }) {
             {visibleData.map((item, idx) => {
               const image =
                 VacationsimageMap?.[activeTab]?.[
-                (index + idx) %
-                VacationsimageMap?.[activeTab]?.length
+                  (index + idx) % VacationsimageMap?.[activeTab]?.length
                 ];
 
               return (
@@ -122,21 +140,8 @@ export default function VacationType({ activeTab }) {
                     </p>
 
                     <button
-                      className="
-                  flex
-  w-full
-  items-center
-  justify-center
-  gap-1
-  font-medium
-  !text-[#5FA8C9]
-  !text-[14px]
-  transition
-  hover:text-[#3D8FB3]
-  sm:!text-[16px]
-  md:!text-[18px]
-  lg:!text-[22px]
-                      "
+                      onClick={() => handleSearch(item)}
+                      className="flex w-full cursor-pointer items-center justify-center gap-1 !text-[14px] font-medium !text-[#5FA8C9] transition hover:text-[#3D8FB3] sm:!text-[16px] md:!text-[18px] lg:!text-[22px]"
                     >
                       View Details →
                     </button>

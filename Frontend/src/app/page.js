@@ -145,7 +145,7 @@ export default async function Page() {
       <DestinationsSection />
 
       {homeCms && <CMSContentRenderer cms={homeCms} />}
-      <MegaLinkSection />
+      {/* <MegaLinkSection /> */}
       <NewsletterSection />
     </>
   );

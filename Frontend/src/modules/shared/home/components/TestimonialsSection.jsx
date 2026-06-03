@@ -38,7 +38,7 @@ export default function TestimonialsSection() {
 
   return (
     <section className="overflow-hidden bg-[#EDF7FF] py-12 md:py-16 lg:py-24 !mt-[-125px]  mt-[-10px] ">
-      <div className="mx-auto w-[92%] max-w-[1400px] ">
+      <div className="mx-auto w-[92%] max-w-[1400px] px-4 sm:px-6 md:px-10 lg:px-16 xl:px-20">
         {/* Top Section */}
         <div className="mb-12 grid grid-cols-1 gap-8 lg:mb-16 lg:grid-cols-2 lg:items-start">
           {/* Left */}

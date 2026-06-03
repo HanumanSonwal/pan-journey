@@ -18,7 +18,7 @@ export default function RelatedDestinations({ currentCity }) {
 
   return (
     <div className="rounded bg-white p-6 shadow-sm">
-      <h3 className="mb-4 text-xl font-semibold text-gray-900">
+      <h3 className="mb-4 text-[15px] font-semibold text-gray-900">
         Popular Hotel Destinations
       </h3>
 

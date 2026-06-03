@@ -1,14 +1,14 @@
 "use client";
 
+import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
 import DateRangeField from "@/modules/shared/home/components/DateRangeField";
 import DestinationSearchField from "@/modules/shared/home/components/DestinationSearchField";
 import GuestsField from "@/modules/shared/home/components/GuestsField";
-import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
 import dayjs from "dayjs";
 import { useRef, useState } from "react";
 
 export default function HotelSearchForm() {
-  const { searchData, updateSearchData } = useHotelSearchStore();
+  const { draftSearchData, setDraftSearchData } = useHotelSearchStore();
   const [dateOpen, setDateOpen] = useState(false);
   const [guestOpen, setGuestOpen] = useState(false);
   const destinationClickedRef = useRef(false);
@@ -34,11 +34,23 @@ export default function HotelSearchForm() {
         >
           <DestinationSearchField
             value={{
-              city: searchData.city,
-              cityData: searchData.cityData,
+              city: draftSearchData.city,
+              cityData: draftSearchData.cityData,
             }}
             onChange={(val) => {
-              updateSearchData(val);
+              setDraftSearchData({
+                city: val?.city || "",
+
+                cityData: {
+                  id: val?.cityData?.id || "",
+
+                  stateName:
+                    val?.cityData?.stateName || val?.cityData?.state || "",
+
+                  countryCode:
+                    val?.cityData?.countryCode || val?.cityData?.country || "",
+                },
+              });
 
               // AUTO OPEN DATE
               if (
@@ -59,11 +71,17 @@ export default function HotelSearchForm() {
         <div className="relative z-50 w-full">
           <DateRangeField
             variant="default"
-            value={[dayjs(searchData.checkIn), dayjs(searchData.checkOut)]}
+            value={[
+              draftSearchData?.checkIn ? dayjs(draftSearchData.checkIn) : null,
+
+              draftSearchData?.checkOut
+                ? dayjs(draftSearchData.checkOut)
+                : null,
+            ]}
             open={dateOpen}
             setOpen={setDateOpen}
             onChange={(dates) => {
-              updateSearchData({
+              setDraftSearchData({
                 checkIn: dates?.[0]?.format("YYYY-MM-DD"),
 
                 checkOut: dates?.[1]?.format("YYYY-MM-DD"),
@@ -85,11 +103,11 @@ export default function HotelSearchForm() {
         <div className="relative z-40 w-full md:col-span-2 xl:col-span-1">
           <GuestsField
             variant="default"
-            value={searchData}
+            value={draftSearchData}
             open={guestOpen}
             setOpen={setGuestOpen}
             onChange={(val) => {
-              updateSearchData(val);
+              setDraftSearchData(val);
             }}
           />
         </div>
