@@ -10,6 +10,8 @@ export default function HotleBooking() {
 
   const router = useRouter();
 
+  console.log("bookingData inhotelBooking", bookingData);
+
   useEffect(() => {
     if (!bookingData) {
       router.push("/hotels");

@@ -1,128 +1,130 @@
 "use client";
 
-import { Button, Card, Col, Form, Input, Row, Select, Typography } from "antd";
+import RHFInput from "@/components/ui/RHFinputs/RHFInput";
+import RHFSelect from "@/components/ui/RHFinputs/RHFSelect";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Card, ConfigProvider, Radio, Typography } from "antd";
+import { useEffect, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 
-const { Title, Text } = Typography;
+import { primaryGuestSchema } from "../../schema/guest.schema";
+import AddGuestModal from "./AddGuestModal";
 
 export default function GuestDetailsForm({ onSubmit }) {
-  const [form] = Form.useForm();
+  const [openGuestModal, setOpenGuestModal] = useState(false);
+const { Title, Text } = Typography;
+  const [guests, setGuests] = useState([]);
+
+  const methods = useForm({
+    resolver: zodResolver(primaryGuestSchema),
+    defaultValues: {
+      bookingFor: "myself",
+      title: "Mr",
+      firstName: "",
+      lastName: "",
+      email: "",
+      mobile: "",
+    },
+  });
+
+  const { handleSubmit, setValue, watch } = methods;
+
+  const formValues = watch();
+
+  useEffect(() => {
+    onSubmit({
+      primaryGuest: formValues,
+      additionalGuests: guests,
+    });
+  }, [formValues, guests, onSubmit]);
 
   return (
-    <Card className="rounded-2xl border-0 shadow-sm">
-      <Title level={4} className="!mb-6">
-        Guest Details
-      </Title>
+    <>
+      <Card className="rounded-2xl border-0 shadow-sm">
+           <Title level={4} className="!mb-5 !text-[20px]">Guest Details</Title>
 
-      <Form form={form} layout="vertical" onFinish={onSubmit}>
-        <Row gutter={[18, 18]}>
-          {/* TITLE */}
-          <Col xs={24} md={4}>
-            <Form.Item
-              label="Title"
-              name="title"
-              rules={[
-                {
-                  required: true,
-                  message: "Select title",
+        <FormProvider {...methods}>
+          <form>
+            <ConfigProvider
+              theme={{
+                components: {
+                  Radio: {
+                    colorPrimary: "#72c0f0",
+                    colorPrimaryHover: "#72c0f0",
+                    dotSize: 8,
+                  },
                 },
-              ]}
+              }}
             >
-              <Select placeholder="Select" size="large">
-                <Select.Option value="Mr">Mr</Select.Option>
+              <Radio.Group
+                value={watch("bookingFor")}
+                onChange={(e) => setValue("bookingFor", e.target.value)}
+                className="mb-7"
+              >
+                <Radio value="myself">Myself</Radio>
 
-                <Select.Option value="Mrs">Mrs</Select.Option>
+                <Radio value="someone">Someone</Radio>
+              </Radio.Group>
+            </ConfigProvider>
 
-                <Select.Option value="Miss">Miss</Select.Option>
-              </Select>
-            </Form.Item>
-          </Col>
+            <div className="mt-5 grid gap-5 md:grid-cols-3">
+              <RHFSelect
+                name="title"
+                label="Gender"
+                options={[
+                  {
+                    label: "Mr",
+                    value: "Mr",
+                  },
+                  {
+                    label: "Mrs",
+                    value: "Mrs",
+                  },
+                  {
+                    label: "Miss",
+                    value: "Miss",
+                  },
+                ]}
+              />
 
-          {/* FIRST */}
-          <Col xs={24} md={10}>
-            <Form.Item
-              label="First Name"
-              name="firstName"
-              rules={[
-                {
-                  required: true,
-                  message: "Enter first name",
-                },
-              ]}
+              <RHFInput name="firstName" label="First Name" />
+
+              <RHFInput name="lastName" label="Last Name" />
+
+              <RHFInput name="email" label="Email" />
+
+              <RHFInput name="mobile" label="Mobile No." />
+            </div>
+
+            {!!guests.length && (
+              <div className="mt-6 space-y-3">
+                {guests.map((guest, index) => (
+                  <div key={index} className="rounded-xl border p-4">
+                    Guest {index + 2}
+                    {" - "}
+                    {guest.firstName} {guest.lastName}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={() => setOpenGuestModal(true)}
+              className="mt-6! cursor-pointer! font-[15px]! font-bold text-[#62B7EB]!"
             >
-              <Input size="large" placeholder="First Name" />
-            </Form.Item>
-          </Col>
+              + Add Guest
+            </button>
+          </form>
+        </FormProvider>
+      </Card>
 
-          {/* LAST */}
-          <Col xs={24} md={10}>
-            <Form.Item
-              label="Last Name"
-              name="lastName"
-              rules={[
-                {
-                  required: true,
-                  message: "Enter last name",
-                },
-              ]}
-            >
-              <Input size="large" placeholder="Last Name" />
-            </Form.Item>
-          </Col>
-
-          {/* EMAIL */}
-          <Col xs={24} md={12}>
-            <Form.Item
-              label="Email"
-              name="email"
-              rules={[
-                {
-                  required: true,
-                },
-                {
-                  type: "email",
-                  message: "Enter valid email",
-                },
-              ]}
-            >
-              <Input size="large" placeholder="example@gmail.com" />
-            </Form.Item>
-
-            <Text className="text-xs text-[#777]">
-              Booking voucher will be sent here
-            </Text>
-          </Col>
-
-          {/* MOBILE */}
-          <Col xs={24} md={12}>
-            <Form.Item
-              label="Mobile"
-              name="mobile"
-              rules={[
-                {
-                  required: true,
-                  message: "Enter mobile",
-                },
-                {
-                  pattern: /^[0-9]{10}$/,
-                  message: "Enter valid mobile",
-                },
-              ]}
-            >
-              <Input size="large" placeholder="9876543210" />
-            </Form.Item>
-          </Col>
-        </Row>
-
-        <div className="mt-3">
-          <Button
-            htmlType="submit"
-            type="primary"
-            className="!h-[46px] !rounded-xl !bg-[#0f766e]"
-          >
-            Save Guest Details
-          </Button>
-        </div>
-      </Form>
-    </Card>
+      <AddGuestModal
+        open={openGuestModal}
+        guestNo={guests.length + 2}
+        onClose={() => setOpenGuestModal(false)}
+        onSave={(guest) => setGuests((prev) => [...prev, guest])}
+      />
+    </>
   );
 }

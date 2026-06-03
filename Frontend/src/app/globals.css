@@ -1,6 +1,4 @@
 @import "tailwindcss";
-
-@import "tailwindcss";
 @config "../../tailwind.config.js";
 
 :root {
@@ -61,9 +59,6 @@ body {
   box-shadow: 0 0 0 2px rgba(74, 155, 181, 0.15) !important;
 }
 
-
-
-
 /* Gradient Theme */
 .gradient-primary {
   background: linear-gradient(180deg, #72c0f0 0%, #0f6a75 100%);
@@ -93,7 +88,6 @@ body {
   scrollbar-color: rgba(0, 0, 0, 0.18) transparent;
 }
 
-
 .guest-popover {
   z-index: 999999 !important;
 }
@@ -103,6 +97,38 @@ body {
   padding: 16px !important;
 }
 
+/* BOOKING RADIO THEME */
 
+.booking-radio .ant-radio-wrapper {
+  font-size: 15px;
+  font-weight: 500;
+  color: #1f2937;
+}
 
+.booking-radio .ant-radio .ant-radio-inner {
+  border-color: #72c0f0 !important;
+  background: #fff !important;
+}
 
+/* HOVER */
+.booking-radio .ant-radio-wrapper:hover .ant-radio-inner,
+.booking-radio .ant-radio:hover .ant-radio-inner {
+  border-color: #0f6a75 !important;
+}
+
+/* CHECKED */
+.booking-radio .ant-radio-checked .ant-radio-inner {
+  border-color: #0f6a75 !important;
+  background-color: #0f6a75 !important;
+}
+
+/* DOT */
+.booking-radio .ant-radio-checked .ant-radio-inner::after {
+  background-color: #fff !important;
+  transform: scale(0.5);
+}
+
+/* RIPPLE */
+.booking-radio .ant-radio-checked::after {
+  border-color: #0f6a75 !important;
+}

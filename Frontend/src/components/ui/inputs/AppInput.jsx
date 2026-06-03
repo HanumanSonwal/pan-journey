@@ -18,18 +18,18 @@ const AppInput = forwardRef(
             onChange={onChange}
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
-            className={`h-[43px]! rounded px-4! pb-2! text-[16px]! ${
+            className={`h-[44px]! rounded px-4! pt-[10px]! text-[16px]! ${
               error ? "border-red-500!" : ""
-            } ${className} `}
+            } ${className}`}
             {...props}
           />
 
           <label
             className={`pointer-events-none absolute left-3 z-10 bg-white px-1 transition-all duration-200 ${
               isActive
-                ? "-top-2 text-[14px] text-[#4A9BB5]"
+                ? "-top-[8px] text-[13px] text-[#4A9BB5]"
                 : "top-1/2 -translate-y-1/2 text-sm text-gray-400"
-            } `}
+            }`}
           >
             {label}
           </label>
