@@ -22,7 +22,7 @@ export default function ImageContentBlock({ data }) {
         background: "#fff",
       }}
     >
-      <div className="container">
+      <div className="container px-14 py-[-3]">
         <div
           style={{
             display: "grid",
@@ -77,7 +77,7 @@ export default function ImageContentBlock({ data }) {
                 style={{
                   color: "#475569",
                   lineHeight: 1.9,
-                  marginBottom: 28,
+
                 }}
               >
                 <EditorContent editor={editor} />
