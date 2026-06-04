@@ -49,8 +49,8 @@ function HotelCard({ hotel }) {
 
     return [
       hotel.image ||
-        hotel.images?.[0] ||
-        "https://images.unsplash.com/photo-1566073771259-6a8506099945",
+      hotel.images?.[0] ||
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945",
     ];
   }, [hotel.images, hotel.image]);
 
@@ -83,9 +83,9 @@ function HotelCard({ hotel }) {
 
     const citySlug = slugify(
       searchData?.city?.split(",")[0] ||
-        hotel?.cityName ||
-        hotel?.City ||
-        "hotel",
+      hotel?.cityName ||
+      hotel?.City ||
+      "hotel",
     );
 
     const hotelSlug = slugify(
@@ -133,8 +133,7 @@ function HotelCard({ hotel }) {
             handleNavigate();
           }
         }}
-        className="cursor-pointer overflow-hidden rounded border border-gray-200 bg-white shadow-[1px_4px_4px_4px_#00000014] transition-all duration-300 hover:-translate-y-[2px]"
-      >
+        className="cursor-pointer overflow-hidden rounded border border-gray-200 bg-white shadow-[1px_4px_4px_4px_#00000014] transition-all duration-300 hover:-translate-y-[2px] hover:border-[#72C0F0] hover:ring-2 hover:ring-[#0077b6]/20">
         <div className="flex flex-col lg:flex-row">
           <div className="w-full p-3 lg:w-[320px]">
             {hotelImages.length > 1 ? (
