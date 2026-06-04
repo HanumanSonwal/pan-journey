@@ -12,34 +12,48 @@ function slugify(value) {
     ?.replace(/\s+/g, "-");
 }
 
-export default function RelatedHotels({ cityId, currentHotelId, cityName }) {
+export default function RelatedHotels({
+  cityId,
+  currentHotelId,
+  cityName,
+  searchData,
+}) {
   const params = useMemo(() => {
+    if (!searchData?.cityData?.id) return null;
     return {
-      id: cityId,
+      HotelSeedValue: "",
+      CheckInDate: searchData?.checkIn,
+      CheckOutDate: searchData?.checkOut,
+      HotelRoomDetail: [
+        {
+          AdultCount: searchData?.adults || 1,
+          ChildCount: searchData?.children || 0,
+          Child1Age: searchData?.childAges?.[0] || 0,
+          Child2Age: searchData?.childAges?.[1] || 0,
+        },
+      ],
+      fullName: searchData?.city || "",
+      id: searchData?.cityData?.id || "",
+      stateName: searchData?.cityData?.stateName || "",
+      countryCode: searchData?.cityData?.countryCode || "",
+      RoomCount: searchData?.rooms || 1,
     };
-  }, [cityId]);
-
+  }, [searchData]);
   const { data, isLoading } = useInfiniteHotels(params);
-
   const hotels = useMemo(() => {
     const rawHotels = data?.pages?.[0]?.data?.hotels || [];
     const filtered = rawHotels.filter(
       (hotel) => String(hotel?.hotelId) !== String(currentHotelId),
     );
-
     const uniqueHotels = filtered.filter(
       (hotel, index, self) =>
         index ===
         self.findIndex((h) => String(h.hotelId) === String(hotel.hotelId)),
     );
-
     return uniqueHotels.slice(0, 4);
   }, [data, currentHotelId]);
-
   console.log("RELATED HOTELS", hotels);
-
   if (!cityId) return null;
-
   if (isLoading) {
     return (
       <div className="mt-8 flex justify-center">
@@ -47,23 +61,18 @@ export default function RelatedHotels({ cityId, currentHotelId, cityName }) {
       </div>
     );
   }
-
   if (!hotels.length) {
     return null;
   }
-
   return (
     <div className="mt-8">
       <h3 className="mb-5 text-2xl font-semibold text-[#303030]">
         Similar Hotels
       </h3>
-
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {hotels.map((hotel) => {
           const hotelSlug = slugify(hotel?.hotelName);
-
           const citySlug = slugify(cityName || "hotel");
-
           return (
             <RelatedHotelCard
               key={hotel?.hotelId}

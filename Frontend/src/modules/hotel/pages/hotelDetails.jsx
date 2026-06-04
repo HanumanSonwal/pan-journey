@@ -29,24 +29,24 @@ import { useHotelSearchStore } from "../store/serchData.store";
 
 function HotelDetails({ initialPayload = null, cms = null }) {
   const { selectedHotel } = useSelectedHotelStore();
-  const { searchData } = useHotelSearchStore();
-  const { bookingData, setBookingData } = useHotelBookingStore();
+  const { appliedSearchData } = useHotelSearchStore();
+  const { setBookingData } = useHotelBookingStore();
   const [activeTab, setActiveTab] = useState("overview");
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [sessionExpired] = useState(false);
   const [reloadingHotels] = useState(false);
-
   const payload = useMemo(() => {
     if (initialPayload) {
       return {
         ...initialPayload,
         hotelMeta: {
-          cityName: searchData?.cityData?.id,
-          stateName: searchData?.cityData?.state,
-          countryCode: searchData?.cityData?.country,
+          cityName: appliedSearchData?.cityData?.id,
+          stateName: appliedSearchData?.cityData?.stateName,
+          countryCode: appliedSearchData?.cityData?.countryCode,
         },
       };
     }
+
     return {
       hotelId: selectedHotel?.hotelMeta?.hotelId,
       hotelMeta: {
@@ -57,48 +57,49 @@ function HotelDetails({ initialPayload = null, cms = null }) {
       hotelKey: selectedHotel?.hotelKey,
       searchKey: selectedHotel?.searchKey,
     };
-  }, [selectedHotel, initialPayload, searchData]);
-
+  }, [selectedHotel, initialPayload, appliedSearchData]);
   const { data, isLoading, isFetching, refetch } = useHotelDetails(payload);
-
   const showSkeleton = isLoading || isFetching;
-
   const hotelData = data || {};
-
-  console.log("hotelData in  hotelDetail", hotelData.searchKey);
   const supplierData = hotelData?.supplierResponse || {};
-  console.log("supplierData in  hotelDetail", supplierData.HotelKey);
-
   const pricingSummary = hotelData?.pricingSummary || {};
   const ratePlans = supplierData?.RatePlanRecommendations || [];
   const hotelImages = supplierData?.HotelGallery || [];
-
   const amenities = supplierData?.Amenities
     ? supplierData.Amenities.split(",")
         .map((i) => i.trim())
         .filter(Boolean)
     : [];
-
   const hotelDetails = supplierData || [];
-
   const handleReloadHotels = async () => {
     await refetch();
   };
 
   useEffect(() => {
-    if (!supplierData?.HotelKey || !hotelData?.searchKey) return;
+    if (!supplierData?.HotelKey) return;
+    if (!hotelData?.searchKey) return;
     setBookingData({
-      ...bookingData,
+      supplierData,
+      pricingSummary,
+      searchData: appliedSearchData,
       selectedHotel: {
-        ...(bookingData?.selectedHotel || {}),
         hotelKey: supplierData.HotelKey,
         searchKey: hotelData.searchKey,
+        hotelName: supplierData?.HotelName,
+        hotelImage:
+          supplierData?.HotelImage || supplierData?.HotelGallery?.[0] || "",
+        address: supplierData?.Address,
+        city: supplierData?.City,
+        country: supplierData?.Country,
       },
     });
-
-    console.log("HOTEL KEY SAVED", supplierData.HotelKey);
-    console.log("SEARCH KEY SAVED", hotelData.searchKey);
-  }, [supplierData?.HotelKey, hotelData?.searchKey]);
+  }, [
+    supplierData?.HotelKey,
+    supplierData?.HotelName,
+    hotelData?.searchKey,
+    appliedSearchData,
+    setBookingData,
+  ]);
   return (
     <div className="min-h-screen w-full bg-[#eaf3f9]">
       {/* ✅ ALWAYS VISIBLE */}
@@ -208,9 +209,10 @@ function HotelDetails({ initialPayload = null, cms = null }) {
 
             {/* RELATED */}
             <RelatedHotels
-              cityId={searchData?.cityData?.id}
+              cityId={appliedSearchData?.cityData?.id}
+              cityName={appliedSearchData?.city}
+              searchData={appliedSearchData}
               currentHotelId={payload?.hotelId}
-              cityName={supplierData?.City}
             />
           </>
         )}

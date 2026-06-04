@@ -1,11 +1,11 @@
 "use client";
 
 import { Button, Col, Row } from "antd";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-
 import { useHotelBooking } from "../../hooks/useHotelBooking";
+import { useHotelBookingStore } from "../../store/booking.store";
 import { buildBookingPayload } from "../../utils/buildBookingPayload";
-
 import BookingAgreement from "./BookingAgreement";
 import BookingHeaderCard from "./BookingHeaderCard";
 import GuestDetailsForm from "./GuestDetailsForm";
@@ -14,75 +14,68 @@ import PriceBreakupCard from "./PriceBreakupCard";
 import RoomPackageCard from "./RoomPackageCard";
 import SpecialRequestCard from "./SpecialRequestCard";
 import StaySummaryCard from "./StaySummaryCard";
-import { useRouter } from "next/navigation";
 
-export default function HotelBookingContent({ bookingData }) {
+export default function HotelBookingContent({ hotelBookingData }) {
   const { mutate: bookHotel, isPending } = useHotelBooking();
   const router = useRouter();
-  const [guestData, setGuestData] = useState(null);
+  const { bookingData: storeBookingData, setBookingData } =
+    useHotelBookingStore();
 
-  const [requestData, setRequestData] = useState({});
-
+  const handleRequestChange = (value) => {
+    setBookingData({
+      requestData: value,
+    });
+  };
   const [agreement, setAgreement] = useState(false);
-
   // GUEST FORM SUBMIT
   const handleGuestSubmit = (values) => {
-    console.log("guest data", values);
-    setGuestData(values);
+    setBookingData({
+      guestData: values,
+    });
   };
-
   // FINAL BOOKING
   const handleBooking = () => {
     const payload = buildBookingPayload({
-      bookingData,
-      guestData,
-      requestData,
+      bookingData: storeBookingData,
+      guestData: storeBookingData?.guestData,
+      requestData: storeBookingData?.requestData,
     });
 
-    console.log("BOOKING PAYLOAD", payload);
-
-bookHotel(payload, {
-  onSuccess: (response) => {
-    const bookingRefNo =
-      response?.data?.BookingRefNo;
-
-    console.log(
-      "BOOKING REF",
-      bookingRefNo,
-    );
-
-    router.push(
-      `/hotel-checkout?bookingRefNo=${bookingRefNo}`,
-    );
-  },
-});
+    bookHotel(payload, {
+      onSuccess: (response) => {
+        const bookingRefNo = response?.data?.BookingRefNo;
+        setBookingData({
+          bookingRefNo,
+        });
+        router.push(`/hotel-checkout?bookingRefNo=${bookingRefNo}`);
+      },
+    });
   };
-
   return (
     <div className="mx-auto max-w-[1350px]">
       <Row gutter={[24, 24]}>
         {/* LEFT */}
         <Col xs={24} lg={16}>
           <div className="space-y-5">
-            <BookingHeaderCard bookingData={bookingData} />
-
-            <StaySummaryCard bookingData={bookingData} />
-
-            <RoomPackageCard bookingData={bookingData} />
-
-            <ImportantInfoCard bookingData={bookingData} />
-
+            <BookingHeaderCard bookingData={hotelBookingData} />
+            <StaySummaryCard bookingData={hotelBookingData} />
+            <RoomPackageCard bookingData={hotelBookingData} />
+            <ImportantInfoCard bookingData={hotelBookingData} />
             <GuestDetailsForm onSubmit={handleGuestSubmit} />
-
-            <SpecialRequestCard value={requestData} onChange={setRequestData} />
-
+            <SpecialRequestCard
+              value={storeBookingData?.requestData}
+              onChange={handleRequestChange}
+            />
             <BookingAgreement checked={agreement} onChange={setAgreement} />
-
             <div className="pt-2">
               <Button
                 type="primary"
                 size="large"
-                disabled={!guestData || !agreement}
+                disabled={
+                  !storeBookingData?.guestData ||
+                  !storeBookingData?.guestData?.primaryGuest ||
+                  !agreement
+                }
                 className="!h-[48px] !rounded-xl !bg-[#0f766e]"
                 onClick={handleBooking}
                 loading={isPending}
@@ -95,7 +88,7 @@ bookHotel(payload, {
 
         {/* RIGHT */}
         <Col xs={24} lg={8}>
-          <PriceBreakupCard bookingData={bookingData} />
+          <PriceBreakupCard bookingData={hotelBookingData} />
         </Col>
       </Row>
     </div>

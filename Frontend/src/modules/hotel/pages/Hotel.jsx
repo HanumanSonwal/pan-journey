@@ -49,40 +49,31 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
 
   console.log("searchParams in HotelContent", searchParams);
   const [mounted, setMounted] = useState(false);
-
   const [filters, setFilters] = useState(defaultFilters);
   const [sort, setSort] = useState("recommended");
   const [sidebarZ0, setSidebarZ0] = useState(false);
   useEffect(() => {
     setMounted(true);
   }, []);
-useEffect(() => {
-  const handleScroll = () => {
-    const hotelList = document.getElementById("hotel-list-section");
-
-    if (!hotelList) return;
-
-    const rect = hotelList.getBoundingClientRect();
-
-    setSidebarZ0(rect.bottom <= 150);
-  };
-
-  window.addEventListener("scroll", handleScroll);
-
-  handleScroll();
-
-  return () => {
-    window.removeEventListener("scroll", handleScroll);
-  };
-}, []);
+  useEffect(() => {
+    const handleScroll = () => {
+      const hotelList = document.getElementById("hotel-list-section");
+      if (!hotelList) return;
+      const rect = hotelList.getBoundingClientRect();
+      setSidebarZ0(rect.bottom <= 150);
+    };
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   // SEO ROUTE SUPPORT
   useEffect(() => {
     if (!mounted) return;
     if (initialSearchData) {
       setDraftSearchData(initialSearchData);
-
       setAppliedSearchData(initialSearchData);
-
       return;
     }
     const urlData = {
@@ -102,7 +93,6 @@ useEffect(() => {
     };
     if (urlData.cityData.id) {
       setDraftSearchData(urlData);
-
       setAppliedSearchData(urlData);
     }
   }, [
@@ -112,9 +102,7 @@ useEffect(() => {
     setDraftSearchData,
     setAppliedSearchData,
   ]);
-
-  const handleSearch = useCallback(() => { }, []);
-
+  const handleSearch = useCallback(() => {}, []);
   const isFilterActive = useCallback((value) => {
     if (
       value === "" ||
@@ -124,20 +112,16 @@ useEffect(() => {
     ) {
       return false;
     }
-
     if (Array.isArray(value) && value.length === 0) {
       return false;
     }
-
     return true;
   }, []);
-
   const removeFilter = useCallback((key, value) => {
     setFilters((prev) => {
       const updated = {
         ...prev,
       };
-
       if (Array.isArray(updated[key])) {
         updated[key] = updated[key].filter((v) => v !== value);
       } else if (typeof updated[key] === "boolean") {
@@ -145,7 +129,6 @@ useEffect(() => {
       } else {
         updated[key] = "";
       }
-
       return updated;
     });
   }, []);
@@ -153,43 +136,33 @@ useEffect(() => {
   const clearAll = useCallback(() => {
     setFilters(defaultFilters);
   }, []);
-
   const activeFilters = useMemo(() => {
     return Object.entries(filters);
   }, [filters]);
-
   const hasActiveFilters = useMemo(() => {
     return activeFilters.some(([_, value]) => isFilterActive(value));
   }, [activeFilters, isFilterActive]);
-
   if (!mounted) return null;
-
   return (
     <div className="bg-[#edf7ff]">
       <SearchBar searchData={draftSearchData} onSearch={handleSearch} />
-
-      <div className="relative mx-auto mt-[-38px] flex max-w-7xl gap-4 p-3 md:flex-nowrap  ">
-  <div
-  className={`sticky top-[110px] max-h-[calc(100vh-40px)] w-full overflow-y-auto sm:w-64 md:w-72 ${
-    sidebarZ0 ? "z-0" : "z-20"
-  }`}
->
-  <SidebarFilters
-    filters={filters}
-    setFilters={setFilters}
-  />
-</div>
+      <div className="relative mx-auto mt-[-38px] flex max-w-7xl gap-4 p-3 md:flex-nowrap">
+        <div
+          className={`sticky top-[110px] max-h-[calc(100vh-40px)] w-full overflow-y-auto sm:w-64 md:w-72 ${
+            sidebarZ0 ? "z-0" : "z-20"
+          }`}
+        >
+          <SidebarFilters filters={filters} setFilters={setFilters} />
+        </div>
 
         <div className="min-w-0 flex-1">
           <SortBar sort={sort} setSort={setSort} />
           {/* ACTIVE FILTERS */}
-          <div className="h-10 sticky top-[167px] z-10 bg-[#edf7ff] pt-2  ">
-            <div className="!mb-4  flex flex-wrap gap-2  ">
+          <div className="sticky top-[167px] z-10 h-10 bg-[#edf7ff] pt-2">
+            <div className="!mb-4 flex flex-wrap gap-2">
               {activeFilters.map(([key, value]) => {
                 if (!isFilterActive(value)) return null;
-
                 if (key === "minPrice" || key === "maxPrice") return null;
-
                 if (Array.isArray(value)) {
                   return value.map((v, i) => (
                     <div
@@ -204,17 +177,13 @@ useEffect(() => {
                     </div>
                   ));
                 }
-
                 let label = value;
-
                 if (key === "freeCancellation") {
                   label = "Free Cancellation";
                 }
-
                 if (key === "starRating") {
                   label = `${value} Star`;
                 }
-
                 return (
                   <div
                     key={key}
@@ -245,7 +214,6 @@ useEffect(() => {
                   />
                 </div>
               )}
-
               {hasActiveFilters && (
                 <button
                   onClick={clearAll}
@@ -256,13 +224,13 @@ useEffect(() => {
               )}
             </div>
           </div>
-         <div id="hotel-list-section">
-  <HotelList
-    searchData={appliedSearchData}
-    filters={filters}
-    sort={sort}
-  />
-</div>
+          <div id="hotel-list-section">
+            <HotelList
+              searchData={appliedSearchData}
+              filters={filters}
+              sort={sort}
+            />
+          </div>
 
           {/* CMS / Dynamic SEO */}
           <HotelsSeoSection>

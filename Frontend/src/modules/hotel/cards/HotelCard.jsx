@@ -19,15 +19,10 @@ function HotelCard({ hotel }) {
   const [openModal, setOpenModal] = useState(false);
   const [showAllFacilities, setShowAllFacilities] = useState(false);
   const { setSelectedHotel } = useSelectedHotelStore();
-
-  console.log("🚀 ~ file: HotelCard.jsx:18 ~ HotelCard ~ hotel:", hotel);
-
-  const { searchData } = useHotelSearchStore();
+  const { appliedSearchData } = useHotelSearchStore();
   const rating = useMemo(() => {
     return Number(hotel.rating) || Number(hotel.starRating) || 4.0;
   }, [hotel.rating, hotel.starRating]);
-
-  console.log("serchdata in card", searchData);
 
   const reviews = useMemo(() => {
     return hotel.reviews && hotel.reviews > 0
@@ -49,8 +44,8 @@ function HotelCard({ hotel }) {
 
     return [
       hotel.image ||
-      hotel.images?.[0] ||
-      "https://images.unsplash.com/photo-1566073771259-6a8506099945",
+        hotel.images?.[0] ||
+        "https://images.unsplash.com/photo-1566073771259-6a8506099945",
     ];
   }, [hotel.images, hotel.image]);
 
@@ -80,42 +75,39 @@ function HotelCard({ hotel }) {
 
   const handleNavigate = () => {
     console.log("HOTEL OBJECT", hotel);
-
+    console.log("SELECTED HOTEL DATA", {
+      hotelKey: hotel?.hotelKey,
+      searchKey: hotel?.searchKey,
+      hotelMeta: {
+        hotelId: hotel?.id,
+        cityName: appliedSearchData?.cityData?.id,
+        stateName: appliedSearchData?.cityData?.stateName,
+        countryCode: appliedSearchData?.cityData?.countryCode,
+      },
+    });
     const citySlug = slugify(
-      searchData?.city?.split(",")[0] ||
-      hotel?.cityName ||
-      hotel?.City ||
-      "hotel",
+      appliedSearchData?.city?.split(",")[0] ||
+        hotel?.cityName ||
+        hotel?.City ||
+        "hotel",
     );
 
     const hotelSlug = slugify(
       hotel?.name || hotel?.hotelName || hotel?.HotelName || "hotel",
     );
-
     const hotelId = hotel?.hotelId || hotel?.HotelId || hotel?.id;
 
-    /*
-    IMPORTANT
-  */
     setSelectedHotel({
-      hotelKey: hotel?.hotelKey || hotel?.HotelKey || hotel?.hotelkey,
-
+      hotelKey: hotel.hotelKey || hotel.HotelKey || hotel.hotelkey || "",
       searchKey: hotel?.searchKey || hotel?.SearchKey,
-
       hotelMeta: {
         hotelId: hotel?.hotelId || hotel?.HotelId || hotel?.id,
-
-        cityName: searchData?.cityData?.id,
-
-        stateName: searchData?.cityData?.state,
-
-        countryCode: searchData?.cityData?.country,
+        cityName: appliedSearchData?.cityData?.id,
+        stateName: appliedSearchData?.cityData?.stateName,
+        countryCode: appliedSearchData?.cityData?.countryCode,
       },
     });
 
-    /*
-    PASS HID
-  */
     router.push(`/hotel-details/${citySlug}/${hotelSlug}?hid=${hotelId}`);
   };
   const visibleFacilities = useMemo(() => {
@@ -133,7 +125,8 @@ function HotelCard({ hotel }) {
             handleNavigate();
           }
         }}
-        className="cursor-pointer overflow-hidden rounded border border-gray-200 bg-white shadow-[1px_4px_4px_4px_#00000014] transition-all duration-300 hover:-translate-y-[2px] hover:border-[#72C0F0] hover:ring-2 hover:ring-[#0077b6]/20">
+        className="cursor-pointer overflow-hidden rounded border border-gray-200 bg-white shadow-[1px_4px_4px_4px_#00000014] transition-all duration-300 hover:-translate-y-[2px] hover:border-[#72C0F0] hover:ring-2 hover:ring-[#0077b6]/20"
+      >
         <div className="flex flex-col lg:flex-row">
           <div className="w-full p-3 lg:w-[320px]">
             {hotelImages.length > 1 ? (
