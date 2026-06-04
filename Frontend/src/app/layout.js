@@ -5,12 +5,12 @@ import LoaderProvider from "@/providers/LoaderProvider";
 import QueryProvider from "@/providers/QueryProvider";
 import "@/styles/cms-content.css";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
+import { App } from "antd";
 import "antd/dist/reset.css";
 import { Geist, Geist_Mono, Jost, Roboto } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import Providers from "./providers";
-import { App } from "antd";
 
 /* Fonts */
 const geistSans = Geist({
@@ -95,7 +95,9 @@ export default function RootLayout({ children }) {
 
                 <ProfileCompletionHandler />
 
-                <main className="flex-1">{children}</main>
+                <main className="flex-1">
+                  <App>{children}</App>
+                </main>
 
                 <Footer />
               </Providers>

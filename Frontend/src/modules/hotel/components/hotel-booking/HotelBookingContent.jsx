@@ -14,10 +14,11 @@ import PriceBreakupCard from "./PriceBreakupCard";
 import RoomPackageCard from "./RoomPackageCard";
 import SpecialRequestCard from "./SpecialRequestCard";
 import StaySummaryCard from "./StaySummaryCard";
+import { useRouter } from "next/navigation";
 
 export default function HotelBookingContent({ bookingData }) {
   const { mutate: bookHotel, isPending } = useHotelBooking();
-
+  const router = useRouter();
   const [guestData, setGuestData] = useState(null);
 
   const [requestData, setRequestData] = useState({});
@@ -40,11 +41,21 @@ export default function HotelBookingContent({ bookingData }) {
 
     console.log("BOOKING PAYLOAD", payload);
 
-    bookHotel(payload, {
-      onSuccess: (response) => {
-        console.log("booking response", response);
-      },
-    });
+bookHotel(payload, {
+  onSuccess: (response) => {
+    const bookingRefNo =
+      response?.data?.BookingRefNo;
+
+    console.log(
+      "BOOKING REF",
+      bookingRefNo,
+    );
+
+    router.push(
+      `/hotel-checkout?bookingRefNo=${bookingRefNo}`,
+    );
+  },
+});
   };
 
   return (
