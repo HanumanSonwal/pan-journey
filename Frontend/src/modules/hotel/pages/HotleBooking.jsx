@@ -8,6 +8,7 @@ import { useHotelBookingStore } from "../store/booking.store";
 export default function HotleBooking() {
   const { bookingData } = useHotelBookingStore();
 
+
   const router = useRouter();
 
   console.log("bookingData inhotelBooking", bookingData);

@@ -2,8 +2,8 @@
 
 import { Spin } from "antd";
 import { useMemo } from "react";
-import { useInfiniteHotels } from "../hooks/useInfiniteHotels";
 import RelatedHotelCard from "../cards/RelatedHotelCard";
+import { useInfiniteHotels } from "../hooks/useInfiniteHotels";
 
 function slugify(value) {
   return value
@@ -23,10 +23,17 @@ export default function RelatedHotels({ cityId, currentHotelId, cityName }) {
 
   const hotels = useMemo(() => {
     const rawHotels = data?.pages?.[0]?.data?.hotels || [];
+    const filtered = rawHotels.filter(
+      (hotel) => String(hotel?.hotelId) !== String(currentHotelId),
+    );
 
-    return rawHotels
-      .filter((hotel) => String(hotel?.hotelId) !== String(currentHotelId))
-      .slice(0, 4);
+    const uniqueHotels = filtered.filter(
+      (hotel, index, self) =>
+        index ===
+        self.findIndex((h) => String(h.hotelId) === String(hotel.hotelId)),
+    );
+
+    return uniqueHotels.slice(0, 4);
   }, [data, currentHotelId]);
 
   console.log("RELATED HOTELS", hotels);

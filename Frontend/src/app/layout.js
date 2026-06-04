@@ -10,6 +10,7 @@ import { Geist, Geist_Mono, Jost, Roboto } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import Providers from "./providers";
+import { App } from "antd";
 
 /* Fonts */
 const geistSans = Geist({

@@ -1,14 +1,12 @@
 "use client";
 
 import { useHotelBookingStore } from "@/modules/hotel/store/booking.store";
-import { useSelectedHotelStore } from "@/modules/hotel/store/selectedHotel.store";
-import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
 import { Button } from "antd";
 import { useRouter } from "next/navigation";
 
 const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
-  const router = useRouter();
 
+  const router = useRouter();
   const selectedPlan = ratePlans?.[0];
   const detail = selectedPlan?.RatePlanDetails?.[0];
   const room = detail?.RoomDetails?.[0];
@@ -20,24 +18,31 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
   const tax = Number(detail?.Tax || 0);
   const totalPrice = Number(selectedPlan?.TotalAmount || 0);
   const moreRooms = Math.max(ratePlans?.length - 1, 0);
-
-  const { searchData } = useHotelSearchStore();
-
-  const { selectedHotel } = useSelectedHotelStore();
-
   const { setBookingData } = useHotelBookingStore();
 
   const handleBookNow = () => {
     if (!selectedPlan || !detail) {
       return;
     }
+    console.log("BOOK NOW CLICK");
+    console.log("HotelKey in price card", supplierData?.HotelKey);
+    console.log("SearchKey in price card", supplierData?.SearchKey);
+    console.log("RecommendationID", selectedPlan?.RecommendationID);
 
     setBookingData({
-      searchData,
-      selectedHotel,
+      ...useHotelBookingStore.getState().bookingData,
+
+      selectedHotel: {
+        ...useHotelBookingStore.getState().bookingData?.selectedHotel,
+
+        recommendationId:
+          selectedPlan?.RecommendationID || selectedPlan?.RecommendationId,
+      },
+
       supplierData,
       selectedRatePlan: selectedPlan,
       selectedRoom: room,
+
       pricing: {
         basicAmount: basicPrice,
         tax,

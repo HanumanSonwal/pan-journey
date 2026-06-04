@@ -63,6 +63,7 @@ export const fetchHotelDetailsFromSupplier = async ({ hotelId, hotelMeta }) => {
       success: true,
       hotelId,
       hotelMeta,
+      searchKey,
       supplierResponse: data,
     };
   } catch (error) {

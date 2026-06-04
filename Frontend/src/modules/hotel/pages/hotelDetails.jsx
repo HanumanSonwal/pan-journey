@@ -6,13 +6,12 @@ import {
   ShareAltOutlined,
 } from "@ant-design/icons";
 import { Card } from "antd";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
+import HotelDetailsSkeleton from "@/components/common/loder/HotelDetailsSkeleton";
 import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
 import { useHotelDetails } from "@/modules/hotel/hooks/useHotelDetails";
 import { useSelectedHotelStore } from "@/modules/hotel/store/selectedHotel.store";
-
-import HotelDetailsSkeleton from "@/components/common/loder/HotelDetailsSkeleton";
 import SearchBar from "../components/hotels/SearchBar";
 import HotelSectionsContent from "../components/hotels/viewhotles/HotelSectionsContent";
 import HotelSectionsTabs from "../components/hotels/viewhotles/HotelSectionsTabs";
@@ -25,12 +24,13 @@ import ViewHotelTabs from "../components/hotels/viewhotles/ViewHotelTabs";
 import HotelCmsSection from "../sections/HotelCmsSection";
 import RelatedHotels from "../sections/RelatedHotels";
 import DynamicHotelSeoFallback from "../seo/DynamicHotelSeoFallback";
+import { useHotelBookingStore } from "../store/booking.store";
 import { useHotelSearchStore } from "../store/serchData.store";
 
 function HotelDetails({ initialPayload = null, cms = null }) {
   const { selectedHotel } = useSelectedHotelStore();
   const { searchData } = useHotelSearchStore();
-
+  const { bookingData, setBookingData } = useHotelBookingStore();
   const [activeTab, setActiveTab] = useState("overview");
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [sessionExpired] = useState(false);
@@ -47,7 +47,6 @@ function HotelDetails({ initialPayload = null, cms = null }) {
         },
       };
     }
-
     return {
       hotelId: selectedHotel?.hotelMeta?.hotelId,
       hotelMeta: {
@@ -65,13 +64,19 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   const showSkeleton = isLoading || isFetching;
 
   const hotelData = data || {};
+
+  console.log("hotelData in  hotelDetail", hotelData.searchKey);
   const supplierData = hotelData?.supplierResponse || {};
+  console.log("supplierData in  hotelDetail", supplierData.HotelKey);
+
   const pricingSummary = hotelData?.pricingSummary || {};
   const ratePlans = supplierData?.RatePlanRecommendations || [];
   const hotelImages = supplierData?.HotelGallery || [];
 
   const amenities = supplierData?.Amenities
-    ? supplierData.Amenities.split(",").map((i) => i.trim()).filter(Boolean)
+    ? supplierData.Amenities.split(",")
+        .map((i) => i.trim())
+        .filter(Boolean)
     : [];
 
   const hotelDetails = supplierData || [];
@@ -80,25 +85,34 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     await refetch();
   };
 
+  useEffect(() => {
+    if (!supplierData?.HotelKey || !hotelData?.searchKey) return;
+    setBookingData({
+      ...bookingData,
+      selectedHotel: {
+        ...(bookingData?.selectedHotel || {}),
+        hotelKey: supplierData.HotelKey,
+        searchKey: hotelData.searchKey,
+      },
+    });
+
+    console.log("HOTEL KEY SAVED", supplierData.HotelKey);
+    console.log("SEARCH KEY SAVED", hotelData.searchKey);
+  }, [supplierData?.HotelKey, hotelData?.searchKey]);
   return (
     <div className="min-h-screen w-full bg-[#eaf3f9]">
-
       {/* ✅ ALWAYS VISIBLE */}
       <SearchBar />
 
       <div className="mx-auto w-full max-w-7xl px-2 pb-8 sm:px-4 md:px-6">
-
         <div className="-mt-10">
-
           {/* ===================== SKELETON ONLY CONTENT ===================== */}
           {showSkeleton ? (
             <HotelDetailsSkeleton />
           ) : (
             <Card className="overflow-hidden rounded border-0 shadow-lg">
-
               {/* HEADER */}
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-
                 <div className="flex min-w-0 items-start gap-3">
                   <div className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#eef8fd]">
                     <CheckCircleOutlined className="text-[18px] text-[#5bb7ec]!" />
@@ -126,12 +140,10 @@ function HotelDetails({ initialPayload = null, cms = null }) {
                     <ShareAltOutlined className="text-[19px]" />
                   </button>
                 </div>
-
               </div>
 
               {/* GALLERY + PRICE */}
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:items-stretch">
-
                 <div className="lg:col-span-2">
                   <ViewHotelGallery
                     images={hotelImages}
@@ -150,17 +162,14 @@ function HotelDetails({ initialPayload = null, cms = null }) {
                     supplierData={supplierData}
                   />
                 </div>
-
               </div>
 
               {/* INFO */}
               <div className="mt-6">
                 <ViewHotelInfo supplierData={supplierData} />
               </div>
-
             </Card>
           )}
-
         </div>
 
         {/* TABS */}
@@ -205,7 +214,6 @@ function HotelDetails({ initialPayload = null, cms = null }) {
             />
           </>
         )}
-
       </div>
 
       {/* MODALS (always outside) */}
@@ -220,7 +228,6 @@ function HotelDetails({ initialPayload = null, cms = null }) {
         loading={reloadingHotels}
         onReload={handleReloadHotels}
       />
-
     </div>
   );
 }

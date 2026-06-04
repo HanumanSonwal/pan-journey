@@ -10,6 +10,8 @@ import { useRouter } from "next/navigation";
 const RoomOptions = ({ ratePlans = [], supplierData = {} }) => {
   const router = useRouter();
 
+  console.log(supplierData, "supplierData.RatePlanRecommendations");
+
   const getHDImage = (url) => {
     if (!url) {
       return "/no-room.jpg";
@@ -24,12 +26,24 @@ const RoomOptions = ({ ratePlans = [], supplierData = {} }) => {
   const { setBookingData } = useHotelBookingStore();
 
   const handleSelectRoom = (plan, room, basicAmount, tax, totalAmount) => {
+    console.log("===== CLICKED ROOM =====");
+    console.log("PLAN DATA", plan);
+    console.log("RecommendationID", plan?.RecommendationID);
+    console.log("RecommendationId", plan?.RecommendationId);
+
     setBookingData({
-      searchData,
-      selectedHotel,
+      ...useHotelBookingStore.getState().bookingData,
+
+      selectedHotel: {
+        ...useHotelBookingStore.getState().bookingData?.selectedHotel,
+
+        recommendationId: plan?.RecommendationID || plan?.RecommendationId,
+      },
+
       supplierData,
       selectedRatePlan: plan,
       selectedRoom: room,
+
       pricing: {
         basicAmount,
         tax,
@@ -39,7 +53,6 @@ const RoomOptions = ({ ratePlans = [], supplierData = {} }) => {
 
     router.push("/hotelbooking");
   };
-
   console.log(ratePlans, "ratePlans in roomOptions");
   return (
     <div className="space-y-6">
