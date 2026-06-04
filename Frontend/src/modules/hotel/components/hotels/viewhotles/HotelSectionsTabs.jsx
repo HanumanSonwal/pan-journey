@@ -58,7 +58,7 @@ const HotelSectionsTabs = ({ activeTab = "Rooms", setActiveTab }) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [offsetTop]);
 
-  // 🔥 ACCURATE SCROLL SPY (MAIN FIX)
+  // scroll spy
   useEffect(() => {
     const handleScrollSpy = () => {
       if (ignoreScroll.current) return;
@@ -71,7 +71,6 @@ const HotelSectionsTabs = ({ activeTab = "Rooms", setActiveTab }) => {
 
         const rect = el.getBoundingClientRect();
 
-        // 🔥 better detection point (center of screen)
         if (rect.top <= 150 && rect.bottom >= 150) {
           active = tab;
           break;
@@ -88,7 +87,6 @@ const HotelSectionsTabs = ({ activeTab = "Rooms", setActiveTab }) => {
     return () => window.removeEventListener("scroll", handleScrollSpy);
   }, [currentTab, setActiveTab]);
 
-  // click handler
   const handleScrollTo = (tab) => {
     setCurrentTab(tab);
     if (setActiveTab) setActiveTab(tab);
@@ -116,8 +114,8 @@ const HotelSectionsTabs = ({ activeTab = "Rooms", setActiveTab }) => {
 
       <div
         ref={ref}
-        className={`z-[999] w-full border border-gray-200 bg-white text-[#0ea5e9] shadow-md
-        ${isFixed ? "fixed top-0 left-0" : "relative"}`}
+        className={`z-[4] w-full border border-gray-200 bg-white text-[#0ea5e9] shadow-md
+        ${isFixed ? "fixed left-0 top-[125px] w-full" : "relative"}`}
       >
         <div className="flex overflow-x-auto scrollbar-hide">
           {tabs.map((tab) => {

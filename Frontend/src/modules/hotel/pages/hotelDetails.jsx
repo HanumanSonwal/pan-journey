@@ -88,13 +88,13 @@ function HotelDetails({ initialPayload = null, cms = null }) {
 
       <div className="mx-auto w-full max-w-7xl px-2 pb-8 sm:px-4 md:px-6">
 
-        <div className="-mt-10">
+        <div className="mt-10">
 
           {/* ===================== SKELETON ONLY CONTENT ===================== */}
           {showSkeleton ? (
             <HotelDetailsSkeleton />
           ) : (
-            <Card className="overflow-hidden rounded border-0 shadow-lg">
+            <Card className="overflow-hidden rounded border-0 shadow-lg ">
 
               {/* HEADER */}
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">

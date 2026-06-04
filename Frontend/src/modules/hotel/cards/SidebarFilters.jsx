@@ -215,7 +215,7 @@ function SidebarFilters({ filters, setFilters }) {
         key: "starCategory",
         title: "Star Category",
         content: (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 ">
             {starOptions.map((rating) => (
               <Checkbox
                 key={rating}

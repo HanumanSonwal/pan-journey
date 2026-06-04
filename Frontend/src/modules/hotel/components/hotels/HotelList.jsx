@@ -125,11 +125,11 @@ function HotelList({ searchData, filters, sort }) {
         hotel.images?.length > 0
           ? hotel.images
           : [
-              hotel.image ||
-                hotel.thumbnail ||
-                hotel.hotelImage ||
-                "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80&auto=format&fit=crop",
-            ],
+            hotel.image ||
+            hotel.thumbnail ||
+            hotel.hotelImage ||
+            "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80&auto=format&fit=crop",
+          ],
 
       tags: hotel.facilities?.slice(0, 3) || [],
       starRating: hotel.starRating || "",
@@ -159,14 +159,14 @@ function HotelList({ searchData, filters, sort }) {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 ">
       {/* HOTELS */}
       {mappedHotels.map((hotel, index) => (
         <HotelCard key={hotel.id || index} hotel={hotel} />
       ))}
 
       {/* LOAD MORE */}
-      <div ref={loadMoreRef} className="flex justify-center py-6">
+      <div ref={loadMoreRef} className="flex justify-center py-6 ">
         {isFetchingNextPage && (
           <div className="text-sm text-gray-500">Loading more hotels...</div>
         )}
