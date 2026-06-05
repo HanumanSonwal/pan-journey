@@ -33,8 +33,8 @@ function ImageSkeleton({ height }) {
 
 export default function HotelDetailsSkeleton() {
   return (
-    <div className="bg-[#edf2f5] min-h-screen p-4">
-      <Card bordered={false} className="rounded-xl">
+    <div className="min-h-screen bg-[#edf2f5] p-4">
+      <Card variant="borderless" className="rounded-xl">
         {/* Header */}
         <div className="mb-6 flex items-start justify-between">
           <div>
@@ -99,7 +99,7 @@ export default function HotelDetailsSkeleton() {
                 />
               </div>
 
-              <Card bordered={false} className="mt-5">
+              <Card variant="borderless" className="mt-5">
                 <Skeleton
                   active
                   paragraph={{
@@ -108,7 +108,7 @@ export default function HotelDetailsSkeleton() {
                 />
               </Card>
 
-              <Card bordered={false} className="mt-4">
+              <Card variant="borderless" className="mt-4">
                 <Skeleton
                   active
                   paragraph={{
