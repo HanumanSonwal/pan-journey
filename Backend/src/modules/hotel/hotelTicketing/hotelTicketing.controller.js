@@ -17,6 +17,7 @@ export const hotelTicketingController = async (
     const result = await hotelTicketingService(
       req.body
     );
+    console.log("REQ BODY:", req.body);
 
     return sendSuccess(
       res,

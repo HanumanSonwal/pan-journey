@@ -2,19 +2,20 @@ import axios from "axios";
 import { getAuthHeader } from "../../config/supplierApi.js";
 
 export const addPaymentService = async ({
-  refNo,
+  RefNo,
   transactionType = 0,
   productId = "26",
-  clientRefNo = "",
+  clientRefNo = "Testing Praba",
+   //IMEI_Number="2232323232323",
 }) => {
   try {
     const payload = {
-      AuthHeader: getAuthHeader(),
-      ClientRefNo: clientRefNo,
-      RefNo: refNo,
-      TransactionType: transactionType,
-      ProductId: productId,
-    };
+  Auth_Header: getAuthHeader(),
+  ClientRefNo: clientRefNo,
+  RefNo: RefNo,
+  TransactionType: transactionType,
+  ProductId: productId,
+};
 
     console.log("\n=========== ADD PAYMENT REQUEST ===========");
     console.log(JSON.stringify(payload, null, 2));
