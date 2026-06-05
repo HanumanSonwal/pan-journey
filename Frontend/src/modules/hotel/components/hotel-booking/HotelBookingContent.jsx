@@ -1,6 +1,7 @@
 "use client";
 
 import { Button, Col, Row } from "antd";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useHotelBooking } from "../../hooks/useHotelBooking";
@@ -21,6 +22,10 @@ export default function HotelBookingContent({ hotelBookingData }) {
   const { bookingData: storeBookingData, setBookingData } =
     useHotelBookingStore();
 
+  const { data: session } = useSession();
+
+  console.log("session-user00oo", session);
+
   const handleRequestChange = (value) => {
     setBookingData({
       requestData: value,
@@ -39,6 +44,7 @@ export default function HotelBookingContent({ hotelBookingData }) {
       bookingData: storeBookingData,
       guestData: storeBookingData?.guestData,
       requestData: storeBookingData?.requestData,
+      userId: session?.user?.id,
     });
 
     bookHotel(payload, {

@@ -9,7 +9,7 @@ const OccupantSchema = new mongoose.Schema(
     RoomNo: Number,
     Title: String,
   },
-  { _id: false }
+  { _id: false },
 );
 
 // const HotelTempBookingSchema = new mongoose.Schema(
@@ -49,10 +49,10 @@ const HotelTempBookingSchema = new mongoose.Schema(
     checkOutDate: String,
 
     requeryAt: Date,
-User__id: {
-  type: mongoose.Schema.Types.ObjectId,
-  ref: "User",
-},
+    UserId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
     status: {
       type: String,
       enum: ["SUCCESS", "FAILED"],
@@ -65,7 +65,7 @@ User__id: {
 
     errorMessage: String,
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("HotelTempBooking", HotelTempBookingSchema);

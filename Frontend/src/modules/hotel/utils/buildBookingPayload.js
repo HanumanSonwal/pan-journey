@@ -2,6 +2,7 @@ export const buildBookingPayload = ({
   bookingData,
   guestData,
   requestData,
+  userId,
 }) => {
   console.log("bookingData in payload", bookingData);
   const selectedHotel = bookingData?.selectedHotel;
@@ -9,7 +10,9 @@ export const buildBookingPayload = ({
   const primaryGuest = guestData?.primaryGuest || {};
   const additionalGuests = guestData?.additionalGuests || [];
   const occupants = [primaryGuest, ...additionalGuests];
+
   return {
+    UserId: userId || "",
     CustomerName: `${primaryGuest?.firstName || ""} ${
       primaryGuest?.lastName || ""
     }`.trim(),

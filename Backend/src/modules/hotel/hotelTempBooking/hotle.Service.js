@@ -58,7 +58,7 @@ export const hotelTempBookingService = async (payload) => {
 
     console.log("📥 Incoming Payload =>");
     console.log(JSON.stringify(payload, null, 2));
-    
+
     // ✅ PREPARE REQUEST BODY
     const requestBody = {
       ...getAuthHeader(),
@@ -73,6 +73,7 @@ export const hotelTempBookingService = async (payload) => {
     const dbRecord = await HotelTempBooking.create({
       requestPayload: requestBody,
       hotelKey: payload.HotelKey,
+      UserId: payload.UserId,
       recommendationId: payload.RecommendationID,
       customerMobile: payload.CustomerMobile,
       status: "FAILED",
@@ -85,7 +86,7 @@ export const hotelTempBookingService = async (payload) => {
     // ✅ SUPPLIER API CALL
     const response = await supplierAPI.post(
       "/JSONService/HotelTempBooking",
-      requestBody
+      requestBody,
     );
 
     const responseTime = Date.now() - requestStartTime;
@@ -94,30 +95,30 @@ export const hotelTempBookingService = async (payload) => {
     console.log("✅ SUPPLIER RESPONSE RECEIVED");
     console.log("⏱ Response Time =>", `${responseTime} ms`);
 
- console.log("======================================");
-console.log("✅ COMPLETE SUPPLIER RESPONSE");
-console.log("======================================");
+    console.log("======================================");
+    console.log("✅ COMPLETE SUPPLIER RESPONSE");
+    console.log("======================================");
 
-console.log("📊 STATUS =>", response.status);
-console.log("📊 STATUS TEXT =>", response.statusText);
+    console.log("📊 STATUS =>", response.status);
+    console.log("📊 STATUS TEXT =>", response.statusText);
 
-console.log("======================================");
-console.log("📦 HEADERS =>");
-console.log(JSON.stringify(response.headers, null, 2));
+    console.log("======================================");
+    console.log("📦 HEADERS =>");
+    console.log(JSON.stringify(response.headers, null, 2));
 
-console.log("======================================");
-console.log("📦 RESPONSE DATA TYPE =>");
-console.log(typeof response.data);
+    console.log("======================================");
+    console.log("📦 RESPONSE DATA TYPE =>");
+    console.log(typeof response.data);
 
-console.log("======================================");
-console.log("📦 RAW RESPONSE DATA =>");
-console.log(response.data);
+    console.log("======================================");
+    console.log("📦 RAW RESPONSE DATA =>");
+    console.log(response.data);
 
-console.log("======================================");
-console.log("📦 FORMATTED RESPONSE DATA =>");
-console.log(JSON.stringify(response.data, null, 2));
+    console.log("======================================");
+    console.log("📦 FORMATTED RESPONSE DATA =>");
+    console.log(JSON.stringify(response.data, null, 2));
 
-console.log("======================================");
+    console.log("======================================");
 
     // ✅ UPDATE DB SUCCESS
     dbRecord.responsePayload = response.data;
@@ -140,7 +141,7 @@ console.log("======================================");
 
     console.log("🚨 ERROR =>");
     console.log(
-      JSON.stringify(error?.response?.data || error.message, null, 2)
+      JSON.stringify(error?.response?.data || error.message, null, 2),
     );
 
     // ✅ SAVE FAILED REQUEST
@@ -148,9 +149,7 @@ console.log("======================================");
       requestPayload: payload,
       status: "FAILED",
       responseTime,
-      errorMessage: JSON.stringify(
-        error?.response?.data || error.message
-      ),
+      errorMessage: JSON.stringify(error?.response?.data || error.message),
     });
 
     console.log("======================================");
