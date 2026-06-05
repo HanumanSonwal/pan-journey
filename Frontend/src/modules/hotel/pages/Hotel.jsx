@@ -2,6 +2,7 @@
 
 import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
 import { CloseOutlined } from "@ant-design/icons";
+import dayjs from "dayjs";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import SidebarFilters from "../cards/SidebarFilters";
@@ -11,18 +12,6 @@ import SortBar from "../components/SortBar";
 import DynamicSeoFallback from "../seo/DynamicSeoFallback";
 import HotelsSeoSection from "../seo/HotelsSeoSection";
 import { useHotelSearchStore } from "../store/serchData.store";
-
-const defaultSearchData = {
-  city: "",
-  cityData: { id: "" },
-  checkIn: "",
-  checkOut: "",
-  rooms: 1,
-  adults: 2,
-  children: 0,
-  childAges: [],
-  pets: false,
-};
 
 const defaultFilters = {
   freeCancellation: false,
@@ -37,8 +26,6 @@ const defaultFilters = {
 };
 
 export default function HotelContent({ initialSearchData = null, cms = null }) {
-  console.log("CMS DATA in HotelContent", cms);
-  console.log("initialSearchData in HotelContent", initialSearchData);
   const {
     draftSearchData,
     appliedSearchData,
@@ -47,7 +34,6 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
   } = useHotelSearchStore();
   const searchParams = useSearchParams();
 
-  console.log("searchParams in HotelContent", searchParams);
   const [mounted, setMounted] = useState(false);
   const [filters, setFilters] = useState(defaultFilters);
   const [sort, setSort] = useState("recommended");
@@ -76,8 +62,24 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
       setAppliedSearchData(initialSearchData);
       return;
     }
+    const today = dayjs().startOf("day");
+
+    const savedCheckIn = dayjs(draftSearchData?.checkIn);
+    const savedCheckOut = dayjs(draftSearchData?.checkOut);
+
+    if (
+      !savedCheckIn.isValid() ||
+      savedCheckIn.isBefore(today) ||
+      !savedCheckOut.isValid() ||
+      savedCheckOut.isBefore(today)
+    ) {
+      setDraftSearchData({
+        checkIn: today.format("YYYY-MM-DD"),
+        checkOut: today.add(1, "day").format("YYYY-MM-DD"),
+      });
+    }
     const urlData = {
-      city: searchParams.get("city") || "",
+      city: draftSearchData?.city || "",
       cityData: {
         id: searchParams.get("cityId") || "",
         stateName: searchParams.get("stateName") || "",
@@ -91,7 +93,7 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
       childAges: [],
       pets: searchParams.get("pets") === "true",
     };
-    if (urlData.cityData.id) {
+    if (urlData.cityData.id && !appliedSearchData?.cityData?.id) {
       setDraftSearchData(urlData);
       setAppliedSearchData(urlData);
     }
@@ -102,6 +104,9 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
     setDraftSearchData,
     setAppliedSearchData,
   ]);
+  useEffect(() => {
+    console.log("CURRENT URL:", window.location.href);
+  }, []);
   const handleSearch = useCallback(() => {}, []);
   const isFilterActive = useCallback((value) => {
     if (
@@ -144,7 +149,7 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
   }, [activeFilters, isFilterActive]);
   if (!mounted) return null;
   return (
-    <div className="bg-[#edf7ff]">
+    <div className="bg-[#EDF7FF]">
       <SearchBar searchData={draftSearchData} onSearch={handleSearch} />
       <div className="relative mx-auto mt-[-38px] flex max-w-7xl gap-4 p-3 md:flex-nowrap">
         <div
@@ -158,71 +163,77 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
         <div className="min-w-0 flex-1">
           <SortBar sort={sort} setSort={setSort} />
           {/* ACTIVE FILTERS */}
-          <div className="sticky top-[167px] z-10 h-10 bg-[#edf7ff] pt-2">
-            <div className="!mb-4 flex flex-wrap gap-2">
-              {activeFilters.map(([key, value]) => {
-                if (!isFilterActive(value)) return null;
-                if (key === "minPrice" || key === "maxPrice") return null;
-                if (Array.isArray(value)) {
-                  return value.map((v, i) => (
+          <div className="sticky top-[167px] z-10 bg-[#edf7ff] pt-2">
+            {hasActiveFilters && (
+              <div className="!mb-4 flex flex-wrap gap-2">
+                {activeFilters.map(([key, value]) => {
+                  if (!isFilterActive(value)) return null;
+                  if (key === "minPrice" || key === "maxPrice") return null;
+
+                  if (Array.isArray(value)) {
+                    return value.map((v, i) => (
+                      <div
+                        key={`${key}-${i}`}
+                        className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
+                      >
+                        {v}
+                        <CloseOutlined
+                          className="cursor-pointer text-xs"
+                          onClick={() => removeFilter(key, v)}
+                        />
+                      </div>
+                    ));
+                  }
+
+                  let label = value;
+
+                  if (key === "freeCancellation") {
+                    label = "Free Cancellation";
+                  }
+
+                  if (key === "starRating") {
+                    label = `${value} Star`;
+                  }
+
+                  return (
                     <div
-                      key={`${key}-${i}`}
+                      key={key}
                       className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
                     >
-                      {v}
+                      {label}
                       <CloseOutlined
                         className="cursor-pointer text-xs"
-                        onClick={() => removeFilter(key, v)}
+                        onClick={() => removeFilter(key)}
                       />
                     </div>
-                  ));
-                }
-                let label = value;
-                if (key === "freeCancellation") {
-                  label = "Free Cancellation";
-                }
-                if (key === "starRating") {
-                  label = `${value} Star`;
-                }
-                return (
-                  <div
-                    key={key}
-                    className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
-                  >
-                    {label}
+                  );
+                })}
+
+                {(filters?.minPrice || filters?.maxPrice) && (
+                  <div className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600">
+                    ₹{filters?.minPrice || 0}
+                    {" - "}₹{filters?.maxPrice || 50000}
                     <CloseOutlined
                       className="cursor-pointer text-xs"
-                      onClick={() => removeFilter(key)}
+                      onClick={() =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          minPrice: "",
+                          maxPrice: "",
+                        }))
+                      }
                     />
                   </div>
-                );
-              })}
+                )}
 
-              {(filters?.minPrice || filters?.maxPrice) && (
-                <div className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600">
-                  ₹{filters?.minPrice || 0}
-                  {" - "}₹{filters?.maxPrice || 50000}
-                  <CloseOutlined
-                    className="cursor-pointer text-xs"
-                    onClick={() =>
-                      setFilters((prev) => ({
-                        ...prev,
-                        minPrice: "",
-                        maxPrice: "",
-                      }))
-                    }
-                  />
-                </div>
-              )}
-              {hasActiveFilters && (
                 <button
                   onClick={clearAll}
                   className="rounded !bg-red-200 px-3 py-1 text-xs text-red-600 transition hover:bg-red-200"
                 >
                   Clear All
                 </button>
-              )}
-            </div>
+              </div>
+            )}
           </div>
           <div id="hotel-list-section">
             <HotelList

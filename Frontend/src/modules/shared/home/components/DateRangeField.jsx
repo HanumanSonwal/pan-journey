@@ -12,7 +12,7 @@ export default function DateRangeField({
 }) {
   const start = value?.[0] || dayjs();
   const end = value?.[1] || dayjs().add(1, "day");
-  const nights = start && end ? end.diff(start, "day") : 0;
+  const nights = start && end ? Math.max(0, end.diff(start, "day")) : 0;
 
   const disabledDate = (current) => {
     return current && current < dayjs().startOf("day");
@@ -24,6 +24,7 @@ export default function DateRangeField({
       onOpenChange={(nextOpen) => {
         setOpen?.(nextOpen);
       }}
+      inputReadOnly
       value={value}
       disabledDate={disabledDate}
       allowClear={false}

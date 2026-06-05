@@ -6,31 +6,35 @@ import DestinationSearchField from "@/modules/shared/home/components/Destination
 import GuestsField from "@/modules/shared/home/components/GuestsField";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 export default function SearchBar({ onSearch }) {
   const router = useRouter();
 
   const { draftSearchData, setDraftSearchData, applySearch } =
     useHotelSearchStore();
-
+  const [destinationError, setDestinationError] = useState(false);
   const [dateOpen, setDateOpen] = useState(false);
   const [guestOpen, setGuestOpen] = useState(false);
 
-  const destinationClickedRef = useRef(false);
+  const citySlug =
+    draftSearchData?.city
+      ?.split(",")[0]
+      ?.trim()
+      ?.toLowerCase()
+      ?.replace(/[^a-z0-9\s-]/g, "")
+      ?.replace(/\s+/g, "-") || "";
 
   const handleSearch = () => {
+    if (!draftSearchData?.city?.trim()) {
+      setDestinationError(true);
+      return;
+    }
+    setDestinationError(false);
     onSearch?.();
 
     const query = new URLSearchParams({
-      city:
-        draftSearchData?.city
-          ?.split(",")
-          ?.[0]
-          ?.trim()
-          ?.toLowerCase()
-          ?.replace(/[^a-z0-9\s-]/g, "")
-          ?.replace(/\s+/g, "-") || "",
+      city: citySlug,
       cityId: draftSearchData?.cityData?.id || "",
       stateName: draftSearchData?.cityData?.stateName || "",
       countryCode: draftSearchData?.cityData?.countryCode || "",
@@ -41,16 +45,19 @@ export default function SearchBar({ onSearch }) {
       children: String(draftSearchData?.children || 0),
       pets: draftSearchData?.pets ? "true" : "false",
     });
-
     applySearch();
+    console.log("draft city:ads", draftSearchData?.city);
+    console.log("citySlug:", citySlug);
+    console.log("queryccc:", query.toString());
     router.push(`/hotels?${query.toString()}`);
   };
 
   return (
     <div className="sticky top-0 z-5 bg-[#72C0F0] shadow">
-      <div className="px-2 py-6 md:px-6 pb-8">
+      <div className="px-2 py-6 pb-8 md:px-6">
         <div className="mx-auto max-w-[1200px]">
           {/* Heading */}
+
           <div className="mb-2 hidden grid-cols-12 gap-3 px-1 text-sm text-white md:grid">
             <div className="col-span-4">City / Location</div>
             <div className="col-span-3">Check-In / Check-Out</div>
@@ -60,26 +67,22 @@ export default function SearchBar({ onSearch }) {
 
           {/* Search Controls */}
           <div className="grid grid-cols-1 items-center gap-3 md:grid-cols-12">
-            <div
-              className="md:col-span-4"
-              onClick={() => {
-                destinationClickedRef.current = true;
-              }}
-            >
+            <div className="md:col-span-4">
               <DestinationSearchField
+                error={destinationError}
                 value={{
                   city: draftSearchData?.city,
                   cityData: draftSearchData?.cityData,
                 }}
                 onChange={(val) => {
+                  setDestinationError(false);
+
                   setDraftSearchData({
                     city: val?.city || "",
                     cityData: {
-                      id: val?.cityData?.id || "",
+                      ...val?.cityData,
                       stateName:
-                        val?.cityData?.stateName ||
-                        val?.cityData?.state ||
-                        "",
+                        val?.cityData?.stateName || val?.cityData?.state || "",
                       countryCode:
                         val?.cityData?.countryCode ||
                         val?.cityData?.country ||
@@ -140,7 +143,7 @@ export default function SearchBar({ onSearch }) {
               <button
                 type="button"
                 onClick={handleSearch}
-                className="h-[50px] w-full rounded bg-[#0f766e] text-sm font-semibold tracking-wide text-white transition-all duration-200 hover:bg-[#0d5f58] active:scale-[0.98]"
+                className="h-[50px] w-full rounded bg-[#0f766e] text-sm font-semibold tracking-wide text-white! transition-all duration-200 hover:bg-[#0d5f58] active:scale-[0.98]"
               >
                 SEARCH
               </button>

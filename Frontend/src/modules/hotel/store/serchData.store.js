@@ -45,6 +45,33 @@ export const useHotelSearchStore = create(
     }),
     {
       name: "hotel-search-storage",
-    },
+
+      onRehydrateStorage: () => (state) => {
+        if (!state) return;
+
+        const today = dayjs().startOf("day");
+
+        const checkIn = dayjs(state.draftSearchData?.checkIn);
+        const checkOut = dayjs(state.draftSearchData?.checkOut);
+
+        if (
+          !checkIn.isValid() ||
+          checkIn.isBefore(today) ||
+          !checkOut.isValid() ||
+          checkOut.isBefore(today)
+        ) {
+          state.setDraftSearchData({
+            checkIn: today.format("YYYY-MM-DD"),
+            checkOut: today.add(1, "day").format("YYYY-MM-DD"),
+          });
+
+          state.setAppliedSearchData({
+            ...state.appliedSearchData,
+            checkIn: today.format("YYYY-MM-DD"),
+            checkOut: today.add(1, "day").format("YYYY-MM-DD"),
+          });
+        }
+      },
+    },  
   ),
 );

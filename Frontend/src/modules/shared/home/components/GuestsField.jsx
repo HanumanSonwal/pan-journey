@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Popover } from "antd";
-import { memo } from "react";
+import { memo, useEffect, useState } from "react";
 
 const defaultGuestValue = {
   rooms: 1,
@@ -17,85 +17,95 @@ function GuestsField({
   onChange,
   open,
   setOpen,
-
   variant = "default", // default | compact
 }) {
   const safeValue = {
     ...defaultGuestValue,
     ...(value || {}),
   };
+  const [draftGuests, setDraftGuests] = useState(safeValue);
+  useEffect(() => {
+    if (open) {
+      setDraftGuests(safeValue);
+    }
+  }, [open]);
 
   const update = (key, val) => {
-    onChange?.({
-      ...safeValue,
+    setDraftGuests((prev) => ({
+      ...prev,
       [key]: val,
-    });
+    }));
   };
 
   const updateAdults = (val) => {
-    const adults = Math.max(1, val);
-    const rooms = Math.max(safeValue.rooms, Math.ceil(adults / 2));
+    const adults = Math.min(40, Math.max(1, val));
+    const rooms = Math.min(
+      20,
+      Math.max(Math.ceil(adults / 2), draftGuests.rooms),
+    );
 
-    onChange?.({
-      ...safeValue,
+    setDraftGuests((prev) => ({
+      ...prev,
       adults,
       rooms,
-    });
+    }));
   };
 
+  const updateRooms = (val) => {
+    const rooms = Math.min(20, Math.max(1, val));
+    let adults = draftGuests.adults;
+    if (adults < rooms) {
+      adults = rooms;
+    }
+    if (adults > rooms * 2) {
+      adults = rooms * 2;
+    }
+    setDraftGuests((prev) => ({
+      ...prev,
+      rooms,
+      adults,
+    }));
+  };
   // CHILD AGE
   const updateChildAge = (index, age) => {
-    const newAges = [...(safeValue?.childAges || [])];
+    const newAges = [...(draftGuests?.childAges || [])];
     newAges[index] = age;
     update("childAges", newAges);
   };
-
   const handleChildrenChange = (val) => {
-    const children = Math.max(0, val);
-    let newAges = [...(safeValue?.childAges || [])];
+    const children = Math.min(40, Math.max(0, val));
+    let newAges = [...(draftGuests?.childAges || [])];
     while (newAges.length < children) {
       newAges.push("");
     }
     while (newAges.length > children) {
       newAges.pop();
     }
-    onChange?.({
-      ...safeValue,
+    setDraftGuests((prev) => ({
+      ...prev,
       children,
       childAges: newAges,
-    });
+    }));
   };
-
   const handleApply = () => {
+    onChange?.(draftGuests);
     setOpen?.(false);
   };
-
   const childAgesValid =
-    safeValue.children === 0 ||
-    safeValue.childAges.every(
+    draftGuests.children === 0 ||
+    draftGuests.childAges.every(
       (age) => age !== "" && age !== null && age !== undefined,
     );
-
-  // =====================================
-  // DROPDOWN CONTENT
-  // =====================================
 
   const dropdownContent = (
     <div
       onClick={(e) => e.stopPropagation()}
       className="w-[340px] rounded bg-white"
     >
-      {/* ROOM */}
-      <Counter
-        label="Room"
-        value={safeValue.rooms}
-        onChange={(v) => update("rooms", Math.max(1, v))}
-      />
-
-      {/* ADULTS */}
+      <Counter label="Room" value={draftGuests.rooms} onChange={updateRooms} />
       <Counter
         label="Adults"
-        value={safeValue.adults}
+        value={draftGuests.adults}
         onChange={updateAdults}
       />
 
@@ -103,11 +113,11 @@ function GuestsField({
       <Counter
         label="Children"
         sub="0-17 Years Old"
-        value={safeValue.children}
+        value={draftGuests.children}
         onChange={handleChildrenChange}
       />
       {/* CHILD AGES */}
-      {safeValue.children > 0 && (
+      {draftGuests.children > 0 && (
         <div className="mt-4 border-t pt-4">
           <p className="mb-3 text-sm font-semibold text-black">
             Age of Children
@@ -119,7 +129,7 @@ function GuestsField({
           )}
           <div className="max-h-[220px] overflow-y-auto pr-1">
             <div className="grid grid-cols-2 gap-1.5">
-              {(safeValue.childAges || []).map((age, i) => (
+              {(draftGuests.childAges || []).map((age, i) => (
                 <div
                   key={i}
                   className="flex min-w-0 items-center justify-between gap-2 rounded border border-[#e3f0f5] bg-[#fafefe] px-2.5 py-2"
@@ -159,7 +169,7 @@ function GuestsField({
         <label className="flex cursor-pointer items-start gap-3 rounded border border-[#d8edf5] bg-[#fafdff] p-3.5">
           <input
             type="checkbox"
-            checked={safeValue.pets || false}
+            checked={draftGuests.pets || false}
             onChange={(e) => update("pets", e.target.checked)}
             className="mt-1 cursor-pointer"
           />
@@ -199,9 +209,7 @@ function GuestsField({
       <div className="relative h-[50px] cursor-pointer rounded border border-gray-300 bg-white px-3 transition-all hover:border-[#0077b6]">
         <div className="flex h-full items-center justify-between gap-2">
           <CompactItem value={safeValue.rooms} label="Room" />
-
           <CompactItem value={safeValue.adults} label="Adults" center />
-
           <CompactItem value={safeValue.children} label="Children" right />
         </div>
       </div>
@@ -215,9 +223,7 @@ function GuestsField({
 
         <div className="flex min-h-[56px] items-center justify-between gap-3">
           <SummaryItem value={safeValue.rooms} label="Room" />
-
           <SummaryItem value={safeValue.adults} label="Adults" center />
-
           <SummaryItem value={safeValue.children} label="Children" right />
         </div>
       </div>

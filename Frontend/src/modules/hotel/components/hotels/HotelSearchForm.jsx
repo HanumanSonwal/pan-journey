@@ -7,7 +7,10 @@ import GuestsField from "@/modules/shared/home/components/GuestsField";
 import dayjs from "dayjs";
 import { useRef, useState } from "react";
 
-export default function HotelSearchForm() {
+export default function HotelSearchForm({
+  destinationError,
+  setDestinationError,
+}) {
   const { draftSearchData, setDraftSearchData } = useHotelSearchStore();
   const [dateOpen, setDateOpen] = useState(false);
   const [guestOpen, setGuestOpen] = useState(false);
@@ -34,15 +37,18 @@ export default function HotelSearchForm() {
         >
           <DestinationSearchField
             value={{
-              city: draftSearchData.city,
-              cityData: draftSearchData.cityData,
+              city: draftSearchData?.city,
+              cityData: draftSearchData?.cityData,
             }}
+            error={destinationError}
             onChange={(val) => {
+              setDestinationError?.(false);
+
               setDraftSearchData({
                 city: val?.city || "",
 
                 cityData: {
-                  id: val?.cityData?.id || "",
+                  ...val?.cityData,
 
                   stateName:
                     val?.cityData?.stateName || val?.cityData?.state || "",
