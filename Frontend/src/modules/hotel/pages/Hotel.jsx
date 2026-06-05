@@ -25,7 +25,11 @@ const defaultFilters = {
   locations: [],
 };
 
-export default function HotelContent({ initialSearchData = null, cms = null }) {
+export default function HotelContent({
+  initialSearchData = null,
+  cms = null,
+  isValidCity = false,
+}) {
   const {
     draftSearchData,
     appliedSearchData,
@@ -244,13 +248,15 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
           </div>
 
           {/* CMS / Dynamic SEO */}
-          <HotelsSeoSection>
-            {cms ? (
-              <CMSContentRenderer cms={cms} />
-            ) : (
-              <DynamicSeoFallback cityName={appliedSearchData?.city} />
-            )}
-          </HotelsSeoSection>
+          {isValidCity && (
+            <HotelsSeoSection>
+              {cms ? (
+                <CMSContentRenderer cms={cms} />
+              ) : (
+                <DynamicSeoFallback cityName={appliedSearchData?.city} />
+              )}
+            </HotelsSeoSection>
+          )}
         </div>
       </div>
     </div>
