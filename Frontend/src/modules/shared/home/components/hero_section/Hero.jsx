@@ -24,10 +24,14 @@ export default function Hero() {
   const router = useRouter();
   const { draftSearchData, applySearch } = useHotelSearchStore();
   const ActiveForm = FORM_MAP[activeTab];
-
+  const [destinationError, setDestinationError] = useState(false);
   console.log(draftSearchData, "draft search home");
 
   const handleSearch = () => {
+    if (!draftSearchData?.city?.trim()) {
+      setDestinationError(true);
+      return;
+    }
     const updatedSearch = {
       ...draftSearchData,
       cityData: {
@@ -43,9 +47,19 @@ export default function Hero() {
       },
     };
     // APPLY SEARCH
+
     applySearch();
+
+    const citySlug =
+      updatedSearch?.city
+        ?.split(",")[0]
+        ?.trim()
+        ?.toLowerCase()
+        ?.replace(/[^a-z0-9\s-]/g, "")
+        ?.replace(/\s+/g, "-") || "";
+
     const query = new URLSearchParams({
-      city: updatedSearch?.city || "",
+      city: citySlug,
       cityId: updatedSearch?.cityData?.id || "",
       stateName: updatedSearch?.cityData?.stateName || "",
       countryCode: updatedSearch?.cityData?.countryCode || "",
@@ -74,7 +88,12 @@ export default function Hero() {
           <h2 className="mb-2 text-center text-xl font-bold text-[#72C0F0] max-lg:text-[28px] max-md:text-[22px] md:text-3xl">
             Find What You Are Looking For
           </h2>
-          {ActiveForm && <ActiveForm />}
+          {ActiveForm && (
+            <ActiveForm
+              destinationError={destinationError}
+              setDestinationError={setDestinationError}
+            />
+          )}
           <SearchButton onSearch={handleSearch} />
         </div>
       </div>

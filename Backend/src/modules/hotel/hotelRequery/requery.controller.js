@@ -7,11 +7,11 @@
 // export const getRequeryByUserController =
 //   async (req, res) => {
 //     try {
-//       const { User__id } = req.params;
+//       const { UserId } = req.params;
 
 //       const data =
 //         await getRequeryByUserService(
-//           User__id
+//           UserId
 //         );
 
 //       return sendSuccess(
@@ -29,35 +29,23 @@
 //     }
 //   };
 
-
+import { sendError, sendSuccess } from "../../../utils/response/ApiResponse.js";
 import { getHotelRequeryByUserService } from "./requery.service.js";
-import {
-  sendSuccess,
-  sendError,
-} from "../../../utils/response/ApiResponse.js";
 
-export const getHotelRequeryByUserController = async (
-  req,
-  res
-) => {
+export const getHotelRequeryByUserController = async (req, res) => {
   try {
-    const { User__id } = req.params;
+    const { UserId } = req.params;
 
-    const data =
-      await getHotelRequeryByUserService(User__id);
+    const data = await getHotelRequeryByUserService(UserId);
 
     return sendSuccess(
       res,
       "Hotel requery fetched successfully",
       data,
       null,
-      200
+      200,
     );
   } catch (error) {
-    return sendError(
-      res,
-      error.message,
-      404
-    );
+    return sendError(res, error.message, 404);
   }
 };

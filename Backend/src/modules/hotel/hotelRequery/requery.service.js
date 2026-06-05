@@ -1,11 +1,11 @@
 // import HotelTempBooking from "../hotelTempBooking/hotelTempBooking.model.js";
 
 // export const getRequeryByUserService = async (
-//   User__id
+//   UserId
 // ) => {
 //   const bookings = await HotelTempBooking.find(
 //     {
-//       User__id,
+//       UserId,
 //     }
 //   )
 //     .sort({ createdAt: -1 })
@@ -15,9 +15,9 @@
 // };
 import HotelTempBooking from "../hotelTempBooking/hotelTempBooking.model.js";
 
-export const getHotelRequeryByUserService = async (User__id) => {
+export const getHotelRequeryByUserService = async (UserId) => {
   const booking = await HotelTempBooking.findOne({
-    User__id,
+    UserId,
   }).select("hotelRequeryResponse");
 
   if (!booking) {

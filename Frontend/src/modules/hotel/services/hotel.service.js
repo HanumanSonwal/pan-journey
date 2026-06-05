@@ -5,7 +5,7 @@ export const searchHotels = async (payload) => {
     const response = await api.post("/Hotels/search", payload);
     return response.data;
   } catch (error) {
-    console.error("HOTEL SEARCH ERROR:", error);
-    throw new Error(error?.response?.data?.message || "Failed to fetch hotels");
+    console.log("🚨 SEARCH ERROR RESPONSE", error?.response?.data);
+    throw error;
   }
 };

@@ -1,26 +1,31 @@
 "use client";
 
-import BookingConfriom from "../components/hotlebooking/BookingConfriom";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import HotelBookingContent from "../components/hotel-booking/HotelBookingContent";
+import { useHotelBookingStore } from "../store/booking.store";
+
 export default function HotleBooking() {
+  const { bookingData } = useHotelBookingStore();
+
+
+  const router = useRouter();
+
+  console.log("bookingData inhotelBooking", bookingData);
+
+  useEffect(() => {
+    if (!bookingData) {
+      router.push("/hotels");
+    }
+  }, [bookingData, router]);
+
+  if (!bookingData) {
+    return null;
+  }
+
   return (
-    <div className="min-h-screen w-full bg-[#eaf4fb] p-4 md:p-8">
-      <div className="mx-auto !max-w-[1300px] gap-6">
-        {/* LEFT SIDE */}
-        <div className="overflow-hidden rounded-[22px] border border-[#e5e7eb] bg-white">
-          {/* HOTEL INFO */}
-          <BookingConfriom />
-
-          <div className="border-t border-[#ececec]" />
-
-          {/* BOOKING DETAILS */}
-          {/* <BookingDetails /> */}
-
-          <div className="border-t border-[#ececec]" />
-
-          {/* PACKAGE DETAILS */}
-          {/* <PackageDetails /> */}
-        </div>
-      </div>
+    <div className="min-h-screen w-full bg-[#eaf4fb] px-4 py-6 md:px-6 md:py-8">
+      <HotelBookingContent hotelBookingData={bookingData} />
     </div>
   );
 }

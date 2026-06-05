@@ -6,13 +6,12 @@ import {
   ShareAltOutlined,
 } from "@ant-design/icons";
 import { Card } from "antd";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
+import HotelDetailsSkeleton from "@/components/common/loder/HotelDetailsSkeleton";
 import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
 import { useHotelDetails } from "@/modules/hotel/hooks/useHotelDetails";
 import { useSelectedHotelStore } from "@/modules/hotel/store/selectedHotel.store";
-
-import HotelDetailsSkeleton from "@/components/common/loder/HotelDetailsSkeleton";
 import SearchBar from "../components/hotels/SearchBar";
 import HotelSectionsContent from "../components/hotels/viewhotles/HotelSectionsContent";
 import HotelSectionsTabs from "../components/hotels/viewhotles/HotelSectionsTabs";
@@ -25,25 +24,25 @@ import ViewHotelTabs from "../components/hotels/viewhotles/ViewHotelTabs";
 import HotelCmsSection from "../sections/HotelCmsSection";
 import RelatedHotels from "../sections/RelatedHotels";
 import DynamicHotelSeoFallback from "../seo/DynamicHotelSeoFallback";
+import { useHotelBookingStore } from "../store/booking.store";
 import { useHotelSearchStore } from "../store/serchData.store";
 
 function HotelDetails({ initialPayload = null, cms = null }) {
   const { selectedHotel } = useSelectedHotelStore();
-  const { searchData } = useHotelSearchStore();
-
+  const { appliedSearchData } = useHotelSearchStore();
+  const { setBookingData } = useHotelBookingStore();
   const [activeTab, setActiveTab] = useState("overview");
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [sessionExpired] = useState(false);
   const [reloadingHotels] = useState(false);
-
   const payload = useMemo(() => {
     if (initialPayload) {
       return {
         ...initialPayload,
         hotelMeta: {
-          cityName: searchData?.cityData?.id,
-          stateName: searchData?.cityData?.state,
-          countryCode: searchData?.cityData?.country,
+          cityName: appliedSearchData?.cityData?.id,
+          stateName: appliedSearchData?.cityData?.stateName,
+          countryCode: appliedSearchData?.cityData?.countryCode,
         },
       };
     }
@@ -58,47 +57,63 @@ function HotelDetails({ initialPayload = null, cms = null }) {
       hotelKey: selectedHotel?.hotelKey,
       searchKey: selectedHotel?.searchKey,
     };
-  }, [selectedHotel, initialPayload, searchData]);
-
+  }, [selectedHotel, initialPayload, appliedSearchData]);
   const { data, isLoading, isFetching, refetch } = useHotelDetails(payload);
-
   const showSkeleton = isLoading || isFetching;
-
   const hotelData = data || {};
   const supplierData = hotelData?.supplierResponse || {};
   const pricingSummary = hotelData?.pricingSummary || {};
   const ratePlans = supplierData?.RatePlanRecommendations || [];
   const hotelImages = supplierData?.HotelGallery || [];
-
   const amenities = supplierData?.Amenities
-    ? supplierData.Amenities.split(",").map((i) => i.trim()).filter(Boolean)
+    ? supplierData.Amenities.split(",")
+        .map((i) => i.trim())
+        .filter(Boolean)
     : [];
-
   const hotelDetails = supplierData || [];
-
   const handleReloadHotels = async () => {
     await refetch();
   };
 
+  useEffect(() => {
+    if (!supplierData?.HotelKey) return;
+    if (!hotelData?.searchKey) return;
+    setBookingData({
+      supplierData,
+      pricingSummary,
+      searchData: appliedSearchData,
+      selectedHotel: {
+        hotelKey: supplierData.HotelKey,
+        searchKey: hotelData.searchKey,
+        hotelName: supplierData?.HotelName,
+        hotelImage:
+          supplierData?.HotelImage || supplierData?.HotelGallery?.[0] || "",
+        address: supplierData?.Address,
+        city: supplierData?.City,
+        country: supplierData?.Country,
+      },
+    });
+  }, [
+    supplierData?.HotelKey,
+    supplierData?.HotelName,
+    hotelData?.searchKey,
+    appliedSearchData,
+    setBookingData,
+  ]);
   return (
     <div className="min-h-screen w-full bg-[#eaf3f9]">
-
       {/* ✅ ALWAYS VISIBLE */}
       <SearchBar />
 
       <div className="mx-auto w-full max-w-7xl px-2 pb-8 sm:px-4 md:px-6">
-
-        <div className="-mt-10">
-
+        <div className="mt-10">
           {/* ===================== SKELETON ONLY CONTENT ===================== */}
           {showSkeleton ? (
             <HotelDetailsSkeleton />
           ) : (
             <Card className="overflow-hidden rounded border-0 shadow-lg">
-
               {/* HEADER */}
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-
                 <div className="flex min-w-0 items-start gap-3">
                   <div className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#eef8fd]">
                     <CheckCircleOutlined className="text-[18px] text-[#5bb7ec]!" />
@@ -126,12 +141,10 @@ function HotelDetails({ initialPayload = null, cms = null }) {
                     <ShareAltOutlined className="text-[19px]" />
                   </button>
                 </div>
-
               </div>
 
               {/* GALLERY + PRICE */}
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:items-stretch">
-
                 <div className="lg:col-span-2">
                   <ViewHotelGallery
                     images={hotelImages}
@@ -150,17 +163,14 @@ function HotelDetails({ initialPayload = null, cms = null }) {
                     supplierData={supplierData}
                   />
                 </div>
-
               </div>
 
               {/* INFO */}
               <div className="mt-6">
                 <ViewHotelInfo supplierData={supplierData} />
               </div>
-
             </Card>
           )}
-
         </div>
 
         {/* TABS */}
@@ -199,13 +209,13 @@ function HotelDetails({ initialPayload = null, cms = null }) {
 
             {/* RELATED */}
             <RelatedHotels
-              cityId={searchData?.cityData?.id}
+              cityId={appliedSearchData?.cityData?.id}
+              cityName={appliedSearchData?.city}
+              searchData={appliedSearchData}
               currentHotelId={payload?.hotelId}
-              cityName={supplierData?.City}
             />
           </>
         )}
-
       </div>
 
       {/* MODALS (always outside) */}
@@ -220,7 +230,6 @@ function HotelDetails({ initialPayload = null, cms = null }) {
         loading={reloadingHotels}
         onReload={handleReloadHotels}
       />
-
     </div>
   );
 }

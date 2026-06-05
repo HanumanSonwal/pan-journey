@@ -1,7 +1,7 @@
 "use client";
 
 import { useDestinationSearch } from "@/modules/hotel/hooks/useDestinationSearch";
-import { Select, Spin } from "antd";
+import { Popover, Select, Spin } from "antd";
 import debounce from "lodash/debounce";
 import { memo, useEffect, useMemo, useState } from "react";
 import styles from "../components/styles/DestinationSearch.module.css";
@@ -9,6 +9,7 @@ import styles from "../components/styles/DestinationSearch.module.css";
 function DestinationSearchField({
   value,
   onChange,
+  error = false,
   compact = false,
   height = "82px",
   fontSize = "24px",
@@ -55,7 +56,7 @@ function DestinationSearchField({
     () =>
       debounce((value) => {
         setDebouncedSearch(value);
-      }, 400),
+      }, 200),
     [],
   );
 
@@ -84,7 +85,7 @@ function DestinationSearchField({
       const existing =
         JSON.parse(localStorage.getItem("recentHotelSearches") || "[]") || [];
 
-      const filtered = existing.filter((x) => x.id !== item.id);
+      const filtered = existing.filter((x) => x.name !== item.name);
 
       const updated = [item, ...filtered].slice(0, 4);
 
@@ -121,21 +122,39 @@ function DestinationSearchField({
 
   // OPTIONS
   const buildOptions = (items = []) => {
-    return items.map((item) => ({
-      label: (
-        <div className="flex flex-col py-1">
-          <span className="font-semibold text-gray-800">{item.name}</span>
+    return items.map((item) => {
+      const fullName = [
+        item.name,
+        item.stateName || item.state,
+        item.country || item.countryCode,
+      ]
+        .filter(Boolean)
+        .join(", ");
 
-          <span className="text-xs text-gray-500">{item.type}</span>
-        </div>
-      ),
+      return {
+        label: (
+          <div className="flex flex-col py-1">
+            <span className="font-semibold text-gray-800">
+              {[
+                item.name,
+                item.stateName || item.state,
+                item.country || item.countryCode,
+              ]
+                .filter(Boolean)
+                .join(", ")}
+            </span>
 
-      value: `${item.type}-${item.id}`,
+            <span className="text-xs text-gray-500">{item.type}</span>
+          </div>
+        ),
 
-      searchLabel: item.name,
+        value: `${item.type}-${item.id}`,
 
-      itemData: item,
-    }));
+        searchLabel: fullName,
+
+        itemData: item,
+      };
+    });
   };
 
   // GROUPED OPTIONS
@@ -227,7 +246,9 @@ function DestinationSearchField({
   return (
     <div
       title={value?.city || ""}
-      className={`relative w-full min-w-0 rounded border border-gray-300 px-3 py-3 transition-all hover:border-[#0077b6] ${wrapperClassName}`}
+      className={`relative w-full min-w-0 overflow-visible rounded border px-3 py-3 transition-all hover:border-[#0077b6] ${
+        error ? "border-red-500" : "border-gray-300"
+      } ${wrapperClassName}`}
       style={{ height }}
     >
       {/* LABEL */}
@@ -247,54 +268,68 @@ function DestinationSearchField({
       >
         {/* SELECT */}
         <div className="w-full min-w-0 overflow-hidden">
-          <Select
-            showSearch
-            allowClear
-            value={
-              value?.city
-                ? value.city.length > 35
-                  ? `${value.city.slice(0, 35)}...`
-                  : value.city
-                : undefined
+          <Popover
+            open={error}
+            placement="bottomLeft"
+            content={
+              <span className="text-white">
+                Enter a destination to start searching.
+              </span>
             }
-            onClear={() => {
-              onChange({
-                city: "",
-                cityData: null,
-              });
-            }}
-            title={value?.city || ""}
-            placeholder="Where do you want to stay?"
-            variant="borderless"
-            popupMatchSelectWidth={compact ? false : true}
-            filterOption={false}
-            loading={isLoading}
-            className={`w-full min-w-0 overflow-hidden ${styles.destinationSelect}`}
-            style={{
-              fontWeight: 700,
-              fontSize,
-              lineHeight: 1,
-              width: "100%",
-              minWidth: 0,
-            }}
-            options={groupedOptions}
-            onSearch={handleSearch}
-            onFocus={() => {
-              setDebouncedSearch("");
-            }}
-            onChange={handleChange}
-            notFoundContent={
-              isLoading ? (
-                <div className="flex justify-center py-4">
-                  <Spin size="small" />
-                </div>
-              ) : (
-                <div className="py-3 text-center text-sm text-gray-500">
-                  No destinations found
-                </div>
-              )
-            }
-          />
+            color="#ef4444"
+            trigger={[]}
+          >
+            <Select
+              showSearch
+              allowClear
+              value={
+                value?.city
+                  ? value.city.length > 35
+                    ? `${value.city.slice(0, 35)}...`
+                    : value.city
+                  : undefined
+              }
+              onClear={() => {
+                setDestinationError?.(false);
+
+                onChange({
+                  city: "",
+                  cityData: null,
+                });
+              }}
+              title={value?.city || ""}
+              placeholder="Where do you want to stay?"
+              variant="borderless"
+              popupMatchSelectWidth={compact ? false : true}
+              filterOption={false}
+              loading={isLoading}
+              className={`w-full min-w-0 overflow-hidden ${styles.destinationSelect}`}
+              style={{
+                fontWeight: 700,
+                fontSize,
+                lineHeight: 1,
+                width: "100%",
+                minWidth: 0,
+              }}
+              options={groupedOptions}
+              onSearch={handleSearch}
+              onFocus={() => {
+                setDebouncedSearch("");
+              }}
+              onChange={handleChange}
+              notFoundContent={
+                isLoading ? (
+                  <div className="flex justify-center py-4">
+                    <Spin size="small" />
+                  </div>
+                ) : (
+                  <div className="py-3 text-center text-sm text-gray-500">
+                    No destinations found
+                  </div>
+                )
+              }
+            />
+          </Popover>
         </div>
 
         {/* COUNTRY */}
@@ -315,6 +350,14 @@ function DestinationSearchField({
           </span>
         )}
       </div>
+      {/* {error && (
+        <div className="pointer-events-none absolute top-[calc(100%+8px)] left-0 z-[9999] whitespace-nowrap">
+          <div className="relative rounded bg-red-500 px-3 py-2 text-sm text-white shadow-lg">
+            Enter a destination to start searching.
+            <div className="absolute -top-1 left-4 h-2 w-2 rotate-45 bg-red-500" />
+          </div>
+        </div>
+      )} */}
     </div>
   );
 }

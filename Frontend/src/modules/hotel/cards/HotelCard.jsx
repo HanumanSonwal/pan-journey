@@ -11,6 +11,7 @@ import {
   ShareAltOutlined,
   StarFilled,
 } from "@ant-design/icons";
+import Image from "next/image";
 
 import { useRouter } from "next/navigation";
 import { memo, useMemo, useState } from "react";
@@ -19,20 +20,13 @@ function HotelCard({ hotel }) {
   const [openModal, setOpenModal] = useState(false);
   const [showAllFacilities, setShowAllFacilities] = useState(false);
   const { setSelectedHotel } = useSelectedHotelStore();
-
-  console.log("🚀 ~ file: HotelCard.jsx:18 ~ HotelCard ~ hotel:", hotel);
-
-  const { searchData } = useHotelSearchStore();
+  const { appliedSearchData } = useHotelSearchStore();
   const rating = useMemo(() => {
     return Number(hotel.rating) || Number(hotel.starRating) || 4.0;
   }, [hotel.rating, hotel.starRating]);
 
-  console.log("serchdata in card", searchData);
-
   const reviews = useMemo(() => {
-    return hotel.reviews && hotel.reviews > 0
-      ? hotel.reviews
-      : Math.floor(Math.random() * 900 + 100);
+    return Number(hotel.reviews || 0);
   }, [hotel.reviews]);
 
   const ratingLabel = useMemo(() => {
@@ -67,22 +61,26 @@ function HotelCard({ hotel }) {
   }, [hotel.oldPrice, price]);
 
   const stars = useMemo(() => {
-    return Number(hotel.starRating || 0);
+    return Math.min(Number(hotel.starRating || 0), 5);
   }, [hotel.starRating]);
 
   const facilities = useMemo(() => {
     return hotel.facilities || [];
   }, [hotel.facilities]);
 
-  const location = useMemo(() => {
-    return hotel.location || hotel.address || "Prime Location";
-  }, [hotel.location, hotel.address]);
-
   const handleNavigate = () => {
-    console.log("HOTEL OBJECT", hotel);
-
+    console.log("SELECTED HOTEL DATA", {
+      hotelKey: hotel?.hotelKey,
+      searchKey: hotel?.searchKey,
+      hotelMeta: {
+        hotelId: hotel?.id,
+        cityName: appliedSearchData?.cityData?.id,
+        stateName: appliedSearchData?.cityData?.stateName,
+        countryCode: appliedSearchData?.cityData?.countryCode,
+      },
+    });
     const citySlug = slugify(
-      searchData?.city?.split(",")[0] ||
+      appliedSearchData?.city?.split(",")[0] ||
         hotel?.cityName ||
         hotel?.City ||
         "hotel",
@@ -91,31 +89,19 @@ function HotelCard({ hotel }) {
     const hotelSlug = slugify(
       hotel?.name || hotel?.hotelName || hotel?.HotelName || "hotel",
     );
-
     const hotelId = hotel?.hotelId || hotel?.HotelId || hotel?.id;
 
-    /*
-    IMPORTANT
-  */
     setSelectedHotel({
-      hotelKey: hotel?.hotelKey || hotel?.HotelKey || hotel?.hotelkey,
-
+      hotelKey: hotel.hotelKey || hotel.HotelKey || hotel.hotelkey || "",
       searchKey: hotel?.searchKey || hotel?.SearchKey,
-
       hotelMeta: {
         hotelId: hotel?.hotelId || hotel?.HotelId || hotel?.id,
-
-        cityName: searchData?.cityData?.id,
-
-        stateName: searchData?.cityData?.state,
-
-        countryCode: searchData?.cityData?.country,
+        cityName: appliedSearchData?.cityData?.id,
+        stateName: appliedSearchData?.cityData?.stateName,
+        countryCode: appliedSearchData?.cityData?.countryCode,
       },
     });
 
-    /*
-    PASS HID
-  */
     router.push(`/hotel-details/${citySlug}/${hotelSlug}?hid=${hotelId}`);
   };
   const visibleFacilities = useMemo(() => {
@@ -129,23 +115,24 @@ function HotelCard({ hotel }) {
           if (e.target.closest("a") || e.target.closest("button")) {
             return;
           }
-          if (!openModal) {
-            handleNavigate();
-          }
+
+          handleNavigate();
         }}
-        className="cursor-pointer overflow-hidden rounded border border-gray-200 bg-white shadow-[1px_4px_4px_4px_#00000014] transition-all duration-300 hover:-translate-y-[2px]"
+        className="cursor-pointer overflow-hidden rounded-xl border border-gray-100 bg-white shadow-[0_2px_10px_rgba(0,0,0,0.06)] transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(0,0,0,0.12)]"
       >
         <div className="flex flex-col lg:flex-row">
-          <div className="w-full p-3 lg:w-[320px]">
+          <div className="w-full p-3 lg:w-[260px]">
             {hotelImages.length > 1 ? (
               <ImageGallery images={hotelImages} />
             ) : (
               <div className="overflow-hidden rounded">
-                <img
+                <Image
                   src={hotelImages[0]}
-                  alt={hotel.name}
+                  alt={hotel.name || "Hotel Image"}
+                  width={320}
+                  height={240}
                   loading="lazy"
-                  className="h-[240px] w-full object-cover transition-all duration-300 hover:scale-105"
+                  className="h-[180px] w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
                 />
               </div>
             )}
@@ -155,7 +142,7 @@ function HotelCard({ hotel }) {
             <div>
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0 flex-1">
-                  <h2 className="text-[22px] leading-[28px] font-bold text-gray-900">
+                  <h2 className="font-roboto text-[18px] leading-none font-bold text-gray-900">
                     {hotel.name}
                   </h2>
 
@@ -197,11 +184,11 @@ function HotelCard({ hotel }) {
                   </div>
 
                   <div className="mt-3 flex items-start gap-2">
-                    <EnvironmentOutlined className="mt-[3px] text-[14px] text-[#0077b6]" />
+                    <EnvironmentOutlined className="mt-[2px] text-[14px] text-[#0077b6]" />
 
                     <div className="flex-1">
-                      <p className="text-[13px] leading-[20px] text-gray-600">
-                        <span className="font-medium text-[#0077b6]">
+                      <p className="text-[14px] leading-[18px] font-semibold">
+                        <span className="text-[#0077b6]">
                           {hotel.address || hotel.location}
                         </span>
 
@@ -219,7 +206,7 @@ function HotelCard({ hotel }) {
                     {visibleFacilities.map((tag, i) => (
                       <span
                         key={i}
-                        className="rounded border border-gray-200 bg-gray-50 px-3 py-1.5 text-[11px] font-medium text-gray-700!"
+                        className="rounded-md border border-gray-200 bg-gray-50 px-3 py-1.5 text-[12px] leading-none font-medium text-gray-700"
                       >
                         {tag}
                       </span>
@@ -230,10 +217,9 @@ function HotelCard({ hotel }) {
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
-
                           setShowAllFacilities(!showAllFacilities);
                         }}
-                        className="rounded bg-[#edf7ff] px-3 py-1.5 text-[11px] font-semibold text-[#0077b6]! transition-all hover:bg-[#dcefff]"
+                        className="rounded-md bg-[#edf7ff] px-3 py-1.5 text-[12px] leading-none font-semibold text-[#0077b6]! transition-colors hover:bg-[#dcefff]!"
                       >
                         {showAllFacilities
                           ? "View Less"
@@ -248,25 +234,25 @@ function HotelCard({ hotel }) {
 
           <div className="flex w-full flex-col justify-between border-t border-gray-100 p-4 lg:w-[260px] lg:border-t-0 lg:border-l">
             <div
-              className="mb-1 flex justify-end gap-3 pt-1 !pb-1 text-[24px] text-gray-700"
+              className="mb-1 flex justify-end gap-2 pt-1 !pb-1 text-[22px] text-gray-700"
               onClick={(e) => e.stopPropagation()}
             >
-              <button className="transition-all hover:text-red-500">
+              <button className="transition-all hover:text-red-500!">
                 <HeartOutlined />
               </button>
 
-              <button className="transition-all hover:text-[#0077b6]">
+              <button className="transition-all hover:text-[#0077b6]!">
                 <ShareAltOutlined />
               </button>
             </div>
             <div className="flex justify-end">
-              <div className="flex w-[170px] flex-col gap-1 rounded border border-blue-100 bg-blue-50 px-2 py-2">
+              <div className="flex w-[170px] flex-col gap-1 rounded border border-blue-100 bg-blue-50 px-2 py-1">
                 <div className="flex items-center justify-between">
-                  <p className="m-0 text-[14px] font-semibold text-[#72C0F0]">
+                  <p className="m-1! text-[12px] font-semibold text-[#72C0F0]">
                     {ratingLabel}
                   </p>
 
-                  <p className="m-0 flex h-[22px] min-w-[34px] items-center justify-center rounded bg-[#72C0F0] px-1.5 text-[12px] font-bold text-white">
+                  <p className="m-1! flex h-[18px] min-w-[34px] items-center justify-center rounded bg-[#72C0F0] px-1.5 text-[12px] font-bold text-white">
                     {rating.toFixed(1)}
                   </p>
                 </div>
@@ -274,26 +260,28 @@ function HotelCard({ hotel }) {
                 <div className="w-full border-t border-gray-200"></div>
 
                 <div className="flex w-full justify-end">
-                  <p className="m-0 rounded bg-white px-2 py-[2px] text-[12px] text-[#3B3B3B]">
+                  <p className="m-1! rounded bg-white px-2 text-[12px] text-[#3B3B3B]">
                     ({reviews.toLocaleString("en-IN")} Ratings)
                   </p>
                 </div>
               </div>
             </div>
-            <div className="mt-6 flex flex-col items-end">
+            <div className="mt-2 flex flex-col items-end">
               <p className="text-[13px] text-gray-400 line-through">
                 ₹{oldPrice.toLocaleString("en-IN")}
               </p>
 
-              <h2 className="mt-1 text-[32px] leading-none font-bold text-gray-900">
+              <h2 className="font-roboto-[700] mt-0! text-[24px] leading-none font-bold text-gray-900">
                 ₹{price.toLocaleString("en-IN")}
               </h2>
 
               {/* TAX */}
-              <p className="mt-2 text-right text-[12px] text-gray-500">
+              <p className="font-roboto-[400] mb-0! text-right text-[12px] text-gray-500">
                 + ₹{tax.toLocaleString("en-IN")} taxes & fees
               </p>
-              <p className="mt-1 text-[12px] text-gray-500">Per Night</p>
+              <p className="font-roboto-[400] mt-0! text-[12px] text-gray-500">
+                Per Night
+              </p>
             </div>
           </div>
         </div>

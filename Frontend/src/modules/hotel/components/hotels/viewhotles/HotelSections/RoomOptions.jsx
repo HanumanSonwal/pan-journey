@@ -1,9 +1,17 @@
 "use client";
 
+import { useHotelBookingStore } from "@/modules/hotel/store/booking.store";
+import { useSelectedHotelStore } from "@/modules/hotel/store/selectedHotel.store";
+import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
 import { Button } from "antd";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
-const RoomOptions = ({ ratePlans = [] }) => {
+const RoomOptions = ({ ratePlans = [], supplierData = {} }) => {
+  const router = useRouter();
+
+  console.log(supplierData, "supplierData.RatePlanRecommendations");
+
   const getHDImage = (url) => {
     if (!url) {
       return "/no-room.jpg";
@@ -11,6 +19,40 @@ const RoomOptions = ({ ratePlans = [] }) => {
     return url.replace("_b.", "_z.");
   };
 
+  const { searchData } = useHotelSearchStore();
+
+  const { selectedHotel } = useSelectedHotelStore();
+
+  const { setBookingData } = useHotelBookingStore();
+
+  const handleSelectRoom = (plan, room, basicAmount, tax, totalAmount) => {
+    console.log("===== CLICKED ROOM =====");
+    console.log("PLAN DATA", plan);
+    console.log("RecommendationID", plan?.RecommendationID);
+    console.log("RecommendationId", plan?.RecommendationId);
+
+    setBookingData({
+      ...useHotelBookingStore.getState().bookingData,
+
+      selectedHotel: {
+        ...useHotelBookingStore.getState().bookingData?.selectedHotel,
+
+        recommendationId: plan?.RecommendationID || plan?.RecommendationId,
+      },
+
+      supplierData,
+      selectedRatePlan: plan,
+      selectedRoom: room,
+
+      pricing: {
+        basicAmount,
+        tax,
+        totalAmount,
+      },
+    });
+
+    router.push("/hotelbooking");
+  };
   console.log(ratePlans, "ratePlans in roomOptions");
   return (
     <div className="space-y-6">
@@ -195,7 +237,7 @@ const RoomOptions = ({ ratePlans = [] }) => {
                 </div>
 
                 {/* Button */}
-                <Button
+                {/* <Button
                   type="primary"
                   size="large"
                   className="!mt-5 !h-[48px] w-full rounded! bg-[#0f766e]! text-sm font-semibold tracking-wide text-white! transition-all duration-200 hover:bg-[#0d5f58] active:scale-[0.98]"
@@ -204,6 +246,17 @@ const RoomOptions = ({ ratePlans = [] }) => {
                   //   background:
                   //     "linear-gradient(180deg,#72C0F0 0%,#0F6A75 100%)",
                   // }}
+                >
+                  Select Room
+                </Button> */}
+
+                <Button
+                  type="primary"
+                  size="large"
+                  onClick={() =>
+                    handleSelectRoom(plan, room, basicAmount, tax, totalAmount)
+                  }
+                  className="!mt-5 !h-[48px] w-full rounded! bg-[#0f766e]! text-sm font-semibold tracking-wide text-white!"
                 >
                   Select Room
                 </Button>

@@ -16,7 +16,7 @@ const HotelSectionsContent = ({
     <div className="space-y-6">
       {/* Rooms */}
       <section id="rooms-section" className="scroll-mt-36">
-        <RoomOptions ratePlans={ratePlans} />
+        <RoomOptions ratePlans={ratePlans} supplierData={supplierData} />
       </section>
 
       {/* Amenities */}

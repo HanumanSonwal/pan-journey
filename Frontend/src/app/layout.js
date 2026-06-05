@@ -5,6 +5,7 @@ import LoaderProvider from "@/providers/LoaderProvider";
 import QueryProvider from "@/providers/QueryProvider";
 import "@/styles/cms-content.css";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
+import { App } from "antd";
 import "antd/dist/reset.css";
 import { Geist, Geist_Mono, Jost, Roboto } from "next/font/google";
 import Script from "next/script";
@@ -25,9 +26,9 @@ const geistMono = Geist_Mono({
 const roboto = Roboto({
   variable: "--font-roboto",
   subsets: ["latin"],
-  weight: ["400", "500", "700"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
-
 const jost = Jost({
   variable: "--font-jost",
   subsets: ["latin"],
@@ -94,7 +95,9 @@ export default function RootLayout({ children }) {
 
                 <ProfileCompletionHandler />
 
-                <main className="flex-1">{children}</main>
+                <main className="flex-1">
+                  <App>{children}</App>
+                </main>
 
                 <Footer />
               </Providers>
