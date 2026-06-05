@@ -6,8 +6,11 @@ const hotelCacheSchema = new mongoose.Schema(
     cityId: {
   type: String,
   required: true,
-  unique: true,
+  
 },
+checkInDate: String,
+checkOutDate: String,
+roomCount: Number,
     cityName: String,
     hotels: Array,
 
@@ -26,4 +29,20 @@ const hotelCacheSchema = new mongoose.Schema(
  
 );
 
+hotelCacheSchema.index(
+  {
+    cityId: 1,
+    checkInDate: 1,
+    checkOutDate: 1,
+    roomCount: 1,
+  },
+  {
+    unique: true,
+  }
+);
+
 export default mongoose.model("HotelCache", hotelCacheSchema);
+
+
+
+
