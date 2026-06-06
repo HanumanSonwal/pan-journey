@@ -312,11 +312,7 @@ export const searchHotelsFromSupplier = async (reqBody) => {
       finalTax: hotelsData?.[0]?.tax,
     });
   }
-  // hotelsData = hotelsData.map((hotel) => ({
-  //   ...hotel,
-  //   price: (hotel.price || 0) * body.RoomCount,
-  //   tax: (hotel.tax || 0) * body.RoomCount,
-  // }));
+  
   console.log("\n🛏️ AFTER ROOM MULTIPLIER");
   console.log({
     roomCount: body.RoomCount,

@@ -22,10 +22,6 @@ export const fetchRemainingHotelsInBackground = async (
   console.log("🌱 INITIAL SEED:", seed);
   console.log("📦 INITIAL MOREHOTELS:", moreHotels);
 
-  // duplicate prevention
-  // const existingCache = await HotelCache.findOne({
-  //   cityId: body.cityId,
-  // });
   const existingCache = await HotelCache.findOne(cacheFilter);
 
   const existingHotelIds = new Set(
@@ -84,13 +80,7 @@ export const fetchRemainingHotelsInBackground = async (
 
       // ✅ SAVE HOTELS
       if (uniqueHotels.length > 0) {
-        // await HotelCache.updateOne(cacheFilter, {
-        //   $addToSet: {
-        //     hotels: {
-        //       $each: uniqueHotels,
-        //     },
-        //   },
-        // });
+        
         const result = await HotelCache.updateOne(cacheFilter, {
           $addToSet: {
             hotels: {
@@ -130,19 +120,12 @@ export const fetchRemainingHotelsInBackground = async (
   console.log("🛑 STOPPED AFTER 3 EMPTY RESPONSES");
   0;
 
-  // await HotelCache.updateOne(
-  //   { cityId: body.cityId },
-  //   {
-  //     isComplete: true,
-  //   }
-  // );
+  
   await HotelCache.updateOne(cacheFilter, {
     $set: {
       isComplete: true,
     },
   });
-
   console.log("🏁 BACKGROUND PAGINATION COMPLETED");
-
   console.log("🏁 BACKGROUND PAGINATION COMPLETED");
 };

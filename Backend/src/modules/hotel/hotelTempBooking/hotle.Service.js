@@ -1,48 +1,3 @@
-// import { supplierAPI } from "../../../config/supplierApi.js";
-// import { getAuthHeader } from "../../../config/supplierAuth.service.js";
-// import HotelTempBooking from "../hotelTempBooking/hotelTempBooking.model.js";
-
-// export const hotelTempBookingService = async (payload) => {
-//   try {
-//     const requestBody = {
-//       ...getAuthHeader(),
-//       ...payload,
-//     };
-
-//     // 💡 SAVE REQUEST FIRST
-//     const dbRecord = await HotelTempBooking.create({
-//       requestPayload: requestBody,
-//       hotelKey: payload.HotelKey,
-//       recommendationId: payload.RecommendationID,
-//       customerMobile: payload.CustomerMobile,
-//       status: "FAILED",
-//     });
-
-//     // 📡 CALL SUPPLIER API
-//     const response = await supplierAPI.post(
-//       "/HotelHost/HotelNewAPIService.svc/JSONService/HotelTempBooking",
-//       requestBody
-//     );
-
-//     // 💾 UPDATE SUCCESS RESPONSE
-//     dbRecord.responsePayload = response.data;
-//     dbRecord.status = "SUCCESS";
-//     await dbRecord.save();
-
-//     return response.data;
-//   } catch (error) {
-//     console.error("HotelTempBooking Error:", error?.response?.data || error.message);
-
-//     // ❌ UPDATE FAILURE IN DB
-//     await HotelTempBooking.create({
-//       requestPayload: payload,
-//       status: "FAILED",
-//       errorMessage: error?.response?.data || error.message,
-//     });
-
-//     throw error;
-//   }
-// };
 
 import { supplierAPI } from "../../../config/supplierApi.js";
 import { getAuthHeader } from "../../../config/supplierAuth.service.js";
@@ -69,15 +24,15 @@ export const hotelTempBookingService = async (payload) => {
     console.log("📡 SUPPLIER REQUEST BODY =>");
     console.log(JSON.stringify(requestBody, null, 2));
 
-    // ✅ SAVE INITIAL REQUEST IN DB
+
     const dbRecord = await HotelTempBooking.create({
-      requestPayload: requestBody,
-      hotelKey: payload.HotelKey,
-      UserId: payload.UserId,
-      recommendationId: payload.RecommendationID,
-      customerMobile: payload.CustomerMobile,
-      status: "FAILED",
-    });
+  requestPayload: requestBody,
+  hotelKey: payload.HotelKey,
+  UserId: payload.UserId,
+  recommendationId: payload.RecommendationID,
+  customerMobile: payload.CustomerMobile,
+  status: "FAILED",
+});
 
     console.log("======================================");
     console.log("💾 REQUEST SAVED IN DB");
