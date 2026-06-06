@@ -11,6 +11,7 @@ import { Geist, Geist_Mono, Jost, Roboto } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import Providers from "./providers";
+import ComingSoonModal from "@/components/common/ComingSoonModal";
 
 /* Fonts */
 const geistSans = Geist({
@@ -96,7 +97,9 @@ export default function RootLayout({ children }) {
                 <ProfileCompletionHandler />
 
                 <main className="flex-1">
-                  <App>{children}</App>
+                  <App>
+                    <ComingSoonModal/>
+                    {children}</App>
                 </main>
 
                 <Footer />

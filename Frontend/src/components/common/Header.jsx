@@ -82,11 +82,16 @@ export default function Header() {
       {/* Navbar */}
       <header className="flex items-center justify-between bg-white px-4 py-4 shadow-sm md:px-10 lg:px-20">
         {/* Logo */}
-        <Link
-          href="/"
-          className="bg-offer-gradient bg-clip-text text-2xl font-bold text-transparent md:text-3xl lg:text-4xl"
-        >
-          LOGO
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/images/logo.png"
+            alt="PAN Journey"
+            width={220}
+            height={10}
+            priority
+            unoptimized
+            className="h-[50px] w-[80px]"
+          />
         </Link>
 
         {/* Desktop Menu */}
