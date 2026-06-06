@@ -11,6 +11,7 @@ import SortBar from "../components/SortBar";
 import DynamicSeoFallback from "../seo/DynamicSeoFallback";
 import HotelsSeoSection from "../seo/HotelsSeoSection";
 import { useHotelSearchStore } from "../store/serchData.store";
+import dayjs from "dayjs";
 
 const defaultSearchData = {
   city: "",
