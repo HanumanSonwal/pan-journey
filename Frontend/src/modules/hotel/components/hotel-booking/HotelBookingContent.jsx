@@ -98,6 +98,7 @@ export default function HotelBookingContent({ hotelBookingData }) {
               <BookingHeaderCard bookingData={hotelBookingData} />
               <StaySummaryCard bookingData={hotelBookingData} />
               <RoomPackageCard bookingData={hotelBookingData} />
+              
               <PriceBreakupCard bookingData={hotelBookingData} />
             </div>
           </Col>

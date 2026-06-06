@@ -100,18 +100,34 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     appliedSearchData,
     setBookingData,
   ]);
-  return (
-    <div className="min-h-screen w-full bg-[#eaf3f9]">
-      {/* ✅ ALWAYS VISIBLE */}
-      <SearchBar />
+  const [isScrolled, setIsScrolled] = useState(false);
 
-      <div className="mx-auto w-full max-w-7xl px-2 pb-8 sm:px-4 md:px-6">
-        <div className="mt-10">
-          {/* ===================== SKELETON ONLY CONTENT ===================== */}
-          {showSkeleton ? (
-            <HotelDetailsSkeleton />
-          ) : (
-            <Card className="overflow-hidden rounded border-0 shadow-lg">
+useEffect(() => {
+  const handleScroll = () => {
+    setIsScrolled(window.scrollY > 0);
+  };
+
+  window.addEventListener("scroll", handleScroll);
+
+  return () => {
+    window.removeEventListener("scroll", handleScroll);
+  };
+}, []);
+
+return (
+  <div className="min-h-screen w-full bg-[#eaf3f9]">
+    <SearchBar />
+
+    <div
+      className={`mx-auto w-full max-w-7xl px-2 pb-8 sm:px-4 md:px-6 relative transition-all duration-300 ${
+        isScrolled ? "z-0" : "!z-[820]"
+      }`}
+    >
+      <div className="-mt-7">
+        {showSkeleton ? (
+          <HotelDetailsSkeleton />
+        ) : (
+       <Card className="overflow-hidden rounded border-0 shadow-lg">
               {/* HEADER */}
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex min-w-0 items-start gap-3">
