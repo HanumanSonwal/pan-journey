@@ -41,7 +41,7 @@ function SortBar({ sort, setSort }) {
   );
 
   return (
-    <div className="sticky top-[110px] z-[99] overflow-visible border border-gray-200 bg-white shadow-[0_2px_10px_rgba(0,0,0,0.08)]">
+    <div className="sticky top-[125px] z-[99] overflow-visible border border-gray-200 bg-white shadow-[0_2px_10px_rgba(0,0,0,0.08)]">
       {/* =========================
           650px - 850px DROPDOWN
       ========================= */}

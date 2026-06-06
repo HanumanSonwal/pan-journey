@@ -108,10 +108,7 @@ export default function HotelContent({
     setDraftSearchData,
     setAppliedSearchData,
   ]);
-  useEffect(() => {
-    console.log("CURRENT URL:", window.location.href);
-  }, []);
-  const handleSearch = useCallback(() => {}, []);
+  const handleSearch = useCallback(() => { }, []);
   const isFilterActive = useCallback((value) => {
     if (
       value === "" ||
@@ -157,9 +154,8 @@ export default function HotelContent({
       <SearchBar searchData={draftSearchData} onSearch={handleSearch} />
       <div className="relative mx-auto mt-[-38px] flex max-w-7xl gap-4 p-3 md:flex-nowrap">
         <div
-          className={`sticky top-[110px] max-h-[calc(100vh-40px)] w-full overflow-y-auto sm:w-64 md:w-72 ${
-            sidebarZ0 ? "z-0" : "z-20"
-          }`}
+          className={`sticky top-[125px] max-h-[calc(100vh-40px)] w-full overflow-y-auto sm:w-64 md:w-72 ${sidebarZ0 ? "z-0" : "z-20"
+            }`}
         >
           <SidebarFilters filters={filters} setFilters={setFilters} />
         </div>

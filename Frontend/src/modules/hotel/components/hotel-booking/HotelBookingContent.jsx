@@ -7,6 +7,8 @@ import { useState } from "react";
 import { useHotelBooking } from "../../hooks/useHotelBooking";
 import { useHotelBookingStore } from "../../store/booking.store";
 import { buildBookingPayload } from "../../utils/buildBookingPayload";
+
+import BackgroundSection from "./BackgroundSection";
 import BookingAgreement from "./BookingAgreement";
 import BookingHeaderCard from "./BookingHeaderCard";
 import GuestDetailsForm from "./GuestDetailsForm";
@@ -22,23 +24,16 @@ export default function HotelBookingContent({ hotelBookingData }) {
   const { bookingData: storeBookingData, setBookingData } =
     useHotelBookingStore();
 
-  const { data: session } = useSession();
-
-  console.log("session-user00oo", session);
+  const [agreement, setAgreement] = useState(false);
 
   const handleRequestChange = (value) => {
-    setBookingData({
-      requestData: value,
-    });
+    setBookingData({ requestData: value });
   };
-  const [agreement, setAgreement] = useState(false);
-  // GUEST FORM SUBMIT
+
   const handleGuestSubmit = (values) => {
-    setBookingData({
-      guestData: values,
-    });
+    setBookingData({ guestData: values });
   };
-  // FINAL BOOKING
+
   const handleBooking = () => {
     const payload = buildBookingPayload({
       bookingData: storeBookingData,
@@ -50,53 +45,83 @@ export default function HotelBookingContent({ hotelBookingData }) {
     bookHotel(payload, {
       onSuccess: (response) => {
         const bookingRefNo = response?.data?.BookingRefNo;
-        setBookingData({
-          bookingRefNo,
-        });
+        setBookingData({ bookingRefNo });
         router.push(`/hotel-checkout?bookingRefNo=${bookingRefNo}`);
       },
     });
   };
-  return (
-    <div className="mx-auto max-w-[1350px]">
-      <Row gutter={[24, 24]}>
-        {/* LEFT */}
-        <Col xs={24} lg={16}>
-          <div className="space-y-5">
-            <BookingHeaderCard bookingData={hotelBookingData} />
-            <StaySummaryCard bookingData={hotelBookingData} />
-            <RoomPackageCard bookingData={hotelBookingData} />
-            <ImportantInfoCard bookingData={hotelBookingData} />
-            <GuestDetailsForm onSubmit={handleGuestSubmit} />
-            <SpecialRequestCard
-              value={storeBookingData?.requestData}
-              onChange={handleRequestChange}
-            />
-            <BookingAgreement checked={agreement} onChange={setAgreement} />
-            <div className="pt-2">
-              <Button
-                type="primary"
-                size="large"
-                disabled={
-                  !storeBookingData?.guestData ||
-                  !storeBookingData?.guestData?.primaryGuest ||
-                  !agreement
-                }
-                className="!h-[48px] !rounded-xl !bg-[#0f766e]"
-                onClick={handleBooking}
-                loading={isPending}
-              >
-                Continue To Booking
-              </Button>
-            </div>
-          </div>
-        </Col>
 
-        {/* RIGHT */}
-        <Col xs={24} lg={8}>
-          <PriceBreakupCard bookingData={hotelBookingData} />
-        </Col>
-      </Row>
+  return (
+    <div className="w-full">
+      <BackgroundSection />
+
+      <div className="mx-auto max-w-[1250px] px-2 sm:px-4">
+        <Row gutter={[14, 23]}>
+          
+          {/* LEFT */}
+          <Col xs={24} lg={15}>
+            <div
+              className="
+                space-y-4 sm:space-y-5
+                -mt-10 sm:-mt-16
+                px-1 sm:px-0
+              "
+            >
+              <GuestDetailsForm onSubmit={handleGuestSubmit} />
+
+              <SpecialRequestCard
+                value={storeBookingData?.requestData}
+                onChange={handleRequestChange}
+              />
+
+              <ImportantInfoCard bookingData={hotelBookingData} />
+
+              <BookingAgreement
+                checked={agreement}
+                onChange={setAgreement}
+              />
+
+              <div className="pt-2">
+                <Button
+                  type="primary"
+                  size="large"
+                  loading={isPending}
+                  disabled={
+                    !storeBookingData?.guestData ||
+                    !storeBookingData?.guestData?.primaryGuest ||
+                    !agreement
+                  }
+                  onClick={handleBooking}
+                  className="
+                    !h-[44px] sm:!h-[48px]
+                    !text-sm sm:!text-base
+                    !rounded-lg sm:!rounded-xl
+                    !bg-[#0f766e]
+                    w-full sm:w-auto
+                  "
+                >
+                  Continue To Booking
+                </Button>
+              </div>
+            </div>
+          </Col>
+
+          {/* RIGHT */}
+          <Col xs={24} lg={8}>
+            <div
+              className="
+                space-y-3 sm:space-y-4
+                mt-4 lg:mt-0
+              "
+            >
+              <BookingHeaderCard bookingData={hotelBookingData} />
+              <StaySummaryCard bookingData={hotelBookingData} />
+              <RoomPackageCard bookingData={hotelBookingData} />
+              <PriceBreakupCard bookingData={hotelBookingData} />
+            </div>
+          </Col>
+        </Row>
+      </div>
     </div>
   );
 }
