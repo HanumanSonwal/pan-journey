@@ -1,12 +1,10 @@
 import HotelTempBooking from "../hotelTempBooking/hotelTempBooking.model.js";
 
-
 export const getHotelRequeryByUserService = async (
   userId,
   bookingRefNo,
-  status
+  status,
 ) => {
-
   const query = {
     UserId: userId,
     hotelRequeryResponse: { $exists: true },
@@ -32,8 +30,7 @@ export const getHotelRequeryByUserService = async (
     checkInDate: item.hotelRequeryResponse?.CheckInDate,
     checkOutDate: item.hotelRequeryResponse?.CheckOutDate,
     voucherNumber: item.hotelRequeryResponse?.VoucherNumber,
-    TicketStatusDesc:
-      item.hotelRequeryResponse?.TicketStatusDesc,
+    TicketStatusDesc: item.hotelRequeryResponse?.TicketStatusDesc,
     bookingRefNo: item.hotelRequeryResponse?.BookingRefNo,
   }));
 };
