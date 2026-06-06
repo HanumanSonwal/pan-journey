@@ -16,7 +16,7 @@ const requests = [
 
 export default function SpecialRequestCard({ value = {}, onChange }) {
   return (
-    <Card className="rounded-2xl border-0 shadow-sm">
+    <Card className="rounded-2xl border-0 shadow-sm  !shadow-[0_4px_12px_rgba(0,0,0,0.25)] !mb-2">
       <Title level={4} className="!mb-3">
         Special Request
       </Title>

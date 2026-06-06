@@ -8,9 +8,9 @@ export default function PriceBreakupCard({ bookingData }) {
   const pricing = bookingData?.pricing;
 
   return (
-    <div className="sticky top-24">
-      <Card className="rounded-2xl border-0 shadow-sm">
-        <Title level={4} className="!mb-4">
+    <div className="top-24 mt-2">
+      <Card className="rounded-2xl border-0 shadow-sm !shadow-[0_6px_20px_rgba(0,0,0,0.35)]">
+        <Title level={4} className="!mb-">
           Price Breakup
         </Title>
 

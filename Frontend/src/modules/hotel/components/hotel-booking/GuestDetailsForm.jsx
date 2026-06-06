@@ -12,7 +12,7 @@ import AddGuestModal from "./AddGuestModal";
 
 export default function GuestDetailsForm({ onSubmit }) {
   const [openGuestModal, setOpenGuestModal] = useState(false);
-const { Title, Text } = Typography;
+  const { Title, Text } = Typography;
   const [guests, setGuests] = useState([]);
 
   const methods = useForm({
@@ -40,8 +40,8 @@ const { Title, Text } = Typography;
 
   return (
     <>
-      <Card className="rounded-2xl border-0 shadow-sm">
-           <Title level={4} className="!mb-5 !text-[20px]">Guest Details</Title>
+      <Card className="rounded-2xl border-0 shadow-sm !mb-2  !shadow-[0_4px_12px_rgba(0,0,0,0.25)] ">
+        <Title level={4} className="!mb-5 !text-[20px]">Guest Details</Title>
 
         <FormProvider {...methods}>
           <form>

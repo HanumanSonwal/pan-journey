@@ -48,8 +48,8 @@ export default function SearchBar({ onSearch }) {
 
   return (
     <div className="sticky top-0 z-5 bg-[#72C0F0] shadow">
-      <div className="px-2 py-6 md:px-6 pb-8">
-        <div className="mx-auto max-w-[1200px]">
+      <div className="px-2 py-6 md:px-6 pb-13">
+        <div className="mx-auto max-w-[1250px]">
           {/* Heading */}
           <div className="mb-2 hidden grid-cols-12 gap-3 px-1 text-sm text-white md:grid">
             <div className="col-span-4">City / Location</div>
@@ -140,7 +140,7 @@ export default function SearchBar({ onSearch }) {
               <button
                 type="button"
                 onClick={handleSearch}
-                className="h-[50px] w-full rounded bg-[#0f766e] text-sm font-semibold tracking-wide text-white transition-all duration-200 hover:bg-[#0d5f58] active:scale-[0.98]"
+                className="h-[50px] w-full rounded bg-[#0f766e] text-sm font-semibold tracking-wide !text-white transition-all duration-200 hover:bg-[#0d5f58] active:scale-[0.98]"
               >
                 SEARCH
               </button>
