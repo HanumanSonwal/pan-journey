@@ -15,7 +15,7 @@ import { protectCustomer } from "../../../middleware/customerAuth.middleware.js"
 const router = express.Router();
 
 router.get(
-   "/hotel/requery",
+   "/hotel/mybookings",
   protectCustomer,
   getHotelRequeryByUserController
 );

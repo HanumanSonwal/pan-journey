@@ -2,33 +2,40 @@
 
 import HotelTempBooking from "../hotelTempBooking/hotelTempBooking.model.js";
 
+
 export const getHotelRequeryByUserService = async (
   userId,
-  bookingRefNo
+  bookingRefNo,
+  status
 ) => {
-  let bookings;
 
-  if (bookingRefNo) {
-    // Specific booking
-    bookings = await HotelTempBooking.findOne({
-      UserId: userId,
-      "responsePayload.BookingRefNo": bookingRefNo,
-    }).select("hotelRequeryResponse responsePayload.BookingRefNo");
-  } else {
-    // All bookings of user
-    bookings = await HotelTempBooking.find({
-      UserId: userId,
-    })
-      .sort({ createdAt: -1 })
-      .select("hotelRequeryResponse responsePayload.BookingRefNo");
+  const query = {
+    UserId: userId,
+    hotelRequeryResponse: { $exists: true },
+    "hotelRequeryResponse.BookingRefNo": { $exists: true },
+  };
+
+  // Status filter
+  if (status) {
+    query["hotelRequeryResponse.TicketStatusDesc"] = status;
   }
 
-  if (
-    !bookings ||
-    (Array.isArray(bookings) && bookings.length === 0)
-  ) {
-    throw new Error("Booking not found");
+  const bookings = await HotelTempBooking.find(query)
+    .sort({ createdAt: -1 })
+    .select("hotelRequeryResponse");
+
+  if (!bookings.length) {
+    throw new Error("No bookings found");
   }
 
-  return bookings;
+  return bookings.map((item) => ({
+    hotelName: item.hotelRequeryResponse?.HotelDetails?.HotelName,
+    Address: item.hotelRequeryResponse?.HotelDetails?.Address,
+    checkInDate: item.hotelRequeryResponse?.CheckInDate,
+    checkOutDate: item.hotelRequeryResponse?.CheckOutDate,
+    voucherNumber: item.hotelRequeryResponse?.VoucherNumber,
+    TicketStatusDesc:
+      item.hotelRequeryResponse?.TicketStatusDesc,
+    bookingRefNo: item.hotelRequeryResponse?.BookingRefNo,
+  }));
 };
