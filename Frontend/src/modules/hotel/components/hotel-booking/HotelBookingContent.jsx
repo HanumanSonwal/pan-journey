@@ -26,6 +26,8 @@ export default function HotelBookingContent({ hotelBookingData }) {
 
   const [agreement, setAgreement] = useState(false);
 
+  const { data: session } = useSession();
+
   const handleRequestChange = (value) => {
     setBookingData({ requestData: value });
   };
