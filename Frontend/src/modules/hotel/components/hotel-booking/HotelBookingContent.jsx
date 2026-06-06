@@ -116,9 +116,11 @@ export default function HotelBookingContent({ hotelBookingData }) {
                 mt-4 lg:mt-0
               "
             >
+              <div className="shadow-[0_8px_30px_rgba(0,0,0,0.12)]">
               <BookingHeaderCard bookingData={hotelBookingData} />
               <StaySummaryCard bookingData={hotelBookingData} />
               <RoomPackageCard bookingData={hotelBookingData} />
+              </div>
               <PriceBreakupCard bookingData={hotelBookingData} />
             </div>
           </Col>

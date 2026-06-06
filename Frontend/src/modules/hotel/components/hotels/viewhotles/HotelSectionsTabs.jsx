@@ -114,8 +114,8 @@ const HotelSectionsTabs = ({ activeTab = "Rooms", setActiveTab }) => {
 
       <div
         ref={ref}
-        className={`z-[4] w-full border border-gray-200 bg-white text-[#0ea5e9] shadow-md
-        ${isFixed ? "fixed left-0 top-[125px] w-full" : "relative"}`}
+        className={`z-[8] w-full border border-gray-200 bg-white text-[#0ea5e9] shadow-md
+        ${isFixed ? "fixed left-0 top-[140px] w-full" : "relative"}`}
       >
         <div className="flex overflow-x-auto scrollbar-hide">
           {tabs.map((tab) => {
@@ -126,8 +126,8 @@ const HotelSectionsTabs = ({ activeTab = "Rooms", setActiveTab }) => {
                 key={tab}
                 onClick={() => handleScrollTo(tab)}
                 className={`relative min-w-max flex-1 px-6 py-5 text-[15px] font-medium whitespace-nowrap transition ${active
-                    ? "text-[#0ea5e9]"
-                    : "text-gray-600 hover:text-[#0ea5e9]"
+                  ? "text-[#0ea5e9]"
+                  : "text-gray-600 hover:text-[#0ea5e9]"
                   }`}
               >
                 {tab}

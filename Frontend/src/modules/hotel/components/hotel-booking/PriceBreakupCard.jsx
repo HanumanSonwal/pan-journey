@@ -26,7 +26,7 @@ export default function PriceBreakupCard({ bookingData }) {
         ].map((item) => (
           <div key={item.label}>
             <div className="flex items-center justify-between py-3">
-              <Text>{item.label}</Text>
+              <Text className="font-medium !text-[17.5px] leading-[100%] tracking-[0%]">{item.label}</Text>
 
               <Text strong>
                 ₹ {Number(item.value || 0).toLocaleString("en-IN")}

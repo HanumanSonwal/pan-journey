@@ -11,17 +11,25 @@ export default function BookingHeaderCard({ bookingData }) {
   const room = bookingData?.selectedRoom;
 
   return (
-    <Card className="overflow-hidden !rounded-t-2xl !rounded-b-none border-0 w-full !-mt-16">
+    <Card
+
+      styles={{
+        body: {
+          padding: 7,
+        },
+      }}
+
+      className="overflow-hidden !rounded-t-1xl !rounded-b-none border-0 w-full mt-[-64px] sm:mt-2 md:!mt-[-40px] lg:!mt-[-64px] !p-0 ">
 
       {/* Big Image */}
       <img
         src={hotel?.HotelImage || "/no-room.jpg"}
         alt="hotel"
-        className="w-full h-[250px] rounded-xl object-cover"
+        className="w-full h-[250px] rounded-xl object-cover "
       />
 
       {/* Details */}
-      <div className="mt-4">
+      <div className=" !m-2">
 
         <Title
           level={3}
@@ -54,7 +62,7 @@ export default function BookingHeaderCard({ bookingData }) {
           {hotel?.City}, {hotel?.Country}
         </Text>
 
-        <div className="mt-4">
+        <div className="mt-4 mb-2">
           <Tag color="blue">
             {room?.GroupName}
           </Tag>
