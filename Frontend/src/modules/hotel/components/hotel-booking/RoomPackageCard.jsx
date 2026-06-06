@@ -17,7 +17,7 @@ export default function RoomPackageCard({ bookingData }) {
   const refundable = detail?.Refundable === "True";
 
   return (
-    <Card className="!rounded-tl-none !rounded-tr-none !rounded-bl-2xl !rounded-br-2xl border-0  ">
+    <Card className="!mb-2 rounded border-0 !shadow-[0_4px_12px_rgba(0,0,0,0.25)] shadow-sm font-roboto!">
       {/* TOP */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Tag color="gold" className="rounded-full px-4 py-1 text-sm">
@@ -34,7 +34,7 @@ export default function RoomPackageCard({ bookingData }) {
 
       {/* ROOM INFO */}
       <div className="mt-5">
-        <Title level={4} className="!mb-1 !text-[18px] !font-semibold">
+        <Title level={4} className="font-roboto! !mb-5 !text-[20px] font-bold!">
           {room?.GroupName}
         </Title>
 
@@ -67,10 +67,11 @@ export default function RoomPackageCard({ bookingData }) {
         </Title>
 
         <div
-          className={`mt-3 rounded-xl border p-4 text-[14px] leading-7 ${refundable
-            ? "border-green-200 bg-green-50 text-green-700"
-            : "border-red-200 bg-red-50 text-red-700"
-            }`}
+          className={`mt-3 rounded-xl border p-4 text-[14px] leading-7 ${
+            refundable
+              ? "border-green-200 bg-green-50 text-green-700"
+              : "border-red-200 bg-red-50 text-red-700"
+          }`}
           dangerouslySetInnerHTML={{
             __html:
               detail?.CancellationPolicy ||

@@ -57,18 +57,11 @@ export default function HotelBookingContent({ hotelBookingData }) {
     <div className="w-full">
       <BackgroundSection />
 
-      <div className="mx-auto max-w-[1250px] px-2 sm:px-4">
+      <div className="mx-auto max-w-[1250px] sm:px-4">
         <Row gutter={[14, 23]}>
-          
           {/* LEFT */}
           <Col xs={24} lg={15}>
-            <div
-              className="
-                space-y-4 sm:space-y-5
-                -mt-10 sm:-mt-16
-                px-1 sm:px-0
-              "
-            >
+            <div className="-mt-10! space-y-4 px-1 sm:space-y-5 sm:px-0">
               <GuestDetailsForm onSubmit={handleGuestSubmit} />
 
               <SpecialRequestCard
@@ -78,10 +71,7 @@ export default function HotelBookingContent({ hotelBookingData }) {
 
               <ImportantInfoCard bookingData={hotelBookingData} />
 
-              <BookingAgreement
-                checked={agreement}
-                onChange={setAgreement}
-              />
+              <BookingAgreement checked={agreement} onChange={setAgreement} />
 
               <div className="pt-2">
                 <Button
@@ -94,13 +84,7 @@ export default function HotelBookingContent({ hotelBookingData }) {
                     !agreement
                   }
                   onClick={handleBooking}
-                  className="
-                    !h-[44px] sm:!h-[48px]
-                    !text-sm sm:!text-base
-                    !rounded-lg sm:!rounded-xl
-                    !bg-[#0f766e]
-                    w-full sm:w-auto
-                  "
+                  className="!h-[44px] w-full !rounded-lg !bg-[#0f766e] !text-sm sm:!h-[48px] sm:w-auto sm:!rounded-xl sm:!text-base"
                 >
                   Continue To Booking
                 </Button>
@@ -110,12 +94,7 @@ export default function HotelBookingContent({ hotelBookingData }) {
 
           {/* RIGHT */}
           <Col xs={24} lg={8}>
-            <div
-              className="
-                space-y-3 sm:space-y-4
-                mt-4 lg:mt-0
-              "
-            >
+            <div className="-mt-10! space-y-4 px-1 sm:space-y-5 sm:px-0">
               <BookingHeaderCard bookingData={hotelBookingData} />
               <StaySummaryCard bookingData={hotelBookingData} />
               <RoomPackageCard bookingData={hotelBookingData} />

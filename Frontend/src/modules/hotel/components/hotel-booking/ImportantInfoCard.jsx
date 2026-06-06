@@ -15,8 +15,8 @@ export default function ImportantInfoCard({ bookingData }) {
   const visibleItems = expanded ? info : info.slice(0, 4);
 
   return (
-    <Card className="rounded-2xl border-0 shadow-sm !mt-3 !mb-3  !shadow-[0_4px_12px_rgba(0,0,0,0.25)]">
-      <Title level={4} className="!mb-5 !text-[20px]">
+    <Card className="!mb-2 rounded border-0 !shadow-[0_4px_12px_rgba(0,0,0,0.25)] shadow-sm font-roboto!">
+      <Title level={4} className="font-roboto! !mb-5 !text-[20px] font-bold!">
         Important Information
       </Title>
 

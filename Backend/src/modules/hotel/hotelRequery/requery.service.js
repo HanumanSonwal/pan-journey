@@ -1,34 +1,40 @@
-
-
 import HotelTempBooking from "../hotelTempBooking/hotelTempBooking.model.js";
 
-export const getHotelRequeryByUserService = async (
-  userId,
-  bookingRefNo
-) => {
-  let bookings;
-
+export const getHotelRequeryByUserService = async (userId, bookingRefNo) => {
+  // Specific booking
   if (bookingRefNo) {
-    // Specific booking
-    bookings = await HotelTempBooking.findOne({
+    const booking = await HotelTempBooking.findOne({
       UserId: userId,
-      "responsePayload.BookingRefNo": bookingRefNo,
-    }).select("hotelRequeryResponse responsePayload.BookingRefNo");
-  } else {
-    // All bookings of user
-    bookings = await HotelTempBooking.find({
-      UserId: userId,
-    })
-      .sort({ createdAt: -1 })
-      .select("hotelRequeryResponse responsePayload.BookingRefNo");
+      "hotelRequeryResponse.BookingRefNo": bookingRefNo,
+    }).select("hotelRequeryResponse");
+
+    if (!booking?.hotelRequeryResponse) {
+      throw new Error("Booking not found");
+    }
+
+    return booking.hotelRequeryResponse;
   }
 
-  if (
-    !bookings ||
-    (Array.isArray(bookings) && bookings.length === 0)
-  ) {
-    throw new Error("Booking not found");
+  // All confirmed/requeried bookings
+  const bookings = await HotelTempBooking.find({
+    UserId: userId,
+    hotelRequeryResponse: { $exists: true },
+    "hotelRequeryResponse.BookingRefNo": { $exists: true },
+  })
+    .sort({ createdAt: -1 })
+    .select("hotelRequeryResponse");
+
+  if (!bookings.length) {
+    throw new Error("No bookings found");
   }
 
-  return bookings;
+  return bookings.map((item) => ({
+    hotelName: item.hotelRequeryResponse?.HotelDetails?.HotelName,
+    Address: item.hotelRequeryResponse?.HotelDetails?.Address,
+    checkInDate: item.hotelRequeryResponse?.CheckInDate,
+    checkOutDate: item.hotelRequeryResponse?.CheckOutDate,
+    voucherNumber: item.hotelRequeryResponse?.VoucherNumber,
+    TicketStatusDesc: item.hotelRequeryResponse?.TicketStatusDesc,
+    bookingRefNo: item.hotelRequeryResponse?.BookingRefNo,
+  }));
 };
