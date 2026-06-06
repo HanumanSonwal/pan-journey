@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-const defaultSearchData = {
+const getDefaultSearchData = () => ({
   city: "",
   cityData: {
     id: "",
@@ -16,14 +16,14 @@ const defaultSearchData = {
   children: 0,
   childAges: [],
   pets: false,
-};
+});
 
 export const useHotelSearchStore = create(
   persist(
     (set) => ({
-      draftSearchData: defaultSearchData,
+      draftSearchData: getDefaultSearchData(),
 
-      appliedSearchData: defaultSearchData,
+      appliedSearchData: getDefaultSearchData(),
 
       setDraftSearchData: (data) =>
         set((state) => ({
@@ -35,7 +35,9 @@ export const useHotelSearchStore = create(
 
       applySearch: () =>
         set((state) => ({
-          appliedSearchData: state.draftSearchData,
+          appliedSearchData: {
+            ...state.draftSearchData,
+          },
         })),
 
       setAppliedSearchData: (data) =>
@@ -46,6 +48,28 @@ export const useHotelSearchStore = create(
     {
       name: "hotel-search-storage",
 
+      version: 2,
+
+      migrate: (persistedState, version) => {
+        if (version < 2) {
+          const oldData = persistedState?.searchData;
+
+          if (oldData) {
+            return {
+              draftSearchData: oldData,
+              appliedSearchData: oldData,
+            };
+          }
+
+          return {
+            draftSearchData: getDefaultSearchData(),
+            appliedSearchData: getDefaultSearchData(),
+          };
+        }
+
+        return persistedState;
+      },
+
       onRehydrateStorage: () => (state) => {
         if (!state) return;
 
@@ -54,24 +78,26 @@ export const useHotelSearchStore = create(
         const checkIn = dayjs(state.draftSearchData?.checkIn);
         const checkOut = dayjs(state.draftSearchData?.checkOut);
 
-        if (
+        const invalidDates =
           !checkIn.isValid() ||
           checkIn.isBefore(today) ||
           !checkOut.isValid() ||
-          checkOut.isBefore(today)
-        ) {
-          state.setDraftSearchData({
-            checkIn: today.format("YYYY-MM-DD"),
-            checkOut: today.add(1, "day").format("YYYY-MM-DD"),
-          });
+          checkOut.isBefore(today);
 
-          state.setAppliedSearchData({
-            ...state.appliedSearchData,
-            checkIn: today.format("YYYY-MM-DD"),
-            checkOut: today.add(1, "day").format("YYYY-MM-DD"),
-          });
-        }
+        if (!invalidDates) return;
+
+        const updatedDates = {
+          checkIn: today.format("YYYY-MM-DD"),
+          checkOut: today.add(1, "day").format("YYYY-MM-DD"),
+        };
+
+        state.setDraftSearchData(updatedDates);
+
+        state.setAppliedSearchData({
+          ...state.appliedSearchData,
+          ...updatedDates,
+        });
       },
-    },  
+    },
   ),
 );

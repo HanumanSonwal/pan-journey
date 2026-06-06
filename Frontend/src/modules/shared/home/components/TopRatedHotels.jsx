@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 
 export default function TopRatedHotels() {
   const { data = [], isLoading } = useDestinations("Toprated");
-  const { searchData } = useHotelSearchStore();
+  const { draftSearchData } = useHotelSearchStore();
   const router = useRouter();
   const [perRow, setPerRow] = useState(4);
   const [topIndex, setTopIndex] = useState(0);
@@ -107,15 +107,24 @@ export default function TopRatedHotels() {
   };
 
   const handleSearch = (hotel) => {
+    const citySlug =
+      hotel?.name
+        ?.toLowerCase()
+        ?.replace(/[^a-z0-9\s-]/g, "")
+        ?.replace(/\s+/g, "-") || "";
     const query = new URLSearchParams({
-      city: hotel?.name || "",
+      city: citySlug,
+      cityName: hotel?.name || "",
       cityId: hotel?.id || "",
-      checkIn: searchData?.checkIn || "",
-      checkOut: searchData?.checkOut || "",
-      rooms: String(searchData?.rooms || 1),
-      adults: String(searchData?.adults || 2),
-      children: String(searchData?.children || 0),
-      pets: searchData?.pets ? "true" : "false",
+
+      checkIn: draftSearchData?.checkIn || "",
+      checkOut: draftSearchData?.checkOut || "",
+
+      rooms: String(draftSearchData?.rooms || 1),
+      adults: String(draftSearchData?.adults || 2),
+      children: String(draftSearchData?.children || 0),
+
+      pets: draftSearchData?.pets ? "true" : "false",
     });
 
     router.push(`/hotels?${query.toString()}`);

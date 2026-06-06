@@ -279,7 +279,9 @@ function DestinationSearchField({
             color="#ef4444"
             trigger={[]}
           >
+            
             <Select
+            
               showSearch
               allowClear
               value={
@@ -290,8 +292,6 @@ function DestinationSearchField({
                   : undefined
               }
               onClear={() => {
-                setDestinationError?.(false);
-
                 onChange({
                   city: "",
                   cityData: null,
@@ -307,7 +307,7 @@ function DestinationSearchField({
               style={{
                 fontWeight: 700,
                 fontSize,
-                lineHeight: 1,
+                // lineHeight: 1,
                 width: "100%",
                 minWidth: 0,
               }}

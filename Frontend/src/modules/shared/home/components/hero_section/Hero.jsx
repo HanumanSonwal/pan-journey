@@ -47,7 +47,8 @@ export default function Hero() {
       },
     };
     // APPLY SEARCH
-
+    console.log("UPDATED SEARCH in hero =>", updatedSearch);
+    console.log("CITY GOING TO URL in hero =>", updatedSearch?.city);
     applySearch();
 
     const citySlug =

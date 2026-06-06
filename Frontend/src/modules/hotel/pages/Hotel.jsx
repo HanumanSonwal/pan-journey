@@ -82,25 +82,37 @@ export default function HotelContent({
         checkOut: today.add(1, "day").format("YYYY-MM-DD"),
       });
     }
+    console.log("HOTEL PAGE URL CITY =>", searchParams.get("city"));
+    console.log("HOTEL PAGE URL CITY ID =>", searchParams.get("cityId"));
     const urlData = {
-      city: draftSearchData?.city || "",
+      city: searchParams.get("cityName") || draftSearchData?.city || "",
+
       cityData: {
         id: searchParams.get("cityId") || "",
         stateName: searchParams.get("stateName") || "",
         countryCode: searchParams.get("countryCode") || "",
       },
+
       checkIn: searchParams.get("checkIn") || "",
       checkOut: searchParams.get("checkOut") || "",
+
       rooms: Number(searchParams.get("rooms")) || 1,
       adults: Number(searchParams.get("adults")) || 2,
       children: Number(searchParams.get("children")) || 0,
+
       childAges: [],
       pets: searchParams.get("pets") === "true",
     };
-    if (urlData.cityData.id && !appliedSearchData?.cityData?.id) {
+    if (
+      urlData.cityData.id &&
+      urlData.cityData.id !== draftSearchData?.cityData?.id
+    ) {
       setDraftSearchData(urlData);
       setAppliedSearchData(urlData);
     }
+
+    console.log("URL CITY NAME in hotel =>", searchParams.get("cityName"));
+    console.log("URL DATA in hotel page =>", urlData);
   }, [
     mounted,
     searchParams,
@@ -108,7 +120,7 @@ export default function HotelContent({
     setDraftSearchData,
     setAppliedSearchData,
   ]);
-  const handleSearch = useCallback(() => { }, []);
+  const handleSearch = useCallback(() => {}, []);
   const isFilterActive = useCallback((value) => {
     if (
       value === "" ||
@@ -154,8 +166,9 @@ export default function HotelContent({
       <SearchBar searchData={draftSearchData} onSearch={handleSearch} />
       <div className="relative mx-auto mt-[-38px] flex max-w-7xl gap-4 p-3 md:flex-nowrap">
         <div
-          className={`sticky top-[125px] max-h-[calc(100vh-40px)] w-full overflow-y-auto sm:w-64 md:w-72 ${sidebarZ0 ? "z-0" : "z-20"
-            }`}
+          className={`sticky top-[125px] max-h-[calc(100vh-40px)] w-full overflow-y-auto sm:w-64 md:w-72 ${
+            sidebarZ0 ? "z-0" : "z-20"
+          }`}
         >
           <SidebarFilters filters={filters} setFilters={setFilters} />
         </div>

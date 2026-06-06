@@ -42,6 +42,7 @@ export default function HotelSearchForm({
             }}
             error={destinationError}
             onChange={(val) => {
+                console.log("HOME DESTINATION VALUE =>", val);
               setDestinationError?.(false);
 
               setDraftSearchData({

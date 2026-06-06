@@ -9,7 +9,7 @@ import { useHotelSearchStore } from "../store/serchData.store";
 export const useHotelSessionRecovery = ({ hotelDetails, rawRatePlans }) => {
   const [sessionExpired, setSessionExpired] = useState(false);
   const [reloadingHotels, setReloadingHotels] = useState(false);
-  const { searchData } = useHotelSearchStore();
+  const { appliedSearchData } = useHotelSearchStore();
   const { selectedHotel, setSelectedHotel } = useSelectedHotelStore();
   const isSessionExpired = hotelDetails && rawRatePlans === null;
 
@@ -24,19 +24,19 @@ export const useHotelSessionRecovery = ({ hotelDetails, rawRatePlans }) => {
       setReloadingHotels(true);
       const payload = {
         HotelSeedValue: "",
-        CheckInDate: dayjs(searchData?.checkIn).format("MM/DD/YYYY"),
-        CheckOutDate: dayjs(searchData?.checkOut).format("MM/DD/YYYY"),
-        HotelRoomDetail: [
-          {
-            AdultCount: searchData?.adults || 1,
-            ChildCount: searchData?.children || 0,
-            Child1Age: searchData?.childAges?.[0] || 0,
-            Child2Age: searchData?.childAges?.[1] || 0,
-          },
-        ],
-        fullName: searchData?.city || "",
-        id: searchData?.cityData?.id || "",
-        RoomCount: searchData?.rooms || 1,
+        CheckInDate: dayjs(appliedSearchData?.checkIn).format("MM/DD/YYYY"),
+        CheckOutDate: dayjs(appliedSearchData?.checkOut).format("MM/DD/YYYY"),
+
+        AdultCount: appliedSearchData?.adults || 1,
+        ChildCount: appliedSearchData?.children || 0,
+
+        Child1Age: appliedSearchData?.childAges?.[0] || 0,
+        Child2Age: appliedSearchData?.childAges?.[1] || 0,
+
+        fullName: appliedSearchData?.city || "",
+        id: appliedSearchData?.cityData?.id || "",
+
+        RoomCount: appliedSearchData?.rooms || 1,
         filters: {},
         sort: "",
       };
