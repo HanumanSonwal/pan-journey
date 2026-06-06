@@ -10,12 +10,13 @@ import {
 export const getHotelRequeryByUserController = async (req, res) => {
   try {
     const userId = req.user._id;
-    const { bookingRefNo } = req.query;
+   const { bookingRefNo, status } = req.query;
 
-    const data = await getHotelRequeryByUserService(
-      userId,
-      bookingRefNo
-    );
+const data = await getHotelRequeryByUserService(
+  req.user._id,
+  bookingRefNo,
+  status
+);
 
     return sendSuccess(
       res,

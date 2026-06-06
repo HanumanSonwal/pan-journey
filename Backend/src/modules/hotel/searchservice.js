@@ -31,6 +31,9 @@ export const normalizeBody = (body) => ({
 
   CheckOutDate: body.CheckOutDate,
 
+  stateName: body.stateName,
+  countryCode: body.countryCode,
+
   RoomCount: body.RoomCount || 1,
 
   currency: body.currency || "INR",
@@ -301,7 +304,9 @@ export const searchHotelsFromSupplier = async (reqBody) => {
       tax: hotelsData?.[0]?.tax,
     });
 
-    hotelsData = hotelsData.map((hotel) => applyMarkup(hotel, markup));
+    hotelsData = hotelsData.map((hotel) =>
+      applyMarkup(hotel, markup, serviceTax),
+    );
     console.log("\n🏷️ AFTER MARKUP");
     console.log({
       hotelId: hotelsData?.[0]?.hotelId,
@@ -312,7 +317,7 @@ export const searchHotelsFromSupplier = async (reqBody) => {
       finalTax: hotelsData?.[0]?.tax,
     });
   }
-  
+
   console.log("\n🛏️ AFTER ROOM MULTIPLIER");
   console.log({
     roomCount: body.RoomCount,
