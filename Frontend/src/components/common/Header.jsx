@@ -80,17 +80,17 @@ export default function Header() {
       </div>
 
       {/* Navbar */}
-      <header className="flex items-center justify-between bg-white px-4 py-4 shadow-sm md:px-10 lg:px-20">
+      <header className="flex h-18 justify-between bg-white px-4 py-1 shadow-sm md:px-10 lg:px-20 !pt-0 ">
         {/* Logo */}
         <Link href="/" className="flex items-center">
           <Image
-            src="/images/logo.png"
+            src="/images/PJ_LOGO-removebg-preview.png"
             alt="PAN Journey"
-            width={220}
-            height={10}
+            width={120}
+            height={110}
             priority
             unoptimized
-            className="h-[50px] w-[80px]"
+            className="absolute top-8 left-2 w-[100px] h-[100px] object-contain"
           />
         </Link>
 
