@@ -153,7 +153,7 @@ function HotelList({ searchData, filters, sort }) {
   // ERROR
   if (isError) {
     return (
-      <div className="py-10 text-center text-red-500">
+      <div className="py-10 text-center text-red-500 " >
         {error?.message || "Failed to fetch hotels"}
       </div>
     );

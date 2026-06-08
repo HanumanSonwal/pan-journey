@@ -67,8 +67,8 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   const hotelImages = supplierData?.HotelGallery || [];
   const amenities = supplierData?.Amenities
     ? supplierData.Amenities.split(",")
-        .map((i) => i.trim())
-        .filter(Boolean)
+      .map((i) => i.trim())
+      .filter(Boolean)
     : [];
   const hotelDetails = supplierData || [];
   const handleReloadHotels = async () => {
@@ -102,32 +102,31 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   ]);
   const [isScrolled, setIsScrolled] = useState(false);
 
-useEffect(() => {
-  const handleScroll = () => {
-    setIsScrolled(window.scrollY > 0);
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
 
-  window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll);
 
-  return () => {
-    window.removeEventListener("scroll", handleScroll);
-  };
-}, []);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
-return (
-  <div className="min-h-screen w-full bg-[#eaf3f9]">
-    <SearchBar />
+  return (
+    <div className="min-h-screen w-full bg-[#eaf3f9]">
+      <SearchBar />
 
-    <div
-      className={`mx-auto w-full max-w-7xl px-2 pb-8 sm:px-4 md:px-6 relative transition-all duration-300 ${
-        isScrolled ? "z-0" : "!z-[820]"
-      }`}
-    >
-      <div className="-mt-7">
-        {showSkeleton ? (
-          <HotelDetailsSkeleton />
-        ) : (
-       <Card className="overflow-hidden rounded border-0 shadow-lg">
+      <div
+        className={`mx-auto w-full max-w-7xl px-2 pb-8 sm:px-4 md:px-6 relative transition-all duration-300 ${isScrolled ? "z-0" : "!z-[820]"
+          }`}
+      >
+        <div className="-mt-3">
+          {showSkeleton ? (
+            <HotelDetailsSkeleton />
+          ) : (
+         <Card className="overflow-hidden rounded-md border-0 shadow-lg">
               {/* HEADER */}
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex min-w-0 items-start gap-3">
