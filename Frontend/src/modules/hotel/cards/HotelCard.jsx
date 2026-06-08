@@ -21,6 +21,9 @@ function HotelCard({ hotel }) {
   const [showAllFacilities, setShowAllFacilities] = useState(false);
   const { setSelectedHotel } = useSelectedHotelStore();
   const { appliedSearchData } = useHotelSearchStore();
+
+  console.log(hotel, "hotel in card");
+
   const rating = useMemo(() => {
     return Number(hotel.rating) || Number(hotel.starRating) || 4.0;
   }, [hotel.rating, hotel.starRating]);
@@ -57,15 +60,25 @@ function HotelCard({ hotel }) {
   }, [hotel.tax]);
 
   const oldPrice = useMemo(() => {
-    return Number(hotel.oldPrice || price + 1500);
-  }, [hotel.oldPrice, price]);
+    return Number(price + price * 0.1);
+  }, [price]);
 
   const stars = useMemo(() => {
     return Math.min(Number(hotel.starRating || 0), 5);
   }, [hotel.starRating]);
 
   const facilities = useMemo(() => {
-    return hotel.facilities || [];
+    if (hotel.facilities?.length > 0) {
+      return hotel.facilities;
+    }
+
+    return [
+      "Free WiFi",
+      "Air Conditioning",
+      "24x7 Front Desk",
+      "Housekeeping",
+      "Parking",
+    ];
   }, [hotel.facilities]);
 
   const handleNavigate = () => {
@@ -132,7 +145,7 @@ function HotelCard({ hotel }) {
                   width={320}
                   height={240}
                   loading="lazy"
-                  className="h-[180px] w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                  className="h-[200px] w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
                 />
               </div>
             )}
@@ -142,7 +155,7 @@ function HotelCard({ hotel }) {
             <div>
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0 flex-1">
-                  <h2 className="font-roboto text-[18px] leading-none font-bold text-gray-900">
+                  <h2 className="font-roboto! text-[18px] leading-none font-bold! text-gray-900">
                     {hotel.name}
                   </h2>
 
@@ -234,7 +247,7 @@ function HotelCard({ hotel }) {
 
           <div className="flex w-full flex-col justify-between border-t border-gray-100 p-4 lg:w-[260px] lg:border-t-0 lg:border-l">
             <div
-              className="mb-1 flex justify-end gap-2 pt-1 !pb-1 text-[22px] text-gray-700"
+              className="mt-0! mb-1! flex justify-end gap-2 text-[22px] text-gray-700"
               onClick={(e) => e.stopPropagation()}
             >
               <button className="transition-all hover:text-red-500!">
@@ -266,22 +279,23 @@ function HotelCard({ hotel }) {
                 </div>
               </div>
             </div>
-            <div className="mt-2 flex flex-col items-end">
-              <p className="text-[13px] text-gray-400 line-through">
-                ₹{oldPrice.toLocaleString("en-IN")}
+            <div className="font-roboto! mt-2 flex flex-col items-end font-bold">
+              <p className="mb-1! text-[13px] text-gray-400">
+                <span className="mr-1">{hotel.currencySymbol}</span>
+                {oldPrice.toLocaleString("en-IN")}
               </p>
 
-              <h2 className="font-roboto-[700] mt-0! text-[24px] leading-none font-bold text-gray-900">
-                ₹{price.toLocaleString("en-IN")}
+              <h2 className="mb-1! text-[24px] leading-none font-bold! text-gray-900">
+                <span className="mr-1 text-[20px]">{hotel.currencySymbol}</span>
+                {price.toLocaleString("en-IN")}
               </h2>
 
-              {/* TAX */}
-              <p className="font-roboto-[400] mb-0! text-right text-[12px] text-gray-500">
-                + ₹{tax.toLocaleString("en-IN")} taxes & fees
+              <p className="mb-0! text-right text-[12px] text-gray-500">
+                + <span className="mr-1">{hotel.currencySymbol}</span>
+                {tax.toLocaleString("en-IN")} taxes & fees
               </p>
-              <p className="font-roboto-[400] mt-0! text-[12px] text-gray-500">
-                Per Night
-              </p>
+
+              <p className="mt-0 text-[12px] text-gray-500">Per Night</p>
             </div>
           </div>
         </div>

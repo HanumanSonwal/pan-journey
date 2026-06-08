@@ -2,13 +2,16 @@
 
 import LoginModal from "@/modules/auth/components/LoginFormModal";
 import { useLogout } from "@/modules/auth/hooks/useAuth";
+import { useCurrency } from "@/modules/shared/home/hooks/useCurrency";
+import { useCurrencyStore } from "@/modules/shared/store/currency.store";
 import {
+  DownOutlined,
   HeartOutlined,
   LogoutOutlined,
   MenuOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Drawer, Dropdown } from "antd";
+import { Drawer, Dropdown, Input } from "antd";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,13 +22,19 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
-
+  const { data: currencies = [] } = useCurrency();
   const { data: session } = useSession();
   const { mutate: logout } = useLogout();
   const router = useRouter();
+  const { selectedCurrency, setCurrency } = useCurrencyStore();
+  const [search, setSearch] = useState("");
 
-  console.log("SESSION:", session);
-
+  const filteredCurrencies = currencies.filter(
+    (currency) =>
+      currency.name.toLowerCase().includes(search.toLowerCase()) ||
+      currency.code.toLowerCase().includes(search.toLowerCase()),
+  );
+  console.log("Selected Currency:", selectedCurrency);
   const user = session?.user;
 
   const getInitials = (name) => {
@@ -72,6 +81,22 @@ export default function Header() {
     },
   ];
 
+  const currencyItems = currencies.map((currency) => ({
+    key: currency.code,
+    label: (
+      <div className="flex items-center gap-3">
+        <span className="font-medium">{currency.symbol}</span>
+
+        <div className="flex flex-col">
+          <span className="font-medium">{currency.code}</span>
+
+          <span className="text-xs text-gray-500">{currency.name}</span>
+        </div>
+      </div>
+    ),
+    onClick: () => setCurrency(currency),
+  }));
+
   return (
     <div className="w-full">
       {/* Top Bar */}
@@ -80,7 +105,7 @@ export default function Header() {
       </div>
 
       {/* Navbar */}
-      <header className="flex h-18 justify-between bg-white px-4 py-1 shadow-sm md:px-10 lg:px-20 !pt-0 ">
+      <header className="flex h-18 justify-between bg-white px-4 py-1 !pt-0 shadow-sm md:px-10 lg:px-20">
         {/* Logo */}
         <Link href="/" className="flex items-center">
           <Image
@@ -90,7 +115,7 @@ export default function Header() {
             height={110}
             priority
             unoptimized
-            className="absolute top-8 left-2 w-[100px] h-[100px] object-contain"
+            className="absolute top-8 left-2 h-[100px] w-[100px] object-contain"
           />
         </Link>
 
@@ -106,10 +131,52 @@ export default function Header() {
         {/* Right Side */}
         <div className="flex items-center gap-2 md:gap-3">
           {/* Wishlist */}
-          <button className="hidden items-center gap-2 rounded-lg border border-[#4A9BB5] px-3 py-2 text-sm font-medium !text-[#4A9BB5] md:flex">
+          <button className="hidden items-center gap-2 rounded-lg border border-[#4A9BB5] px-3 py-2 text-sm font-medium text-[#4A9BB5]! md:flex">
             <HeartOutlined />
             Wishlist
           </button>
+          <Dropdown
+            trigger={["click"]}
+            popupRender={() => (
+              <div className="w-[350px] rounded-xl bg-white p-3 shadow-lg">
+                <div className="rounded border border-[#4A9BB5] px-2">
+                  <Input
+                    allowClear
+                    variant={false}
+                    placeholder="Search Currency"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                </div>
+
+                <div className="mt-3 max-h-87.5 overflow-y-auto">
+                  {filteredCurrencies.map((currency) => (
+                    <div
+                      key={currency.code}
+                      onClick={() => {
+                        setCurrency(currency);
+                      }}
+                      className="flex cursor-pointer items-center justify-between rounded-md px-3 py-2 hover:bg-gray-100"
+                    >
+                      <span>{currency.name}</span>
+
+                      <span className="font-semibold">{currency.code}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          >
+            <button className="hidden items-center gap-2 rounded-lg border border-[#4A9BB5] px-3 py-2 text-sm font-medium text-[#4A9BB5]! md:flex">
+              <span>{selectedCurrency?.symbol}</span>
+
+              <span className="max-w-20 truncate">
+                {selectedCurrency?.code}
+              </span>
+
+              <DownOutlined />
+            </button>
+          </Dropdown>
 
           {!session ? (
             <button
@@ -165,6 +232,53 @@ export default function Header() {
           <Link href="#">Flights</Link>
           <Link href="#">Bus</Link>
           <Link href="#">Support</Link>
+        </div>
+        <div className="border-b pb-4">
+          <p className="mb-2 text-sm font-semibold">Currency</p>
+
+          <Dropdown
+            trigger={["click"]}
+            popupRender={() => (
+              <div className="w-full min-w-[300px] rounded-xl bg-white p-3 shadow-lg">
+                <div className="rounded border border-[#4A9BB5] px-2">
+                  <Input
+                    allowClear
+                    variant={false}
+                    placeholder="Search Currency"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="rounded-lg border border-gray-200"
+                  />
+                </div>
+                <div className="mt-3 max-h-[350px] overflow-y-auto">
+                  {filteredCurrencies.map((currency) => (
+                    <div
+                      key={currency.code}
+                      onClick={() => setCurrency(currency)}
+                      className={`flex cursor-pointer items-center justify-between rounded-md px-3 py-2 ${
+                        selectedCurrency?.code === currency.code
+                          ? "bg-cyan-50 text-[#4A9BB5]"
+                          : "hover:bg-gray-100"
+                      }`}
+                    >
+                      <span>{currency.name}</span>
+
+                      <span className="font-semibold">{currency.code}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          >
+            <button className="flex w-full items-center justify-between rounded-lg border border-[#4A9BB5] px-3 py-2 text-sm font-medium text-[#4A9BB5]">
+              <span className="truncate">
+                {selectedCurrency?.symbol || "₹"}{" "}
+                {selectedCurrency?.code || "INR"}
+              </span>
+
+              <DownOutlined />
+            </button>
+          </Dropdown>
         </div>
       </Drawer>
 

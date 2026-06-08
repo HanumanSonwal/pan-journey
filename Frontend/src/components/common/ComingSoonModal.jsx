@@ -9,18 +9,12 @@ export default function ComingSoonModal() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const seen = localStorage.getItem("pan_journey_notice_seen");
-
-    if (!seen) {
-      setOpen(true);
-    }
+    setOpen(true);
   }, []);
 
   const handleClose = () => {
-    localStorage.setItem("pan_journey_notice_seen", "true");
     setOpen(false);
   };
-
   return (
     <Modal
       open={open}
