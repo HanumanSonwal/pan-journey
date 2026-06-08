@@ -1,12 +1,14 @@
 "use client";
 
 import HotelContentLoader from "@/components/common/loder/HotelContentLoader";
+import { useCurrencyStore } from "@/modules/shared/store/currency.store";
 import dayjs from "dayjs";
 import { memo, useEffect, useMemo, useRef } from "react";
 import HotelCard from "../../cards/HotelCard";
 import { useInfiniteHotels } from "../../hooks/useInfiniteHotels";
 function HotelList({ searchData, filters, sort }) {
   console.log("searchData in paylaod", searchData);
+  const { selectedCurrency } = useCurrencyStore();
   const payload = useMemo(() => {
     if (!searchData?.city && !searchData?.cityData?.id) {
       return null;
@@ -20,6 +22,7 @@ function HotelList({ searchData, filters, sort }) {
       CheckOutDate: searchData?.checkOut
         ? dayjs(searchData.checkOut).format("MM/DD/YYYY")
         : "",
+      currency: selectedCurrency?.code || "INR",
       HotelRoomDetail: [
         {
           AdultCount: searchData?.adults || 1,
@@ -42,7 +45,7 @@ function HotelList({ searchData, filters, sort }) {
       },
       sort: sort || "",
     };
-  }, [searchData, filters, sort]);
+  }, [searchData, filters, sort, selectedCurrency?.code]);
 
   const {
     data,
@@ -90,15 +93,18 @@ function HotelList({ searchData, filters, sort }) {
   const hotels = useMemo(() => {
     const allHotels =
       data?.pages?.flatMap((page) => page?.data?.hotels || []) || [];
+    console.log("RAW API RESPONSE", data?.pages?.[0]?.data?.hotels?.[0]);
     return Array.from(
       new Map(allHotels.map((hotel) => [hotel.hotelId, hotel])).values(),
     );
   }, [data]);
 
   console.log("HOTELS in hotelList page ", hotels);
+  const currencySymbol = data?.pages?.[0]?.data?.currencySymbol || "₹";
   const mappedHotels = useMemo(() => {
     return hotels.map((hotel) => ({
       id: hotel.hotelId,
+      currencySymbol: currencySymbol,
       name: hotel.hotelName || "Hotel Name",
       hotelkey: hotel.hotelkey || hotel.hotelkey || hotel.hotelkey || "",
       facilities: hotel.facilities || [],
@@ -125,11 +131,11 @@ function HotelList({ searchData, filters, sort }) {
         hotel.images?.length > 0
           ? hotel.images
           : [
-            hotel.image ||
-            hotel.thumbnail ||
-            hotel.hotelImage ||
-            "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80&auto=format&fit=crop",
-          ],
+              hotel.image ||
+                hotel.thumbnail ||
+                hotel.hotelImage ||
+                "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80&auto=format&fit=crop",
+            ],
 
       tags: hotel.facilities?.slice(0, 3) || [],
       starRating: hotel.starRating || "",
@@ -159,14 +165,14 @@ function HotelList({ searchData, filters, sort }) {
   }
 
   return (
-    <div className="flex flex-col gap-4 ">
+    <div className="flex flex-col gap-4">
       {/* HOTELS */}
       {mappedHotels.map((hotel, index) => (
         <HotelCard key={hotel.id || index} hotel={hotel} />
       ))}
 
       {/* LOAD MORE */}
-      <div ref={loadMoreRef} className="flex justify-center py-6 ">
+      <div ref={loadMoreRef} className="flex justify-center py-6">
         {isFetchingNextPage && (
           <div className="text-sm text-gray-500">Loading more hotels...</div>
         )}

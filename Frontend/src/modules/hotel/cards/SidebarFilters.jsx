@@ -197,7 +197,7 @@ function SidebarFilters({ filters, setFilters }) {
         key: "propertyType",
         title: "Property Type",
         content: (
-          <div className="flex flex-col gap-2">
+          <div className="font-roboto! flex flex-col gap-2">
             {propertyOptions.map((option) => (
               <Checkbox
                 key={option}
@@ -311,7 +311,7 @@ function SidebarFilters({ filters, setFilters }) {
           key: section.key,
 
           label: (
-            <span className="text-sm font-semibold text-gray-800">
+            <span className="font-roboto! text-sm font-semibold text-gray-800">
               {section.title}
             </span>
           ),
