@@ -2,6 +2,7 @@
 
 import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
 import { CloseOutlined } from "@ant-design/icons";
+import dayjs from "dayjs";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import SidebarFilters from "../cards/SidebarFilters";
@@ -11,7 +12,6 @@ import SortBar from "../components/SortBar";
 import DynamicSeoFallback from "../seo/DynamicSeoFallback";
 import HotelsSeoSection from "../seo/HotelsSeoSection";
 import { useHotelSearchStore } from "../store/serchData.store";
-import dayjs from "dayjs";
 
 const defaultSearchData = {
   city: "",
@@ -131,7 +131,7 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
     setDraftSearchData,
     setAppliedSearchData,
   ]);
-  const handleSearch = useCallback(() => {}, []);
+  const handleSearch = useCallback(() => { }, []);
   const isFilterActive = useCallback((value) => {
     if (
       value === "" ||
@@ -175,11 +175,10 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
   return (
     <div className="bg-[#edf7ff]">
       <SearchBar searchData={draftSearchData} onSearch={handleSearch} />
-      <div className="relative mx-auto mt-[-38px] flex max-w-7xl gap-4 p-3 md:flex-nowrap">
+      <div className="relative mx-auto mt-[-28px] flex max-w-7xl gap-4 p-3 md:flex-nowrap">
         <div
-          className={`sticky top-[125px] max-h-[calc(100vh-40px)] w-full overflow-y-auto sm:w-64 md:w-72 ${
-            sidebarZ0 ? "z-0" : "z-20"
-          }`}
+          className={`sticky top-[98px] max-h-[calc(100vh-40px)] w-full overflow-y-auto sm:w-64 md:w-72 ${sidebarZ0 ? "z-0" : "z-20"
+            }`}
         >
           <SidebarFilters filters={filters} setFilters={setFilters} />
         </div>
@@ -187,72 +186,72 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
         <div className="min-w-0 flex-1">
           <SortBar sort={sort} setSort={setSort} />
           {/* ACTIVE FILTERS */}
-          <div className="sticky top-[167px] z-10 h-10 bg-[#edf7ff] pt-2">
-            <div className="!mb-4 flex flex-wrap gap-2">
-              {activeFilters.map(([key, value]) => {
-                if (!isFilterActive(value)) return null;
-                if (key === "minPrice" || key === "maxPrice") return null;
-                if (Array.isArray(value)) {
-                  return value.map((v, i) => (
-                    <div
-                      key={`${key}-${i}`}
-                      className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
-                    >
-                      {v}
-                      <CloseOutlined
-                        className="cursor-pointer text-xs"
-                        onClick={() => removeFilter(key, v)}
-                      />
-                    </div>
-                  ));
-                }
-                let label = value;
-                if (key === "freeCancellation") {
-                  label = "Free Cancellation";
-                }
-                if (key === "starRating") {
-                  label = `${value} Star`;
-                }
-                return (
-                  <div
-                    key={key}
-                    className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
-                  >
-                    {label}
-                    <CloseOutlined
-                      className="cursor-pointer text-xs"
-                      onClick={() => removeFilter(key)}
-                    />
-                  </div>
-                );
-              })}
+          {hasActiveFilters && (
+  <div className="sticky top-[137px] z-10 bg-[#edf7ff] pt-2">
+    <div className="!mb-4 flex flex-wrap gap-2">
+      {activeFilters.map(([key, value]) => {
+        if (!isFilterActive(value)) return null;
+        if (key === "minPrice" || key === "maxPrice") return null;
 
-              {(filters?.minPrice || filters?.maxPrice) && (
-                <div className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600">
-                  ₹{filters?.minPrice || 0}
-                  {" - "}₹{filters?.maxPrice || 50000}
-                  <CloseOutlined
-                    className="cursor-pointer text-xs"
-                    onClick={() =>
-                      setFilters((prev) => ({
-                        ...prev,
-                        minPrice: "",
-                        maxPrice: "",
-                      }))
-                    }
-                  />
-                </div>
-              )}
-              {hasActiveFilters && (
-                <button
-                  onClick={clearAll}
-                  className="rounded !bg-red-200 px-3 py-1 text-xs text-red-600 transition hover:bg-red-200"
-                >
-                  Clear All
+        if (Array.isArray(value)) {
+          return value.map((v, i) => (
+            <div
+              key={`${key}-${i}`}
+              className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
+            >
+              {v}
+              <CloseOutlined
+                className="cursor-pointer text-xs"
+                onClick={() => removeFilter(key, v)}
+              />
+            </div>
+          ));
+        }
+
+        let label = value;
+        if (key === "freeCancellation") label = "Free Cancellation";
+        if (key === "starRating") label = `${value} Star`;
+
+        return (
+          <div
+            key={key}
+            className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
+          >
+            {label}
+            <CloseOutlined
+              className="cursor-pointer text-xs"
+              onClick={() => removeFilter(key)}
+            />
+          </div>
+        );
+      })}
+
+      {(filters?.minPrice || filters?.maxPrice) && (
+        <div className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600">
+          ₹{filters?.minPrice || 0} - ₹{filters?.maxPrice || 50000}
+          <CloseOutlined
+            className="cursor-pointer text-xs"
+            onClick={() =>
+              setFilters((prev) => ({
+                ...prev,
+                minPrice: "",
+                maxPrice: "",
+              }))
+            }
+          />
+        </div>
+      )}
+
+      <button
+        onClick={clearAll}
+        className="rounded !bg-red-200 px-3 py-1 text-xs text-red-600"
+      >
+        Clear All
                 </button>
-              )}
+            
             </div>
           </div>
+          )}
           <div id="hotel-list-section">
             <HotelList
               searchData={appliedSearchData}
