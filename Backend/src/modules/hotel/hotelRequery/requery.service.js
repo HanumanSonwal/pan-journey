@@ -1,26 +1,22 @@
 import HotelTempBooking from "../hotelTempBooking/hotelTempBooking.model.js";
 
-export const getHotelRequeryByUserService = async (userId, bookingRefNo) => {
-  // Specific booking
-  if (bookingRefNo) {
-    const booking = await HotelTempBooking.findOne({
-      UserId: userId,
-      "hotelRequeryResponse.BookingRefNo": bookingRefNo,
-    }).select("hotelRequeryResponse");
-
-    if (!booking?.hotelRequeryResponse) {
-      throw new Error("Booking not found");
-    }
-
-    return booking.hotelRequeryResponse;
-  }
-
-  // All confirmed/requeried bookings
-  const bookings = await HotelTempBooking.find({
+export const getHotelRequeryByUserService = async (
+  userId,
+  bookingRefNo,
+  status,
+) => {
+  const query = {
     UserId: userId,
     hotelRequeryResponse: { $exists: true },
     "hotelRequeryResponse.BookingRefNo": { $exists: true },
-  })
+  };
+
+  // Status filter
+  if (status) {
+    query["hotelRequeryResponse.TicketStatusDesc"] = status;
+  }
+
+  const bookings = await HotelTempBooking.find(query)
     .sort({ createdAt: -1 })
     .select("hotelRequeryResponse");
 
