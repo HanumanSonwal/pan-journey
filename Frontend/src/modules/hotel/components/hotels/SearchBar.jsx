@@ -51,7 +51,7 @@ export default function SearchBar({ onSearch }) {
       pets: draftSearchData?.pets ? "true" : "false",
     });
     applySearch();
-   console.log("SEARCHBAR CITY =>", draftSearchData?.city);
+    console.log("SEARCHBAR CITY =>", draftSearchData?.city);
     console.log("citySlug:", citySlug);
     console.log("queryccc:", query.toString());
     router.push(`/hotels?${query.toString()}`);
@@ -59,7 +59,7 @@ export default function SearchBar({ onSearch }) {
 
   return (
     <div className="sticky top-0 z-5 bg-[#72C0F0] shadow">
-      <div className="px-2 py-6 pb-13 md:px-6">
+      <div className="px-2 py-1 pb-8 md:px-6">
         <div className="mx-auto max-w-[1250px]">
           {/* Heading */}
 

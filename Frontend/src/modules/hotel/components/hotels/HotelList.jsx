@@ -159,7 +159,7 @@ function HotelList({ searchData, filters, sort }) {
   }
 
   return (
-    <div className="flex flex-col gap-4 ">
+    <div className="flex flex-col gap-4 mt-3 ">
       {/* HOTELS */}
       {mappedHotels.map((hotel, index) => (
         <HotelCard key={hotel.id || index} hotel={hotel} />

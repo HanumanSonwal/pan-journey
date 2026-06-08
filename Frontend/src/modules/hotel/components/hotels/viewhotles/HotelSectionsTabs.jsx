@@ -114,8 +114,8 @@ const HotelSectionsTabs = ({ activeTab = "Rooms", setActiveTab }) => {
 
       <div
         ref={ref}
-        className={`z-[8] w-full border border-gray-200 bg-white text-[#0ea5e9] shadow-md
-        ${isFixed ? "fixed left-0 top-[140px] w-full" : "relative"}`}
+        className={`z-[8] w-full border border-gray-200 bg-white text-[#0ea5e9] shadow-[0_8px_20px_rgba(14,165,233,0.25)]
+        ${isFixed ? "fixed left-0 top-[110px] w-full" : "relative"}`}
       >
         <div className="flex overflow-x-auto scrollbar-hide">
           {tabs.map((tab) => {
