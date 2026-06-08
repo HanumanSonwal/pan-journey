@@ -79,8 +79,8 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   const hotelImages = supplierData?.HotelGallery || [];
   const amenities = supplierData?.Amenities
     ? supplierData.Amenities.split(",")
-        .map((i) => i.trim())
-        .filter(Boolean)
+      .map((i) => i.trim())
+      .filter(Boolean)
     : [];
   const hotelDetails = supplierData || [];
   const handleReloadHotels = async () => {
@@ -131,15 +131,14 @@ function HotelDetails({ initialPayload = null, cms = null }) {
       <SearchBar />
 
       <div
-        className={`relative mx-auto w-full max-w-7xl px-2 pb-8 transition-all duration-300 sm:px-4 md:px-6 ${
-          isScrolled ? "z-0" : "!z-[820]"
-        }`}
+        className={`mx-auto w-full max-w-7xl px-2 pb-8 sm:px-4 md:px-6 relative transition-all duration-300 ${isScrolled ? "z-0" : "!z-[820]"
+          }`}
       >
-        <div className="-mt-7">
+        <div className="-mt-3">
           {showSkeleton ? (
             <HotelDetailsSkeleton />
           ) : (
-            <Card className="overflow-hidden rounded border-0 shadow-lg">
+         <Card className="overflow-hidden rounded-md border-0 shadow-lg">
               {/* HEADER */}
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex min-w-0 items-start gap-3">

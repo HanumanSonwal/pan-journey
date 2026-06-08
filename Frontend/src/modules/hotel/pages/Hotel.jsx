@@ -174,84 +174,126 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
   if (!mounted) return null;
   return (
     <div className="bg-[#edf7ff]">
-      <SearchBar searchData={draftSearchData} onSearch={handleSearch} />
+      <SearchBar
+        searchData={draftSearchData}
+        onSearch={handleSearch}
+      />
+
       <div className="relative mx-auto mt-[-28px] flex max-w-7xl gap-4 p-3 md:flex-nowrap">
+        {/* SIDEBAR */}
         <div
           className={`sticky top-[98px] max-h-[calc(100vh-40px)] w-full overflow-y-auto sm:w-64 md:w-72 ${sidebarZ0 ? "z-0" : "z-20"
             }`}
         >
-          <SidebarFilters filters={filters} setFilters={setFilters} />
-        </div>
-
-        <div className="min-w-0 flex-1">
-          <SortBar sort={sort} setSort={setSort} />
-          {/* ACTIVE FILTERS */}
-          {hasActiveFilters && (
-  <div className="sticky top-[137px] z-10 bg-[#edf7ff] pt-2">
-    <div className="!mb-4 flex flex-wrap gap-2">
-      {activeFilters.map(([key, value]) => {
-        if (!isFilterActive(value)) return null;
-        if (key === "minPrice" || key === "maxPrice") return null;
-
-        if (Array.isArray(value)) {
-          return value.map((v, i) => (
-            <div
-              key={`${key}-${i}`}
-              className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
-            >
-              {v}
-              <CloseOutlined
-                className="cursor-pointer text-xs"
-                onClick={() => removeFilter(key, v)}
-              />
-            </div>
-          ));
-        }
-
-        let label = value;
-        if (key === "freeCancellation") label = "Free Cancellation";
-        if (key === "starRating") label = `${value} Star`;
-
-        return (
-          <div
-            key={key}
-            className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
-          >
-            {label}
-            <CloseOutlined
-              className="cursor-pointer text-xs"
-              onClick={() => removeFilter(key)}
-            />
-          </div>
-        );
-      })}
-
-      {(filters?.minPrice || filters?.maxPrice) && (
-        <div className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600">
-          ₹{filters?.minPrice || 0} - ₹{filters?.maxPrice || 50000}
-          <CloseOutlined
-            className="cursor-pointer text-xs"
-            onClick={() =>
-              setFilters((prev) => ({
-                ...prev,
-                minPrice: "",
-                maxPrice: "",
-              }))
-            }
+          <SidebarFilters
+            filters={filters}
+            setFilters={setFilters}
           />
         </div>
-      )}
 
-      <button
-        onClick={clearAll}
-        className="rounded !bg-red-200 px-3 py-1 text-xs text-red-600"
-      >
-        Clear All
-                </button>
-            
-            </div>
+        {/* RIGHT CONTENT */}
+        <div className="min-w-0 flex-1">
+          {/* SORT BAR */}
+          <div
+            className={`sticky top-[98px] ${sidebarZ0 ? "!-z-10" : "z-20"
+              } bg-[#edf7ff]`}
+          >
+            <SortBar
+              sort={sort}
+              setSort={setSort}
+            />
           </div>
+
+          {/* ACTIVE FILTERS */}
+          {hasActiveFilters && (
+            <div
+              className={`sticky top-[137px] ${sidebarZ0 ? "z-0" : "z-10"
+                } bg-[#edf7ff] pt-2`}
+            >
+              <div className="!mb-4 flex flex-wrap gap-2">
+                {activeFilters.map(([key, value]) => {
+                  if (!isFilterActive(value)) return null;
+
+                  if (
+                    key === "minPrice" ||
+                    key === "maxPrice"
+                  ) {
+                    return null;
+                  }
+
+                  if (Array.isArray(value)) {
+                    return value.map((v, i) => (
+                      <div
+                        key={`${key}-${i}`}
+                        className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
+                      >
+                        {v}
+                        <CloseOutlined
+                          className="cursor-pointer text-xs"
+                          onClick={() =>
+                            removeFilter(key, v)
+                          }
+                        />
+                      </div>
+                    ));
+                  }
+
+                  let label = value;
+
+                  if (key === "freeCancellation") {
+                    label = "Free Cancellation";
+                  }
+
+                  if (key === "starRating") {
+                    label = `${value} Star`;
+                  }
+
+                  return (
+                    <div
+                      key={key}
+                      className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
+                    >
+                      {label}
+                      <CloseOutlined
+                        className="cursor-pointer text-xs"
+                        onClick={() =>
+                          removeFilter(key)
+                        }
+                      />
+                    </div>
+                  );
+                })}
+
+                {(filters?.minPrice ||
+                  filters?.maxPrice) && (
+                    <div className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600">
+                      ₹{filters?.minPrice || 0} - ₹
+                      {filters?.maxPrice || 50000}
+
+                      <CloseOutlined
+                        className="cursor-pointer text-xs"
+                        onClick={() =>
+                          setFilters((prev) => ({
+                            ...prev,
+                            minPrice: "",
+                            maxPrice: "",
+                          }))
+                        }
+                      />
+                    </div>
+                  )}
+
+                <button
+                  onClick={clearAll}
+                  className="rounded bg-red-200 px-3 py-1 text-xs text-red-600"
+                >
+                  Clear All
+                </button>
+              </div>
+            </div>
           )}
+
+          {/* HOTEL LIST */}
           <div id="hotel-list-section">
             <HotelList
               searchData={appliedSearchData}
@@ -260,12 +302,14 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
             />
           </div>
 
-          {/* CMS / Dynamic SEO */}
+          {/* SEO CONTENT */}
           <HotelsSeoSection>
             {cms ? (
               <CMSContentRenderer cms={cms} />
             ) : (
-              <DynamicSeoFallback cityName={appliedSearchData?.city} />
+              <DynamicSeoFallback
+                cityName={appliedSearchData?.city}
+              />
             )}
           </HotelsSeoSection>
         </div>
