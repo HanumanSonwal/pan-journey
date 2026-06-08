@@ -27,18 +27,23 @@ import DynamicHotelSeoFallback from "../seo/DynamicHotelSeoFallback";
 import { useHotelBookingStore } from "../store/booking.store";
 import { useHotelSearchStore } from "../store/serchData.store";
 
+import { useCurrencyStore } from "@/modules/shared/store/currency.store";
 function HotelDetails({ initialPayload = null, cms = null }) {
   const { selectedHotel } = useSelectedHotelStore();
   const { appliedSearchData } = useHotelSearchStore();
   const { setBookingData } = useHotelBookingStore();
+  const { selectedCurrency } = useCurrencyStore();
   const [activeTab, setActiveTab] = useState("overview");
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [sessionExpired] = useState(false);
   const [reloadingHotels] = useState(false);
+  console.log("selectedCurrency in hotel details", selectedCurrency);
   const payload = useMemo(() => {
     if (initialPayload) {
       return {
         ...initialPayload,
+        currency: selectedCurrency?.code || "INR",
+
         hotelMeta: {
           cityName: appliedSearchData?.cityData?.id,
           stateName: appliedSearchData?.cityData?.stateName,
@@ -49,6 +54,7 @@ function HotelDetails({ initialPayload = null, cms = null }) {
 
     return {
       hotelId: selectedHotel?.hotelMeta?.hotelId,
+      currency: selectedCurrency?.code || "INR",
       hotelMeta: {
         cityName: selectedHotel?.hotelMeta?.cityName,
         stateName: selectedHotel?.hotelMeta?.stateName,
@@ -57,7 +63,13 @@ function HotelDetails({ initialPayload = null, cms = null }) {
       hotelKey: selectedHotel?.hotelKey,
       searchKey: selectedHotel?.searchKey,
     };
-  }, [selectedHotel, initialPayload, appliedSearchData]);
+  }, [
+    selectedHotel,
+    initialPayload,
+    appliedSearchData,
+    selectedCurrency?.code,
+  ]);
+  console.log("HOTEL DETAILS PAYLOAD", payload);
   const { data, isLoading, isFetching, refetch } = useHotelDetails(payload);
   const showSkeleton = isLoading || isFetching;
   const hotelData = data || {};
@@ -102,32 +114,32 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   ]);
   const [isScrolled, setIsScrolled] = useState(false);
 
-useEffect(() => {
-  const handleScroll = () => {
-    setIsScrolled(window.scrollY > 0);
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
 
-  window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll);
 
-  return () => {
-    window.removeEventListener("scroll", handleScroll);
-  };
-}, []);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
-return (
-  <div className="min-h-screen w-full bg-[#eaf3f9]">
-    <SearchBar />
+  return (
+    <div className="min-h-screen w-full bg-[#eaf3f9]">
+      <SearchBar />
 
-    <div
-      className={`mx-auto w-full max-w-7xl px-2 pb-8 sm:px-4 md:px-6 relative transition-all duration-300 ${
-        isScrolled ? "z-0" : "!z-[820]"
-      }`}
-    >
-      <div className="-mt-7">
-        {showSkeleton ? (
-          <HotelDetailsSkeleton />
-        ) : (
-       <Card className="overflow-hidden rounded border-0 shadow-lg">
+      <div
+        className={`relative mx-auto w-full max-w-7xl px-2 pb-8 transition-all duration-300 sm:px-4 md:px-6 ${
+          isScrolled ? "z-0" : "!z-[820]"
+        }`}
+      >
+        <div className="-mt-7">
+          {showSkeleton ? (
+            <HotelDetailsSkeleton />
+          ) : (
+            <Card className="overflow-hidden rounded border-0 shadow-lg">
               {/* HEADER */}
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex min-w-0 items-start gap-3">

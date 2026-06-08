@@ -9,78 +9,47 @@ import {
   StarFilled,
 } from "@ant-design/icons";
 
-const bookingData = {
-  hotelName: "Valentines Retreat- Near Candolim Beach",
-  status: "Completed",
-  image: "https://images.unsplash.com/photo-1566073771259-6a8506099945",
-  address: "Sequeira waddo, Candolim, Bardez Goa, Goa, India",
-  checkIn: "18 Feb '25, Tue",
-  checkOut: "21 Feb '25, Fri",
-  checkInTime: "02:00 PM",
-  checkOutTime: "11:00 AM",
-  city: "Jaipur, Rajasthan",
-  nights: "3 Nights",
-  guests: "2 Adults",
-  rooms: "1 Room",
-  bookingId: "HTL8830291045",
-  confirmation: "9876543210",
-  bookedOn: "10 Feb '25",
-  mealPlan: "Breakfast Included",
-  rating: 5,
-  roomType: "Suite with Balcony",
-  roomGuests: "2 Adults, 1 Child",
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import { useRouter } from "next/navigation";
+import { useBookingDetails } from "../hooks/useBookingDetails";
 
-  policies: [
-    "Free stay for 1 children",
-    "Complimentary INR 300 Hotel Credit redeemable on Food",
-    "10% off on One-way Airport Transfer",
-    "15% Off on Laundry service",
-    "Free Breakfast",
-    "Existing bed(s) can accommodate all the guests",
-    "Non-Refundable",
-  ],
+dayjs.extend(customParseFormat);
 
-  guestDetails: [
-    {
-      name: "Rahul Kumar",
-      role: "Primary Guest",
-      phone: "+91 98765 43210",
-      email: "rahul.kumar@email.com",
-    },
+export default function BookingDetailsTab({ bookingRefNo }) {
+  const router = useRouter();
 
-    {
-      name: "Priya Kumar",
-      role: "Co-guest",
-    },
-  ],
+  const { data, isLoading } = useBookingDetails(bookingRefNo);
 
-  cancellationPolicies: [
-    "Free cancellation before 15 Feb '25, 11:59 PM",
-    "50% charge for cancellation between 16–17 Feb '25",
-    "Non-refundable on or after 18 Feb '25 (check-in date)",
-    "Modification allowed up to 48 hours before check-in",
-  ],
-
-  priceBreakup: [
-    {
-      label: "Room charges (3 nights × ₹8,500)",
-      value: "₹25,500",
-    },
-    {
-      label: "Taxes & service charges (18%)",
-      value: "₹2,240",
-    },
-    {
-      label: "Coupon discount (LEELA10)",
-      value: "- ₹1,500",
-    },
-  ],
-};
-
-export default function BookingDetailsTab({ booking, onBack }) {
-  if (!booking) {
-    return null;
+  if (isLoading) {
+    return (
+      <div className="rounded-xl bg-white p-8">Loading booking details...</div>
+    );
   }
+
+  const bookingData = data || {};
+  const hotel = bookingData?.HotelDetails || {};
+  const room = bookingData?.HotelRoomDetail?.[0] || {};
+  const payment = bookingData?.BookingPaymentDetails?.[0] || {};
+  const ratePlan = hotel?.HotelRatePlanDetails || {};
+
+  const baseAmount = Number(ratePlan?.Basic_Amount || 0);
+  const taxAmount = Number(ratePlan?.Tax || 0);
+  const gatewayCharges = Number(payment?.Gateway_Charges || 0);
+  const totalAmount = Number(ratePlan?.Total_Amount || 0);
+
+  const policies = [
+    ...(ratePlan?.Inclusion
+      ? ratePlan.Inclusion.split(",").map((item) => item.trim())
+      : []),
+  ];
+
+  const guest = bookingData?.PAXDetails || [];
+
+  const nights = dayjs(bookingData?.CheckOutDate, "DD/MM/YYYY").diff(
+    dayjs(bookingData?.CheckInDate, "DD/MM/YYYY"),
+    "day",
+  );
   return (
     <>
       {/* <div className="flex items-center justify-between border-b border-gray-200 px-6 py-5"> */}
@@ -90,7 +59,7 @@ export default function BookingDetailsTab({ booking, onBack }) {
         </h2>
 
         <button
-          onClick={onBack}
+          onClick={() => router.push("/profile?tab=BookingHistory")}
           className="flex items-center gap-2 text-[15px] font-semibold text-[#72C0F0]!"
         >
           <ArrowLeftOutlined />
@@ -109,41 +78,45 @@ export default function BookingDetailsTab({ booking, onBack }) {
               {/* LEFT */}
               <div className="flex gap-5">
                 <img
-                  src={bookingData?.image}
+                  src={hotel?.HotelImage}
                   alt="hotel"
                   className="h-[120px] w-[140px] shrink-0 rounded-xl object-cover"
                 />
 
                 <div>
                   <h2 className="text-[20px] leading-tight font-bold text-gray-900">
-                    {bookingData?.hotelName}
+                    {hotel?.HotelName}
                   </h2>
 
                   <div className="mt-3 flex flex-wrap items-center gap-3">
-                    <div className="flex items-center gap-1">
-                      {[...Array(bookingData?.rating)].map((_, i) => (
-                        <StarFilled
-                          key={i}
-                          className="text-[14px] !text-[#ffb400]"
-                        />
-                      ))}
-                    </div>
+                    {hotel?.StarCategoryId && (
+                      <div className="flex items-center gap-1">
+                        {[...Array(Number(hotel?.StarCategoryId || 0))].map(
+                          (_, i) => (
+                            <StarFilled
+                              key={i}
+                              className="text-[14px] !text-[#ffb400]"
+                            />
+                          ),
+                        )}
+                      </div>
+                    )}
 
                     <div className="rounded-md border border-gray-300 px-3 py-1 text-[13px] text-gray-700">
-                      Couple Friendly
+                      {ratePlan?.PayatHotel ? "Pay At Hotel" : "Prepaid"}
                     </div>
                   </div>
 
                   <p className="my-4! flex items-center gap-2 text-[16px] text-gray-500">
                     <EnvironmentOutlined />
-                    {bookingData?.address}
+                    {hotel?.Address}
                   </p>
                 </div>
               </div>
 
               {/* STATUS */}
               <div className="h-fit rounded-full border border-[#72C0F0] bg-[#edf7ff] px-4 py-1 text-[13px] font-semibold text-[#72C0F0]">
-                {bookingData?.status}
+                {bookingData?.TicketStatusDesc}
               </div>
             </div>
           </div>
@@ -155,15 +128,15 @@ export default function BookingDetailsTab({ booking, onBack }) {
               <p className="text-[14px] font-medium text-gray-500">Check-in</p>
 
               <h3 className="mt-1 text-[18px] leading-tight font-bold text-gray-900">
-                {bookingData?.checkIn}
+                {bookingData?.CheckInDate}
               </h3>
 
               <p className="mt-1 text-[16px] leading-none font-medium text-gray-700">
-                From {bookingData?.checkInTime}
+                From {hotel?.CheckInTime || "Hotel Standard Time"}
               </p>
 
               <p className="mt-2 text-[13px] text-gray-500">
-                {bookingData?.city}
+                {bookingData?.Origin}
               </p>
             </div>
 
@@ -178,7 +151,7 @@ export default function BookingDetailsTab({ booking, onBack }) {
               </div>
 
               <div className="mt-3 rounded-full border border-gray-300 bg-gray-50 px-3 py-[4px] text-[14px] leading-none font-medium text-gray-700">
-                🌙 {bookingData?.nights}
+                🌙 {nights} Night{nights > 1 ? "s" : ""}
               </div>
             </div>
 
@@ -187,11 +160,11 @@ export default function BookingDetailsTab({ booking, onBack }) {
               <p className="text-[14px] font-medium text-gray-500">Check-out</p>
 
               <h3 className="mt-1 text-[18px] leading-tight font-bold text-gray-900">
-                {bookingData?.checkOut}
+                {bookingData?.CheckOutDate}
               </h3>
 
               <p className="mt-1 text-[16px] leading-none font-medium text-gray-700">
-                By {bookingData?.checkOutTime}
+                By {hotel?.CheckOutTime || "Hotel Standard Time"}
               </p>
             </div>
           </div>
@@ -210,22 +183,27 @@ export default function BookingDetailsTab({ booking, onBack }) {
           <div className="p-5 md:p-6">
             {/* PACKAGE */}
             <div className="inline-flex rounded-lg border border-[#d89a00] px-3 py-1.5 text-[13px] font-semibold text-[#d89a00] md:text-[14px]">
-              Super Package
+              {ratePlan?.Inclusion?.includes("RoomOnly")
+                ? "Room Only"
+                : "Included Package"}
             </div>
 
             <div className="mt-6 md:mt-7">
               {/* ROOM TYPE */}
               <h3 className="text-[20px] leading-tight font-bold text-gray-900 md:text-[20px]">
-                {bookingData?.roomType}
+                {ratePlan?.HotelRoomTypeDesc}
               </h3>
 
               <p className="mt-2 text-[14px] text-gray-600 md:text-[15px]">
-                {bookingData?.roomGuests}
+                {room?.Adult_Count} Adult
+                {Number(room?.Child_Count) > 0
+                  ? `, ${room?.Child_Count} Child`
+                  : ""}
               </p>
 
               {/* POLICIES */}
               <div className="mt-6 grid grid-cols-1 gap-x-10 md:mt-7 md:grid-cols-2">
-                {bookingData?.policies?.map((item, index) => (
+                {policies?.map((item, index) => (
                   <div key={index} className="flex items-start gap-2">
                     <span className="mt-[2px] text-[14px] text-gray-700">
                       •
@@ -247,11 +225,14 @@ export default function BookingDetailsTab({ booking, onBack }) {
                   </p>
 
                   <h4 className="mt-1 text-[16px] font-bold text-gray-900 md:text-[16px]">
-                    {bookingData?.guests}
+                    {room?.Adult_Count} Adult
+                    {Number(room?.Child_Count) > 0
+                      ? `, ${room?.Child_Count} Child`
+                      : ""}
                   </h4>
 
                   <p className="mt-1 text-[14px] text-gray-600">
-                    {bookingData?.rooms}
+                    Room {guest?.RoomNo || 1}
                   </p>
                 </div>
 
@@ -262,7 +243,7 @@ export default function BookingDetailsTab({ booking, onBack }) {
                   </p>
 
                   <h4 className="mt-1 text-[18px] font-bold break-all text-gray-900 md:text-[20px]">
-                    {bookingData?.bookingId}
+                    {bookingData?.BookingRefNo}
                   </h4>
                 </div>
 
@@ -273,7 +254,7 @@ export default function BookingDetailsTab({ booking, onBack }) {
                   </p>
 
                   <h4 className="mt-1 text-[18px] font-bold text-gray-900 md:text-[20px]">
-                    CNF {bookingData?.confirmation}
+                    {bookingData?.VoucherNumber}
                   </h4>
                 </div>
 
@@ -284,7 +265,9 @@ export default function BookingDetailsTab({ booking, onBack }) {
                   </p>
 
                   <h4 className="mt-1 text-[18px] font-bold text-gray-900 md:text-[20px]">
-                    {bookingData?.mealPlan}
+                    {ratePlan?.Inclusion?.includes("RoomOnly")
+                      ? "Room Only"
+                      : ratePlan?.Inclusion}
                   </h4>
                 </div>
 
@@ -295,12 +278,21 @@ export default function BookingDetailsTab({ booking, onBack }) {
                   </p>
 
                   <h4 className="mt-1 text-[18px] font-bold text-gray-900 md:text-[20px]">
-                    {bookingData?.bookedOn}
+                    {bookingData?.BookingDate}
                   </h4>
 
                   <p className="mt-1 text-[14px] text-gray-500">
                     via Pan Journey
                   </p>
+                </div>
+                <div>
+                  <p className="text-[13px] font-medium text-gray-500">
+                    Invoice Number
+                  </p>
+
+                  <h4 className="mt-1 text-[18px] font-bold text-gray-900 md:text-[20px]">
+                    {bookingData?.InvoiceNumber}
+                  </h4>
                 </div>
               </div>
             </div>
@@ -319,17 +311,14 @@ export default function BookingDetailsTab({ booking, onBack }) {
 
           {/* GUEST LIST */}
           <div>
-            {bookingData?.guestDetails?.map((guest, index) => (
+            {bookingData?.PAXDetails?.map((guest, index) => (
               <div
                 key={index}
                 className="flex items-start gap-4 border-b border-gray-200 px-5 py-5 last:border-0 md:px-6"
               >
                 {/* AVATAR */}
                 <div className="h-[52px]md:w-[56px] flex w-[52px] shrink-0 items-center justify-center rounded-full border border-[#d9ecf8] bg-[#edf7ff] text-[15px] font-bold text-[#3b82b6] md:h-[56px] md:text-[16px]">
-                  {guest.name
-                    ?.split(" ")
-                    ?.map((n) => n[0])
-                    ?.join("")}
+                  {`${guest?.FirstName?.[0] || ""}${guest?.LastName?.[0] || ""}`}
                 </div>
 
                 {/* CONTENT */}
@@ -337,33 +326,25 @@ export default function BookingDetailsTab({ booking, onBack }) {
                   {/* NAME + ROLE */}
                   <div className="flex flex-col sm:flex-row sm:items-center">
                     <h3 className="text-[17px] font-bold break-words text-gray-900 md:text-[16px]">
-                      {guest.name}
+                      {guest?.Title} {guest?.FirstName} {guest?.LastName}
                     </h3>
 
                     {guest.role && (
-                      <span className="!text-[#3b82b6] !text-[11px] w-fit rounded-full bg-[#edf7ff] px-2.5 py-[3px] font-medium ml-[25px]">
-                        {guest.role}
+                      <span className="ml-[25px] w-fit rounded-full bg-[#edf7ff] px-2.5 py-[3px] !text-[11px] font-medium !text-[#3b82b6]">
+                        {guest?.Passengertyp}
                       </span>
                     )}
                   </div>
 
                   {/* CONTACT */}
-                  <div className="flex flex-wrap items-center gap-2">
-                    {guest.phone && (
-                      <p className="text-[13px] text-gray-700 md:text-[14px]">
-                        {guest.phone}
-                      </p>
-                    )}
+                  <div className="mt-2 flex flex-wrap items-center gap-4">
+                    <p className="text-[13px] text-gray-600 md:text-[14px]">
+                      Room No: {guest?.RoomNo}
+                    </p>
 
-                    {guest.phone && guest.email && (
-                      <span className="text-gray-400">,</span>
-                    )}
-
-                    {guest.email && (
-                      <p className="text-[13px] break-all text-gray-500 md:text-[14px]">
-                        {guest.email}
-                      </p>
-                    )}
+                    <p className="text-[13px] text-gray-600 md:text-[14px]">
+                      Guest Type: {guest?.Passengertyp}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -382,45 +363,49 @@ export default function BookingDetailsTab({ booking, onBack }) {
 
           {/* BODY */}
           <div className="p-5 md:p-6">
-            {bookingData?.priceBreakup?.map((item, index) => {
-              const isDiscount =
-                item.label?.toLowerCase().includes("discount") ||
-                item.value?.includes("-");
+            <div className="mb-5 flex items-center justify-between">
+              <p className="text-[14px] text-gray-700 md:text-[15px]">
+                Room Charges
+              </p>
 
-              return (
-                <div
-                  key={index}
-                  className={`flex items-start justify-between gap-4 sm:items-center ${item.total ? "mt-5 border-t border-gray-200 pt-5" : "mb-5"
-                    }`}
-                >
-                  {/* LABEL */}
-                  <p
-                    className={`leading-relaxed ${item.total
-                      ? "text-[18px] font-bold text-gray-900 md:text-[20px]"
-                      : isDiscount
-                        ? "text-[14px] text-gray-700 md:text-[15px]"
-                        : "text-[14px] text-gray-700 md:text-[15px]"
-                      }`}
-                  >
-                    {item.label}
-                  </p>
+              <p className="text-[15px] font-semibold text-gray-800 md:text-[16px]">
+                ₹{Number(ratePlan?.Basic_Amount || 0).toFixed(2)}
+              </p>
+            </div>
 
-                  {/* VALUE */}
-                  <p
-                    className={`shrink-0 text-right leading-none ${item.total
-                      ? "text-[18px] font-bold text-gray-900 md:text-[18px]"
-                      : isDiscount
-                        ? "text-[15px] font-semibold text-[#22c55e] md:text-[16px]"
-                        : "text-[15px] font-semibold text-gray-800 md:text-[16px]"
-                      }`}
-                  >
-                    {item.value}
-                  </p>
-                </div>
-              );
-            })}
+            <div className="mb-5 flex items-center justify-between">
+              <p className="text-[14px] text-gray-700 md:text-[15px]">
+                Taxes & Fees
+              </p>
 
-            {/* TOTAL PAID SECTION */}
+              <p className="text-[15px] font-semibold text-gray-800 md:text-[16px]">
+                ₹{Number(ratePlan?.Tax || 0).toFixed(2)}
+              </p>
+            </div>
+
+            {Number(payment?.Gateway_Charges || 0) > 0 && (
+              <div className="mb-5 flex items-center justify-between">
+                <p className="text-[14px] text-gray-700 md:text-[15px]">
+                  Gateway Charges
+                </p>
+
+                <p className="text-[15px] font-semibold text-gray-800 md:text-[16px]">
+                  ₹{Number(payment?.Gateway_Charges || 0).toFixed(2)}
+                </p>
+              </div>
+            )}
+
+            <div className="mb-5 flex items-center justify-between">
+              <p className="text-[14px] text-gray-700 md:text-[15px]">
+                Currency
+              </p>
+
+              <p className="text-[15px] font-semibold text-gray-800 md:text-[16px]">
+                {payment?.Currency_Code || "INR"}
+              </p>
+            </div>
+
+            {/* TOTAL PAID */}
             <div className="mt-5 border-t border-gray-200 pt-5">
               <div className="flex items-start justify-between gap-4 sm:items-center">
                 <div>
@@ -428,23 +413,28 @@ export default function BookingDetailsTab({ booking, onBack }) {
                     Total Paid
                   </p>
 
-                  <p className="mt-2 text-[13px] leading-relaxed text-gray-600 md:text-[14px]">
-                    Paid via{" "}
-                    <span className="font-semibold text-gray-800">
-                      HDFC Credit Card
-                    </span>{" "}
-                    ending ••••7823
+                  <p className="text-[13px] leading-relaxed text-gray-600 md:text-[14px]">
+                    Payment Ref:
+                    <span className="ml-1 font-medium text-gray-800">
+                      {payment?.PaymentConfirmation_Number || "-"}
+                    </span>
+                  </p>
+
+                  <p className="text-[13px] leading-relaxed text-gray-600 md:text-[14px]">
+                    Payment Status:
+                    <span className="ml-1 font-medium text-green-600">
+                      Paid
+                    </span>
                   </p>
                 </div>
 
                 <p className="shrink-0 text-right text-[18px] font-bold text-gray-900 md:text-[18px]">
-                  ₹27,540
+                  ₹{Number(ratePlan?.Total_Amount || 0).toFixed(2)}
                 </p>
               </div>
             </div>
           </div>
         </div>
-
         {/* MAP */}
         <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-[1px_4px_4px_4px_#00000014]">
           {/* HEADER */}

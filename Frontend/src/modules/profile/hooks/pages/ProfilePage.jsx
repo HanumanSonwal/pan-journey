@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import ProfileOverview from "../../components/ ProfileOverview";
 import BookingDetailsTab from "../../components/BookingDetailsTab";
 import BookingHistoryTab from "../../components/BookingHistoryTab";
@@ -10,12 +10,15 @@ import Sidebar from "../../components/Sidebar";
 import WishlistTab from "../../components/WishlistTab";
 
 export default function ProfilePage() {
-  const [activeTab, setActiveTab] = useState("profile");
-  const [selectedBooking, setSelectedBooking] = useState(null);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const activeTab = searchParams.get("tab") || "profile";
+
+  const bookingRefNo = searchParams.get("bookingRefNo");
 
   const handleTabChange = (tab) => {
-    setActiveTab(tab);
-    setSelectedBooking(null);
+    router.push(`/profile?tab=${tab}`);
   };
 
   return (
@@ -30,7 +33,7 @@ export default function ProfilePage() {
       </div>
 
       {/* 🔷 MAIN SECTION */}
-      <div className="relative mx-auto mt-8 max-w-[1300px] px-3 pb-10 sm:-mt-10 sm:px-4 md:-mt-12 md:px-5 md:pb-12 lg:px-6">
+      <div className="relative mx-auto mt-8 max-w-[1300px] px-3 pb-10 sm:-mt-6! sm:px-4 md:-mt-12 md:px-5 md:pb-12 lg:px-6">
         {/* 🔥 TABLET HORIZONTAL SIDEBAR */}
         <div className="mb-5 hidden overflow-x-auto md:block lg:hidden">
           <div className="flex min-w-max gap-3">
@@ -43,7 +46,7 @@ export default function ProfilePage() {
         </div>
 
         {/* 🔷 GRID */}
-        <div className="grid grid-cols-1 gap-4 md:gap-5 lg:grid-cols-[340px_minmax(0,1fr)] lg:gap-6">
+        <div className="grid grid-cols-1 gap-2 md:gap-2 lg:grid-cols-[340px_minmax(0,1fr)] lg:gap-2">
           {/* 🔷 SIDEBAR (desktop only) */}
           <div className="sticky top-5 hidden w-full self-start lg:block">
             <Sidebar activeTab={activeTab} setActiveTab={handleTabChange} />
@@ -54,17 +57,10 @@ export default function ProfilePage() {
             {activeTab === "profile" && <ProfileOverview />}
             {activeTab === "documents" && <DocumentsTab />}
             {activeTab === "wishlist" && <WishlistTab />}
-            {activeTab === "BookingHistory" && (
-              <>
-                {!selectedBooking ? (
-                  <BookingHistoryTab setSelectedBooking={setSelectedBooking} />
-                ) : (
-                  <BookingDetailsTab
-                    booking={selectedBooking}
-                    onBack={() => setSelectedBooking(null)}
-                  />
-                )}
-              </>
+            {activeTab === "BookingHistory" && <BookingHistoryTab />}
+
+            {activeTab === "booking-details" && (
+              <BookingDetailsTab bookingRefNo={bookingRefNo} />
             )}
 
             {activeTab === "settings" && (

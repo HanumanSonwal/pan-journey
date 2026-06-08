@@ -5,13 +5,26 @@ export const getHotelRequeryByUserService = async (
   bookingRefNo,
   status,
 ) => {
+  // Single booking details
+  if (bookingRefNo) {
+    const booking = await HotelTempBooking.findOne({
+      UserId: userId,
+      "hotelRequeryResponse.BookingRefNo": bookingRefNo,
+    }).select("hotelRequeryResponse");
+
+    if (!booking) {
+      throw new Error("Booking not found");
+    }
+
+    return booking.hotelRequeryResponse;
+  }
+
+  // Booking listing
   const query = {
     UserId: userId,
     hotelRequeryResponse: { $exists: true },
-    "hotelRequeryResponse.BookingRefNo": { $exists: true },
   };
 
-  // Status filter
   if (status) {
     query["hotelRequeryResponse.TicketStatusDesc"] = status;
   }
