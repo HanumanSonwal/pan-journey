@@ -1,13 +1,13 @@
 import express from "express";
 import { protectCustomer } from "../../../middleware/customerAuth.middleware.js";
-import { getHotelRequeryByUserController } from "./requery.controller.js";
+import { downloadHotelInvoiceController } from "./invoice.controller.js";
 
 const router = express.Router();
 
 router.get(
-  "/hotel/mybookings",
+  "/hotel/invoice/:bookingRefNo",
   protectCustomer,
-  getHotelRequeryByUserController,
+  downloadHotelInvoiceController,
 );
 
 export default router;

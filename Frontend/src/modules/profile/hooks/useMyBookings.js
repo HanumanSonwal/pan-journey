@@ -6,7 +6,7 @@ import { getMyBookingsApi } from "../api/booking.api";
 export const useMyBookings = () => {
   return useQuery({
     queryKey: ["my-bookings"],
-    queryFn: getMyBookingsApi,
+    queryFn: () => getMyBookingsApi(),
     staleTime: 1000 * 60 * 5,
     retry: 1,
   });
