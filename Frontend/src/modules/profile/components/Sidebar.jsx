@@ -61,14 +61,14 @@ export default function Sidebar({ activeTab, setActiveTab, horizontal }) {
       <div
         className={
           horizontal
-            ? "flex w-full items-center gap-4 overflow-x-auto bg-white p-3 shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
+            ? "flex w-full items-center gap-4  overflow-x-auto bg-white p-3 shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
             : "w-[320px] bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
         }
       >
         {/* 🔹 DESKTOP PROFILE HEADER */}
         {!horizontal && (
           <div className="flex items-center gap-4 border-b border-gray-100 pb-6">
-            <div className="text-xxl flex h-18 w-18 items-center justify-center overflow-hidden rounded-full bg-[#4A9BB5] font-bold text-white">
+            <div className="!text-xxl flex h-18 w-18 items-center justify-center overflow-hidden rounded-full bg-[#4A9BB5] font-bold text-white">
               {user?.image && !avatarError ? (
                 <Image
                   src={user.image}
@@ -115,17 +115,15 @@ export default function Sidebar({ activeTab, setActiveTab, horizontal }) {
                   }
                   setActiveTab(item.key);
                 }}
-                className={`font-roboto flex cursor-pointer items-center justify-between rounded border font-bold ${horizontal ? "px-2 py-0 whitespace-nowrap" : "px-2 py-2"} transition-all duration-200 ${
-                  isActive
-                    ? "border-[#4A9BB5] bg-[#4A9BB5]/10"
-                    : "border-gray-200 hover:bg-gray-50"
-                } `}
+                className={`font-roboto flex cursor-pointer items-center justify-between rounded border !text-[18px] font-bold ${horizontal ? "px-2 py-0 whitespace-nowrap" : "px-2 py-2"} transition-all duration-200 ${isActive
+                  ? "border-[#4A9BB5] bg-[#4A9BB5]/10"
+                  : "border-gray-200 hover:bg-gray-50"
+                  } `}
               >
                 {/* LEFT */}
                 <div
-                  className={`flex items-center gap-3 ${
-                    isActive ? "text-[#4A9BB5]" : "text-black"
-                  }`}
+                  className={`flex items-center gap-3 ${isActive ? "text-[#4A9BB5]" : "text-black"
+                    }`}
                 >
                   {/* 🔥 PROFILE ICON → DP (ONLY in tablet) */}
                   {horizontal && item.key === "profile" ? (
@@ -145,18 +143,17 @@ export default function Sidebar({ activeTab, setActiveTab, horizontal }) {
                       )}
                     </div>
                   ) : (
-                    <span className="text-[18px]">{item.icon}</span>
+                    <span className="!text-[18px]">{item.icon}</span>
                   )}
 
-                  <span className="text-[14px] font-medium">{item.label}</span>
+                  <span className="text-[16px] font-medium">{item.label}</span>
                 </div>
 
                 {/* RIGHT ARROW (only desktop) */}
                 {!horizontal && (
                   <span
-                    className={`${
-                      isActive ? "text-[#4A9BB5]" : "text-gray-400"
-                    }`}
+                    className={`${isActive ? "text-[#4A9BB5]" : "text-gray-400"
+                      }`}
                   >
                     →
                   </span>
