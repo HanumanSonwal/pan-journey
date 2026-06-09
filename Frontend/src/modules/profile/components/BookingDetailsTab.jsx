@@ -2,6 +2,7 @@
 
 import {
   ArrowLeftOutlined,
+  ArrowRightOutlined,
   CheckCircleFilled,
   DownloadOutlined,
   EnvironmentOutlined,
@@ -20,7 +21,6 @@ import { useCancelBooking } from "../hooks/useCancelBooking";
 import { useDownloadInvoice } from "../hooks/useDownloadInvoice";
 import CancelBookingModal from "./CancelBookingModal";
 import ShareBookingModal from "./ShareBookingModal";
-
 dayjs.extend(customParseFormat);
 
 export default function BookingDetailsTab({ bookingRefNo }) {
@@ -31,7 +31,6 @@ export default function BookingDetailsTab({ bookingRefNo }) {
   const { mutate: cancelBooking, isPending: cancelling } = useCancelBooking();
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const { data, isLoading } = useBookingDetails(bookingRefNo);
-
   if (isLoading) {
     return (
       <div className="rounded-xl bg-white p-8">Loading booking details...</div>
@@ -43,20 +42,16 @@ export default function BookingDetailsTab({ bookingRefNo }) {
   const room = bookingData?.HotelRoomDetail?.[0] || {};
   const payment = bookingData?.BookingPaymentDetails?.[0] || {};
   const ratePlan = hotel?.HotelRatePlanDetails || {};
-
   const cancellationPolicies =
     bookingData?.CancellationPolicy?.replaceAll("<br>", "\n")
       ?.split("\n")
       ?.filter(Boolean) || [];
-
   const policies = ratePlan?.Inclusion
     ? ratePlan.Inclusion.split(",")
         .map((item) => item.trim())
         .filter((item) => item.length > 0)
     : [];
-
   const guest = bookingData?.PAXDetails || [];
-
   const nights = dayjs(bookingData?.CheckOutDate, "DD/MM/YYYY").diff(
     dayjs(bookingData?.CheckInDate, "DD/MM/YYYY"),
     "day",
@@ -65,17 +60,14 @@ export default function BookingDetailsTab({ bookingRefNo }) {
     cancelBooking(bookingData?.BookingRefNo, {
       onSuccess: (response) => {
         message.success(response?.message || "Booking cancelled successfully");
-
         queryClient.invalidateQueries({
           queryKey: ["my-bookings"],
         });
-
         queryClient.invalidateQueries({
           queryKey: ["booking-details"],
         });
 
         setCancelModalOpen(false);
-
         setTimeout(() => {
           router.push("/profile?tab=BookingHistory");
         }, 1000);
@@ -89,14 +81,10 @@ export default function BookingDetailsTab({ bookingRefNo }) {
 
   const shareText = `
 🏨 *${hotel?.HotelName}*
-
 📌 Booking Ref: ${bookingData?.BookingRefNo}
-
 📅 Check In: ${bookingData?.CheckInDate}
 📅 Check Out: ${bookingData?.CheckOutDate}
-
 ✅ Status: ${bookingData?.TicketStatusDesc}
-
 🌐 Booked via PAN Journey
 `;
 
@@ -104,29 +92,47 @@ export default function BookingDetailsTab({ bookingRefNo }) {
     downloadInvoice(bookingData?.BookingRefNo, {
       onSuccess: (blob) => {
         const url = window.URL.createObjectURL(blob);
-
         const link = document.createElement("a");
-
         link.href = url;
-
         link.download = `invoice-${bookingData?.BookingRefNo}.pdf`;
-
         document.body.appendChild(link);
-
         link.click();
-
         link.remove();
-
         window.URL.revokeObjectURL(url);
       },
 
       onError: (error) => {
         console.log(error);
-
         message.error("Unable to download invoice");
       },
     });
   };
+
+  const PriceRow = ({ label, value, last = false, valueClass = "" }) => (
+    <div
+      className={`flex items-center justify-between py-1 ${
+        !last ? "border-b border-gray-100" : ""
+      }`}
+    >
+      <p className="font-roboto! mb-0! text-[14px] text-gray-600">{label}</p>
+
+      <p
+        className={`font-roboto! mb-0! text-[15px] font-semibold ${valueClass || "text-gray-900"}`}
+      >
+        {value}
+      </p>
+    </div>
+  );
+
+  const formattedPolicies = cancellationPolicies?.map((item) => {
+    const match = item.match(/deduct the amount is-(\d+\.?\d*)/);
+    if (!match) return item;
+    const amount = Number(match[1]).toLocaleString("en-IN", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+    return item.replace(match[0], `Cancellation Charge: ₹${amount}`);
+  });
 
   return (
     <>
@@ -134,7 +140,6 @@ export default function BookingDetailsTab({ bookingRefNo }) {
         <h2 className="font-roboto mb-0! text-[20px] leading-[100%] font-semibold tracking-[0] text-gray-900">
           Booking Details
         </h2>
-
         <button
           onClick={() => router.push("/profile?tab=BookingHistory")}
           className="flex items-center gap-2 text-[15px] font-semibold text-[#72C0F0]!"
@@ -143,7 +148,6 @@ export default function BookingDetailsTab({ bookingRefNo }) {
           Back
         </button>
       </div>
-
       <div className="my-2 space-y-3">
         <div className="overflow-hidden rounded border border-gray-200 bg-white shadow-[1px_4px_4px_4px_#00000014]">
           <div className="p-3">
@@ -155,12 +159,10 @@ export default function BookingDetailsTab({ bookingRefNo }) {
                   alt="hotel"
                   className="h-[120px] w-[140px] shrink-0 rounded object-cover"
                 />
-
                 <div>
                   <h3 className="font-roboto! truncate text-[20px] leading-tight font-semibold! text-gray-900">
                     {hotel?.HotelName}
                   </h3>
-
                   <div className="mt-3 flex flex-wrap items-center gap-2">
                     {/* Stars */}
                     <div className="flex items-center gap-1">
@@ -227,10 +229,6 @@ export default function BookingDetailsTab({ bookingRefNo }) {
               <p className="font-roboto mb-0! text-[14px] text-gray-700">
                 From {hotel?.CheckInTime || "Hotel Standard Time"}
               </p>
-
-              {/* <p className="font-roboto mt-3 text-[13px] text-gray-500">
-                {bookingData?.Origin}
-              </p> */}
             </div>
 
             {/* CENTER */}
@@ -238,8 +236,8 @@ export default function BookingDetailsTab({ bookingRefNo }) {
               <div className="relative flex w-full max-w-[120px] items-center justify-center">
                 <div className="h-[1px] w-full bg-gray-300" />
 
-                <span className="absolute bg-white px-3 text-[18px] text-[#72C0F0]">
-                  →
+                <span className="absolute bg-white px-3 text-[#72C0F0]">
+                  <ArrowRightOutlined className="text-[24px]" />
                 </span>
               </div>
 
@@ -446,101 +444,119 @@ export default function BookingDetailsTab({ bookingRefNo }) {
         </div>
 
         {/* PRICE */}
-        <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-[1px_4px_4px_4px_#00000014]">
+        <div className="overflow-hidden rounded border border-gray-200 bg-white shadow-[1px_4px_4px_4px_#00000014]">
           {/* HEADER */}
-          <div className="border-b border-gray-200 px-5 py-4 md:px-6">
-            <h2 className="mb-0! text-[20px] leading-none font-bold text-gray-900 md:text-[20px]">
+          <div className="px- border-b border-gray-200 py-4 md:px-3">
+            <h2 className="font-roboto mb-0! text-[20px] leading-[100%] font-semibold tracking-[0] text-gray-900">
               Price Breakup
             </h2>
           </div>
 
           {/* BODY */}
-          <div className="p-5 md:p-6">
-            <div className="mb-5 flex items-center justify-between">
-              <p className="text-[14px] text-gray-700 md:text-[15px]">
-                Room Charges
-              </p>
+          <div className="p-6">
+            {/* BREAKUP */}
+            <div className="rounded-xl border border-[#d9ecf8] bg-[#fafcff] p-4">
+              <PriceRow
+                label="Room Charges"
+                value={`₹${Number(ratePlan?.Basic_Amount || 0).toFixed(2)}`}
+              />
 
-              <p className="text-[15px] font-semibold text-gray-800 md:text-[16px]">
-                ₹{Number(ratePlan?.Basic_Amount || 0).toFixed(2)}
-              </p>
+              <PriceRow
+                label="Taxes & Fees"
+                value={`₹${Number(ratePlan?.Tax || 0).toFixed(2)}`}
+                valueClass="text-orange-600"
+              />
+
+              <PriceRow
+                label="Discount"
+                value="₹0.00"
+                valueClass="text-green-600"
+              />
+
+              {Number(payment?.Gateway_Charges || 0) > 0 ? (
+                <PriceRow
+                  label="Gateway Charges"
+                  value={`₹${Number(payment?.Gateway_Charges || 0).toFixed(2)}`}
+                  valueClass="text-red-500"
+                />
+              ) : (
+                <PriceRow
+                  label="Gateway Charges"
+                  value="₹0.00"
+                  valueClass="text-gray-500"
+                />
+              )}
+
+              <PriceRow
+                label="Currency"
+                value={payment?.Currency_Code || "INR"}
+                last
+              />
             </div>
 
-            <div className="mb-5 flex items-center justify-between">
-              <p className="text-[14px] text-gray-700 md:text-[15px]">
-                Taxes & Fees
-              </p>
-
-              <p className="text-[15px] font-semibold text-gray-800 md:text-[16px]">
-                ₹{Number(ratePlan?.Tax || 0).toFixed(2)}
-              </p>
-            </div>
-
-            {Number(payment?.Gateway_Charges || 0) > 0 && (
-              <div className="mb-5 flex items-center justify-between">
-                <p className="text-[14px] text-gray-700 md:text-[15px]">
-                  Gateway Charges
-                </p>
-
-                <p className="text-[15px] font-semibold text-gray-800 md:text-[16px]">
-                  ₹{Number(payment?.Gateway_Charges || 0).toFixed(2)}
-                </p>
-              </div>
-            )}
-
-            <div className="mb-5 flex items-center justify-between">
-              <p className="text-[14px] text-gray-700 md:text-[15px]">
-                Currency
-              </p>
-
-              <p className="text-[15px] font-semibold text-gray-800 md:text-[16px]">
-                {payment?.Currency_Code || "INR"}
-              </p>
-            </div>
-
-            {/* TOTAL PAID */}
-            <div className="mt-5 border-t border-gray-200 pt-5">
-              <div className="flex items-start justify-between gap-4 sm:items-center">
+            {/* TOTAL */}
+            <div className="mt-5 rounded-xl border border-[#d9ecf8] bg-[#edf7ff] p-5">
+              <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <p className="mb-2! text-[15px] font-bold text-gray-900 md:text-[18px]">
+                  <p className="font-roboto mb-1 text-[12px] font-semibold tracking-wider text-[#3b82b6] uppercase">
+                    Payment Summary
+                  </p>
+
+                  <h3 className="font-roboto mb-3 text-[20px] font-bold text-gray-900">
                     Total Paid
-                  </p>
+                  </h3>
 
-                  <p className="text-[13px] leading-relaxed text-gray-600 md:text-[14px]">
-                    Payment Ref:
-                    <span className="ml-1 font-medium text-gray-800">
-                      {payment?.PaymentConfirmation_Number || "-"}
-                    </span>
-                  </p>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[13px] text-gray-500">
+                        Payment Ref:
+                      </span>
 
-                  <p className="text-[13px] leading-relaxed text-gray-600 md:text-[14px]">
-                    Payment Status:
-                    <span className="ml-1 font-medium text-green-600">
-                      Paid
-                    </span>
-                  </p>
+                      <span className="text-[13px] font-medium text-gray-900">
+                        {payment?.PaymentConfirmation_Number || "-"}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="text-[13px] text-gray-500">Status:</span>
+
+                      <span className="rounded-full bg-green-100 px-2 py-[2px] text-[12px] font-medium text-green-700">
+                        Paid
+                      </span>
+                    </div>
+                  </div>
                 </div>
 
-                <p className="shrink-0 text-right text-[18px] font-bold text-gray-900 md:text-[18px]">
-                  ₹{Number(ratePlan?.Total_Amount || 0).toFixed(2)}
-                </p>
+                <div className="border-t border-[#c7e7f8] pt-4 text-left md:border-0 md:pt-0 md:text-right">
+                  <p className="font-roboto mb-1 text-[13px] text-gray-500">
+                    Amount Paid
+                  </p>
+
+                  <h2 className="font-roboto text-[32px] leading-none font-bold text-[#3b82b6]">
+                    ₹{Number(ratePlan?.Total_Amount || 0).toFixed(2)}
+                  </h2>
+
+                  <p className="mt-2 text-[12px] text-gray-500">
+                    {payment?.Currency_Code || "INR"}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
         {/* MAP */}
-        <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-[1px_4px_4px_4px_#00000014]">
+        <div className="overflow-hidden rounded border border-gray-200 bg-white shadow-[1px_4px_4px_4px_#00000014]">
           {/* HEADER */}
 
-          <div className="border-b border-gray-200 px-5 py-4 md:px-6">
-            <h2 className="mb-0! text-[20px] leading-none font-bold text-gray-900 md:text-[20px]">
+          <div className="border-b border-gray-200 px-3 py-4 md:px-3">
+            <h2 className="font-roboto mb-0! text-[20px] leading-[100%] font-semibold tracking-[0] text-gray-900">
               Hotel Location
             </h2>
           </div>
 
           {/* MAP */}
-          <div className="p-5 md:p-6">
-            <div className="overflow-hidden rounded-xl border border-gray-200">
+          <div className="p-3 md:p-3">
+            <div className="overflow-hidden rounded border border-gray-200">
               <iframe
                 title="hotel-location"
                 width="100%"
@@ -554,7 +570,7 @@ export default function BookingDetailsTab({ bookingRefNo }) {
             </div>
 
             <div className="mt-4">
-              <p className="text-[13px] font-medium text-gray-500 md:text-[14px]">
+              <p className="text-[18px] font-medium text-gray-700 md:text-[18px]">
                 Address
               </p>
 
@@ -566,35 +582,49 @@ export default function BookingDetailsTab({ bookingRefNo }) {
         </div>
 
         {/* CANCELLATION */}
-        <div className="overflow-hidden rounded-2xl bg-white shadow-[1px_4px_4px_4px_#00000014]">
+        <div className="overflow-hidden rounded bg-white shadow-[1px_4px_4px_4px_#00000014]">
           {/* HEADER */}
-          <div className="border-b border-gray-200 px-5 py-4 md:px-6">
-            <h2 className="mb-0! text-[20px] leading-none font-bold text-gray-900 md:text-[20px]">
+          <div className="border-b border-gray-200 px-3 py-4 md:px-3">
+            <h2 className="font-roboto mb-0! text-[20px] leading-[100%] font-semibold tracking-[0] text-gray-900">
               Cancellation Policy
             </h2>
           </div>
 
           {/* POLICY LIST */}
-          <div>
-            {cancellationPolicies?.map((item, index) => (
-              <div
-                key={index}
-                className="flex gap-3 border-b border-gray-200 px-5 py-4 last:border-0 md:px-6"
-              >
-                {/* ICON */}
-                <div className="shrink-0 pt-[2px]">
-                  <CheckCircleFilled className="text-[16px] text-[#22c55e]! md:text-[18px]" />
-                </div>
+          <div className="p-4 md:p-5">
+            <div className="space-y-3">
+              {formattedPolicies?.map((item, index) => (
+                <div
+                  key={index}
+                  className="rounded-xl border border-[#d9ecf8] bg-[#fafcff] p-4 transition hover:border-[#72C0F0]"
+                >
+                  <div className="flex items-start gap-3">
+                    {/* ICON */}
+                    <div className="mt-0.5 shrink-0">
+                      <CheckCircleFilled className="text-[18px] !text-[#22c55e]" />
+                    </div>
 
-                {/* TEXT */}
-                <p className="mb-0! text-[14px] leading-[22px] text-gray-900! md:text-[15px]">
-                  {item.replace(
-                    "deduct the amount is-",
-                    "Cancellation Charge: ₹",
-                  )}
-                </p>
-              </div>
-            ))}
+                    {/* CONTENT */}
+                    <div className="min-w-0 flex-1">
+                      <p className="font-roboto! mb-0! text-[14px] leading-6 font-medium text-gray-800 md:text-[15px]">
+                        {item.replace(
+                          "deduct the amount is-",
+                          "Cancellation Charge: ₹",
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Footer Note */}
+            <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3">
+              <p className="font-roboto! mb-0! text-[13px] text-amber-800">
+                Cancellation charges may vary depending on the cancellation date
+                and hotel policy.
+              </p>
+            </div>
           </div>
         </div>
 
@@ -604,7 +634,7 @@ export default function BookingDetailsTab({ bookingRefNo }) {
           <button
             onClick={handleDownloadInvoice}
             type="button"
-            className="flex h-[52px] items-center justify-center gap-2 rounded-xl border border-[#72C0F0] bg-[#edf7ff] text-[14px] font-semibold !text-[#3b82b6] shadow-sm transition-all duration-200 hover:bg-[#72C0F0] hover:!text-white active:scale-[0.98] md:text-[15px]"
+            className="flex h-[45px] items-center justify-center gap-2 rounded border border-[#72C0F0] bg-[#edf7ff] text-[16px]! font-semibold !text-[#3b82b6] shadow-sm transition-all duration-200 hover:bg-[#72C0F0] hover:!text-white active:scale-[0.98] md:text-[15px]"
           >
             <DownloadOutlined className="text-[16px]" />
 
@@ -615,7 +645,7 @@ export default function BookingDetailsTab({ bookingRefNo }) {
           <button
             onClick={() => setShareModalOpen(true)}
             type="button"
-            className="flex h-[52px] items-center justify-center gap-2 rounded-xl border border-[#72C0F0] bg-[#edf7ff] text-[14px] font-semibold text-[#3b82b6]! shadow-sm transition-all duration-200 hover:bg-[#72C0F0]! hover:text-white! active:scale-[0.98] md:text-[15px]"
+            className="flex h-[45px] items-center justify-center gap-2 rounded border border-[#72C0F0] bg-[#edf7ff] text-[16px]! font-semibold text-[#3b82b6]! shadow-sm transition-all duration-200 hover:bg-[#72C0F0]! hover:text-white! active:scale-[0.98] md:text-[15px]"
           >
             <ShareAltOutlined className="text-[16px]" />
 
@@ -628,7 +658,7 @@ export default function BookingDetailsTab({ bookingRefNo }) {
             type="button"
             onClick={() => setCancelModalOpen(true)}
             disabled={cancelling}
-            className="flex h-[52px] items-center justify-center gap-2 rounded-xl border border-red-300 bg-red-50 text-[14px] font-semibold !text-red-500 shadow-sm transition-all duration-200 hover:bg-red-500 hover:!text-white active:scale-[0.98] md:text-[15px]"
+            className="flex h-[45px] items-center justify-center gap-2 rounded border border-red-300 bg-red-50 text-[16px]! font-semibold !text-red-500 shadow-sm transition-all duration-200 hover:bg-red-500 hover:!text-white active:scale-[0.98] md:text-[15px]"
           >
             <span>{cancelling ? "Cancelling..." : "Cancel Booking"}</span>
           </button>
