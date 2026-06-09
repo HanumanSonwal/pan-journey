@@ -127,22 +127,22 @@ export default function WishlistTab() {
   return (
     <div className="mt-[-17px] p-2 sm:p-3 md:p-4">
       {/* HEADER */}
-      <div className="mb-3 flex flex-col gap-2  bg-white px-4 py-2 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-6">
-        <h2 className="m-0 text-[20px] font-bold text-[#222] sm:text-[24px] md:text-[26px]">
+      <div className="mb-3 flex flex-col gap-2 bg-white px-4 py-2 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-6">
+        <h2 className="font-roboto mb-0! text-[20px] leading-[100%] font-semibold tracking-[0] text-gray-900">
           Wishlist
         </h2>
 
-        <p className="m-0 text-[12px] text-gray-500 sm:text-[13px]">
+        <p className="mb-0 text-[12px] text-gray-500 sm:text-[13px]">
           {dummyWishlist.length} Properties
         </p>
       </div>
 
       {/* CARDS */}
-      <div className="flex flex-col gap-3 ">
+      <div className="flex flex-col gap-3">
         {dummyWishlist.map((item) => (
           <Card
             key={item.id}
-            className="overflow-hidden !rounded-[16px] !border !border-[#E2E8F0] shadow-[0_2px_6px_rgba(0,0,0,0.05)] !pr-4"
+            className="overflow-hidden !rounded-[16px] !border !border-[#E2E8F0] !pr-4 shadow-[0_2px_6px_rgba(0,0,0,0.05)]"
             styles={{
               body: {
                 padding: 0,
@@ -156,11 +156,9 @@ export default function WishlistTab() {
               </div>
 
               {/* CONTENT */}
-              <div className="flex flex-col md:flex-row flex-1 border-t border-[#ECECEC] xl:border-t-0 xl:border-l">
-
+              <div className="flex flex-1 flex-col border-t border-[#ECECEC] md:flex-row xl:border-t-0 xl:border-l">
                 {/* CENTER */}
                 <div className="flex flex-1 flex-col justify-between px-3 py-2">
-
                   {/* TITLE */}
                   <div>
                     <h2 className="truncate text-[17px] font-bold text-black sm:text-[18px]">
@@ -191,13 +189,10 @@ export default function WishlistTab() {
                   {/* FEATURES */}
                   <div className="mt-7 grid gap-[2px]">
                     {item.features.map((feature, i) => (
-                      <div
-                        key={i}
-                        className="flex items-center gap-1"
-                      >
+                      <div key={i} className="flex items-center gap-1">
                         <CheckOutlined className="mt-[-15px] text-[17px] !text-green-500" />
 
-                        <p className="!mt-[-6px] text-[11px] leading-[15px] text-gray-600 sm:text-[14px] font-semibold">
+                        <p className="!mt-[-6px] text-[11px] leading-[15px] font-semibold text-gray-600 sm:text-[14px]">
                           {feature}
                         </p>
                       </div>
@@ -207,21 +202,20 @@ export default function WishlistTab() {
 
                 {/* RIGHT */}
                 <div className="flex flex-col justify-between border-t border-[#ECECEC] px-2 py-2 md:w-[220px] md:border-t-0 md:border-l">
-
                   {/* ICONS + RATING */}
                   <div className="flex items-center justify-between gap-5 md:flex-col md:items-end">
-
                     {/* ICONS */}
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleWishlist(item.id)}
-                        className={`flex h-[34px] w-[34px] items-center justify-center rounded-full border transition-all duration-300 ${likedItems[item.id]
-                          ? "border-[#72C0F0] bg-[#72C0F0]"
-                          : "border-[#D9EFFF] bg-[#EAF7FF]"
-                          }`}
+                        className={`flex h-[34px] w-[34px] items-center justify-center rounded-full border transition-all duration-300 ${
+                          likedItems[item.id]
+                            ? "border-[#72C0F0] bg-[#72C0F0]"
+                            : "border-[#D9EFFF] bg-[#EAF7FF]"
+                        }`}
                       >
                         {likedItems[item.id] ? (
-                          <HeartFilled className="text-[15px] text-white " />
+                          <HeartFilled className="text-[15px] text-white" />
                         ) : (
                           <HeartOutlined className="text-[15px] text-[#72C0F0]" />
                         )}
@@ -236,7 +230,7 @@ export default function WishlistTab() {
                     </div>
 
                     {/* RATING */}
-                    <div className="w-[145px] rounded-[8px] border border-[#72C0F0] bg-[#F8FDFF] px-2 py-1  ">
+                    <div className="w-[145px] rounded-[8px] border border-[#72C0F0] bg-[#F8FDFF] px-2 py-1">
                       <div className="flex items-center justify-between">
                         <p className="!m-0 text-[11px] font-semibold text-[#72C0F0]">
                           Very Good
@@ -254,25 +248,24 @@ export default function WishlistTab() {
                   </div>
 
                   {/* PRICE */}
-                  <div className=" flex flex-col items-end  ">
-                    <p className="!text-[13px] text-[#A0A0A0] line-through sm:text-[11px] ">
+                  <div className="flex flex-col items-end">
+                    <p className="!text-[13px] text-[#A0A0A0] line-through sm:text-[11px]">
                       ₹ {item.oldPrice}
                     </p>
 
-                    <h1 className="text-[24px] font-bold leading-none text-[#333] sm:text-[28px] !mt-[-13px] ">
+                    <h1 className="!mt-[-13px] text-[24px] leading-none font-bold text-[#333] sm:text-[28px]">
                       ₹ {item.price}
                     </h1>
 
-                    <p className=" text-[13px] !text-[#666] !mt-[-13px]">
+                    <p className="!mt-[-13px] text-[13px] !text-[#666]">
                       + ₹97 taxes & fees
                     </p>
 
-                    <p className="!text-[13px]  !text-[#888] !mt-[-13px]">
+                    <p className="!mt-[-13px] !text-[13px] !text-[#888]">
                       Per Night
                     </p>
                   </div>
                 </div>
-
               </div>
             </div>
           </Card>
