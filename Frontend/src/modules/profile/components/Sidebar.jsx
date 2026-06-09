@@ -115,7 +115,7 @@ export default function Sidebar({ activeTab, setActiveTab, horizontal }) {
                   }
                   setActiveTab(item.key);
                 }}
-                className={`font-roboto flex cursor-pointer items-center justify-between rounded border !text-[18px] font-bold ${horizontal ? "px-2 py-0 whitespace-nowrap" : "px-2 py-2"} transition-all duration-200 ${isActive
+                className={`font-roboto flex cursor-pointer items-center justify-between rounded border !text-[18px] font-bold ${horizontal ? "px-2 py-0 whitespace-nowrap" : "px-2 py-2.5"} transition-all duration-200 ${isActive
                   ? "border-[#4A9BB5] bg-[#4A9BB5]/10"
                   : "border-gray-200 hover:bg-gray-50"
                   } `}
