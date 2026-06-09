@@ -1,0 +1,58 @@
+export const giftCards = [
+  {
+    id: 1,
+    title: "Disney Gift Card",
+    image: "/images/gift1.jpg",
+    price: 1000,
+    discount: "25",
+  },
+  {
+    id: 2,
+    title: "Tanishq Gift Card",
+    image: "/images/gift2.jpg",
+    price: 1000,
+    discount: "25",
+  },
+  {
+    id: 3,
+    title: "Lifestyle Gift Card",
+    image: "/images/gift3.jpg",
+    price: 1000,
+    discount: "25",
+  },
+  {
+    id: 4,
+    title: "Musicland Gift Card",
+    image: "/images/gift4.jpg",
+    price: 1000,
+    discount: "25",
+  },
+  {
+    id: 5,
+    title: "HomeGoods Gift Card",
+    image: "/images/gift5.jpg",
+    price: 1000,
+    discount: "25",
+  },
+  {
+    id: 6,
+    title: "Sam's Club Gift Card",
+    image: "/images/gift6.jpg",
+    price: 1000,
+    discount: "25",
+  },
+  {
+    id: 7,
+    title: "Black Gift Card",
+    image: "/images/gift7.jpg",
+    price: 1000,
+    discount: "25",
+  },
+  {
+    id: 8,
+    title: "Blue Ribbon Gift Card",
+    image: "/images/gift8.jpg",
+    price: 1000,
+    discount: "25",
+  },
+];

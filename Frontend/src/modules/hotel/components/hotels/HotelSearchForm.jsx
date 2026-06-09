@@ -95,7 +95,7 @@ export default function HotelSearchForm({
               });
 
               // FULL RANGE SELECTED
-              if (dates?.[0] && dates?.[1]) {
+              if (dates?.[0] && dates?.[1]) { 
                 setDateOpen(false);
 
                 requestAnimationFrame(() => {
