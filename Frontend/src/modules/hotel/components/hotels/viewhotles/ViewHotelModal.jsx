@@ -23,7 +23,7 @@ const ViewHotelModal = ({ open, onClose, images = [] }) => {
       open={open}
       onCancel={onClose}
       footer={null}
-      width={1200}
+      width={1100}
       centered
       destroyOnHidden
       styles={{
@@ -31,80 +31,90 @@ const ViewHotelModal = ({ open, onClose, images = [] }) => {
           padding: 24,
           maxHeight: "85vh",
           overflowY: "auto",
+          background: "#f5f5f5",
         },
       }}
     >
       <div className="space-y-6">
-        <div className="flex items-center justify-between border-b pb-4">
-          <h2 className="text-xl font-semibold text-gray-800">Hotel Photos</h2>
-          <span className="text-sm text-gray-500">
-            {filteredImages.length} Photos
-          </span>
+        {/* Header */}
+        <div className="pb-2">
+          <div className="flex items-center justify-between">
+            <h2 className="text-[20px] font-semibold text-[#333]">
+              Photos By Customers
+            </h2>
+
+            <span className="text-sm text-gray-500">
+              {filteredImages.length} Photos
+            </span>
+          </div>
         </div>
 
-        <div className="flex gap-3 overflow-x-auto pb-2">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActive(cat)}
-              className={`rounded-full border px-4 py-2 text-sm font-medium whitespace-nowrap transition ${
-                active === cat
-                  ? "border-[#0ea5e9] bg-[#0ea5e9] text-white"
-                  : "border-gray-300 bg-white text-gray-600 hover:border-[#0ea5e9]"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        <Image.PreviewGroup>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-            {filteredImages?.map((img, index) => (
-              <div
-                key={index}
-                className="group overflow-hidden rounded-2xl border border-gray-200 bg-white p-2 shadow-sm transition hover:shadow-lg"
+        {/* Sticky Tabs */}
+        <div className="sticky -top-6 z-20 -mx-6 border-b bg-white px-6">
+          <div className="flex overflow-x-auto scrollbar-hide">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActive(cat)}
+                className={`whitespace-nowrap border-b-2 px-8 py-4 text-[15px] font-semibold transition-all ${active === cat
+                  ? "border-[#64b5f6] text-[#64b5f6]"
+                  : "border-transparent text-[#222]"
+                  }`}
               >
-                <Image
-                  src={img?.ImageURL}
-                  alt={img?.ImageDesc || "hotel"}
-                  preview={{
-                    cover: (
-                      <div className="flex flex-col items-center justify-center">
-                        <span className="text-base font-semibold">
-                          View Photo
-                        </span>
-                        <span className="text-xs opacity-80">
-                          Click to Preview
-                        </span>
-                      </div>
-                    ),
-                  }}
-                  className="!w-full overflow-hidden rounded-2xl transition duration-300 group-hover:scale-[1.02]"
-                  style={{
-                    width: "100%",
-                    height: 320,
-                    objectFit: "cover",
-                    borderRadius: 18,
-                    display: "block",
-                  }}
-                />
-
-                <div className="px-1 pt-3">
-                  <p className="truncate text-sm font-medium text-gray-700">
-                    {img?.ImageDesc || "Hotel Photo"}
-                  </p>
-                </div>
-              </div>
+                {cat}
+              </button>
             ))}
           </div>
-        </Image.PreviewGroup>
+        </div>
 
-        {!filteredImages.length && (
-          <div className="rounded-xl border border-dashed border-gray-300 py-12 text-center text-gray-500">
-            No photos available
-          </div>
-        )}
+        {/* Photos Section */}
+        <div className="rounded-md bg-[#efefef] p-4">
+          <h3 className="mb-5 text-[18px] font-semibold text-[#333]">
+            {active === "All" ? "All Photos" : active}
+          </h3>
+
+          <Image.PreviewGroup>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+              {filteredImages?.map((img, index) => (
+                <div
+                  key={index}
+                  className="group overflow-hidden rounded-xl"
+                >
+                  <Image
+                    src={img?.ImageURL}
+                    alt={img?.ImageDesc || "hotel"}
+                    preview={{
+                      cover: (
+                        <div className="flex flex-col items-center justify-center">
+                          <span className="text-base font-semibold">
+                            View Photo
+                          </span>
+                          <span className="text-xs opacity-80">
+                            Click to Preview
+                          </span>
+                        </div>
+                      ),
+                    }}
+                    className="!block !w-full overflow-hidden rounded-xl"
+                    style={{
+                      width: 200,
+                      height: 310,
+                      objectFit: "cover",
+                      display: "block",
+                      borderRadius: 12,
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          </Image.PreviewGroup>
+
+          {!filteredImages.length && (
+            <div className="rounded-xl border border-dashed border-gray-300 py-12 text-center text-gray-500">
+              No photos available
+            </div>
+          )}
+        </div>
       </div>
     </Modal>
   );
