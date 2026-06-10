@@ -246,7 +246,7 @@ function DestinationSearchField({
   return (
     <div
       title={value?.city || ""}
-      className={`relative w-full min-w-0 overflow-visible rounded border px-3 py-3 transition-all hover:border-[#0077b6] ${
+      className={`relative w-full min-w-0 overflow-visible  rounded border px-3 py-3 transition-all hover:border-[#0077b6] ${
         error ? "border-red-500" : "border-gray-300"
       } ${wrapperClassName}`}
       style={{ height }}
@@ -279,9 +279,7 @@ function DestinationSearchField({
             color="#ef4444"
             trigger={[]}
           >
-            
             <Select
-            
               showSearch
               allowClear
               value={
@@ -303,11 +301,11 @@ function DestinationSearchField({
               popupMatchSelectWidth={compact ? false : true}
               filterOption={false}
               loading={isLoading}
-              className={`w-full min-w-0 overflow-hidden ${styles.destinationSelect}`}
+              className={`w-full min-w-0 overflow-hidden font-semibold! font-jost! ${styles.destinationSelect}`}
               style={{
                 fontWeight: 700,
                 fontSize,
-                // lineHeight: 1,
+                lineHeight: 1,
                 width: "100%",
                 minWidth: 0,
               }}
@@ -350,14 +348,6 @@ function DestinationSearchField({
           </span>
         )}
       </div>
-      {/* {error && (
-        <div className="pointer-events-none absolute top-[calc(100%+8px)] left-0 z-[9999] whitespace-nowrap">
-          <div className="relative rounded bg-red-500 px-3 py-2 text-sm text-white shadow-lg">
-            Enter a destination to start searching.
-            <div className="absolute -top-1 left-4 h-2 w-2 rotate-45 bg-red-500" />
-          </div>
-        </div>
-      )} */}
     </div>
   );
 }

@@ -9,6 +9,8 @@ import {
 const ViewHotelInfo = ({ supplierData = {} }) => {
   const { AboutHotel, Address, City, Country, State } = supplierData;
 
+  console.log("supplierData in hotel detail page", supplierData);
+
   const mapQuery = [Address, City, State, Country].filter(Boolean).join(", ");
 
   const googleMapLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
@@ -27,15 +29,17 @@ const ViewHotelInfo = ({ supplierData = {} }) => {
             </div>
 
             <div>
-              <h2 className="text-[17px] font-semibold text-gray-800">
+              <h2 className="font-roboto! mb-0! text-[17px] font-bold! text-gray-800">
                 About Hotel
               </h2>
 
-              <p className="text-xs text-gray-500">Property overview</p>
+              <p className="text-sm font-semibold text-gray-500">
+                Property overview
+              </p>
             </div>
           </div>
 
-          <p className="line-clamp-6 leading-7 text-gray-600">
+          <p className="font-roboto line-clamp-6 leading-7 text-gray-600">
             {AboutHotel?.trim()
               ? AboutHotel
               : "No hotel description available."}
@@ -50,20 +54,22 @@ const ViewHotelInfo = ({ supplierData = {} }) => {
             </div>
 
             <div>
-              <h2 className="text-[17px] font-semibold text-gray-800">
+              <h2 className="font-roboto! mb-0! text-[17px] font-bold! text-gray-800">
                 Hotel Address
               </h2>
 
-              <p className="text-xs text-gray-500">Location details</p>
+              <p className="text-sm font-semibold text-gray-500">
+                Location details
+              </p>
             </div>
           </div>
 
           <div className="rounded bg-[#f8fbfd] p-3">
-            <p className="leading-6 text-gray-700">
+            <p className="font-roboto! m-0! font-semibold text-gray-700">
               {Address || "Address unavailable"}
             </p>
 
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="m font-roboto text-sm text-gray-500">
               {[City, State, Country].filter(Boolean).join(", ")}
             </p>
           </div>

@@ -67,7 +67,7 @@ export default function DateRangeField({
               Check In
             </span>
             <div className="mt-[2px] flex items-center gap-1">
-              <span className="text-[18px] leading-none font-bold text-black">
+              <span className="text-[18px] leading-none font-semibold! font-jost! text-black">
                 {start?.format("DD")}
               </span>
               <span className="text-[10px] leading-none text-gray-600">
@@ -124,7 +124,7 @@ export default function DateRangeField({
         {/* CHECK IN */}
         <div className="flex min-w-0 flex-1 flex-col justify-center">
           <div className="flex items-center gap-2 leading-none">
-            <span className="text-[30px] font-extrabold text-gray-900">
+            <span className="text-[30px] font-extrabold font-jost text-gray-900">
               {start?.format("DD")}
             </span>
             <div className="flex flex-col">
@@ -148,12 +148,12 @@ export default function DateRangeField({
         {/* CHECK OUT */}
         <div className="flex min-w-0 flex-1 flex-col items-end justify-center">
           <div className="flex items-center gap-2 leading-none">
-            <span className="text-[30px] font-extrabold text-gray-900">
+            <span className="text-[30px] font-extrabold font-jost text-gray-900">
               {end?.format("DD")}
             </span>
 
             <div className="flex flex-col">
-              <span className="text-[16px] leading-none font-semibold text-gray-700">
+              <span className="text-[16px] leading-none font-semibold font text-gray-700">
                 {end?.format("MMM")}
               </span>
 

@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import { memo, useEffect, useMemo, useRef } from "react";
 import HotelCard from "../../cards/HotelCard";
 import { useInfiniteHotels } from "../../hooks/useInfiniteHotels";
-function HotelList({ searchData, filters, sort }) {
+function HotelList({ searchData, filters, sort, onHotelsChange }) {
   console.log("searchData in paylaod", searchData);
   const { selectedCurrency } = useCurrencyStore();
   const payload = useMemo(() => {
@@ -145,6 +145,10 @@ function HotelList({ searchData, filters, sort }) {
     }));
   }, [hotels, data]);
 
+  useEffect(() => {
+  onHotelsChange?.(mappedHotels);
+}, [mappedHotels, onHotelsChange]);
+
   // LOADING
   if (isLoading) {
     return <HotelContentLoader />;
@@ -153,7 +157,7 @@ function HotelList({ searchData, filters, sort }) {
   // ERROR
   if (isError) {
     return (
-      <div className="py-10 text-center text-red-500 " >
+      <div className="py-10 text-center text-red-500">
         {error?.message || "Failed to fetch hotels"}
       </div>
     );
@@ -165,7 +169,7 @@ function HotelList({ searchData, filters, sort }) {
   }
 
   return (
-    <div className="flex flex-col gap-4 mt-3 ">
+    <div className="mt-3 flex flex-col gap-4">
       {/* HOTELS */}
       {mappedHotels.map((hotel, index) => (
         <HotelCard key={hotel.id || index} hotel={hotel} />

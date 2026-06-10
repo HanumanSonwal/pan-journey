@@ -3,7 +3,7 @@
 import { Button, Col, Row } from "antd";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useHotelBooking } from "../../hooks/useHotelBooking";
 import { useHotelBookingStore } from "../../store/booking.store";
 import { buildBookingPayload } from "../../utils/buildBookingPayload";
@@ -25,6 +25,7 @@ export default function HotelBookingContent({ hotelBookingData }) {
     useHotelBookingStore();
 
   const [agreement, setAgreement] = useState(false);
+  const guestFormRef = useRef(null);
 
   const { data: session } = useSession();
 
@@ -36,7 +37,14 @@ export default function HotelBookingContent({ hotelBookingData }) {
     setBookingData({ guestData: values });
   };
 
-  const handleBooking = () => {
+  const handleBooking = async () => {
+    try {
+      await guestFormRef.current.submitForm();
+    } catch (errors) {
+      console.log(errors);
+      return;
+    }
+
     const payload = buildBookingPayload({
       bookingData: storeBookingData,
       guestData: storeBookingData?.guestData,
@@ -47,7 +55,9 @@ export default function HotelBookingContent({ hotelBookingData }) {
     bookHotel(payload, {
       onSuccess: (response) => {
         const bookingRefNo = response?.data?.BookingRefNo;
+
         setBookingData({ bookingRefNo });
+
         router.push(`/hotel-checkout?bookingRefNo=${bookingRefNo}`);
       },
     });
@@ -62,7 +72,10 @@ export default function HotelBookingContent({ hotelBookingData }) {
           {/* LEFT */}
           <Col xs={24} lg={15}>
             <div className="-mt-10! space-y-4 px-1 sm:space-y-5 sm:px-0">
-              <GuestDetailsForm onSubmit={handleGuestSubmit} />
+              <GuestDetailsForm
+                ref={guestFormRef}
+                onSubmit={handleGuestSubmit}
+              />
 
               <SpecialRequestCard
                 value={storeBookingData?.requestData}
@@ -78,11 +91,7 @@ export default function HotelBookingContent({ hotelBookingData }) {
                   type="primary"
                   size="large"
                   loading={isPending}
-                  disabled={
-                    !storeBookingData?.guestData ||
-                    !storeBookingData?.guestData?.primaryGuest ||
-                    !agreement
-                  }
+                  disabled={!agreement}
                   onClick={handleBooking}
                   className="!h-[44px] w-full !rounded-lg !bg-[#0f766e] !text-sm sm:!h-[48px] sm:w-auto sm:!rounded-xl sm:!text-base"
                 >
@@ -98,7 +107,7 @@ export default function HotelBookingContent({ hotelBookingData }) {
               <BookingHeaderCard bookingData={hotelBookingData} />
               <StaySummaryCard bookingData={hotelBookingData} />
               <RoomPackageCard bookingData={hotelBookingData} />
-              
+
               <PriceBreakupCard bookingData={hotelBookingData} />
             </div>
           </Col>

@@ -75,7 +75,7 @@ const RoomOptions = ({ ratePlans = [], supplierData = {} }) => {
                 {/* Top Badges */}
                 <div className="flex flex-wrap gap-2">
                   <span
-                    className={`rounded-full px-3 py-1 text-xs font-medium ${
+                    className={`font-roboto rounded-full px-3 py-1 text-xs font-semibold ${
                       refundable
                         ? "bg-green-100 text-green-700"
                         : "bg-red-100 text-red-600"
@@ -85,48 +85,48 @@ const RoomOptions = ({ ratePlans = [], supplierData = {} }) => {
                   </span>
 
                   {detail?.RoomAvailability && (
-                    <span className="rounded-full bg-blue-100 px-3 py-1 text-xs text-blue-600">
+                    <span className="font-roboto rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-600">
                       Available
                     </span>
                   )}
 
                   {payAtHotel ? (
-                    <span className="rounded-full bg-purple-100 px-3 py-1 text-xs text-purple-600">
+                    <span className="font-roboto rounded-full bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-600">
                       Pay at Hotel
                     </span>
                   ) : (
-                    <span className="rounded-full bg-orange-100 px-3 py-1 text-xs text-orange-600">
+                    <span className="font-roboto rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold text-orange-600">
                       Prepaid
                     </span>
                   )}
 
                   {panRequired && (
-                    <span className="rounded-full bg-yellow-100 px-3 py-1 text-xs text-yellow-700">
+                    <span className="font-roboto rounded-full bg-yellow-100 px-3 py-1 text-xs font-semibold text-yellow-700">
                       PAN Required
                     </span>
                   )}
 
                   {ccRequired && (
-                    <span className="rounded-full bg-red-100 px-3 py-1 text-xs text-red-600">
+                    <span className="font-roboto rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-600">
                       Credit Card Required
                     </span>
                   )}
                 </div>
 
                 {/* Name */}
-                <h3 className="mt-3! mb-1! text-2xl font-semibold text-[#0f172a]">
+                <h3 className="font-roboto mt-3! mb-1! text-2xl font-bold text-[#0f172a]">
                   {room?.GroupName}
                 </h3>
 
-                <p className="mt-1 text-gray-500">{room?.HotelRoomTypeDesc}</p>
+                <p className="mt-1 text-gray-500 font-semibold font-roboto">{room?.HotelRoomTypeDesc}</p>
 
                 {/* Room Features */}
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">
+                <div className="mt-0! flex flex-wrap gap-2">
+                  <span className="rounded-full bg-slate-100 px-3  text-xs text-slate-600">
                     {smoking ? "Smoking Allowed" : "Non Smoking"}
                   </span>
 
-                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600">
+                  <span className="rounded-full bg-slate-100 px-3  text-xs text-slate-600">
                     {room?.GroupName}
                   </span>
                 </div>
@@ -140,7 +140,7 @@ const RoomOptions = ({ ratePlans = [], supplierData = {} }) => {
                       ?.map((item, i) => (
                         <span
                           key={i}
-                          className="rounded-full bg-green-50 px-3 py-1 text-sm text-green-600"
+                          className="rounded-full bg-green-50 px-3 py-1 text-sm text-green-600 font-semibold font-roboto"
                         >
                           ✓ {item}
                         </span>

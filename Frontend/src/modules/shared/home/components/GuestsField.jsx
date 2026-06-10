@@ -262,7 +262,7 @@ const SummaryItem = memo(function SummaryItem({ value, label, center, right }) {
       } ${right ? "items-end" : ""}`}
     >
       <div className="flex items-baseline gap-1.5">
-        <span className="text-[26px] font-extrabold text-[#0F172A]">
+        <span className="font-jost text-[26px] font-extrabold text-[#0F172A]">
           {value}
         </span>
 

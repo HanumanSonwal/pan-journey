@@ -2,7 +2,9 @@
 
 import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
 import { CloseOutlined } from "@ant-design/icons";
+import { Modal } from "antd";
 import dayjs from "dayjs";
+import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import SidebarFilters from "../cards/SidebarFilters";
@@ -12,7 +14,6 @@ import SortBar from "../components/SortBar";
 import DynamicSeoFallback from "../seo/DynamicSeoFallback";
 import HotelsSeoSection from "../seo/HotelsSeoSection";
 import { useHotelSearchStore } from "../store/serchData.store";
-
 const defaultSearchData = {
   city: "",
   cityData: { id: "" },
@@ -40,6 +41,9 @@ const defaultFilters = {
 export default function HotelContent({ initialSearchData = null, cms = null }) {
   console.log("CMS DATA in HotelContent", cms);
   console.log("initialSearchData in HotelContent", initialSearchData);
+  const HotelMap = dynamic(() => import("../components/map/HotelMap"), {
+    ssr: false,
+  });
   const {
     draftSearchData,
     appliedSearchData,
@@ -52,7 +56,11 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
   const [mounted, setMounted] = useState(false);
   const [filters, setFilters] = useState(defaultFilters);
   const [sort, setSort] = useState("recommended");
+  const [mapOpen, setMapOpen] = useState(false);
+  const [hotelsForMap, setHotelsForMap] = useState([]);
   const [sidebarZ0, setSidebarZ0] = useState(false);
+  console.log("HotelContent Render");
+  console.log("mapOpen =", mapOpen);
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -131,7 +139,7 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
     setDraftSearchData,
     setAppliedSearchData,
   ]);
-  const handleSearch = useCallback(() => { }, []);
+  const handleSearch = useCallback(() => {}, []);
   const isFilterActive = useCallback((value) => {
     if (
       value === "" ||
@@ -173,103 +181,94 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
   }, [activeFilters, isFilterActive]);
   if (!mounted) return null;
   return (
-    <div className="bg-[#edf7ff]">
-      <SearchBar
-        searchData={draftSearchData}
-        onSearch={handleSearch}
-      />
+    <>
+      <div className="bg-[#edf7ff]">
+        <SearchBar searchData={draftSearchData} onSearch={handleSearch} />
 
-      <div className="relative mx-auto mt-[-28px] flex max-w-7xl gap-4 p-3 md:flex-nowrap">
-        {/* SIDEBAR */}
-        <div
-          className={`sticky top-[98px] max-h-[calc(100vh-40px)] w-full overflow-y-auto sm:w-64 md:w-72 ${sidebarZ0 ? "z-0" : "z-20"
-            }`}
-        >
-          <SidebarFilters
-            filters={filters}
-            setFilters={setFilters}
-          />
-        </div>
-
-        {/* RIGHT CONTENT */}
-        <div className="min-w-0 flex-1">
-          {/* SORT BAR */}
+        <div className="relative mx-auto mt-[-28px] flex max-w-7xl gap-4 p-3 md:flex-nowrap">
+          {/* SIDEBAR */}
           <div
-            className={`sticky top-[98px] ${sidebarZ0 ? "!-z-10" : "z-20"
-              } bg-[#edf7ff]`}
+            className={`sticky top-[98px] max-h-[calc(100vh-40px)] w-full overflow-y-auto sm:w-64 md:w-72 ${
+              sidebarZ0 ? "z-0" : "z-20"
+            }`}
           >
-            <SortBar
-              sort={sort}
-              setSort={setSort}
+            <SidebarFilters
+              filters={filters}
+              setFilters={setFilters}
+              onMapClick={() => {
+                setMapOpen(true);
+              }}
             />
           </div>
 
-          {/* ACTIVE FILTERS */}
-          {hasActiveFilters && (
+          {/* RIGHT CONTENT */}
+          <div className="min-w-0 flex-1">
+            {/* SORT BAR */}
             <div
-              className={`sticky top-[137px] ${sidebarZ0 ? "z-0" : "z-10"
-                } bg-[#edf7ff] pt-2`}
+              className={`sticky top-[98px] ${
+                sidebarZ0 ? "!-z-10" : "z-20"
+              } bg-[#edf7ff]`}
             >
-              <div className="!mb-4 flex flex-wrap gap-2">
-                {activeFilters.map(([key, value]) => {
-                  if (!isFilterActive(value)) return null;
+              <SortBar sort={sort} setSort={setSort} />
+            </div>
 
-                  if (
-                    key === "minPrice" ||
-                    key === "maxPrice"
-                  ) {
-                    return null;
-                  }
+            {/* ACTIVE FILTERS */}
+            {hasActiveFilters && (
+              <div
+                className={`sticky top-[137px] ${
+                  sidebarZ0 ? "z-0" : "z-10"
+                } bg-[#edf7ff] pt-2`}
+              >
+                <div className="!mb-4 flex flex-wrap gap-2">
+                  {activeFilters.map(([key, value]) => {
+                    if (!isFilterActive(value)) return null;
 
-                  if (Array.isArray(value)) {
-                    return value.map((v, i) => (
+                    if (key === "minPrice" || key === "maxPrice") {
+                      return null;
+                    }
+
+                    if (Array.isArray(value)) {
+                      return value.map((v, i) => (
+                        <div
+                          key={`${key}-${i}`}
+                          className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
+                        >
+                          {v}
+                          <CloseOutlined
+                            className="cursor-pointer text-xs"
+                            onClick={() => removeFilter(key, v)}
+                          />
+                        </div>
+                      ));
+                    }
+
+                    let label = value;
+
+                    if (key === "freeCancellation") {
+                      label = "Free Cancellation";
+                    }
+
+                    if (key === "starRating") {
+                      label = `${value} Star`;
+                    }
+
+                    return (
                       <div
-                        key={`${key}-${i}`}
+                        key={key}
                         className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
                       >
-                        {v}
+                        {label}
                         <CloseOutlined
                           className="cursor-pointer text-xs"
-                          onClick={() =>
-                            removeFilter(key, v)
-                          }
+                          onClick={() => removeFilter(key)}
                         />
                       </div>
-                    ));
-                  }
+                    );
+                  })}
 
-                  let label = value;
-
-                  if (key === "freeCancellation") {
-                    label = "Free Cancellation";
-                  }
-
-                  if (key === "starRating") {
-                    label = `${value} Star`;
-                  }
-
-                  return (
-                    <div
-                      key={key}
-                      className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
-                    >
-                      {label}
-                      <CloseOutlined
-                        className="cursor-pointer text-xs"
-                        onClick={() =>
-                          removeFilter(key)
-                        }
-                      />
-                    </div>
-                  );
-                })}
-
-                {(filters?.minPrice ||
-                  filters?.maxPrice) && (
+                  {(filters?.minPrice || filters?.maxPrice) && (
                     <div className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600">
-                      ₹{filters?.minPrice || 0} - ₹
-                      {filters?.maxPrice || 50000}
-
+                      ₹{filters?.minPrice || 0} - ₹{filters?.maxPrice || 50000}
                       <CloseOutlined
                         className="cursor-pointer text-xs"
                         onClick={() =>
@@ -283,37 +282,76 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
                     </div>
                   )}
 
-                <button
-                  onClick={clearAll}
-                  className="rounded bg-red-200 px-3 py-1 text-xs text-red-600"
-                >
-                  Clear All
-                </button>
+                  <button
+                    onClick={clearAll}
+                    className="rounded bg-red-200 px-3 py-1 text-xs text-red-600"
+                  >
+                    Clear All
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
-
-          {/* HOTEL LIST */}
-          <div id="hotel-list-section">
-            <HotelList
-              searchData={appliedSearchData}
-              filters={filters}
-              sort={sort}
-            />
-          </div>
-
-          {/* SEO CONTENT */}
-          <HotelsSeoSection>
-            {cms ? (
-              <CMSContentRenderer cms={cms} />
-            ) : (
-              <DynamicSeoFallback
-                cityName={appliedSearchData?.city}
-              />
             )}
-          </HotelsSeoSection>
+
+            {/* HOTEL LIST */}
+            <div id="hotel-list-section">
+              <HotelList
+                searchData={appliedSearchData}
+                filters={filters}
+                sort={sort}
+                onHotelsChange={setHotelsForMap}
+              />
+            </div>
+
+            {/* SEO CONTENT */}
+            <HotelsSeoSection>
+              {cms ? (
+                <CMSContentRenderer cms={cms} />
+              ) : (
+                <DynamicSeoFallback cityName={appliedSearchData?.city} />
+              )}
+            </HotelsSeoSection>
+          </div>
         </div>
       </div>
-    </div>
+      <Modal
+        open={mapOpen}
+        footer={null}
+        closable={false}
+        width="95vw"
+        onCancel={() => setMapOpen(false)}
+        centered
+        styles={{
+          body: {
+            padding: 0,
+            height: "85vh",
+            overflow: "hidden",
+          },
+        }}
+      >
+        <div className="flex items-center justify-between border-b px-5 py-2">
+          <h2 className="my-0! text-2xl font-semibold">Hotels on Map</h2>
+
+          <button
+            onClick={() => setMapOpen(false)}
+            className="rounded-md bg-red-400 px-4 py-2 text-sm font-medium text-white! hover:bg-red-600"
+          >
+            Close
+          </button>
+        </div>
+        <div className="flex h-[85vh]">
+          <div className="flex-1">
+            <HotelMap hotels={hotelsForMap} />
+          </div>
+
+          <div className="w-[340px] overflow-y-auto border-l bg-white">
+            <SidebarFilters
+              filters={filters}
+              setFilters={setFilters}
+              hideMapSection
+            />
+          </div>
+        </div>
+      </Modal>
+    </>
   );
 }

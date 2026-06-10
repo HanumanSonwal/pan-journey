@@ -10,6 +10,7 @@ export const useInfiniteHotels = (params) => {
   }, [params]);
   return useInfiniteQuery({
     queryKey,
+
     queryFn: async ({ pageParam = 1 }) => {
       if (!params?.id) {
         return null;
