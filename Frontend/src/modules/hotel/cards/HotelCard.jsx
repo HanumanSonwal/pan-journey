@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuthGuard } from "@/modules/auth/hooks/useAuthGuard";
 import { useSelectedHotelStore } from "@/modules/hotel/store/selectedHotel.store";
 import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
 import ImageGallery from "@/modules/profile/components/ImageGallery";
@@ -7,20 +8,27 @@ import HotelBookingComingSoonModal from "@/modules/shared/home/components/HotelB
 import { slugify } from "@/utils/slug/slugify";
 import {
   EnvironmentOutlined,
+  HeartFilled,
   HeartOutlined,
   ShareAltOutlined,
   StarFilled,
 } from "@ant-design/icons";
+import { message } from "antd";
 import Image from "next/image";
+
+import { useToggleWishlist } from "@/modules/wishlist/hooks/useToggleWishlist";
 
 import { useRouter } from "next/navigation";
 import { memo, useMemo, useState } from "react";
-function HotelCard({ hotel }) {
+function HotelCard({ hotel, wishlistIds }) {
   const router = useRouter();
   const [openModal, setOpenModal] = useState(false);
   const [showAllFacilities, setShowAllFacilities] = useState(false);
   const { setSelectedHotel } = useSelectedHotelStore();
   const { appliedSearchData } = useHotelSearchStore();
+  const { mutateAsync } = useToggleWishlist();
+  const { requireAuth } = useAuthGuard();
+  const isWishlisted = wishlistIds?.has(hotel.id?.toString()) || false;
 
   console.log(hotel, "hotel in card");
 
@@ -120,6 +128,40 @@ function HotelCard({ hotel }) {
   const visibleFacilities = useMemo(() => {
     return showAllFacilities ? facilities : facilities.slice(0, 4);
   }, [showAllFacilities, facilities]);
+
+  const handleWishlist = (e) => {
+    e.stopPropagation();
+
+    requireAuth(async () => {
+      const payload = {
+        hotelId: hotel.id?.toString(),
+        hotelName: hotel.name,
+        hotelImage: hotel.image,
+
+        cityId: appliedSearchData?.cityData?.id,
+
+        cityName: appliedSearchData?.city || "",
+
+        countryName: appliedSearchData?.cityData?.countryCode || "",
+      };
+
+      console.log("WISHLIST PAYLOAD", payload);
+
+      try {
+        await mutateAsync(payload);
+
+        message.success(
+          isWishlisted ? "Removed from wishlist" : "Added to wishlist",
+        );
+      } catch (error) {
+        console.log("WISHLIST ERROR", error?.response?.data);
+
+        message.error(
+          error?.response?.data?.message || "Wishlist update failed",
+        );
+      }
+    });
+  };
 
   return (
     <>
@@ -250,8 +292,12 @@ function HotelCard({ hotel }) {
               className="mt-0! mb-1! flex justify-end gap-2 text-[22px] text-gray-700"
               onClick={(e) => e.stopPropagation()}
             >
-              <button className="transition-all hover:text-red-500!">
-                <HeartOutlined />
+              <button onClick={handleWishlist} className="transition-all">
+                {isWishlisted ? (
+                  <HeartFilled className="text-red-500!" />
+                ) : (
+                  <HeartOutlined />
+                )}
               </button>
 
               <button className="transition-all hover:text-[#0077b6]!">

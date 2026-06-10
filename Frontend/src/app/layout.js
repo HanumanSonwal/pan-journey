@@ -1,3 +1,4 @@
+import ComingSoonModal from "@/components/common/ComingSoonModal";
 import Footer from "@/components/common/Footer";
 import Header from "@/components/common/Header";
 import ProfileCompletionHandler from "@/modules/auth/components/ProfileCompletionHandler";
@@ -11,7 +12,6 @@ import { Geist, Geist_Mono, Jost, Roboto } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import Providers from "./providers";
-import ComingSoonModal from "@/components/common/ComingSoonModal";
 
 /* Fonts */
 const geistSans = Geist({
@@ -98,8 +98,9 @@ export default function RootLayout({ children }) {
 
                 <main className="flex-1">
                   <App>
-                    <ComingSoonModal/>
-                    {children}</App>
+                    <ComingSoonModal />
+                    {children}
+                  </App>
                 </main>
 
                 <Footer />

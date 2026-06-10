@@ -27,6 +27,7 @@ import markeupRoutes from "./modules/priceMarkup/markup/markup.routes.js";
 import stateRoutes from "./modules/priceMarkup/stateData/state.routes.js";
 import roleRoutes from "./modules/role/role.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
+import wishlistRoutes from "./modules/wishlist/wishlist.routes.js";
 import testRoutes from "./test.routes.js";
 const app = express();
 app.use((req, res, next) => {
@@ -77,6 +78,7 @@ app.use("/api/v1", countryRoutes);
 app.use("/api/v1/states", stateRoutes);
 app.use("/api/v1", hotelTicketing);
 app.use("/api/v1/", dashboardhotelsearch);
+app.use("/api/v1", wishlistRoutes);
 app.use("/api/v1", hotelDetails);
 app.use(errorHandler);
 

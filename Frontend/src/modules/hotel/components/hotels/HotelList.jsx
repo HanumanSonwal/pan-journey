@@ -2,6 +2,7 @@
 
 import HotelContentLoader from "@/components/common/loder/HotelContentLoader";
 import { useCurrencyStore } from "@/modules/shared/store/currency.store";
+import { useWishlistIds } from "@/modules/wishlist/hooks/useWishlistIds";
 import dayjs from "dayjs";
 import { memo, useEffect, useMemo, useRef } from "react";
 import HotelCard from "../../cards/HotelCard";
@@ -9,6 +10,11 @@ import { useInfiniteHotels } from "../../hooks/useInfiniteHotels";
 function HotelList({ searchData, filters, sort, onHotelsChange }) {
   console.log("searchData in paylaod", searchData);
   const { selectedCurrency } = useCurrencyStore();
+  const { data: wishlistIdsData } = useWishlistIds();
+  const wishlistIds = useMemo(
+    () => new Set(wishlistIdsData?.data || []),
+    [wishlistIdsData],
+  );
   const payload = useMemo(() => {
     if (!searchData?.city && !searchData?.cityData?.id) {
       return null;
@@ -146,8 +152,8 @@ function HotelList({ searchData, filters, sort, onHotelsChange }) {
   }, [hotels, data]);
 
   useEffect(() => {
-  onHotelsChange?.(mappedHotels);
-}, [mappedHotels, onHotelsChange]);
+    onHotelsChange?.(mappedHotels);
+  }, [mappedHotels, onHotelsChange]);
 
   // LOADING
   if (isLoading) {
@@ -172,7 +178,11 @@ function HotelList({ searchData, filters, sort, onHotelsChange }) {
     <div className="mt-3 flex flex-col gap-4">
       {/* HOTELS */}
       {mappedHotels.map((hotel, index) => (
-        <HotelCard key={hotel.id || index} hotel={hotel} />
+        <HotelCard
+          key={hotel.id || index}
+          hotel={hotel}
+          wishlistIds={wishlistIds}
+        />
       ))}
 
       {/* LOAD MORE */}
