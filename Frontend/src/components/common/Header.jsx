@@ -11,7 +11,7 @@ import {
   MenuOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Drawer, Dropdown, Input } from "antd";
+import { Drawer, Dropdown, Input, Tooltip } from "antd";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -120,18 +120,50 @@ export default function Header() {
         </Link>
 
         {/* Desktop Menu */}
-        <nav className="hidden items-center gap-8 text-gray-900 lg:flex">
-          <Link href="#">Hotels</Link>
-          <Link href="#">Best Offers</Link>
-          <Link href="#">Flight Booking</Link>
-          <Link href="#">Bus Booking</Link>
-          <Link href="#">Support</Link>
+        <nav className="font-roboto! hidden items-center gap-8 text-gray-900 lg:flex">
+          <Link
+            href="/"
+            className="relative transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:text-[#0f766e] hover:after:w-full"
+          >
+            Hotels
+          </Link>
+
+          <Tooltip title="Coming Soon" color="#0f766e">
+            <span className="relative transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:text-[#0f766e] hover:after:w-full">
+              Flight Booking
+            </span>
+          </Tooltip>
+
+          <Tooltip title="Coming Soon" color="#0f766e">
+            <span className="relative transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:text-[#0f766e] hover:after:w-full">
+              Bus Booking
+            </span>
+          </Tooltip>
+
+          <Link
+            href="/gift-cards"
+            className="relative transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:text-[#0f766e] hover:after:w-full"
+          >
+            Best Offers
+          </Link>
+          <Link
+            href="/about-us"
+            className="relative transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:text-[#0f766e] hover:after:w-full"
+          >
+            About Us
+          </Link>
+          <Link
+            href="/contact-us"
+            className="relative transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:text-[#0f766e] hover:after:w-full"
+          >
+            Support
+          </Link>
         </nav>
 
         {/* Right Side */}
         <div className="flex items-center gap-2 md:gap-3">
           {/* Wishlist */}
-          <button className="hidden items-center gap-2 rounded-lg border border-[#4A9BB5] px-3 py-2 text-sm font-medium text-[#4A9BB5]! md:flex">
+          <button className="hidden items-center gap-2 rounded-lg border border-[#4A9BB5] px-3 py-2 text-sm font-medium text-[#4A9BB5]! transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#4A9BB5] hover:text-white! md:flex">
             <HeartOutlined />
             Wishlist
           </button>
@@ -167,7 +199,7 @@ export default function Header() {
               </div>
             )}
           >
-            <button className="hidden items-center gap-2 rounded-lg border border-[#4A9BB5] px-3 py-2 text-sm font-medium text-[#4A9BB5]! md:flex">
+            <button className="hidden items-center gap-2 rounded-lg border border-[#4A9BB5] px-3 py-2 text-sm font-medium text-[#4A9BB5]! transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#4A9BB5] hover:text-white! md:flex">
               <span>{selectedCurrency?.symbol}</span>
 
               <span className="max-w-20 truncate">
@@ -181,14 +213,14 @@ export default function Header() {
           {!session ? (
             <button
               onClick={() => setOpen(true)}
-              className="bg-offer-gradient flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-white"
+              className="bg-offer-gradient flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
             >
               <UserOutlined />
               <span className="hidden md:block">Login</span>
             </button>
           ) : (
             <Dropdown menu={{ items }} placement="bottomRight">
-              <div className="flex cursor-pointer items-center gap-2">
+              <div className="flex cursor-pointer items-center gap-2 transition-all duration-300 hover:scale-105">
                 {/* ✅ PERFECT ROUND AVATAR */}
                 <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border-2 border-[#4A9BB5] bg-gray-100">
                   {user?.image ? (
@@ -211,7 +243,7 @@ export default function Header() {
 
           {/* Mobile Menu */}
           <button
-            className="text-xl !text-[#4A9BB5] lg:hidden"
+            className="text-xl !text-[#4A9BB5] transition-all duration-300 hover:scale-110 hover:text-gray-800! lg:hidden"
             onClick={() => setMobileMenu(true)}
           >
             <MenuOutlined />
@@ -240,14 +272,14 @@ export default function Header() {
             trigger={["click"]}
             popupRender={() => (
               <div className="w-full min-w-[300px] rounded-xl bg-white p-3 shadow-lg">
-                <div className="rounded  px-2">
+                <div className="rounded px-2">
                   <Input
                     allowClear
                     variant={false}
                     placeholder="Search Currency"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="rounded-lg "
+                    className="rounded-lg"
                   />
                 </div>
                 <div className="mt-3 max-h-[350px] overflow-y-auto">
@@ -255,10 +287,11 @@ export default function Header() {
                     <div
                       key={currency.code}
                       onClick={() => setCurrency(currency)}
-                      className={`flex cursor-pointer items-center justify-between rounded-md px-3 py-2 ${selectedCurrency?.code === currency.code
+                      className={`flex cursor-pointer items-center justify-between rounded-md px-3 py-2 ${
+                        selectedCurrency?.code === currency.code
                           ? "bg-cyan-50 text-[#4A9BB5]"
                           : "hover:bg-gray-100"
-                        }`}
+                      }`}
                     >
                       <span>{currency.name}</span>
 

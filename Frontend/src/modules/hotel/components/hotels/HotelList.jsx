@@ -165,7 +165,7 @@ function HotelList({ searchData, filters, sort, onHotelsChange }) {
 
   // EMPTY
   if (!mappedHotels.length) {
-    return <div className="py-10 text-center">No hotels found 😔</div>;
+    return <div className="py-10 text-center">No hotels found </div>;
   }
 
   return (

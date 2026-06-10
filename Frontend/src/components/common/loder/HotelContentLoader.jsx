@@ -4,7 +4,7 @@ import { Skeleton } from "antd";
 
 export default function HotelContentLoader() {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 mt-3">
 
       {[1, 2, 3, 4].map((item) => (
         <div
