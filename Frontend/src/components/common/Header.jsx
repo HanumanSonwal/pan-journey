@@ -240,14 +240,14 @@ export default function Header() {
             trigger={["click"]}
             popupRender={() => (
               <div className="w-full min-w-[300px] rounded-xl bg-white p-3 shadow-lg">
-                <div className="rounded border border-[#4A9BB5] px-2">
+                <div className="rounded  px-2">
                   <Input
                     allowClear
                     variant={false}
                     placeholder="Search Currency"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="rounded-lg border border-gray-200"
+                    className="rounded-lg "
                   />
                 </div>
                 <div className="mt-3 max-h-[350px] overflow-y-auto">
@@ -255,11 +255,10 @@ export default function Header() {
                     <div
                       key={currency.code}
                       onClick={() => setCurrency(currency)}
-                      className={`flex cursor-pointer items-center justify-between rounded-md px-3 py-2 ${
-                        selectedCurrency?.code === currency.code
+                      className={`flex cursor-pointer items-center justify-between rounded-md px-3 py-2 ${selectedCurrency?.code === currency.code
                           ? "bg-cyan-50 text-[#4A9BB5]"
                           : "hover:bg-gray-100"
-                      }`}
+                        }`}
                     >
                       <span>{currency.name}</span>
 
