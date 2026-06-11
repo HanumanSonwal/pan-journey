@@ -60,7 +60,7 @@ function SortBar({ sort, setSort }) {
         </button>
 
         {mobileSortOpen && (
-          <div className="absolute left-0 top-full z-[999] w-full border border-gray-200 bg-white shadow-lg">
+          <div className="absolute left-0 top-full !z-[999] w-full border border-gray-200 bg-white shadow-lg">
             {tabs.map((tab, index) => {
               const active = sort === tab.value;
 
