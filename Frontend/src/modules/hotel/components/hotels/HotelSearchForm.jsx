@@ -12,15 +12,12 @@ export default function HotelSearchForm({
   setDestinationError,
 }) {
   const { draftSearchData, setDraftSearchData } = useHotelSearchStore();
-
   const [dateOpen, setDateOpen] = useState(false);
   const [guestOpen, setGuestOpen] = useState(false);
-
   const destinationClickedRef = useRef(false);
 
   return (
     <div className="w-full">
-      {/* HEADING */}
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <h3 className="text-[18px] font-extrabold text-gray-900 min-[700px]:text-[20px] lg:text-[22px] xl:text-[24px]">
           Select Your Hotels
@@ -31,7 +28,6 @@ export default function HotelSearchForm({
         </h3>
       </div>
 
-      {/* GRID */}
       <div className="mt-4 grid grid-cols-1 gap-4 min-[700px]:grid-cols-2 min-[1205px]:grid-cols-[2fr_1.5fr_1.5fr]">
         {/* DESTINATION */}
         <div
@@ -49,38 +45,15 @@ export default function HotelSearchForm({
             onChange={(val) => {
               console.log("HOME DESTINATION VALUE =>", val);
               setDestinationError?.(false);
-              const cityParts = (val?.city || "")
-                .split(",")
-                .map((v) => v.trim());
-
-              let normalizedCity = "";
-              const type = val?.cityData?.type;
-
-              if (
-                type === "Hotel" ||
-                type === "PointOfInterest" ||
-                type === "Neighborhood"
-              ) {
-                normalizedCity = cityParts[1] || "";
-              } else {
-                normalizedCity = cityParts[0] || "";
-              }
-
-              console.log("NORMALIZED CITY =>", normalizedCity);
 
               setDraftSearchData({
                 city: val?.city || "",
                 cityData: {
                   ...val?.cityData,
-                  normalizedCity,
                   stateName:
-                    val?.cityData?.stateName ||
-                    val?.cityData?.state ||
-                    "",
+                    val?.cityData?.stateName || val?.cityData?.state || "",
                   countryCode:
-                    val?.cityData?.countryCode ||
-                    val?.cityData?.country ||
-                    "",
+                    val?.cityData?.countryCode || val?.cityData?.country || "",
                 },
               });
 
@@ -94,12 +67,10 @@ export default function HotelSearchForm({
                 });
               }
             }}
-
             fontSize="clamp(18px, 2vw, 21px)"
             height="clamp(73px, 8vw, 82px)"
             marginBottom="clamp(20px, 1vw, 20px)"
           />
-
         </div>
 
         {/* DATE */}
@@ -107,9 +78,7 @@ export default function HotelSearchForm({
           <DateRangeField
             variant="default"
             value={[
-              draftSearchData?.checkIn
-                ? dayjs(draftSearchData.checkIn)
-                : null,
+              draftSearchData?.checkIn ? dayjs(draftSearchData.checkIn) : null,
               draftSearchData?.checkOut
                 ? dayjs(draftSearchData.checkOut)
                 : null,

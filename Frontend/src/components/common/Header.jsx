@@ -31,7 +31,7 @@ export default function Header() {
   const { selectedCurrency, setCurrency } = useCurrencyStore();
   const [search, setSearch] = useState("");
   const { data: wishlistIdsData } = useWishlistIds();
-  const wishlistCount = wishlistIdsData?.data?.length || 0;
+  const wishlistCount = wishlistIdsData?.length || 0;
   const filteredCurrencies = currencies.filter(
     (currency) =>
       currency.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -69,7 +69,10 @@ export default function Header() {
     },
     { type: "divider" },
     { key: "profile", label: <Link href="/profile">My Profile</Link> },
-    { key: "booking", label: <Link href="/booking">My Bookings</Link> },
+    {
+      key: "booking",
+      label: <Link href="/profile?tab=BookingHistory">My Bookings</Link>,
+    },
     { type: "divider" },
     {
       key: "logout",

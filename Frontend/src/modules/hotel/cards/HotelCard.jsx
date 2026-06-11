@@ -5,6 +5,7 @@ import { useSelectedHotelStore } from "@/modules/hotel/store/selectedHotel.store
 import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
 import ImageGallery from "@/modules/profile/components/ImageGallery";
 import HotelBookingComingSoonModal from "@/modules/shared/home/components/HotelBookingComingSoonModal";
+import { useToggleWishlist } from "@/modules/wishlist/hooks/useToggleWishlist";
 import { slugify } from "@/utils/slug/slugify";
 import {
   EnvironmentOutlined,
@@ -15,23 +16,18 @@ import {
 } from "@ant-design/icons";
 import { message } from "antd";
 import Image from "next/image";
-
-import { useToggleWishlist } from "@/modules/wishlist/hooks/useToggleWishlist";
-
 import { useRouter } from "next/navigation";
 import { memo, useMemo, useState } from "react";
+
 function HotelCard({ hotel, wishlistIds }) {
   const router = useRouter();
   const [openModal, setOpenModal] = useState(false);
   const [showAllFacilities, setShowAllFacilities] = useState(false);
   const { setSelectedHotel } = useSelectedHotelStore();
   const { appliedSearchData } = useHotelSearchStore();
-  const { mutateAsync } = useToggleWishlist();
+  const { mutateAsync, isPending } = useToggleWishlist();
   const { requireAuth } = useAuthGuard();
   const isWishlisted = wishlistIds?.has(hotel.id?.toString()) || false;
-  console.log("APPLIED SEARCH DATA", appliedSearchData);
-
-  console.log(hotel, "hotel in card");
 
   const rating = useMemo(() => {
     return Number(hotel.rating) || Number(hotel.starRating) || 4.0;
@@ -52,7 +48,6 @@ function HotelCard({ hotel, wishlistIds }) {
     if (hotel.images?.length > 1) {
       return hotel.images;
     }
-
     return [
       hotel.image ||
         hotel.images?.[0] ||
@@ -111,7 +106,6 @@ function HotelCard({ hotel, wishlistIds }) {
       hotel?.name || hotel?.hotelName || hotel?.HotelName || "hotel",
     );
     const hotelId = hotel?.hotelId || hotel?.HotelId || hotel?.id;
-
     setSelectedHotel({
       hotelKey: hotel.hotelKey || hotel.HotelKey || hotel.hotelkey || "",
       searchKey: hotel?.searchKey || hotel?.SearchKey,
@@ -122,7 +116,6 @@ function HotelCard({ hotel, wishlistIds }) {
         countryCode: appliedSearchData?.cityData?.countryCode,
       },
     });
-
     router.push(`/hotel-details/${citySlug}/${hotelSlug}?hid=${hotelId}`);
   };
   const visibleFacilities = useMemo(() => {
@@ -131,51 +124,32 @@ function HotelCard({ hotel, wishlistIds }) {
 
   const handleWishlist = (e) => {
     e.stopPropagation();
-
     requireAuth(async () => {
       const payload = {
         hotelId: hotel.id?.toString(),
-
         hotelName: hotel.name,
-
         hotelSlug: slugify(hotel.name || hotel.hotelName),
-
         hotelImage: hotel.image,
-
         address: hotel.address || "",
-
         starRating: Number(hotel.starRating || 0),
-
         facilities: hotel.facilities || [],
-
         freeCancellation: hotel.freeCancellation || false,
-
         savedPrice: Number(hotel.price) || 0,
-
         savedTax: Number(hotel.tax) || 0,
-
         cityId: appliedSearchData?.cityData?.id,
-
         cityName: appliedSearchData?.city || "",
         stateName: appliedSearchData?.cityData?.stateName || "",
-
         countryCode: appliedSearchData?.cityData?.countryCode || "",
-
         countryName: appliedSearchData?.cityData?.countryCode || "",
-        normalizedCity: appliedSearchData?.cityData?.normalizedCity || "",
+        searchType: appliedSearchData?.cityData?.type || "",
       };
-
-      console.log("WISHLIST PAYLOAD", payload);
-
       try {
         await mutateAsync(payload);
-
         message.success(
           isWishlisted ? "Removed from wishlist" : "Added to wishlist",
         );
       } catch (error) {
         console.log("WISHLIST ERROR", error?.response?.data);
-
         message.error(
           error?.response?.data?.message || "Wishlist update failed",
         );
@@ -190,7 +164,6 @@ function HotelCard({ hotel, wishlistIds }) {
           if (e.target.closest("a") || e.target.closest("button")) {
             return;
           }
-
           handleNavigate();
         }}
         className="cursor-pointer overflow-hidden rounded-xl border border-gray-100 bg-white shadow-[0_2px_10px_rgba(0,0,0,0.06)] transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(0,0,0,0.12)]"
@@ -312,12 +285,20 @@ function HotelCard({ hotel, wishlistIds }) {
               className="mt-0! mb-1! flex justify-end gap-2 text-[22px] text-gray-700"
               onClick={(e) => e.stopPropagation()}
             >
-              <button onClick={handleWishlist} className="transition-all">
-                {isWishlisted ? (
-                  <HeartFilled className="text-red-500!" />
-                ) : (
-                  <HeartOutlined />
-                )}
+              <button
+                disabled={isPending}
+                onClick={handleWishlist}
+                className={`flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-90`}
+              >
+                <span
+                  className={`inline-block transition-all duration-300 ${isWishlisted ? "scale-125" : "scale-100"} `}
+                >
+                  {isWishlisted ? (
+                    <HeartFilled className="text-red-500!" />
+                  ) : (
+                    <HeartOutlined />
+                  )}
+                </span>
               </button>
 
               <button className="transition-all hover:text-[#0077b6]!">

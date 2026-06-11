@@ -21,7 +21,7 @@ export const getWishlist = async () => {
 export const getWishlistIds = async () => {
   const { data } = await api.get("/wishlist/hotel-ids");
 
-  return data;
+  return data?.data || [];
 };
 
 export const getWishlistCity = async (cityId) => {

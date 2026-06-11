@@ -28,7 +28,6 @@ export default function WishlistTab() {
         <div className="mb-2 bg-white px-4 py-2 shadow-sm">
           <div className="h-7 w-32 animate-pulse rounded bg-gray-200" />
         </div>
-
         <WishlistSkeleton />
       </div>
     );
@@ -36,11 +35,31 @@ export default function WishlistTab() {
 
   if (!destinations.length) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <Empty
-          description="No destinations saved yet"
-          image={Empty.PRESENTED_IMAGE_SIMPLE}
-        />
+      <div className="rounded bg-white p-10 shadow-sm">
+        <div className="flex items-center justify-center">
+          <div className="max-w-md p-8 text-center">
+            <Empty
+              description="No destinations saved yet"
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+            />
+
+            <h2 className="mb-2 text-xl font-bold text-gray-900">
+              Your Wishlist is Empty
+            </h2>
+
+            <p className="mb-6 text-sm text-gray-500">
+              Save your favourite hotels and destinations to quickly access them
+              later.
+            </p>
+
+            <button
+              onClick={() => router.push("/")}
+              className="rounded-lg bg-[#72C0F0] px-6 py-3 font-semibold text-white! transition hover:bg-[#58AEE5]"
+            >
+              Explore Hotels
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
@@ -62,7 +81,7 @@ export default function WishlistTab() {
             onClick={() =>
               router.push(`/profile?tab=wishlist-detail&cityId=${item.cityId}`)
             }
-            className="overflow-hidden !rounded-[16px] !border !border-[#E2E8F0] !pr-4 shadow-[0_2px_6px_rgba(0,0,0,0.05)]"
+            className="overflow-hidden !rounded !border !border-[#E2E8F0] !pr-4 shadow-[0_2px_6px_rgba(0,0,0,0.05)]"
             styles={{
               body: {
                 padding: 0,
@@ -72,7 +91,7 @@ export default function WishlistTab() {
             <div className="flex flex-col xl:flex-row xl:items-stretch">
               {/* IMAGE */}
               <div className="w-full shrink-0 p-2 xl:w-[200px]">
-                <div className="relative h-[160px] w-full overflow-hidden rounded-xl">
+                <div className="relative h-[160px] w-full overflow-hidden rounded">
                   <Image
                     src={
                       item.coverImage ||

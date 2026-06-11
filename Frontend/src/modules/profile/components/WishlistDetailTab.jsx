@@ -1,5 +1,6 @@
 "use client";
 
+import { useToggleWishlist } from "@/modules/wishlist/hooks/useToggleWishlist";
 import { useWishlistCity } from "@/modules/wishlist/hooks/useWishlistCity";
 import { slugify } from "@/utils/slug/slugify";
 import {
@@ -7,32 +8,81 @@ import {
   CheckCircleOutlined,
   EnvironmentOutlined,
 } from "@ant-design/icons";
-import { Button, Card, Empty, Tag } from "antd";
+import { Button, Card, Empty, message, Tag } from "antd";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import WishlistSkeleton from "./lodding/WishlistSkeleton";
 
 export default function WishlistDetailTab() {
   const router = useRouter();
-
   const searchParams = useSearchParams();
+  const [removingHotelId, setRemovingHotelId] = useState(null);
 
+  const { mutateAsync } = useToggleWishlist();
   const cityId = searchParams.get("cityId");
-
   const { data, isLoading } = useWishlistCity(cityId);
-
   const hotels = data?.data || [];
+  
+  useEffect(() => {
+    if (!isLoading && hotels.length === 0) {
+      router.replace("/profile?tab=wishlist");
+    }
+  }, [hotels.length, isLoading, router]);
+  const handleRemoveHotel = async (hotel) => {
+    try {
+      setRemovingHotelId(hotel.hotelId);
+      await mutateAsync({
+        hotelId: hotel.hotelId,
+      });
+
+      message.success("Hotel removed from wishlist");
+    } catch (error) {
+      console.log(error);
+      message.error("Failed to remove hotel");
+    } finally {
+      setRemovingHotelId(null);
+    }
+  };
 
   if (isLoading) {
     return (
-      <div className="rounded-2xl bg-white p-6 shadow-sm">
-        Loading hotels...
+      <div className="mt-[-17px] p-2 sm:p-3 md:p-4">
+        <div className="mb-2 bg-white px-4 py-2 shadow-sm">
+          <div className="h-7 w-32 animate-pulse rounded bg-gray-200" />
+        </div>
+
+        <WishlistSkeleton />
       </div>
     );
   }
 
   if (!hotels.length) {
     return (
-      <div className="rounded-2xl bg-white p-10 shadow-sm">
-        <Empty description="No hotels found" />
+      <div className="rounded bg-white p-10 shadow-sm">
+        <div className="flex items-center justify-center">
+          <div className="max-w-md p-8 text-center">
+            <Empty
+              description="No destinations saved yet"
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+            />
+
+            <h2 className="mb-2 text-xl font-bold text-gray-900">
+              Your Wishlist is Empty
+            </h2>
+
+            <p className="mb-6 text-sm text-gray-500">
+              Save your favourite hotels and destinations to quickly access them
+              later.
+            </p>
+
+            <button
+              onClick={() => router.push("/")}
+              className="rounded-lg bg-[#72C0F0] px-6 py-3 font-semibold text-white! transition hover:bg-[#58AEE5]"
+            >
+              Explore Hotels
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
@@ -139,9 +189,9 @@ export default function WishlistDetailTab() {
                       + ₹ {Math.round(hotel.savedTax || 0)} taxes
                     </p>
                   </div>
-                  <div className="flex flex-col items-end gap-3">
+                  <div className="flex items-end gap-3">
                     <Button
-                      className="rounded-lg! bg-[#72C0F0]! px-5! py-2! text-sm! font-semibold! text-white! transition-all! duration-300! hover:-translate-y-0.5! hover:bg-[#58AEE5]!"
+                      className="rounded-lg! bg-[#72C0F0]! px-5! py-2! text-sm! font-semibold! text-white!"
                       onClick={() =>
                         router.push(
                           `/hotel-details/${slugify(
@@ -151,6 +201,15 @@ export default function WishlistDetailTab() {
                       }
                     >
                       View Hotel
+                    </Button>
+
+                    <Button
+                      danger
+                      ghost
+                      loading={removingHotelId === hotel.hotelId}
+                      onClick={() => handleRemoveHotel(hotel)}
+                    >
+                      Remove
                     </Button>
                   </div>
                 </div>

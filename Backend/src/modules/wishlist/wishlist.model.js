@@ -12,55 +12,75 @@ const wishlistSchema = new mongoose.Schema(
     hotelId: {
       type: String,
       required: true,
+      trim: true,
     },
 
     hotelName: {
       type: String,
       required: true,
+      trim: true,
     },
+
     hotelSlug: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    hotelImage: {
       type: String,
       default: "",
     },
 
-    hotelImage: String,
-
     cityId: {
       type: String,
       required: true,
+      trim: true,
     },
 
     cityName: {
       type: String,
       required: true,
+      trim: true,
     },
+
     normalizedCity: {
       type: String,
       default: "",
+      trim: true,
+      index: true,
     },
 
     stateName: {
       type: String,
       default: "",
+      trim: true,
     },
 
     countryCode: {
       type: String,
       default: "",
+      trim: true,
+      uppercase: true,
     },
 
     countryName: {
       type: String,
       default: "",
+      trim: true,
     },
+
     address: {
       type: String,
       default: "",
+      trim: true,
     },
 
     starRating: {
       type: Number,
       default: 0,
+      min: 0,
+      max: 5,
     },
 
     facilities: {
@@ -76,16 +96,19 @@ const wishlistSchema = new mongoose.Schema(
     savedPrice: {
       type: Number,
       default: 0,
+      min: 0,
     },
 
     savedTax: {
       type: Number,
       default: 0,
+      min: 0,
     },
 
     supplier: {
       type: String,
       default: "TBO",
+      trim: true,
     },
   },
   {
@@ -102,5 +125,11 @@ wishlistSchema.index(
     unique: true,
   },
 );
+
+wishlistSchema.index({
+  userId: 1,
+  normalizedCity: 1,
+  countryCode: 1,
+});
 
 export default mongoose.model("Wishlist", wishlistSchema);

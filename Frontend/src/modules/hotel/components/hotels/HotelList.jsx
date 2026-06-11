@@ -12,9 +12,11 @@ function HotelList({ searchData, filters, sort, onHotelsChange }) {
   const { selectedCurrency } = useCurrencyStore();
   const { data: wishlistIdsData } = useWishlistIds();
   const wishlistIds = useMemo(
-    () => new Set(wishlistIdsData?.data || []),
+    () => new Set(wishlistIdsData || []),
     [wishlistIdsData],
   );
+  console.log("wishlistIdsData", wishlistIdsData);
+console.log("wishlistIds", wishlistIds);
   const payload = useMemo(() => {
     if (!searchData?.city && !searchData?.cityData?.id) {
       return null;
