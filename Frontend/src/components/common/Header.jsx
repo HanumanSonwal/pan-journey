@@ -2,8 +2,10 @@
 
 import LoginModal from "@/modules/auth/components/LoginFormModal";
 import { useLogout } from "@/modules/auth/hooks/useAuth";
+import { useAuthGuard } from "@/modules/auth/hooks/useAuthGuard";
 import { useCurrency } from "@/modules/shared/home/hooks/useCurrency";
 import { useCurrencyStore } from "@/modules/shared/store/currency.store";
+import { useWishlistIds } from "@/modules/wishlist/hooks/useWishlistIds";
 import {
   DownOutlined,
   HeartOutlined,
@@ -28,7 +30,8 @@ export default function Header() {
   const router = useRouter();
   const { selectedCurrency, setCurrency } = useCurrencyStore();
   const [search, setSearch] = useState("");
-
+  const { data: wishlistIdsData } = useWishlistIds();
+  const wishlistCount = wishlistIdsData?.data?.length || 0;
   const filteredCurrencies = currencies.filter(
     (currency) =>
       currency.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -36,7 +39,7 @@ export default function Header() {
   );
   console.log("Selected Currency:", selectedCurrency);
   const user = session?.user;
-
+  const { requireAuth } = useAuthGuard();
   const getInitials = (name) => {
     if (!name) return "U";
     return name
@@ -86,7 +89,6 @@ export default function Header() {
     label: (
       <div className="flex items-center gap-3">
         <span className="font-medium">{currency.symbol}</span>
-
         <div className="flex flex-col">
           <span className="font-medium">{currency.code}</span>
 
@@ -163,13 +165,22 @@ export default function Header() {
         {/* Right Side */}
         <div className="flex items-center gap-2 md:gap-3">
           {/* Wishlist */}
-          <Link
-            href="/wishlist"
-            className="hidden items-center gap-2 rounded-lg border border-[#4A9BB5] px-3 py-2 text-sm font-medium text-[#4A9BB5]! transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#4A9BB5] hover:text-white! md:flex"
+          <button
+            onClick={() =>
+              requireAuth(() => {
+                router.push("/profile?tab=wishlist");
+              })
+            }
+            className="group hidden cursor-pointer items-center gap-2 rounded-lg border border-[#4A9BB5] px-3 py-2 text-sm font-medium text-[#4A9BB5]! transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#4A9BB5] hover:text-white! md:flex"
           >
+            {wishlistCount > 0 && (
+              <span className="ml-1 rounded-full bg-[#4A9BB5] px-2 py-0.5 text-xs font-semibold text-white transition-colors duration-300 group-hover:bg-white group-hover:text-[#4A9BB5]">
+                {wishlistCount}
+              </span>
+            )}
             <HeartOutlined />
             Wishlist
-          </Link>
+          </button>
           <Dropdown
             trigger={["click"]}
             popupRender={() => (

@@ -230,6 +230,16 @@ function DestinationSearchField({
 
     const item = option?.itemData;
 
+    let normalizedCity = "";
+
+if (item?.type === "Hotel") {
+  normalizedCity =
+    item?.name?.split(",")?.[1]?.trim() || "";
+} else {
+  normalizedCity =
+    item?.name?.split(",")?.[0]?.trim() || "";
+}
+
     onChange({
       city: option?.searchLabel || "",
 

@@ -17,6 +17,11 @@ export const toggleWishlistService = async (userId, payload) => {
   await Wishlist.create({
     userId,
     ...payload,
+    normalizedCity: payload.normalizedCity || "",
+
+    stateName: payload.stateName || "",
+
+    countryCode: payload.countryCode || "",
   });
 
   return {
@@ -40,7 +45,23 @@ export const getWishlistService = async (userId) => {
 
     {
       $group: {
-        _id: "$cityId",
+        _id: {
+          city: "$normalizedCity",
+          state: "$stateName",
+          country: "$countryCode",
+        },
+
+        normalizedCity: {
+          $first: "$normalizedCity",
+        },
+
+        stateName: {
+          $first: "$stateName",
+        },
+
+        countryCode: {
+          $first: "$countryCode",
+        },
 
         cityId: {
           $first: "$cityId",

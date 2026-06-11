@@ -12,6 +12,7 @@ import HotelDetailsSkeleton from "@/components/common/loder/HotelDetailsSkeleton
 import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
 import { useHotelDetails } from "@/modules/hotel/hooks/useHotelDetails";
 import { useSelectedHotelStore } from "@/modules/hotel/store/selectedHotel.store";
+import { HeartFilled } from "@ant-design/icons";
 import SearchBar from "../components/hotels/SearchBar";
 import HotelSectionsContent from "../components/hotels/viewhotles/HotelSectionsContent";
 import HotelSectionsTabs from "../components/hotels/viewhotles/HotelSectionsTabs";
@@ -27,6 +28,11 @@ import DynamicHotelSeoFallback from "../seo/DynamicHotelSeoFallback";
 import { useHotelBookingStore } from "../store/booking.store";
 import { useHotelSearchStore } from "../store/serchData.store";
 
+import { useAuthGuard } from "@/modules/auth/hooks/useAuthGuard";
+import { useToggleWishlist } from "@/modules/wishlist/hooks/useToggleWishlist";
+import { useWishlistIds } from "@/modules/wishlist/hooks/useWishlistIds";
+import { message } from "antd";
+
 import { useCurrencyStore } from "@/modules/shared/store/currency.store";
 function HotelDetails({ initialPayload = null, cms = null }) {
   const { selectedHotel } = useSelectedHotelStore();
@@ -38,6 +44,12 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   const [sessionExpired] = useState(false);
   const [reloadingHotels] = useState(false);
   console.log("selectedCurrency in hotel details", selectedCurrency);
+
+  const { requireAuth } = useAuthGuard();
+
+  const { mutateAsync } = useToggleWishlist();
+
+  const { data: wishlistData } = useWishlistIds();
   const payload = useMemo(() => {
     if (initialPayload) {
       return {
@@ -69,6 +81,41 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     appliedSearchData,
     selectedCurrency?.code,
   ]);
+
+  const wishlistIds = useMemo(
+    () => new Set(wishlistData?.data || []),
+    [wishlistData],
+  );
+
+  const isWishlisted = wishlistIds.has(payload?.hotelId?.toString());
+
+  const handleWishlist = () => {
+    requireAuth(async () => {
+      try {
+        await mutateAsync({
+          hotelId: payload?.hotelId?.toString(),
+
+          hotelName: supplierData?.HotelName,
+
+          hotelImage:
+            supplierData?.HotelImage || supplierData?.HotelGallery?.[0] || "",
+
+          cityId: appliedSearchData?.cityData?.id,
+
+          cityName: appliedSearchData?.city || "",
+
+          countryName: supplierData?.Country || "",
+        });
+
+        message.success(
+          isWishlisted ? "Removed from wishlist" : "Added to wishlist",
+        );
+      } catch {
+        message.error("Wishlist update failed");
+      }
+    });
+  };
+
   console.log("HOTEL DETAILS PAYLOAD", payload);
   const { data, isLoading, isFetching, refetch } = useHotelDetails(payload);
   const showSkeleton = isLoading || isFetching;
@@ -161,8 +208,15 @@ function HotelDetails({ initialPayload = null, cms = null }) {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <button className="flex h-11 w-11 items-center justify-center rounded-full border bg-white">
-                    <HeartOutlined className="text-[20px]" />
+                  <button
+                    onClick={handleWishlist}
+                    className="flex h-11 w-11 items-center justify-center rounded-full border bg-white"
+                  >
+                    {isWishlisted ? (
+                      <HeartFilled className="text-[20px] text-red-500!" />
+                    ) : (
+                      <HeartOutlined className="text-[20px]" />
+                    )}
                   </button>
 
                   <button className="flex h-11 w-11 items-center justify-center rounded-full border bg-white">

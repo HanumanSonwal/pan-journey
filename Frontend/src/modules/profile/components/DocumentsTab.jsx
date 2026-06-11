@@ -53,9 +53,7 @@ const schema = z.object({
 
 export default function DocumentsTab() {
   const [isEdit, setIsEdit] = useState(false);
-
   const [loading, setLoading] = useState(false);
-
   const [documentsLoading, setDocumentsLoading] =
     useState(true);
 
@@ -63,7 +61,6 @@ export default function DocumentsTab() {
 
   const [originalData, setOriginalData] =
     useState(null);
-
   const methods = useForm({
     resolver: zodResolver(schema),
 

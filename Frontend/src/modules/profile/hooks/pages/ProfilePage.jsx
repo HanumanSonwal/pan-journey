@@ -7,6 +7,7 @@ import BookingHistoryTab from "../../components/BookingHistoryTab";
 import DocumentsTab from "../../components/DocumentsTab";
 import HelpSupportPage from "../../components/HelpSupportPage";
 import Sidebar from "../../components/Sidebar";
+import WishlistDetailTab from "../../components/WishlistDetailTab";
 import WishlistTab from "../../components/WishlistTab";
 
 export default function ProfilePage() {
@@ -57,6 +58,9 @@ export default function ProfilePage() {
             {activeTab === "profile" && <ProfileOverview />}
             {activeTab === "documents" && <DocumentsTab />}
             {activeTab === "wishlist" && <WishlistTab />}
+
+            {activeTab === "wishlist-detail" && <WishlistDetailTab />}
+
             {activeTab === "BookingHistory" && <BookingHistoryTab />}
 
             {activeTab === "booking-details" && (

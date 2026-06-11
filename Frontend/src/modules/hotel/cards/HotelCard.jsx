@@ -29,6 +29,7 @@ function HotelCard({ hotel, wishlistIds }) {
   const { mutateAsync } = useToggleWishlist();
   const { requireAuth } = useAuthGuard();
   const isWishlisted = wishlistIds?.has(hotel.id?.toString()) || false;
+  console.log("APPLIED SEARCH DATA", appliedSearchData);
 
   console.log(hotel, "hotel in card");
 
@@ -79,7 +80,6 @@ function HotelCard({ hotel, wishlistIds }) {
     if (hotel.facilities?.length > 0) {
       return hotel.facilities;
     }
-
     return [
       "Free WiFi",
       "Air Conditioning",
@@ -135,14 +135,34 @@ function HotelCard({ hotel, wishlistIds }) {
     requireAuth(async () => {
       const payload = {
         hotelId: hotel.id?.toString(),
+
         hotelName: hotel.name,
+
+        hotelSlug: slugify(hotel.name || hotel.hotelName),
+
         hotelImage: hotel.image,
+
+        address: hotel.address || "",
+
+        starRating: Number(hotel.starRating || 0),
+
+        facilities: hotel.facilities || [],
+
+        freeCancellation: hotel.freeCancellation || false,
+
+        savedPrice: Number(hotel.price) || 0,
+
+        savedTax: Number(hotel.tax) || 0,
 
         cityId: appliedSearchData?.cityData?.id,
 
         cityName: appliedSearchData?.city || "",
+        stateName: appliedSearchData?.cityData?.stateName || "",
+
+        countryCode: appliedSearchData?.cityData?.countryCode || "",
 
         countryName: appliedSearchData?.cityData?.countryCode || "",
+        normalizedCity: appliedSearchData?.cityData?.normalizedCity || "",
       };
 
       console.log("WISHLIST PAYLOAD", payload);

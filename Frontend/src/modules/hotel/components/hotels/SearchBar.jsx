@@ -81,11 +81,30 @@ export default function SearchBar({ onSearch }) {
                 }}
                 onChange={(val) => {
                   setDestinationError(false);
+                  const cityParts = (val?.city || "")
+                    .split(",")
+                    .map((v) => v.trim());
 
+                  let normalizedCity = "";
+                  const type = val?.cityData?.type;
+
+                  if (
+                    type === "Hotel" ||
+                    type === "PointOfInterest" ||
+                    type === "Neighborhood"
+                  ) {
+                    normalizedCity = cityParts[1] || "";
+                  } else {
+                    normalizedCity = cityParts[0] || "";
+                  }
+                  console.log("TYPE =>", val?.cityData?.type);
+
+                  console.log("NORMALIZED CITY =>", normalizedCity);
                   setDraftSearchData({
                     city: val?.city || "",
                     cityData: {
                       ...val?.cityData,
+                      normalizedCity,
                       stateName:
                         val?.cityData?.stateName || val?.cityData?.state || "",
                       countryCode:

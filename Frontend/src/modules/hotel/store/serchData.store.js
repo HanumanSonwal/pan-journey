@@ -8,6 +8,8 @@ const getDefaultSearchData = () => ({
     id: "",
     stateName: "",
     countryCode: "",
+
+    normalizedCity: "",
   },
   checkIn: dayjs().format("YYYY-MM-DD"),
   checkOut: dayjs().add(1, "day").format("YYYY-MM-DD"),

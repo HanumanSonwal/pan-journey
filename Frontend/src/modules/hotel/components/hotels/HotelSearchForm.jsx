@@ -42,15 +42,33 @@ export default function HotelSearchForm({
             }}
             error={destinationError}
             onChange={(val) => {
-                console.log("HOME DESTINATION VALUE =>", val);
+              console.log("HOME DESTINATION VALUE =>", val);
               setDestinationError?.(false);
+              const cityParts = (val?.city || "")
+                .split(",")
+                .map((v) => v.trim());
+
+              let normalizedCity = "";
+              const type = val?.cityData?.type;
+
+              if (
+                type === "Hotel" ||
+                type === "PointOfInterest" ||
+                type === "Neighborhood"
+              ) {
+                normalizedCity = cityParts[1] || "";
+              } else {
+                normalizedCity = cityParts[0] || "";
+              }
+
+              console.log("NORMALIZED CITY =>", normalizedCity);
 
               setDraftSearchData({
                 city: val?.city || "",
 
                 cityData: {
                   ...val?.cityData,
-
+                  normalizedCity,
                   stateName:
                     val?.cityData?.stateName || val?.cityData?.state || "",
 
@@ -95,7 +113,7 @@ export default function HotelSearchForm({
               });
 
               // FULL RANGE SELECTED
-              if (dates?.[0] && dates?.[1]) { 
+              if (dates?.[0] && dates?.[1]) {
                 setDateOpen(false);
 
                 requestAnimationFrame(() => {

@@ -18,6 +18,10 @@ const wishlistSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    hotelSlug: {
+      type: String,
+      default: "",
+    },
 
     hotelImage: String,
 
@@ -30,10 +34,53 @@ const wishlistSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    normalizedCity: {
+      type: String,
+      default: "",
+    },
+
+    stateName: {
+      type: String,
+      default: "",
+    },
+
+    countryCode: {
+      type: String,
+      default: "",
+    },
 
     countryName: {
       type: String,
       default: "",
+    },
+    address: {
+      type: String,
+      default: "",
+    },
+
+    starRating: {
+      type: Number,
+      default: 0,
+    },
+
+    facilities: {
+      type: [String],
+      default: [],
+    },
+
+    freeCancellation: {
+      type: Boolean,
+      default: false,
+    },
+
+    savedPrice: {
+      type: Number,
+      default: 0,
+    },
+
+    savedTax: {
+      type: Number,
+      default: 0,
     },
 
     supplier: {

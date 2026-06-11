@@ -7,6 +7,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useToggleWishlist } from "../hooks/useToggleWishlist";
 import { useWishlistCity } from "../hooks/useWishlistCity";
+import { slugify } from "@/utils/slug/slugify";
 
 export default function WishlistCityPage() {
   const { cityId } = useParams();
@@ -15,6 +16,9 @@ export default function WishlistCityPage() {
 
   const { mutateAsync } = useToggleWishlist();
   const { data, isLoading } = useWishlistCity(cityId);
+
+  const { mutateAsync: removeHotel } = useToggleWishlist();
+  const { mutateAsync: removeCity } = useToggleWishlist();
 
   const hotels = data?.data || [];
   useEffect(() => {
@@ -53,21 +57,17 @@ export default function WishlistCityPage() {
         hotelId: hotel.hotelId,
         hotelName: hotel.hotelName,
         hotelImage: hotel.hotelImage,
-
         cityId: hotel.cityId,
         cityName: hotel.cityName,
-
         countryName: hotel.countryName,
       });
 
       message.success("Hotel removed from wishlist");
-
       queryClient.invalidateQueries({
         queryKey: ["wishlist-city", cityId],
       });
     } catch (error) {
       console.log(error);
-
       message.error("Failed to remove hotel");
     }
   };
@@ -106,12 +106,9 @@ export default function WishlistCityPage() {
                     <h2 className="text-2xl font-bold text-gray-900">
                       {hotel.hotelName}
                     </h2>
-
                     <HeartFilled className="text-xl text-red-500" />
                   </div>
-
                   <p className="mt-2 text-gray-500">{hotel.cityName}</p>
-
                   <p className="mt-4 text-sm text-gray-400">
                     Added on {new Date(hotel.createdAt).toLocaleDateString()}
                   </p>
@@ -124,7 +121,15 @@ export default function WishlistCityPage() {
                     size="large"
                     className="!bg-cyan-600"
                     onClick={() => {
-                      console.log("Open hotel", hotel.hotelId);
+                      const citySlug = slugify(
+                        hotel.cityName?.split(",")[0] || "hotel",
+                      );
+
+                      const hotelSlug = slugify(hotel.hotelName || "hotel");
+
+                      router.push(
+                        `/hotel-details/${citySlug}/${hotelSlug}?hid=${hotel.hotelId}`,
+                      );
                     }}
                   >
                     View Hotel
