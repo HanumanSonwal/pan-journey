@@ -46,26 +46,7 @@ export default function DateRangeField({
           });
         }
       }}
-      className="
-absolute
-
-right-2
--translate-x-1/2
-h-0
-w-0
-opacity-0
-    
-    absolute
-    top-[-20px]
-    right-2
-    -translate-x-1/2
-    h-0
-    w-0
-    opacity-0
-    lg:left-0
-    lg:translate-x-0
-  "
-
+      className="absolute top-[-20px] right-2 h-0 w-0 -translate-x-1/2 opacity-0 lg:left-0 lg:translate-x-0"
     />
   );
 
@@ -86,7 +67,7 @@ opacity-0
               Check In
             </span>
             <div className="mt-[2px] flex items-center gap-1">
-              <span className="text-[18px] leading-none font-semibold! font-jost! text-black">
+              <span className="font-jost! text-[18px] leading-none font-semibold! text-black">
                 {start?.format("DD")}
               </span>
               <span className="text-[10px] leading-none text-gray-600">
@@ -143,53 +124,53 @@ opacity-0
         {/* CHECK IN */}
         {/* CHECK IN */}
         <div className="flex min-w-0 flex-1 flex-col justify-center">
-          <div className="flex items-center gap-1 sm:gap-2 leading-none">
-            <span className="text-[20px] sm:text-[24px] md:text-[28px] lg:text-[30px] font-extrabold font-jost text-gray-900">
+          <div className="flex items-center gap-1 leading-none sm:gap-2">
+            <span className="font-jost text-[20px] font-extrabold text-gray-900 sm:text-[24px] md:text-[28px] lg:text-[30px]">
               {start?.format("DD")}
             </span>
 
             <div className="flex flex-col">
-              <span className="text-[11px] sm:text-[13px] md:text-[15px] lg:text-[16px] leading-none font-semibold text-gray-700">
+              <span className="text-[11px] leading-none font-semibold text-gray-700 sm:text-[13px] md:text-[15px] lg:text-[16px]">
                 {start?.format("MMM")}
               </span>
 
-              <span className="text-[10px] sm:text-[11px] md:text-[13px] lg:text-[14px] leading-none text-gray-500">
+              <span className="text-[10px] leading-none text-gray-500 sm:text-[11px] md:text-[13px] lg:text-[14px]">
                 {start?.format("YY")}
               </span>
             </div>
           </div>
 
-          <span className="mt-1 text-[10px] sm:text-xs md:text-sm font-medium text-gray-500 truncate">
+          <span className="mt-1 truncate text-[10px] font-medium text-gray-500 sm:text-xs md:text-sm">
             {start?.format("dddd")}
           </span>
         </div>
 
         {/* CENTER */}
-        <div className="mx-1 sm:mx-2 md:mx-3 flex h-7 w-7 sm:h-8 sm:w-8 md:h-9 md:w-9 items-center justify-center rounded bg-[#e6f4fb]">
-          <span className="text-sm sm:text-base md:text-lg font-bold text-[#0077b6]">
+        <div className="mx-1 flex h-7 w-7 items-center justify-center rounded bg-[#e6f4fb] sm:mx-2 sm:h-8 sm:w-8 md:mx-3 md:h-9 md:w-9">
+          <span className="text-sm font-bold text-[#0077b6] sm:text-base md:text-lg">
             →
           </span>
         </div>
 
         {/* CHECK OUT */}
         <div className="flex min-w-0 flex-1 flex-col items-end justify-center">
-          <div className="flex items-center gap-1 sm:gap-2 leading-none">
-            <span className="text-[20px] sm:text-[24px] md:text-[28px] lg:text-[30px] font-extrabold font-jost text-gray-900">
+          <div className="flex items-center gap-1 leading-none sm:gap-2">
+            <span className="font-jost text-[20px] font-extrabold text-gray-900 sm:text-[24px] md:text-[28px] lg:text-[30px]">
               {end?.format("DD")}
             </span>
 
             <div className="flex flex-col">
-              <span className="text-[11px] sm:text-[13px] md:text-[15px] lg:text-[16px] leading-none font-semibold text-gray-700">
+              <span className="text-[11px] leading-none font-semibold text-gray-700 sm:text-[13px] md:text-[15px] lg:text-[16px]">
                 {end?.format("MMM")}
               </span>
 
-              <span className="text-[10px] sm:text-[11px] md:text-[13px] lg:text-[14px] leading-none text-gray-500">
+              <span className="text-[10px] leading-none text-gray-500 sm:text-[11px] md:text-[13px] lg:text-[14px]">
                 {end?.format("YY")}
               </span>
             </div>
           </div>
 
-          <span className="mt-1 text-right text-[10px] sm:text-xs md:text-[14px] font-medium text-gray-500 truncate">
+          <span className="mt-1 truncate text-right text-[10px] font-medium text-gray-500 sm:text-xs md:text-[14px]">
             {end?.format("dddd")}
           </span>
         </div>

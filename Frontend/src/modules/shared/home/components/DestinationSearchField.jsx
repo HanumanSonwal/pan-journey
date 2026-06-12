@@ -232,13 +232,11 @@ function DestinationSearchField({
 
     let normalizedCity = "";
 
-if (item?.type === "Hotel") {
-  normalizedCity =
-    item?.name?.split(",")?.[1]?.trim() || "";
-} else {
-  normalizedCity =
-    item?.name?.split(",")?.[0]?.trim() || "";
-}
+    if (item?.type === "Hotel") {
+      normalizedCity = item?.name?.split(",")?.[1]?.trim() || "";
+    } else {
+      normalizedCity = item?.name?.split(",")?.[0]?.trim() || "";
+    }
 
     onChange({
       city: option?.searchLabel || "",
@@ -256,7 +254,7 @@ if (item?.type === "Hotel") {
   return (
     <div
       title={value?.city || ""}
-      className={`relative w-full min-w-0 overflow-visible  rounded border px-3 py-3 transition-all hover:border-[#0077b6] ${
+      className={`relative w-full min-w-0 overflow-visible rounded border px-3 py-3 transition-all hover:border-[#0077b6] ${
         error ? "border-red-500" : "border-gray-300"
       } ${wrapperClassName}`}
       style={{ height }}
@@ -311,7 +309,7 @@ if (item?.type === "Hotel") {
               popupMatchSelectWidth={compact ? false : true}
               filterOption={false}
               loading={isLoading}
-              className={`w-full min-w-0 overflow-hidden font-semibold! font-jost! ${styles.destinationSelect}`}
+              className={`font-jost! w-full min-w-0 overflow-hidden font-semibold! ${styles.destinationSelect}`}
               style={{
                 fontWeight: 700,
                 fontSize,

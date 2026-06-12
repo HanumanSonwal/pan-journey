@@ -43,19 +43,14 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [sessionExpired] = useState(false);
   const [reloadingHotels] = useState(false);
-  console.log("selectedCurrency in hotel details", selectedCurrency);
-
   const { requireAuth } = useAuthGuard();
-
   const { mutateAsync } = useToggleWishlist();
-
   const { data: wishlistData } = useWishlistIds();
   const payload = useMemo(() => {
     if (initialPayload) {
       return {
         ...initialPayload,
         currency: selectedCurrency?.code || "INR",
-
         hotelMeta: {
           cityName: appliedSearchData?.cityData?.id,
           stateName: appliedSearchData?.cityData?.stateName,
@@ -86,7 +81,6 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     () => new Set(wishlistData?.data || []),
     [wishlistData],
   );
-
   const isWishlisted = wishlistIds.has(payload?.hotelId?.toString());
 
   const handleWishlist = () => {
@@ -94,16 +88,11 @@ function HotelDetails({ initialPayload = null, cms = null }) {
       try {
         await mutateAsync({
           hotelId: payload?.hotelId?.toString(),
-
           hotelName: supplierData?.HotelName,
-
           hotelImage:
             supplierData?.HotelImage || supplierData?.HotelGallery?.[0] || "",
-
           cityId: appliedSearchData?.cityData?.id,
-
           cityName: appliedSearchData?.city || "",
-
           countryName: supplierData?.Country || "",
         });
 
@@ -116,7 +105,6 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     });
   };
 
-  console.log("HOTEL DETAILS PAYLOAD", payload);
   const { data, isLoading, isFetching, refetch } = useHotelDetails(payload);
   const showSkeleton = isLoading || isFetching;
   const hotelData = data || {};
@@ -165,9 +153,7 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0);
     };
-
     window.addEventListener("scroll", handleScroll);
-
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };

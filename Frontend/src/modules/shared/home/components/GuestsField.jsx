@@ -100,7 +100,7 @@ function GuestsField({
   const dropdownContent = (
     <div
       onClick={(e) => e.stopPropagation()}
-      className="w-[340px] rounded bg-white "
+      className="w-[340px] rounded bg-white"
     >
       <Counter label="Room" value={draftGuests.rooms} onChange={updateRooms} />
       <Counter
@@ -206,7 +206,8 @@ function GuestsField({
 
   const triggerUI =
     variant === "compact" ? (
-      <div className="relative h-[50px] cursor-pointer rounded border border-gray-300 bg-white px-3 transition-all hover:border-[#0077b6] md:w-[300px]!">
+      // <div className="relative h-[50px] cursor-pointer rounded border border-gray-300 bg-white px-3 transition-all hover:border-[#0077b6] md:w-[300px]!">
+      <div className="h-[50px] cursor-pointer rounded border border-gray-300 bg-white px-3 transition-all hover:border-[#0077b6] md:col-span-3">
         <div className="flex h-full items-center justify-between gap-2">
           <CompactItem value={safeValue.rooms} label="Room" />
           <CompactItem value={safeValue.adults} label="Adults" center />
@@ -221,7 +222,7 @@ function GuestsField({
           Rooms & Guests
         </span>
 
-        <div className="flex min-h-[56px] items-center justify-between gap-3">
+        <div className="flex min-h-[56px] items-center justify-between gap-1!">
           <SummaryItem value={safeValue.rooms} label="Room" />
           <SummaryItem value={safeValue.adults} label="Adults" center />
           <SummaryItem value={safeValue.children} label="Children" right />

@@ -79,14 +79,14 @@ export default function Hero() {
       id="hero-search"
     >
       <div className={styles.heroBg} />
-      <div className="absolute !top-[27%] left-1/2 h-[60%] w-[80.83%] -translate-x-1/2 px-4 !max-lg:top-[22%] max-lg:w-[92%] !max-md:top-[25%] max-md:w-[95%] xl:top-[40%]">
+      <div className="!max-lg:top-[22%] !max-md:top-[25%] absolute !top-[27%] left-1/2 h-[60%] w-[80.83%] -translate-x-1/2 px-4 max-lg:w-[92%] max-md:w-[95%] xl:top-[40%]">
         <div className="w-full rounded-[10px] bg-white !pb-21 shadow-2xl max-lg:p-6 max-md:p-4 md:p-8">
           <Tabs
             tabs={HOME_TABS}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
           />
-          <h2 className="mb-2 text-center font-bold text-[#72C0F0] text-[20px] min-[700px]:text-[22px] lg:text-[28px] xl:text-[32px]">
+          <h2 className="mb-2 text-center text-[20px] font-bold text-[#72C0F0] min-[700px]:text-[22px] lg:text-[28px] xl:text-[32px]">
             Find What You Are Looking For
           </h2>
           {ActiveForm && (

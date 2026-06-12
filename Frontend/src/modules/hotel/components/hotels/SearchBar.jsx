@@ -67,8 +67,8 @@ export default function SearchBar({ onSearch }) {
           </div>
 
           {/* Search Controls */}
-          <div className="grid grid-cols-1 items-center gap-3 md:grid-cols-12">
-            <div className="md:col-span-4">
+          <div className="grid grid-cols-1 items-center gap-2 md:grid-cols-12">
+            <div className="min-w-0 md:col-span-3 lg:col-span-4">
               <DestinationSearchField
                 error={destinationError}
                 value={{
@@ -99,7 +99,7 @@ export default function SearchBar({ onSearch }) {
               />
             </div>
 
-            <div className="relative z-50 md:col-span-3">
+            <div className="relative z-50 min-w-0 md:col-span-3 lg:col-span-3">
               <DateRangeField
                 variant="compact"
                 open={dateOpen}
@@ -129,7 +129,7 @@ export default function SearchBar({ onSearch }) {
               />
             </div>
 
-            <div className="relative z-40 md:col-span-3">
+            <div className="relative z-40 min-w-0 md:col-span-4 lg:col-span-3">
               <GuestsField
                 variant="compact"
                 open={guestOpen}
@@ -141,7 +141,7 @@ export default function SearchBar({ onSearch }) {
               />
             </div>
 
-            <div className="md:col-span-2">
+            <div className="min-w-0 md:col-span-2 lg:col-span-2">
               <button
                 type="button"
                 onClick={handleSearch}
