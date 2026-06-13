@@ -125,7 +125,7 @@ const LocationSection = ({ supplierData = {} }) => {
           src={`https://www.google.com/maps?q=${encodeURIComponent(
             mapQuery,
           )}&z=15&output=embed`}
-          className="h-[380px] w-full"
+          className=" w-full"
           loading="lazy"
           title="hotel-map"
         />

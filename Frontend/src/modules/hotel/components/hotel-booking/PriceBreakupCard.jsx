@@ -27,17 +27,17 @@ export default function PriceBreakupCard({ bookingData }) {
         },
       }}
     >
-      <Title level={5} className="!mb-3 !font-['Roboto'] !font-semibold">
+      <Title level={5} className="!mb-3 !font-['Roboto'] !font-semibold ">
         Price Breakup
       </Title>
 
-      <div className="space-y-2">
+      <div className="space-y-1">
         {rows.map((item, index) => (
           <div key={item.label}>
-            <div className="flex items-center justify-between py-3">
-              <Text className="font-medium !text-[17.5px] leading-[100%] tracking-[0%]">{item.label}</Text>
+            <div className="flex items-center justify-between ">
+              <Text className="font-medium !text-[14px] leading-[100%] tracking-[0%]">{item.label}</Text>
 
-              <Text className="!font-['Roboto'] text-[14px] font-medium text-gray-800">
+              <Text className="!font-['Roboto'] text-[12px] font-medium text-gray-800">
                 ₹ {Number(item.value || 0).toLocaleString("en-IN")}
               </Text>
             </div>
@@ -50,7 +50,7 @@ export default function PriceBreakupCard({ bookingData }) {
       <Divider className="!my-3" />
 
       <div className="flex items-center justify-between">
-        <Text className="!font-['Roboto'] text-[15px] font-semibold">
+        <Text className="!font-['Roboto'] text-[12px] font-semibold">
           Total Amount
         </Text>
 
