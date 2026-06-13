@@ -206,7 +206,8 @@ function GuestsField({
 
   const triggerUI =
     variant === "compact" ? (
-      <div className="relative h-[50px] cursor-pointer rounded border border-gray-300 bg-white px-3 transition-all hover:border-[#0077b6]">
+      // <div className="relative h-[50px] cursor-pointer rounded border border-gray-300 bg-white px-3 transition-all hover:border-[#0077b6] md:w-[300px]!">
+      <div className="h-[50px] cursor-pointer rounded border border-gray-300 bg-white px-3 transition-all hover:border-[#0077b6] md:col-span-3">
         <div className="flex h-full items-center justify-between gap-2">
           <CompactItem value={safeValue.rooms} label="Room" />
           <CompactItem value={safeValue.adults} label="Adults" center />
@@ -221,7 +222,7 @@ function GuestsField({
           Rooms & Guests
         </span>
 
-        <div className="flex min-h-[56px] items-center justify-between gap-3">
+        <div className="flex min-h-[56px] items-center justify-between gap-1!">
           <SummaryItem value={safeValue.rooms} label="Room" />
           <SummaryItem value={safeValue.adults} label="Adults" center />
           <SummaryItem value={safeValue.children} label="Children" right />
@@ -262,7 +263,7 @@ const SummaryItem = memo(function SummaryItem({ value, label, center, right }) {
       } ${right ? "items-end" : ""}`}
     >
       <div className="flex items-baseline gap-1.5">
-        <span className="text-[26px] font-extrabold text-[#0F172A]">
+        <span className="font-jost text-[26px] font-extrabold text-[#0F172A]">
           {value}
         </span>
 

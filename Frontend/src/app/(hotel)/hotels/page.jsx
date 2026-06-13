@@ -15,7 +15,7 @@ export async function generateMetadata({ searchParams }) {
   const preview = query?.preview === "true";
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-  const rawCity = query?.city || "";
+  const rawCity = query?.cityName || query?.city || "";
 
   const cityName = rawCity?.split(",")?.[0]?.trim() || "Hotels";
 
@@ -99,7 +99,7 @@ export async function generateMetadata({ searchParams }) {
 export default async function Page({ searchParams }) {
   const query = await searchParams;
 
-  const rawCity = query?.city || "";
+  const rawCity = query?.cityName || query?.city || "";
 
   const cityName = rawCity?.split(",")?.[0]?.trim() || "";
 

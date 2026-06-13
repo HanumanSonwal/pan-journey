@@ -3,10 +3,12 @@
 import { Button, Col, Row } from "antd";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useHotelBooking } from "../../hooks/useHotelBooking";
 import { useHotelBookingStore } from "../../store/booking.store";
 import { buildBookingPayload } from "../../utils/buildBookingPayload";
+
+import BackgroundSection from "./BackgroundSection";
 import BookingAgreement from "./BookingAgreement";
 import BookingHeaderCard from "./BookingHeaderCard";
 import GuestDetailsForm from "./GuestDetailsForm";
@@ -22,24 +24,27 @@ export default function HotelBookingContent({ hotelBookingData }) {
   const { bookingData: storeBookingData, setBookingData } =
     useHotelBookingStore();
 
+  const [agreement, setAgreement] = useState(false);
+  const guestFormRef = useRef(null);
+
   const { data: session } = useSession();
 
-  console.log("session-user00oo", session);
-
   const handleRequestChange = (value) => {
-    setBookingData({
-      requestData: value,
-    });
+    setBookingData({ requestData: value });
   };
-  const [agreement, setAgreement] = useState(false);
-  // GUEST FORM SUBMIT
+
   const handleGuestSubmit = (values) => {
-    setBookingData({
-      guestData: values,
-    });
+    setBookingData({ guestData: values });
   };
-  // FINAL BOOKING
-  const handleBooking = () => {
+
+  const handleBooking = async () => {
+    try {
+      await guestFormRef.current.submitForm();
+    } catch (errors) {
+      console.log(errors);
+      return;
+    }
+
     const payload = buildBookingPayload({
       bookingData: storeBookingData,
       guestData: storeBookingData?.guestData,
@@ -50,53 +55,64 @@ export default function HotelBookingContent({ hotelBookingData }) {
     bookHotel(payload, {
       onSuccess: (response) => {
         const bookingRefNo = response?.data?.BookingRefNo;
-        setBookingData({
-          bookingRefNo,
-        });
+
+        setBookingData({ bookingRefNo });
+
         router.push(`/hotel-checkout?bookingRefNo=${bookingRefNo}`);
       },
     });
   };
-  return (
-    <div className="mx-auto max-w-[1350px]">
-      <Row gutter={[24, 24]}>
-        {/* LEFT */}
-        <Col xs={24} lg={16}>
-          <div className="space-y-5">
-            <BookingHeaderCard bookingData={hotelBookingData} />
-            <StaySummaryCard bookingData={hotelBookingData} />
-            <RoomPackageCard bookingData={hotelBookingData} />
-            <ImportantInfoCard bookingData={hotelBookingData} />
-            <GuestDetailsForm onSubmit={handleGuestSubmit} />
-            <SpecialRequestCard
-              value={storeBookingData?.requestData}
-              onChange={handleRequestChange}
-            />
-            <BookingAgreement checked={agreement} onChange={setAgreement} />
-            <div className="pt-2">
-              <Button
-                type="primary"
-                size="large"
-                disabled={
-                  !storeBookingData?.guestData ||
-                  !storeBookingData?.guestData?.primaryGuest ||
-                  !agreement
-                }
-                className="!h-[48px] !rounded-xl !bg-[#0f766e]"
-                onClick={handleBooking}
-                loading={isPending}
-              >
-                Continue To Booking
-              </Button>
-            </div>
-          </div>
-        </Col>
 
-        {/* RIGHT */}
-        <Col xs={24} lg={8}>
-          <PriceBreakupCard bookingData={hotelBookingData} />
-        </Col>
-      </Row>
+  return (
+    <div className="w-full">
+      <BackgroundSection />
+
+      <div className="mx-auto max-w-[1250px] sm:px-4">
+        <Row gutter={[14, 23]}>
+          {/* LEFT */}
+          <Col xs={24} lg={15}>
+            <div className="-mt-10! space-y-4 px-1 sm:space-y-5 sm:px-0">
+              <GuestDetailsForm
+                ref={guestFormRef}
+                onSubmit={handleGuestSubmit}
+              />
+
+              <SpecialRequestCard
+                value={storeBookingData?.requestData}
+                onChange={handleRequestChange}
+              />
+
+              <ImportantInfoCard bookingData={hotelBookingData} />
+
+              <BookingAgreement checked={agreement} onChange={setAgreement} />
+
+              <div className="pt-2">
+                <Button
+                  type="primary"
+                  size="large"
+                  loading={isPending}
+                  disabled={!agreement}
+                  onClick={handleBooking}
+                  className="!h-[44px] w-full !rounded-lg !bg-[#0f766e] !text-sm sm:!h-[48px] sm:w-auto sm:!rounded-xl sm:!text-base"
+                >
+                  Continue To Booking
+                </Button>
+              </div>
+            </div>
+          </Col>
+
+          {/* RIGHT */}
+          <Col xs={24} lg={8}>
+            <div className="-mt-10! space-y-4 px-1 sm:space-y-5 sm:px-0">
+              <BookingHeaderCard bookingData={hotelBookingData} />
+              <StaySummaryCard bookingData={hotelBookingData} />
+              <RoomPackageCard bookingData={hotelBookingData} />
+
+              <PriceBreakupCard bookingData={hotelBookingData} />
+            </div>
+          </Col>
+        </Row>
+      </div>
     </div>
   );
 }

@@ -12,6 +12,7 @@ import HotelDetailsSkeleton from "@/components/common/loder/HotelDetailsSkeleton
 import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
 import { useHotelDetails } from "@/modules/hotel/hooks/useHotelDetails";
 import { useSelectedHotelStore } from "@/modules/hotel/store/selectedHotel.store";
+import { HeartFilled } from "@ant-design/icons";
 import SearchBar from "../components/hotels/SearchBar";
 import HotelSectionsContent from "../components/hotels/viewhotles/HotelSectionsContent";
 import HotelSectionsTabs from "../components/hotels/viewhotles/HotelSectionsTabs";
@@ -27,18 +28,29 @@ import DynamicHotelSeoFallback from "../seo/DynamicHotelSeoFallback";
 import { useHotelBookingStore } from "../store/booking.store";
 import { useHotelSearchStore } from "../store/serchData.store";
 
+import { useAuthGuard } from "@/modules/auth/hooks/useAuthGuard";
+import { useToggleWishlist } from "@/modules/wishlist/hooks/useToggleWishlist";
+import { useWishlistIds } from "@/modules/wishlist/hooks/useWishlistIds";
+import { message } from "antd";
+
+import { useCurrencyStore } from "@/modules/shared/store/currency.store";
 function HotelDetails({ initialPayload = null, cms = null }) {
   const { selectedHotel } = useSelectedHotelStore();
   const { appliedSearchData } = useHotelSearchStore();
   const { setBookingData } = useHotelBookingStore();
+  const { selectedCurrency } = useCurrencyStore();
   const [activeTab, setActiveTab] = useState("overview");
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [sessionExpired] = useState(false);
   const [reloadingHotels] = useState(false);
+  const { requireAuth } = useAuthGuard();
+  const { mutateAsync } = useToggleWishlist();
+  const { data: wishlistData } = useWishlistIds();
   const payload = useMemo(() => {
     if (initialPayload) {
       return {
         ...initialPayload,
+        currency: selectedCurrency?.code || "INR",
         hotelMeta: {
           cityName: appliedSearchData?.cityData?.id,
           stateName: appliedSearchData?.cityData?.stateName,
@@ -49,6 +61,7 @@ function HotelDetails({ initialPayload = null, cms = null }) {
 
     return {
       hotelId: selectedHotel?.hotelMeta?.hotelId,
+      currency: selectedCurrency?.code || "INR",
       hotelMeta: {
         cityName: selectedHotel?.hotelMeta?.cityName,
         stateName: selectedHotel?.hotelMeta?.stateName,
@@ -57,7 +70,41 @@ function HotelDetails({ initialPayload = null, cms = null }) {
       hotelKey: selectedHotel?.hotelKey,
       searchKey: selectedHotel?.searchKey,
     };
-  }, [selectedHotel, initialPayload, appliedSearchData]);
+  }, [
+    selectedHotel,
+    initialPayload,
+    appliedSearchData,
+    selectedCurrency?.code,
+  ]);
+
+  const wishlistIds = useMemo(
+    () => new Set(wishlistData?.data || []),
+    [wishlistData],
+  );
+  const isWishlisted = wishlistIds.has(payload?.hotelId?.toString());
+
+  const handleWishlist = () => {
+    requireAuth(async () => {
+      try {
+        await mutateAsync({
+          hotelId: payload?.hotelId?.toString(),
+          hotelName: supplierData?.HotelName,
+          hotelImage:
+            supplierData?.HotelImage || supplierData?.HotelGallery?.[0] || "",
+          cityId: appliedSearchData?.cityData?.id,
+          cityName: appliedSearchData?.city || "",
+          countryName: supplierData?.Country || "",
+        });
+
+        message.success(
+          isWishlisted ? "Removed from wishlist" : "Added to wishlist",
+        );
+      } catch {
+        message.error("Wishlist update failed");
+      }
+    });
+  };
+
   const { data, isLoading, isFetching, refetch } = useHotelDetails(payload);
   const showSkeleton = isLoading || isFetching;
   const hotelData = data || {};
@@ -100,18 +147,32 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     appliedSearchData,
     setBookingData,
   ]);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen w-full bg-[#eaf3f9]">
-      {/* ✅ ALWAYS VISIBLE */}
       <SearchBar />
 
-      <div className="mx-auto w-full max-w-7xl px-2 pb-8 sm:px-4 md:px-6">
-        <div className="mt-10">
-          {/* ===================== SKELETON ONLY CONTENT ===================== */}
+      <div
+        className={`relative mx-auto w-full max-w-7xl px-2 pb-8 transition-all duration-300 sm:px-4 md:px-6 ${
+          isScrolled ? "z-0" : "!z-[820]"
+        }`}
+      >
+        <div className="-mt-3">
           {showSkeleton ? (
             <HotelDetailsSkeleton />
           ) : (
-            <Card className="overflow-hidden rounded border-0 shadow-lg">
+            <Card className="overflow-hidden rounded-md border-0 shadow-lg">
               {/* HEADER */}
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex min-w-0 items-start gap-3">
@@ -133,8 +194,15 @@ function HotelDetails({ initialPayload = null, cms = null }) {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <button className="flex h-11 w-11 items-center justify-center rounded-full border bg-white">
-                    <HeartOutlined className="text-[20px]" />
+                  <button
+                    onClick={handleWishlist}
+                    className="flex h-11 w-11 items-center justify-center rounded-full border bg-white"
+                  >
+                    {isWishlisted ? (
+                      <HeartFilled className="text-[20px] text-red-500!" />
+                    ) : (
+                      <HeartOutlined className="text-[20px]" />
+                    )}
                   </button>
 
                   <button className="flex h-11 w-11 items-center justify-center rounded-full border bg-white">

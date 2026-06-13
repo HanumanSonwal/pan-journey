@@ -41,7 +41,7 @@ function SortBar({ sort, setSort }) {
   );
 
   return (
-    <div className="sticky top-[110px] z-[99] overflow-visible border border-gray-200 bg-white shadow-[0_2px_10px_rgba(0,0,0,0.08)]">
+    <div className="sticky top-[98px] z-[99] overflow-visible border border-gray-200 bg-white shadow-[0_2px_10px_rgba(0,0,0,0.08)]">
       {/* =========================
           650px - 850px DROPDOWN
       ========================= */}
@@ -60,7 +60,7 @@ function SortBar({ sort, setSort }) {
         </button>
 
         {mobileSortOpen && (
-          <div className="absolute left-0 top-full z-[999] w-full border border-gray-200 bg-white shadow-lg">
+          <div className="absolute left-0 top-full !z-[999] w-full border border-gray-200 bg-white shadow-lg">
             {tabs.map((tab, index) => {
               const active = sort === tab.value;
 
@@ -132,7 +132,7 @@ function SortBar({ sort, setSort }) {
                 key={tab.value}
                 type="button"
                 onClick={() => setSort(tab.value)}
-                className={`flex h-[58px] flex-1 items-center justify-center gap-2 border-r border-gray-300 transition-all duration-200 ${active
+                className={`flex h-[43px] flex-1 items-center justify-center gap-2 border-r border-gray-300 transition-all duration-200 ${active
                   ? "bg-[#edf7ff]"
                   : "bg-white hover:bg-gray-50"
                   } ${index === tabs.length - 1

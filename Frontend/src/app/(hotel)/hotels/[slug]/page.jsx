@@ -7,6 +7,7 @@ import { buildCmsMetadata } from "@/modules/cms/seo/cmsSeo";
 import { fetchCmsBySlug } from "@/modules/cms/services/cmsFetch";
 import HotelContent from "@/modules/hotel/pages/Hotel";
 import { searchDestinationServer } from "@/modules/hotel/services/search.server";
+import { notFound } from "next/navigation";
 
 export async function generateMetadata({ params, searchParams }) {
   const { slug } = await params;
@@ -112,6 +113,9 @@ export default async function Page({ params, searchParams }) {
     cityName = matchedCity?.destination || cityName;
 
     cityId = matchedCity?.id || "";
+    if (!cms && !cityId) {
+      notFound();
+    }
   }
 
   /*
@@ -242,7 +246,11 @@ export default async function Page({ params, searchParams }) {
         }}
       />
 
-      <HotelContent initialSearchData={initialSearchData} cms={cms} />
+      <HotelContent
+        initialSearchData={initialSearchData}
+        cms={cms}
+        isValidCity={!!cityId}
+      />
     </>
   );
 }

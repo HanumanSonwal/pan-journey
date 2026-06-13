@@ -1,21 +1,28 @@
 "use client";
 
-import { Checkbox, Typography } from "antd";
-
-const { Text } = Typography;
+import { Checkbox, ConfigProvider } from "antd";
 
 export default function BookingAgreement({ checked, onChange }) {
   return (
-    <div className="flex items-start gap-3 rounded-xl bg-white p-4 shadow-sm">
-      <Checkbox
-        checked={checked}
-        onChange={(e) => onChange(e.target.checked)}
-      />
-
-      <Text className="leading-7 text-[#555]">
-        I agree to PAN Journey terms, cancellation policy and booking
-        conditions.
-      </Text>
-    </div>
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: "#1677ff", // apna theme color
+        },
+      }}
+    >
+      <div className="rounded py-4">
+        <Checkbox
+          checked={checked}
+          onChange={(e) => onChange(e.target.checked)}
+          className="agreement-checkbox"
+        >
+          <span className="font-roboto! text-[15px]! leading-7! font-medium! text-[#555]">
+            I agree to PAN Journey terms, cancellation policy and booking
+            conditions.
+          </span>
+        </Checkbox>
+      </div>
+    </ConfigProvider>
   );
 }

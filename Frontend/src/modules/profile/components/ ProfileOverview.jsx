@@ -432,12 +432,16 @@ export default function ProfileOverview() {
     <div className="min-h-screen">
       <div className="bg-white p-5">
         <div className="mb-8 flex items-center justify-between">
-          <h2 className="text-[20px] font-semibold text-[#1f1f1f]">
+          <h2 className="font-roboto! text-[20px] font-semibold text-[#1f1f1f]">
             Personal Information
           </h2>
 
           {!isEdit && (
-            <Button icon={<EditOutlined />} onClick={() => setIsEdit(true)}>
+            <Button
+              icon={<EditOutlined className="font-roboto! font-semibold!" />}
+              onClick={() => setIsEdit(true)}
+              className="font-roboto! font-semibold!"
+            >
               Edit Details
             </Button>
           )}
@@ -514,14 +518,23 @@ export default function ProfileOverview() {
             </div>
 
             {isEdit && (
-              <div className="mt-8 flex gap-3">
-                <Button onClick={() => setIsEdit(false)}>Cancel</Button>
+              <div className="mt-6 flex gap-3">
+                <Button
+                  onClick={() => setIsEdit(false)}
+                  className="!h-[42px] !px-6"
+                >
+                  Cancel
+                </Button>
 
                 <Button
                   htmlType="submit"
                   type="primary"
                   loading={updateProfile.isPending}
-                  className="bg-[linear-gradient(180deg,#72C0F0_0%,#0F6A75_100%)]"
+                  className="!h-[42px] !border-none !px-6"
+                  style={{
+                    background:
+                      "linear-gradient(180deg, #72C0F0 0%, #0F6A75 100%)",
+                  }}
                 >
                   Save Changes
                 </Button>

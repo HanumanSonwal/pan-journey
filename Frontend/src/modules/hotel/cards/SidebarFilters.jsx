@@ -1,5 +1,6 @@
 "use client";
 import { Checkbox, Collapse, Input } from "antd";
+import Image from "next/image";
 import { memo, useCallback, useMemo, useState } from "react";
 
 const suggestedOptions = [
@@ -41,7 +42,12 @@ const priceRanges = [
   },
 ];
 
-function SidebarFilters({ filters, setFilters }) {
+function SidebarFilters({
+  filters,
+  setFilters,
+  onMapClick,
+  hideMapSection = false,
+}) {
   const [hotelSearch, setHotelSearch] = useState(filters?.search || "");
 
   const handleSearch = useCallback(
@@ -197,7 +203,7 @@ function SidebarFilters({ filters, setFilters }) {
         key: "propertyType",
         title: "Property Type",
         content: (
-          <div className="flex flex-col gap-2">
+          <div className="font-roboto! flex flex-col gap-2">
             {propertyOptions.map((option) => (
               <Checkbox
                 key={option}
@@ -276,14 +282,28 @@ function SidebarFilters({ filters, setFilters }) {
 
   return (
     <div className="bg-white p-4 shadow-md">
-      <div className="mb-5 overflow-hidden border border-gray-200">
-        <img
-          src="/images/filterMap.png"
-          alt="map"
-          className="h-[150px] w-full object-cover"
-          loading="lazy"
-        />
-      </div>
+      {!hideMapSection && (
+        <div
+          onClick={() => onMapClick?.()}
+          className="relative mb-5 h-[105px] cursor-pointer! overflow-hidden rounded"
+        >
+          <Image
+            src="/images/filterMap.png"
+            alt="Explore on Map"
+            fill
+            className="object-cover"
+          />
+
+          <div className="absolute inset-0 flex items-center justify-center">
+            <button
+              type="button"
+              className="cursor-pointer! rounded border-1 border-[#0B6CFF] bg-white px-3 py-2 text-[10px] font-bold text-[#0B6CFF] shadow-md"
+            >
+              Explore on Map
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="mb-2">
         <Input
@@ -311,7 +331,7 @@ function SidebarFilters({ filters, setFilters }) {
           key: section.key,
 
           label: (
-            <span className="text-sm font-semibold text-gray-800">
+            <span className="font-roboto! text-sm font-semibold text-gray-800">
               {section.title}
             </span>
           ),

@@ -230,6 +230,14 @@ function DestinationSearchField({
 
     const item = option?.itemData;
 
+    let normalizedCity = "";
+
+    if (item?.type === "Hotel") {
+      normalizedCity = item?.name?.split(",")?.[1]?.trim() || "";
+    } else {
+      normalizedCity = item?.name?.split(",")?.[0]?.trim() || "";
+    }
+
     onChange({
       city: option?.searchLabel || "",
 
@@ -290,8 +298,6 @@ function DestinationSearchField({
                   : undefined
               }
               onClear={() => {
-                setDestinationError?.(false);
-
                 onChange({
                   city: "",
                   cityData: null,
@@ -303,7 +309,7 @@ function DestinationSearchField({
               popupMatchSelectWidth={compact ? false : true}
               filterOption={false}
               loading={isLoading}
-              className={`w-full min-w-0 overflow-hidden ${styles.destinationSelect}`}
+              className={`font-jost! w-full min-w-0 overflow-hidden font-semibold! ${styles.destinationSelect}`}
               style={{
                 fontWeight: 700,
                 fontSize,
@@ -350,14 +356,6 @@ function DestinationSearchField({
           </span>
         )}
       </div>
-      {/* {error && (
-        <div className="pointer-events-none absolute top-[calc(100%+8px)] left-0 z-[9999] whitespace-nowrap">
-          <div className="relative rounded bg-red-500 px-3 py-2 text-sm text-white shadow-lg">
-            Enter a destination to start searching.
-            <div className="absolute -top-1 left-4 h-2 w-2 rotate-45 bg-red-500" />
-          </div>
-        </div>
-      )} */}
     </div>
   );
 }

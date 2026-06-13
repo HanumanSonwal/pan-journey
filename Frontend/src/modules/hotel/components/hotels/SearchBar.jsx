@@ -10,7 +10,6 @@ import { useState } from "react";
 
 export default function SearchBar({ onSearch }) {
   const router = useRouter();
-
   const { draftSearchData, setDraftSearchData, applySearch } =
     useHotelSearchStore();
   const [destinationError, setDestinationError] = useState(false);
@@ -35,27 +34,29 @@ export default function SearchBar({ onSearch }) {
 
     const query = new URLSearchParams({
       city: citySlug,
+      cityName: draftSearchData?.city || "",
+
       cityId: draftSearchData?.cityData?.id || "",
       stateName: draftSearchData?.cityData?.stateName || "",
       countryCode: draftSearchData?.cityData?.countryCode || "",
+
       checkIn: draftSearchData?.checkIn || "",
       checkOut: draftSearchData?.checkOut || "",
+
       rooms: String(draftSearchData?.rooms || 1),
       adults: String(draftSearchData?.adults || 2),
       children: String(draftSearchData?.children || 0),
+
       pets: draftSearchData?.pets ? "true" : "false",
     });
     applySearch();
-    console.log("draft city:ads", draftSearchData?.city);
-    console.log("citySlug:", citySlug);
-    console.log("queryccc:", query.toString());
     router.push(`/hotels?${query.toString()}`);
   };
 
   return (
     <div className="sticky top-0 z-5 bg-[#72C0F0] shadow">
-      <div className="px-2 py-6 pb-8 md:px-6">
-        <div className="mx-auto max-w-[1200px]">
+      <div className="px-2 py-1 pb-8 md:px-6">
+        <div className="mx-auto max-w-[1250px]">
           {/* Heading */}
 
           <div className="mb-2 hidden grid-cols-12 gap-3 px-1 text-sm text-white md:grid">
@@ -66,8 +67,8 @@ export default function SearchBar({ onSearch }) {
           </div>
 
           {/* Search Controls */}
-          <div className="grid grid-cols-1 items-center gap-3 md:grid-cols-12">
-            <div className="md:col-span-4">
+          <div className="grid grid-cols-1 items-center gap-2 md:grid-cols-12">
+            <div className="min-w-0 md:col-span-3 lg:col-span-4">
               <DestinationSearchField
                 error={destinationError}
                 value={{
@@ -81,6 +82,7 @@ export default function SearchBar({ onSearch }) {
                     city: val?.city || "",
                     cityData: {
                       ...val?.cityData,
+
                       stateName:
                         val?.cityData?.stateName || val?.cityData?.state || "",
                       countryCode:
@@ -97,7 +99,7 @@ export default function SearchBar({ onSearch }) {
               />
             </div>
 
-            <div className="relative z-50 md:col-span-3">
+            <div className="relative z-50 min-w-0 md:col-span-3 lg:col-span-3">
               <DateRangeField
                 variant="compact"
                 open={dateOpen}
@@ -127,7 +129,7 @@ export default function SearchBar({ onSearch }) {
               />
             </div>
 
-            <div className="relative z-40 md:col-span-3">
+            <div className="relative z-40 min-w-0 md:col-span-4 lg:col-span-3">
               <GuestsField
                 variant="compact"
                 open={guestOpen}
@@ -139,11 +141,11 @@ export default function SearchBar({ onSearch }) {
               />
             </div>
 
-            <div className="md:col-span-2">
+            <div className="min-w-0 md:col-span-2 lg:col-span-2">
               <button
                 type="button"
                 onClick={handleSearch}
-                className="h-[50px] w-full rounded bg-[#0f766e] text-sm font-semibold tracking-wide text-white! transition-all duration-200 hover:bg-[#0d5f58] active:scale-[0.98]"
+                className="h-[50px] w-full rounded bg-[#0f766e] text-sm font-semibold tracking-wide !text-white transition-all duration-200 hover:bg-[#0d5f58] active:scale-[0.98]"
               >
                 SEARCH
               </button>

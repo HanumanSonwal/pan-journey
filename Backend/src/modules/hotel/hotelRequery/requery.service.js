@@ -1,12 +1,10 @@
-
 import HotelTempBooking from "../hotelTempBooking/hotelTempBooking.model.js";
 
 export const getHotelRequeryByUserService = async (
   userId,
   bookingRefNo,
-  status
+  status,
 ) => {
-
   // Single booking details
   if (bookingRefNo) {
     const booking = await HotelTempBooking.findOne({
@@ -40,19 +38,12 @@ export const getHotelRequeryByUserService = async (
   }
 
   return bookings.map((item) => ({
-    hotelName:
-      item.hotelRequeryResponse?.HotelDetails?.HotelName,
-    Address:
-      item.hotelRequeryResponse?.HotelDetails?.Address,
-    checkInDate:
-      item.hotelRequeryResponse?.CheckInDate,
-    checkOutDate:
-      item.hotelRequeryResponse?.CheckOutDate,
-    voucherNumber:
-      item.hotelRequeryResponse?.VoucherNumber,
-    TicketStatusDesc:
-      item.hotelRequeryResponse?.TicketStatusDesc,
-    bookingRefNo:
-      item.hotelRequeryResponse?.BookingRefNo,
+    hotelName: item.hotelRequeryResponse?.HotelDetails?.HotelName,
+    Address: item.hotelRequeryResponse?.HotelDetails?.Address,
+    checkInDate: item.hotelRequeryResponse?.CheckInDate,
+    checkOutDate: item.hotelRequeryResponse?.CheckOutDate,
+    voucherNumber: item.hotelRequeryResponse?.VoucherNumber,
+    TicketStatusDesc: item.hotelRequeryResponse?.TicketStatusDesc,
+    bookingRefNo: item.hotelRequeryResponse?.BookingRefNo,
   }));
 };

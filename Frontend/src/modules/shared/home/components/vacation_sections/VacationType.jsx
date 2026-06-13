@@ -16,7 +16,7 @@ export default function VacationType({ activeTab }) {
   const router = useRouter();
   const { data = [] } = useDestinations(activeTab);
 
-  const { searchData } = useHotelSearchStore();
+  const { draftSearchData } = useHotelSearchStore();
 
   console.log(data, "DATA in destinations");
 
@@ -77,15 +77,28 @@ export default function VacationType({ activeTab }) {
 
   const handleSearch = (item) => {
     const query = new URLSearchParams({
-      city: item?.City || "",
+      city:
+        item?.City?.split(",")[0]
+          ?.trim()
+          ?.toLowerCase()
+          ?.replace(/[^a-z0-9\s-]/g, "")
+          ?.replace(/\s+/g, "-") || "",
+
+      cityName: item?.City || "",
+
       cityId: item?.id || "",
-      checkIn: searchData?.checkIn || "",
-      checkOut: searchData?.checkOut || "",
-      rooms: String(searchData?.rooms || 1),
-      adults: String(searchData?.adults || 2),
-      children: String(searchData?.children || 0),
-      pets: searchData?.pets ? "true" : "false",
+
+      checkIn: draftSearchData?.checkIn || "",
+      checkOut: draftSearchData?.checkOut || "",
+
+      rooms: String(draftSearchData?.rooms || 1),
+      adults: String(draftSearchData?.adults || 2),
+      children: String(draftSearchData?.children || 0),
+
+      pets: draftSearchData?.pets ? "true" : "false",
     });
+
+    console.log("VACATION QUERY =>", query.toString());
 
     router.push(`/hotels?${query.toString()}`);
   };

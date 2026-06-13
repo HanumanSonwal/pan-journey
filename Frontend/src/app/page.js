@@ -10,7 +10,6 @@ import WhySection from "@/modules/shared/home/components/why_sections/WhySection
 
 import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
 import { fetchCmsBySlug } from "@/modules/cms/services/cmsFetch";
-import MegaLinkSection from "@/modules/shared/home/components/MegaLinkSection";
 
 const SITE_URL = process.env.NEXTAUTH_URL || "https://panjourney.com";
 

@@ -13,7 +13,7 @@ export default function VacationSection() {
 
   return (
     <SectionWrapper className="bg-[#edf7ff] mt-[-4px] ">
-      <div className="mt-[-20px] md:mt-[120px] lg:mt-[220px] xl:mt-[96px] 2xl:mt-[96px] ">
+      <div className="mt-[-20px] md:mt-[70px] lg:mt-[180px] !xl:mt-[26px] 2xl:mt-[52px] ">
         <SectionHeading
           title="Places As Per Your Vibe"
           description="We're committed to offering more than just products— we provide exceptional experiences."

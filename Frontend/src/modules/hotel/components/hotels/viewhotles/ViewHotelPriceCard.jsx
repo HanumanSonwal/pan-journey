@@ -5,7 +5,6 @@ import { Button } from "antd";
 import { useRouter } from "next/navigation";
 
 const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
-
   const router = useRouter();
   const selectedPlan = ratePlans?.[0];
   const detail = selectedPlan?.RatePlanDetails?.[0];
@@ -69,7 +68,7 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
         {/* Badge */}
         <div className="mb-3">
           <span
-            className={`rounded-full px-3 py-[6px] text-[11px] font-medium ${
+            className={`rounded-full px-3 py-[6px] text-[11px] font-medium font-roboto ${
               refundable
                 ? "bg-green-100 text-green-700"
                 : "bg-red-100 text-red-600"
@@ -81,23 +80,23 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
 
         {/* Room */}
         <div>
-          <h3 className="line-clamp-2 text-[20px] leading-7 font-semibold text-[#0f172a]">
+          <h3 className="line-clamp-2 text-[20px] leading-7  text-[#0f172a] font-bold! font-roboto!">
             {roomName}
           </h3>
 
-          <p className="mt-1 line-clamp-2 text-[14px] leading-6 text-gray-500">
+          <p className="mb-1! line-clamp-2 text-[14px] font-semibold leading-6 text-gray-500">
             {roomDesc}
           </p>
         </div>
 
         {/* Inclusion */}
         {!!inclusion && (
-          <div className="mt-4 rounded bg-[#f8fafc] p-3">
-            <p className="mb-2 text-[11px] font-semibold tracking-wide text-gray-500 uppercase">
+          <div className=" rounded bg-[#f8fafc] px-3">
+            <p className="mb-2 text-[11px] font-bold font-roboto! tracking-wide text-[#0ea5e9] uppercase">
               Included
             </p>
 
-            <ul className="space-y-2 text-[13px] text-green-600">
+            <ul className=" text-[13px] font-semibold font-roboto! text-green-600">
               {inclusion
                 ?.split(",")
                 ?.map((i) => i.trim())
@@ -114,12 +113,12 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
         )}
 
         {/* Price */}
-        <div className="mt-4 rounded border border-gray-100 bg-[#fafafa] p-4">
-          <h4 className="mb-3 text-[12px] font-semibold tracking-wide text-gray-500 uppercase">
+        <div className="mt-0! rounded border border-gray-100 bg-[#fafafa] px-4">
+          <h4 className=" text-[12px] font-semibold tracking-wide text-gray-500 uppercase font-roboto">
             Price Details
           </h4>
 
-          <div className="space-y-3 text-sm">
+          <div className="space-y-1 text-sm font-semibold font-roboto">
             {/* Basic */}
             <div className="flex items-center justify-between">
               <span className="text-gray-500">Basic Price</span>
@@ -139,7 +138,7 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
             </div>
 
             {/* Total */}
-            <div className="border-t border-dashed pt-3">
+            <div className="border-t border-dashed pt-3! font-roboto">
               <div className="flex items-end justify-between">
                 <div>
                   <span className="font-semibold text-[#0f172a]">
@@ -162,17 +161,6 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
 
       {/* BUTTONS */}
       <div className="mt-4 flex gap-3">
-        {/* <Button
-          type="primary"
-          size="large"
-          // className="!h-[48px] flex-1 !rounded !border-0 !shadow-md hover:!opacity-95"
-          // style={{
-          //   background: "linear-gradient(180deg, #72C0F0 0%, #0F6A75 100%)",
-          // }}
-          className="!h-[48px] w-full rounded! bg-[#0f766e]! text-sm font-semibold tracking-wide text-white! transition-all duration-200 hover:bg-[#0d5f58] active:scale-[0.98]"
-        >
-          Book Now
-        </Button> */}
         <Button
           type="primary"
           size="large"

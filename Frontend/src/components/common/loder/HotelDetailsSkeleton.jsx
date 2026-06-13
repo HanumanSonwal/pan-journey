@@ -33,8 +33,8 @@ function ImageSkeleton({ height }) {
 
 export default function HotelDetailsSkeleton() {
   return (
-    <div className="min-h-screen bg-[#edf2f5] p-4">
-      <Card variant="borderless" className="rounded-xl">
+    <div className="min-h-screen bg-[#edf2f5] p-4 ">
+      <Card variant="borderless" className="rounded-xl ">
         {/* Header */}
         <div className="mb-6 flex items-start justify-between">
           <div>

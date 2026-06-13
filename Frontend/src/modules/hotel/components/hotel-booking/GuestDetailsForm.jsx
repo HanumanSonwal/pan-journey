@@ -4,15 +4,15 @@ import RHFInput from "@/components/ui/RHFinputs/RHFInput";
 import RHFSelect from "@/components/ui/RHFinputs/RHFSelect";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, ConfigProvider, Radio, Typography } from "antd";
-import { useEffect, useState } from "react";
+import { forwardRef, useImperativeHandle, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
 import { primaryGuestSchema } from "../../schema/guest.schema";
 import AddGuestModal from "./AddGuestModal";
 
-export default function GuestDetailsForm({ onSubmit }) {
+const GuestDetailsForm = forwardRef(({ onSubmit }, ref) => {
   const [openGuestModal, setOpenGuestModal] = useState(false);
-const { Title, Text } = Typography;
+  const { Title, Text } = Typography;
   const [guests, setGuests] = useState([]);
 
   const methods = useForm({
@@ -30,18 +30,32 @@ const { Title, Text } = Typography;
   const { handleSubmit, setValue, watch } = methods;
 
   const formValues = watch();
+  useImperativeHandle(ref, () => ({
+    submitForm: () =>
+      new Promise((resolve, reject) => {
+        handleSubmit(
+          (data) => {
+            const guestData = {
+              primaryGuest: data,
+              additionalGuests: guests,
+            };
 
-  useEffect(() => {
-    onSubmit({
-      primaryGuest: formValues,
-      additionalGuests: guests,
-    });
-  }, [formValues, guests, onSubmit]);
+            onSubmit(guestData);
+            resolve(guestData);
+          },
+          (errors) => {
+            reject(errors);
+          },
+        )();
+      }),
+  }));
 
   return (
     <>
-      <Card className="rounded-2xl border-0 shadow-sm">
-           <Title level={4} className="!mb-5 !text-[20px]">Guest Details</Title>
+      <Card className="font-roboto! !mb-2 rounded border-0 !shadow-[0_4px_12px_rgba(0,0,0,0.25)] shadow-sm">
+        <Title level={4} className="font-roboto! !mb-5 !text-[20px] font-bold!">
+          Guest Details
+        </Title>
 
         <FormProvider {...methods}>
           <form>
@@ -127,4 +141,6 @@ const { Title, Text } = Typography;
       />
     </>
   );
-}
+});
+
+export default GuestDetailsForm;

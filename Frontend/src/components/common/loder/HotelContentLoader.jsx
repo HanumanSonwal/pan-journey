@@ -4,12 +4,12 @@ import { Skeleton } from "antd";
 
 export default function HotelContentLoader() {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 mt-3">
 
       {[1, 2, 3, 4].map((item) => (
         <div
           key={item}
-          className="overflow-hidden rounded-3xl bg-white p-4 shadow-md"
+          className="overflow-hidden rounded bg-white p-4 shadow-md"
         >
           <div className="flex flex-col gap-4 md:flex-row">
 
@@ -49,7 +49,7 @@ export default function HotelContentLoader() {
 
                 <Skeleton.Button
                   active
-                  className="!h-12 !w-32 !rounded-2xl"
+                  className="!h-12 !w-32 !rounded"
                 />
               </div>
             </div>
