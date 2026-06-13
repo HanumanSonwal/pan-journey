@@ -5,7 +5,7 @@ import { sendSuccess, sendError } from "../../../utils/response/ApiResponse.js";
 
 export const getHotelDetails = async (req, res) => {
   try {
-
+     req.body.currency = req.currency;
     const { hotelId, hotelMeta } = req.body;
 
     // 1️⃣ Validation
@@ -21,12 +21,15 @@ export const getHotelDetails = async (req, res) => {
     const supplierData = await fetchHotelDetailsFromSupplier({
       hotelId,
       hotelMeta,
+         currency: req.currency,
     });
 
     // 3️⃣ Apply pricing
     const pricingData = await applyPricing(
       supplierData,
-      hotelMeta
+      hotelMeta,
+        req.currency
+
     );
 
     // 4️⃣ Final response

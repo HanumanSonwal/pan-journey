@@ -30,12 +30,14 @@ export const hotelTicketingService = async ({
     const statusId = ticketingData?.ResponseHeader?.StatusId;
 
     // Ticketing Success
-    if (
+    if 
+    (
       statusId === "11" &&
       ticketingData?.BookingRefNo &&
       ticketingData?.HotelvoucherNumber
-    ) {
-      try {
+    )
+   {
+       try {
         console.log("✅ Calling Hotel Requery...");
 
         const requeryPayload = {

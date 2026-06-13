@@ -26,6 +26,8 @@ export const cancelHotelService = async ({
   {
     $set: {
       "ticketStatusDesc": "Cancelled",
+      "hotelRequeryResponse.ticketStatusDesc":"Cancelled",
+      "hotelRequeryResponse.TicketStatusDesc":"Cancelled",
      //"hotelRequeryResponse.ticketStatusId": "11",
       cancellationStatus: true,
       cancelledAt: new Date(),
