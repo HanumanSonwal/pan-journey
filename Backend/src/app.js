@@ -29,9 +29,7 @@ import roleRoutes from "./modules/role/role.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
 import wishlistRoutes from "./modules/wishlist/wishlist.routes.js";
 import testRoutes from "./test.routes.js";
-import { currencyMiddleware } from "./middleware/currency.middleware.js";
-
-
+import {currencyMiddleware} from "./middleware/currency.middleware.js"
 
 const app = express();
 app.use((req, res, next) => {

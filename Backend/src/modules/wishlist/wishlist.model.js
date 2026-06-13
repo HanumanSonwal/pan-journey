@@ -37,7 +37,20 @@ const wishlistSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    checkInDate: {
+      type: String,
+      default: "",
+    },
 
+    checkOutDate: {
+      type: String,
+      default: "",
+    },
+
+    roomCount: {
+      type: Number,
+      default: 1,
+    },
     cityName: {
       type: String,
       required: true,
