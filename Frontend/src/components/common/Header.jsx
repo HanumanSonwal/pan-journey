@@ -22,6 +22,7 @@ import { useState } from "react";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const [currencyDropdownOpen, setCurrencyDropdownOpen] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
   const { data: currencies = [] } = useCurrency();
@@ -186,14 +187,16 @@ export default function Header() {
           </button>
           <Dropdown
             trigger={["click"]}
+            open={currencyDropdownOpen}
+            onOpenChange={setCurrencyDropdownOpen}
             popupRender={() => (
               <div className="w-[350px] rounded-xl bg-white p-3 shadow-lg">
-                <div className="rounded border border-[#4A9BB5] px-2">
+                <div className="mb-2">
                   <Input
                     allowClear
-                    variant={false}
                     placeholder="Search Currency"
                     value={search}
+                    className="[&_.ant-input]:!border-0 [&_.ant-input]:!shadow-none [&_.ant-input]:focus:!shadow-none"
                     onChange={(e) => setSearch(e.target.value)}
                   />
                 </div>
@@ -204,11 +207,12 @@ export default function Header() {
                       key={currency.code}
                       onClick={() => {
                         setCurrency(currency);
+                        setCurrencyDropdownOpen(false);
+                        setSearch(""); 
                       }}
                       className="flex cursor-pointer items-center justify-between rounded-md px-3 py-2 hover:bg-gray-100"
                     >
                       <span>{currency.name}</span>
-
                       <span className="font-semibold">{currency.code}</span>
                     </div>
                   ))}
@@ -218,11 +222,9 @@ export default function Header() {
           >
             <button className="hidden items-center gap-2 rounded-lg border border-[#4A9BB5] px-3 py-2 text-sm font-medium text-[#4A9BB5]! transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#4A9BB5] hover:text-white! md:flex">
               <span>{selectedCurrency?.symbol}</span>
-
               <span className="max-w-20 truncate">
                 {selectedCurrency?.code}
               </span>
-
               <DownOutlined />
             </button>
           </Dropdown>

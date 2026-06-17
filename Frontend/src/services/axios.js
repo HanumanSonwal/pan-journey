@@ -1,3 +1,4 @@
+import { useCurrencyStore } from "@/modules/shared/store/currency.store";
 import axios from "axios";
 import { getSession, signOut } from "next-auth/react";
 
@@ -10,11 +11,11 @@ export const api = axios.create({
 
 api.interceptors.request.use(async (config) => {
   const session = await getSession();
-
   if (session?.accessToken) {
     config.headers.Authorization = `Bearer ${session.accessToken}`;
   }
-
+  const currency = useCurrencyStore.getState()?.selectedCurrency?.code || "INR";
+  config.headers["currency"] = currency;
   return config;
 });
 

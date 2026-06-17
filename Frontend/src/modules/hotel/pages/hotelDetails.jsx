@@ -46,15 +46,23 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   const { requireAuth } = useAuthGuard();
   const { mutateAsync } = useToggleWishlist();
   const { data: wishlistData } = useWishlistIds();
+
+  console.log("appliedSearchData in hotel-detail", appliedSearchData);
   const payload = useMemo(() => {
     if (initialPayload) {
       return {
         ...initialPayload,
         currency: selectedCurrency?.code || "INR",
         hotelMeta: {
-          cityName: appliedSearchData?.cityData?.id,
+          cityId: appliedSearchData?.cityData?.id,
           stateName: appliedSearchData?.cityData?.stateName,
           countryCode: appliedSearchData?.cityData?.countryCode,
+        },
+        searchContext: {
+          fullName: appliedSearchData?.cityData?.name,
+          CheckInDate: appliedSearchData?.checkIn,
+          CheckOutDate: appliedSearchData?.checkOut,
+          RoomCount: appliedSearchData?.rooms,
         },
       };
     }

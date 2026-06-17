@@ -7,7 +7,14 @@ import dayjs from "dayjs";
 import { memo, useEffect, useMemo, useRef } from "react";
 import HotelCard from "../../cards/HotelCard";
 import { useInfiniteHotels } from "../../hooks/useInfiniteHotels";
-function HotelList({ searchData, filters, sort, onHotelsChange }) {
+function HotelList({
+  searchData,
+  filters,
+  sort,
+  onHotelsChange,
+  onLoadingChange,
+  onResultChange,
+}) {
   console.log("searchData in paylaod", searchData);
   const { selectedCurrency } = useCurrencyStore();
   const { data: wishlistIdsData } = useWishlistIds();
@@ -16,7 +23,7 @@ function HotelList({ searchData, filters, sort, onHotelsChange }) {
     [wishlistIdsData],
   );
   console.log("wishlistIdsData", wishlistIdsData);
-console.log("wishlistIds", wishlistIds);
+  console.log("wishlistIds", wishlistIds);
   const payload = useMemo(() => {
     if (!searchData?.city && !searchData?.cityData?.id) {
       return null;
@@ -64,6 +71,10 @@ console.log("wishlistIds", wishlistIds);
     hasNextPage,
     isFetchingNextPage,
   } = useInfiniteHotels(payload);
+
+useEffect(() => {
+  onLoadingChange?.(isLoading);
+}, [isLoading, onLoadingChange]);
 
   const loadMoreRef = useRef(null);
 
@@ -156,6 +167,10 @@ console.log("wishlistIds", wishlistIds);
   useEffect(() => {
     onHotelsChange?.(mappedHotels);
   }, [mappedHotels, onHotelsChange]);
+
+  useEffect(() => {
+  onResultChange?.(mappedHotels.length > 0);
+}, [mappedHotels, onResultChange]);
 
   // LOADING
   if (isLoading) {

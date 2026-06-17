@@ -75,7 +75,7 @@ export default function Hero() {
   };
   return (
     <section
-      className="relative w-full bg-[#EDF7FF] pb-60 md:pb-60 lg:pb-40 xl:pb-54"
+      className="relative w-full bg-[#EDF7FF] pb-60 md:pb-60 lg:pb-45 xl:pb-15"
       id="hero-search"
     >
       <div className={styles.heroBg} />

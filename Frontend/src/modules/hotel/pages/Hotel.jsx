@@ -55,6 +55,8 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
   console.log("searchParams in HotelContent", searchParams);
   const [mounted, setMounted] = useState(false);
   const [filters, setFilters] = useState(defaultFilters);
+  const [hotelsLoading, setHotelsLoading] = useState(true);
+  const [hasHotels, setHasHotels] = useState(false);
   const [sort, setSort] = useState("recommended");
   const [mapOpen, setMapOpen] = useState(false);
   const [hotelsForMap, setHotelsForMap] = useState([]);
@@ -139,7 +141,7 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
     setDraftSearchData,
     setAppliedSearchData,
   ]);
-  const handleSearch = useCallback(() => { }, []);
+  const handleSearch = useCallback(() => {}, []);
   const isFilterActive = useCallback((value) => {
     if (
       value === "" ||
@@ -188,8 +190,9 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
         <div className="relative mx-auto mt-[-28px] flex max-w-7xl gap-4 p-3 md:flex-nowrap">
           {/* SIDEBAR */}
           <div
-            className={`sticky top-[98px] max-h-[calc(100vh-40px)] w-full overflow-y-auto sm:w-64 md:w-72 ${sidebarZ0 ? "z-0" : "z-20"
-              }`}
+            className={`sticky top-[98px] max-h-[calc(100vh-40px)] w-full overflow-y-auto sm:w-64 md:w-72 ${
+              sidebarZ0 ? "z-0" : "z-20"
+            }`}
           >
             <SidebarFilters
               filters={filters}
@@ -204,8 +207,9 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
           <div className="min-w-0 flex-1">
             {/* SORT BAR */}
             <div
-              className={`sticky top-[98px] ${sidebarZ0 ? "!-z-10" : "z-20"
-                } bg-[#edf7ff]`}
+              className={`sticky top-[98px] ${
+                sidebarZ0 ? "!-z-10" : "z-20"
+              } bg-[#edf7ff]`}
             >
               <SortBar sort={sort} setSort={setSort} />
             </div>
@@ -213,8 +217,9 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
             {/* ACTIVE FILTERS */}
             {hasActiveFilters && (
               <div
-                className={`sticky top-[138px] min-[700px]:max-[850px]:top-[155px] ${sidebarZ0 ? "!-z-10" : "z-12"
-                  } bg-[#edf7ff] !pt-[5px] `}
+                className={`sticky top-[138px] min-[700px]:max-[850px]:top-[155px] ${
+                  sidebarZ0 ? "!-z-10" : "z-12"
+                } bg-[#edf7ff] !pt-[5px]`}
               >
                 <div className="!mb-4 flex flex-wrap gap-2">
                   {activeFilters.map(([key, value]) => {
@@ -296,17 +301,24 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
                 filters={filters}
                 sort={sort}
                 onHotelsChange={setHotelsForMap}
+                onLoadingChange={setHotelsLoading}
+                onResultChange={setHasHotels}
               />
             </div>
 
             {/* SEO CONTENT */}
-            <HotelsSeoSection>
-              {cms ? (
+            {cms ? (
+              <HotelsSeoSection>
                 <CMSContentRenderer cms={cms} />
-              ) : (
-                <DynamicSeoFallback cityName={appliedSearchData?.city} />
-              )}
-            </HotelsSeoSection>
+              </HotelsSeoSection>
+            ) : (
+              !hotelsLoading &&
+              hasHotels && (
+                <HotelsSeoSection>
+                  <DynamicSeoFallback cityName={appliedSearchData?.city} />
+                </HotelsSeoSection>
+              )
+            )}
           </div>
         </div>
       </div>
