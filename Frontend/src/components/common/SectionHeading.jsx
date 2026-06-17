@@ -1,7 +1,7 @@
 export default function SectionHeading({ title, description, center = true }) {
   return (
-    <div className={`!z-11 mb-0 md:mb-10 lg:mb-12 mb-0 md:mb-10 lg:mb-12 mt-[-20] ${center ? "text-center" : ""} `}>
-      <h2 className="text-22xl leading-tight font-bold text-gray-900 sm:text-3xl !md:text-2xl lg:text-4xl !mt-[-67] ">
+    <div className={`!z-11  mb-0 md:mb-10 lg:mb-12 mb-0 md:mb-10 lg:mb-12 mt-[-20] ${center ? "text-center" : ""} `}>
+      <h2 className="text-22xl leading-tight font-bold text-gray-900 sm:text-3xl !md:text-2xl lg:text-3xl !mt-[-63] ">
         {title}
       </h2>
 

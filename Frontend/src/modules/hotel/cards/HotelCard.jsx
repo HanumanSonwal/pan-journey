@@ -50,8 +50,8 @@ function HotelCard({ hotel, wishlistIds }) {
     }
     return [
       hotel.image ||
-        hotel.images?.[0] ||
-        "https://images.unsplash.com/photo-1566073771259-6a8506099945",
+      hotel.images?.[0] ||
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945",
     ];
   }, [hotel.images, hotel.image]);
 
@@ -97,9 +97,9 @@ function HotelCard({ hotel, wishlistIds }) {
     });
     const citySlug = slugify(
       appliedSearchData?.city?.split(",")[0] ||
-        hotel?.cityName ||
-        hotel?.City ||
-        "hotel",
+      hotel?.cityName ||
+      hotel?.City ||
+      "hotel",
     );
 
     const hotelSlug = slugify(
@@ -186,7 +186,7 @@ function HotelCard({ hotel, wishlistIds }) {
             )}
           </div>
 
-          <div className="flex flex-1 flex-col justify-between border-t border-gray-100 p-4 lg:border-t-0 lg:border-l">
+          <div className="flex flex- flex-col justify-between border-t border-gray-100 p-4 lg:border-t-0 lg:border-l">
             <div>
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0 flex-1">
@@ -280,7 +280,7 @@ function HotelCard({ hotel, wishlistIds }) {
             </div>
           </div>
 
-          <div className="flex w-full flex-col justify-between border-t border-gray-100 p-4 lg:w-[260px] lg:border-t-0 lg:border-l">
+          <div className="flex w-full flex-col justify-between border-t border-gray-100 p-4 min-[700px]:flex-row min-[700px]:items-center min-[700px]:gap-2 min-[900px]:flex-col lg:w-[260px] lg:border-t-0 lg:border-l">
             <div
               className="mt-0! mb-1! flex justify-end gap-2 text-[22px] text-gray-700"
               onClick={(e) => e.stopPropagation()}

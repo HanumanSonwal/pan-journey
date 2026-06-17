@@ -2,7 +2,7 @@
 
 export default function SearchButton({ onSearch }) {
   return (
-    <div className="/* Default/Desktop */ /* 768px */ /* 1024px */ /* ~1440px */ /* ~2560px */ absolute top-[70%] left-1/2 flex w-full -translate-x-1/2 justify-center md:top-[380px] lg:top-[410px] xl:top-[310px] 2xl:top-[325px]">
+    <div className="/* Default/Desktop */ /* 768px */ /* 1024px */ /* ~1440px */ /* ~2560px */ absolute top-[70%] left-1/2 flex w-full -translate-x-1/2 justify-center md:top-[380px] lg:top-[410px] xl:top-[330px] 2xl:top-[325px]">
       <button
         onClick={onSearch}
         className="!2xl:w-[490px] flex h-16 w-[400px] items-center justify-center rounded-xl! text-2xl! font-semibold text-white! shadow-lg transition-all duration-200 hover:scale-[1.02] hover:opacity-90 active:scale-[0.98] md:h-14 md:w-[300px] md:text-xl lg:h-16 lg:w-[360px] lg:text-2xl xl:h-[60px] xl:w-[350px] xl:text-2xl 2xl:h-[60px] 2xl:text-2xl"

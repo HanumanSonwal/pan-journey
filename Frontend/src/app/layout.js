@@ -93,9 +93,7 @@ export default function RootLayout({ children }) {
             <QueryProvider>
               <Providers>
                 <Header />
-
                 <ProfileCompletionHandler />
-
                 <main className="flex-1">
                   <App>
                     <ComingSoonModal />
