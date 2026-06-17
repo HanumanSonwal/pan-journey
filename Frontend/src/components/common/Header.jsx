@@ -126,7 +126,7 @@ export default function Header() {
         </Link>
 
         {/* Desktop Menu */}
-        <nav className="font-roboto! hidden items-center gap-8 text-gray-900 lg:flex">
+        <nav className="font-roboto! hidden items-center gap-5 text-gray-900 xl:flex">
           <Link
             href="/"
             className="relative transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:text-[#0f766e] hover:after:w-full"
@@ -208,7 +208,7 @@ export default function Header() {
                       onClick={() => {
                         setCurrency(currency);
                         setCurrencyDropdownOpen(false);
-                        setSearch(""); 
+                        setSearch("");
                       }}
                       className="flex cursor-pointer items-center justify-between rounded-md px-3 py-2 hover:bg-gray-100"
                     >
@@ -262,7 +262,8 @@ export default function Header() {
 
           {/* Mobile Menu */}
           <button
-            className="text-xl !text-[#4A9BB5] transition-all duration-300 hover:scale-110 hover:text-gray-800! lg:hidden"
+            className="text-xl !text-[#4A9BB5] transition-all duration-300 hover:scale-110 hover:text-gray-800! xl:hidden"
+
             onClick={() => setMobileMenu(true)}
           >
             <MenuOutlined />
@@ -277,60 +278,37 @@ export default function Header() {
         onClose={() => setMobileMenu(false)}
         open={mobileMenu}
       >
-        <div className="flex flex-col gap-4">
-          <Link href="#">Hotels</Link>
-          <Link href="#">Best Offers</Link>
-          <Link href="#">Flights</Link>
-          <Link href="#">Bus</Link>
-          <Link href="#">Support</Link>
-        </div>
-        <div className="border-b pb-4">
-          <p className="mb-2 text-sm font-semibold">Currency</p>
+        <div className="flex flex-col gap-5 text-[16px] font-medium">
+          <Link
+  href="/"
+  className="relative w-fit !text-black transition-colors duration-200 hover:!text-[#0f766e] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:after:w-full"
+>
+  Hotels
+</Link>
 
-          <Dropdown
-            trigger={["click"]}
-            popupRender={() => (
-              <div className="w-full min-w-[300px] rounded-xl bg-white p-3 shadow-lg">
-                <div className="rounded px-2">
-                  <Input
-                    allowClear
-                    variant={false}
-                    placeholder="Search Currency"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="rounded-lg"
-                  />
-                </div>
-                <div className="mt-3 max-h-[350px] overflow-y-auto">
-                  {filteredCurrencies.map((currency) => (
-                    <div
-                      key={currency.code}
-                      onClick={() => setCurrency(currency)}
-                      className={`flex cursor-pointer items-center justify-between rounded-md px-3 py-2 ${
-                        selectedCurrency?.code === currency.code
-                          ? "bg-cyan-50 text-[#4A9BB5]"
-                          : "hover:bg-gray-100"
-                      }`}
-                    >
-                      <span>{currency.name}</span>
-
-                      <span className="font-semibold">{currency.code}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+          <Link
+            href="/gift-cards"
+className="relative w-fit !text-black transition-colors duration-200 hover:!text-[#0f766e] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:after:w-full"
           >
-            <button className="flex w-full items-center justify-between rounded-lg border border-[#4A9BB5] px-3 py-2 text-sm font-medium text-[#4A9BB5]">
-              <span className="truncate">
-                {selectedCurrency?.symbol || "₹"}{" "}
-                {selectedCurrency?.code || "INR"}
-              </span>
+            Best Offers
+          </Link>
 
-              <DownOutlined />
-            </button>
-          </Dropdown>
+          <span className="relative w-fit cursor-pointer transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:text-[#0f766e] hover:after:w-full">
+            Flights
+          </span>
+
+          <span className="relative w-fit cursor-pointer transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:text-[#0f766e] hover:after:w-full">
+            Bus
+          </span>
+
+          <Link
+            href="/contact-us"
+           className="relative w-fit !text-black transition-colors duration-200 hover:!text-[#0f766e] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:after:w-full"
+          >
+            Support
+          </Link>
         </div>
+  
       </Drawer>
 
       {/* Modals */}

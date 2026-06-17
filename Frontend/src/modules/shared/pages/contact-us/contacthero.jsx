@@ -34,12 +34,12 @@ export default function ContactSection() {
 
 
       {/* Contact Cards */}
-      <div className="absolute left-1/2 -translate-x-1/2 top-[240px] z-30 w-full max-w-[1400px] px-4">
+      <div className="absolute left-1/2 -translate-x-1/2 top-[240px] z-30 w-full max-w-[1400px] px-3">
         <div className="grid grid-cols-3 gap-4 md:gap-6">
 
           {/* Call Us */}
-          <div className="bg-white rounded-md shadow-lg px-4 md:px-6 lg:px-8 py-8 min-h-[90px]">
-            <div className="flex items-center gap-3 mb-5  md:mb-2 lg:mb-7">
+          <div className="bg-white rounded-md shadow-lg px-4 md:px-6 lg:px-4 py-4 min-h-[30px]">
+            <div className="flex items-center gap-3 mb-5  md:mb-1 lg:mb-2">
               <PhoneFilled className="text-[20px] md:text-[26px] lg:text-[30px] !text-[#2f7d8c] relative -top-[1px] " />
 
               <h3 className="text-[16px] md:text-[20px] lg:text-[22px] font-normal text-[#2f7d8c] leading-none m-0">
@@ -54,8 +54,8 @@ export default function ContactSection() {
           </div>
 
           {/* Mail Us */}
-          <div className="bg-white rounded-md shadow-lg px-4 md:px-6 lg:px-8 py-8 min-h-[90px]">
-            <div className="flex items-center gap-3  mb-5  md:mb-2 lg:mb-7">
+          <div className="bg-white rounded-md shadow-lg px-4 md:px-4 lg:px-8 py-4 min-h-[30px]">
+            <div className="flex items-center gap-3  mb-5  md:mb-1 lg:mb-2">
               <MailFilled className="text-[20px] md:text-[24px] lg:text-[26px] !text-[#2f7d8c] relative -top-[1px]" />
 
               <h3 className="text-[16px] md:text-[20px] lg:text-[22px] font-normal text-[#2f7d8c] leading-none m-0">
@@ -69,8 +69,8 @@ export default function ContactSection() {
           </div>
 
           {/* Address */}
-          <div className="bg-white rounded-md shadow-lg px-4 md:px-6 lg:px-8 py-8 min-h-[90px]">
-            <div className="flex items-center gap-3  mb-5  md:mb-2 lg:mb-7">
+          <div className="bg-white rounded-md shadow-lg px-4 md:px-6 lg:px-4 py-4 min-h-[30px]">
+            <div className="flex items-center gap-3  mb-5  md:mb-1 lg:mb-2">
               <EnvironmentFilled className="text-[20px] md:text-[24px] lg:text-[26px] !text-[#2f7d8c] relative -top-[1px]" />
 
               <h3 className="text-[16px] md:text-[20px] lg:text-[22px]  text-[#2f7d8c] leading-none  m-0">
