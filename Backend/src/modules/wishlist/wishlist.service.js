@@ -19,10 +19,19 @@ export const toggleWishlistService = async (userId, payload) => {
   if (!payload.cityId) {
     throw new Error("City id is required");
   }
-  let normalizedCity = payload.normalizedCity;
-  if (!normalizedCity) {
-    const cityParts = (payload.cityName || "").split(",").map((v) => v.trim());
-    normalizedCity = cityParts[0] || "";
+  const cityParts = (payload.cityName || "").split(",").map((v) => v.trim());
+
+  let normalizedCity = "";
+
+  switch (payload.searchType) {
+    case "Hotel":
+    case "PointOfInterest":
+    case "Neighborhood":
+      normalizedCity = cityParts[1] || cityParts[0] || "";
+      break;
+
+    default:
+      normalizedCity = cityParts[0] || "";
   }
   const facilities = [...new Set(payload.facilities || [])];
 

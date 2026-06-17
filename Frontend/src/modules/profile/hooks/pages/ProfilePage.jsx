@@ -58,11 +58,8 @@ export default function ProfilePage() {
             {activeTab === "profile" && <ProfileOverview />}
             {activeTab === "documents" && <DocumentsTab />}
             {activeTab === "wishlist" && <WishlistTab />}
-
             {activeTab === "wishlist-detail" && <WishlistDetailTab />}
-
             {activeTab === "BookingHistory" && <BookingHistoryTab />}
-
             {activeTab === "booking-details" && (
               <BookingDetailsTab bookingRefNo={bookingRefNo} />
             )}

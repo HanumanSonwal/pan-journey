@@ -9,10 +9,15 @@ import { Card } from "antd";
 import { useEffect, useMemo, useState } from "react";
 
 import HotelDetailsSkeleton from "@/components/common/loder/HotelDetailsSkeleton";
+import { useAuthGuard } from "@/modules/auth/hooks/useAuthGuard";
 import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
 import { useHotelDetails } from "@/modules/hotel/hooks/useHotelDetails";
 import { useSelectedHotelStore } from "@/modules/hotel/store/selectedHotel.store";
+import { useToggleWishlist } from "@/modules/wishlist/hooks/useToggleWishlist";
+import { useWishlistIds } from "@/modules/wishlist/hooks/useWishlistIds";
 import { HeartFilled } from "@ant-design/icons";
+import { message } from "antd";
+import { useSearchParams } from "next/navigation";
 import SearchBar from "../components/hotels/SearchBar";
 import HotelSectionsContent from "../components/hotels/viewhotles/HotelSectionsContent";
 import HotelSectionsTabs from "../components/hotels/viewhotles/HotelSectionsTabs";
@@ -28,11 +33,6 @@ import DynamicHotelSeoFallback from "../seo/DynamicHotelSeoFallback";
 import { useHotelBookingStore } from "../store/booking.store";
 import { useHotelSearchStore } from "../store/serchData.store";
 
-import { useAuthGuard } from "@/modules/auth/hooks/useAuthGuard";
-import { useToggleWishlist } from "@/modules/wishlist/hooks/useToggleWishlist";
-import { useWishlistIds } from "@/modules/wishlist/hooks/useWishlistIds";
-import { message } from "antd";
-
 function HotelDetails({ initialPayload = null, cms = null }) {
   const { selectedHotel } = useSelectedHotelStore();
   const { appliedSearchData } = useHotelSearchStore();
@@ -44,9 +44,33 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   const { requireAuth } = useAuthGuard();
   const { mutateAsync } = useToggleWishlist();
   const { data: wishlistData } = useWishlistIds();
+  const searchParams = useSearchParams();
 
+  const hid = searchParams.get("hid");
+  const cityIdParam = searchParams.get("cityId");
+  const stateNameParam = searchParams.get("stateName");
+  const countryCodeParam = searchParams.get("countryCode");
+  const hotelSlugParam = searchParams.get("hotelSlug");
   console.log("appliedSearchData in hotel-detail", appliedSearchData);
+
   const payload = useMemo(() => {
+    if (selectedHotel?.fromWishlist) {
+      return {
+        hotelId: selectedHotel?.hotelMeta?.hotelId || hid,
+        hotelMeta: {
+          cityId: selectedHotel?.hotelMeta?.cityId || cityIdParam,
+          stateName: selectedHotel?.hotelMeta?.stateName || stateNameParam,
+          countryCode:
+            selectedHotel?.hotelMeta?.countryCode || countryCodeParam,
+        },
+        searchContext: {
+          fullName: selectedHotel?.hotelMeta?.hotelSlug || hotelSlugParam || "",
+          CheckInDate: appliedSearchData?.checkIn,
+          CheckOutDate: appliedSearchData?.checkOut,
+          RoomCount: appliedSearchData?.rooms || 1,
+        },
+      };
+    }
     if (initialPayload) {
       return {
         ...initialPayload,
@@ -56,28 +80,36 @@ function HotelDetails({ initialPayload = null, cms = null }) {
           countryCode: appliedSearchData?.cityData?.countryCode,
         },
         searchContext: {
-          fullName: appliedSearchData?.cityData?.name,
+          fullName: initialPayload?.searchContext?.fullName || "",
           CheckInDate: appliedSearchData?.checkIn,
           CheckOutDate: appliedSearchData?.checkOut,
           RoomCount: appliedSearchData?.rooms,
         },
       };
     }
-
     return {
       hotelId: selectedHotel?.hotelMeta?.hotelId,
       hotelMeta: {
-        cityName: selectedHotel?.hotelMeta?.cityName,
+        cityId: selectedHotel?.hotelMeta?.cityId,
         stateName: selectedHotel?.hotelMeta?.stateName,
         countryCode: selectedHotel?.hotelMeta?.countryCode,
       },
       hotelKey: selectedHotel?.hotelKey,
       searchKey: selectedHotel?.searchKey,
     };
-  }, [selectedHotel, initialPayload, appliedSearchData]);
+  }, [
+    selectedHotel,
+    initialPayload,
+    appliedSearchData,
+    hid,
+    cityIdParam,
+    stateNameParam,
+    countryCodeParam,
+    hotelSlugParam,
+  ]);
 
   const wishlistIds = useMemo(
-    () => new Set(wishlistData?.data || []),
+    () => new Set(wishlistData || []),
     [wishlistData],
   );
   const isWishlisted = wishlistIds.has(payload?.hotelId?.toString());
@@ -104,7 +136,14 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     });
   };
 
-  const { data, isLoading, isFetching, refetch } = useHotelDetails(payload);
+  console.log("selectedHotel", selectedHotel);
+  console.log("payload in hotel-detail", payload);
+
+  const isValidPayload = payload?.hotelId && payload?.hotelMeta?.cityId;
+
+  const { data, isLoading, isFetching, refetch } = useHotelDetails(
+    isValidPayload ? payload : null,
+  );
   const showSkeleton = isLoading || isFetching;
   const hotelData = data || {};
   const supplierData = hotelData?.supplierResponse || {};
@@ -195,13 +234,21 @@ function HotelDetails({ initialPayload = null, cms = null }) {
                 <div className="flex items-center gap-3">
                   <button
                     onClick={handleWishlist}
-                    className="flex h-11 w-11 items-center justify-center rounded-full border bg-white"
+                    className="group flex h-11 w-11 items-center justify-center rounded-full border bg-white transition-all duration-200 hover:shadow-md active:scale-95"
                   >
-                    {isWishlisted ? (
-                      <HeartFilled className="text-[20px] text-red-500!" />
-                    ) : (
-                      <HeartOutlined className="text-[20px]" />
-                    )}
+                    <span
+                      className={`inline-flex items-center justify-center transition-all duration-300 ease-in-out ${
+                        isWishlisted
+                          ? "scale-[1.35] text-red-500"
+                          : "scale-100 text-gray-700 group-hover:scale-110"
+                      }`}
+                    >
+                      {isWishlisted ? (
+                        <HeartFilled className="text-[20px]" />
+                      ) : (
+                        <HeartOutlined className="text-[20px]" />
+                      )}
+                    </span>
                   </button>
 
                   <button className="flex h-11 w-11 items-center justify-center rounded-full border bg-white">

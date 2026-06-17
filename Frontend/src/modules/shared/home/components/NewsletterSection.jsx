@@ -36,14 +36,14 @@ export default function NewsletterSection() {
               <MailOutlined className="text-[24px] text-[#222]!" />
             </div>
 
-            <h2 className="leading-tight font-bold text-[#222] md:text-3xl">
+            <h2 className="leading-tight font-bold text-[#222] md:text-3xl mb-0!">
               Join Our Weekly Newsletter
             </h2>
           </div>
 
           {/* Right Form */}
           <div className="flex flex-col">
-            <div className="text-balck! flex w-fit items-center gap-6 rounded-lg px-9 py-7">
+            <div className="text-balck! flex w-fit items-center gap-6 rounded-lg px-9">
               <input
                 type="email"
                 value={email}
@@ -71,6 +71,7 @@ export default function NewsletterSection() {
             </div>
 
             {error && <p className="px-9 text-sm text-red-500">{error}</p>}
+            
           </div>
         </div>
       </div>

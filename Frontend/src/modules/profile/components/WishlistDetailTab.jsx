@@ -1,5 +1,7 @@
 "use client";
 
+import { useSelectedHotelStore } from "@/modules/hotel/store/selectedHotel.store";
+import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
 import { useToggleWishlist } from "@/modules/wishlist/hooks/useToggleWishlist";
 import { useWishlistCity } from "@/modules/wishlist/hooks/useWishlistCity";
 import { slugify } from "@/utils/slug/slugify";
@@ -17,12 +19,13 @@ export default function WishlistDetailTab() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [removingHotelId, setRemovingHotelId] = useState(null);
-
+  const { setSelectedHotel } = useSelectedHotelStore();
   const { mutateAsync } = useToggleWishlist();
   const cityId = searchParams.get("cityId");
   const { data, isLoading } = useWishlistCity(cityId);
   const hotels = data?.data || [];
-  
+  const { setDraftSearchData } = useHotelSearchStore();
+
   useEffect(() => {
     if (!isLoading && hotels.length === 0) {
       router.replace("/profile?tab=wishlist");
@@ -34,7 +37,6 @@ export default function WishlistDetailTab() {
       await mutateAsync({
         hotelId: hotel.hotelId,
       });
-
       message.success("Hotel removed from wishlist");
     } catch (error) {
       console.log(error);
@@ -42,6 +44,38 @@ export default function WishlistDetailTab() {
     } finally {
       setRemovingHotelId(null);
     }
+  };
+
+  const handleViewHotel = (hotel) => {
+    setSelectedHotel({
+      fromWishlist: true,
+      hotelMeta: {
+        hotelId: hotel.hotelId,
+        cityId: hotel.cityId,
+        stateName: hotel.stateName || "",
+        countryCode: hotel.countryCode || "",
+        cityName: hotel.cityName || "",
+        hotelSlug: hotel.hotelSlug || "",
+      },
+    });
+
+    setDraftSearchData({
+      city: hotel.cityName || "",
+      cityData: {
+        id: hotel.cityId || "",
+        stateName: hotel.stateName || "",
+        countryCode: hotel.countryCode || "",
+        name: hotel.cityName || "",
+      },
+    });
+
+    router.push(
+      `/hotel-details/${slugify(
+        hotel.cityName?.split(",")[0] || "",
+      )}/${hotel.hotelSlug}?hid=${hotel.hotelId}&cityId=${hotel.cityId}&stateName=${encodeURIComponent(
+        hotel.stateName || "",
+      )}&countryCode=${hotel.countryCode || ""}`,
+    );
   };
 
   if (isLoading) {
@@ -147,13 +181,11 @@ export default function WishlistDetailTab() {
 
                   <div className="font-roboto flex items-start gap-2 font-semibold text-gray-500">
                     <EnvironmentOutlined className="mt-1" />
-
                     <span>{hotel.address || hotel.cityName}</span>
                   </div>
 
                   <div className="flex flex-wrap gap-2">
                     <Tag color="blue">⭐ {hotel.starRating || 0} Star</Tag>
-
                     {hotel.freeCancellation && (
                       <Tag color="green">Free Cancellation</Tag>
                     )}
@@ -192,13 +224,7 @@ export default function WishlistDetailTab() {
                   <div className="flex items-end gap-3">
                     <Button
                       className="rounded-lg! bg-[#72C0F0]! px-5! py-2! text-sm! font-semibold! text-white!"
-                      onClick={() =>
-                        router.push(
-                          `/hotel-details/${slugify(
-                            hotel.cityName.split(",")[0],
-                          )}/${hotel.hotelSlug}?hid=${hotel.hotelId}`,
-                        )
-                      }
+                      onClick={() => handleViewHotel(hotel)}
                     >
                       View Hotel
                     </Button>

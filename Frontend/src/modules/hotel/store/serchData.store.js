@@ -8,7 +8,6 @@ const getDefaultSearchData = () => ({
     id: "",
     stateName: "",
     countryCode: "",
-
     normalizedCity: "",
   },
   checkIn: dayjs().format("YYYY-MM-DD"),
@@ -24,9 +23,7 @@ export const useHotelSearchStore = create(
   persist(
     (set) => ({
       draftSearchData: getDefaultSearchData(),
-
       appliedSearchData: getDefaultSearchData(),
-
       setDraftSearchData: (data) =>
         set((state) => ({
           draftSearchData: {

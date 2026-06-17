@@ -6,11 +6,10 @@ import { HotelDetailApi } from "../services/hotelDetail.service";
 export const useHotelDetails = (payload) => {
   return useQuery({
     queryKey: ["hotel-details", JSON.stringify(payload)],
-    
 
     queryFn: () => HotelDetailApi(payload),
 
-    enabled: !!payload?.hotelId && !!payload?.hotelMeta,
+    enabled: !!payload?.hotelId && !!payload?.hotelMeta?.cityId,
 
     staleTime: 1000 * 60 * 5,
 
