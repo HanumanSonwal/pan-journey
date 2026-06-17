@@ -33,12 +33,10 @@ import { useToggleWishlist } from "@/modules/wishlist/hooks/useToggleWishlist";
 import { useWishlistIds } from "@/modules/wishlist/hooks/useWishlistIds";
 import { message } from "antd";
 
-import { useCurrencyStore } from "@/modules/shared/store/currency.store";
 function HotelDetails({ initialPayload = null, cms = null }) {
   const { selectedHotel } = useSelectedHotelStore();
   const { appliedSearchData } = useHotelSearchStore();
   const { setBookingData } = useHotelBookingStore();
-  const { selectedCurrency } = useCurrencyStore();
   const [activeTab, setActiveTab] = useState("overview");
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [sessionExpired] = useState(false);
@@ -52,7 +50,6 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     if (initialPayload) {
       return {
         ...initialPayload,
-        currency: selectedCurrency?.code || "INR",
         hotelMeta: {
           cityId: appliedSearchData?.cityData?.id,
           stateName: appliedSearchData?.cityData?.stateName,
@@ -69,7 +66,6 @@ function HotelDetails({ initialPayload = null, cms = null }) {
 
     return {
       hotelId: selectedHotel?.hotelMeta?.hotelId,
-      currency: selectedCurrency?.code || "INR",
       hotelMeta: {
         cityName: selectedHotel?.hotelMeta?.cityName,
         stateName: selectedHotel?.hotelMeta?.stateName,
@@ -78,12 +74,7 @@ function HotelDetails({ initialPayload = null, cms = null }) {
       hotelKey: selectedHotel?.hotelKey,
       searchKey: selectedHotel?.searchKey,
     };
-  }, [
-    selectedHotel,
-    initialPayload,
-    appliedSearchData,
-    selectedCurrency?.code,
-  ]);
+  }, [selectedHotel, initialPayload, appliedSearchData]);
 
   const wishlistIds = useMemo(
     () => new Set(wishlistData?.data || []),
