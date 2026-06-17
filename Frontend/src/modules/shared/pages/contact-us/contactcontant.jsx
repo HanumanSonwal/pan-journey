@@ -1,6 +1,32 @@
+"use client";
+
+import { useState } from "react";
+
 export default function ContactFormSection() {
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    console.log("Form Data:", formData);
+
+    alert("Form Submitted! Check Console.");
+  };
+
   return (
-    <section className="bg-[#eef5fa] py-30 lg:py-42">
+    <section className="bg-[#eef5fa] py-21 lg:py-28">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-20">
 
@@ -14,8 +40,7 @@ export default function ContactFormSection() {
 
             <p className="text-[14px] sm:text-[15px] md:text-[16px] font-semibold text-black leading-[1.8] max-w-[700px] mb-12 lg:mb-20">
               It is a long established fact that a reader will be distracted by
-              the readable content of a page when looking at its layout. The
-              point of using Lorem Ipsum is.
+              the readable content of a page when looking at its layout.
             </p>
 
             <h3 className="text-[28px] md:text-[32px] lg:text-[40px] font-semibold text-[#0f6b78] mb-8 lg:mb-10">
@@ -51,61 +76,111 @@ export default function ContactFormSection() {
               Fill this form
             </h3>
 
-            <form className="space-y-4 md:space-y-6">
-              <div>
-                <label className="block text-[14px] sm:text-[16px] md:text-[18px] mb-2 text-black">
-                  Full Name*
-                </label>
+            <form onSubmit={handleSubmit} className="space-y-6">
 
+              {/* Full Name */}
+              <div className="relative">
                 <input
                   type="text"
-                  placeholder="Enter your name"
-                  className="w-full h-[42px] sm:h-[48px] md:h-[52px] border border-gray-300 rounded-md px-3 md:px-4 outline-none text-[14px] md:text-[16px]"
+                  id="fullName"
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  placeholder=" "
+                  className="peer w-full h-[52px] border border-gray-300 rounded-md px-4 pt-4 outline-none focus:border-[#0f6b78]"
                 />
+                <label
+                  htmlFor="fullName"
+                  className="absolute left-3 -top-2 bg-white px-1 text-sm text-gray-500 transition-all
+                  peer-placeholder-shown:top-4
+                  peer-placeholder-shown:text-base
+                  peer-placeholder-shown:text-gray-400
+                  peer-focus:-top-2
+                  peer-focus:text-sm
+                  peer-focus:text-[#0f6b78]"
+                >
+                  Full Name *
+                </label>
               </div>
 
-              <div>
-                <label className="block text-[14px] sm:text-[16px] md:text-[18px] mb-2 text-black">
-                  Email*
-                </label>
-
+              {/* Email */}
+              <div className="relative">
                 <input
                   type="email"
-                  placeholder="Enter your email"
-                  className="w-full h-[42px] sm:h-[48px] md:h-[52px] border border-gray-300 rounded-md px-3 md:px-4 outline-none text-[14px] md:text-[16px]"
+                  id="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder=" "
+                  className="peer w-full h-[52px] border border-gray-300 rounded-md px-4 pt-4 outline-none focus:border-[#0f6b78]"
                 />
+                <label
+                  htmlFor="email"
+                  className="absolute left-3 -top-2 bg-white px-1 text-sm text-gray-500 transition-all
+                  peer-placeholder-shown:top-4
+                  peer-placeholder-shown:text-base
+                  peer-placeholder-shown:text-gray-400
+                  peer-focus:-top-2
+                  peer-focus:text-sm
+                  peer-focus:text-[#0f6b78]"
+                >
+                  Email *
+                </label>
               </div>
 
-              <div>
-                <label className="block text-[14px] sm:text-[16px] md:text-[18px] mb-2 text-black">
-                  Subject*
-                </label>
-
+              {/* Subject */}
+              <div className="relative">
                 <input
                   type="text"
-                  placeholder="Enter your subject"
-                  className="w-full h-[42px] sm:h-[48px] md:h-[52px] border border-gray-300 rounded-md px-3 md:px-4 outline-none text-[14px] md:text-[16px]"
+                  id="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  placeholder=" "
+                  className="peer w-full h-[52px] border border-gray-300 rounded-md px-4 pt-4 outline-none focus:border-[#0f6b78]"
                 />
+                <label
+                  htmlFor="subject"
+                  className="absolute left-3 -top-2 bg-white px-1 text-sm text-gray-500 transition-all
+                  peer-placeholder-shown:top-4
+                  peer-placeholder-shown:text-base
+                  peer-placeholder-shown:text-gray-400
+                  peer-focus:-top-2
+                  peer-focus:text-sm
+                  peer-focus:text-[#0f6b78]"
+                >
+                  Subject *
+                </label>
               </div>
 
-              <div>
-                <label className="block text-[14px] sm:text-[16px] md:text-[18px] mb-2 text-black">
+              {/* Message */}
+              <div className="relative">
+                <textarea
+                  id="message"
+                  rows={5}
+                  value={formData.message}
+                  onChange={handleChange}
+                  placeholder=" "
+                  className="peer w-full border border-gray-300 rounded-md p-4 outline-none resize-none focus:border-[#0f6b78]"
+                />
+                <label
+                  htmlFor="message"
+                  className="absolute left-3 -top-2 bg-white px-1 text-sm text-gray-500 transition-all
+                  peer-placeholder-shown:top-4
+                  peer-placeholder-shown:text-base
+                  peer-placeholder-shown:text-gray-400
+                  peer-focus:-top-2
+                  peer-focus:text-sm
+                  peer-focus:text-[#0f6b78]"
+                >
                   Message
                 </label>
-
-                <textarea
-                  rows={5}
-                  placeholder="Enter your message"
-                  className="w-full border border-gray-300 rounded-md p-3 md:p-4 outline-none resize-none text-[14px] md:text-[16px]"
-                />
               </div>
 
               <button
                 type="submit"
-                className="px-6 sm:px-8 py-2.5 md:py-3 rounded-md text-white text-[14px] sm:text-[16px] md:text-[18px] bg-gradient-to-b from-[#67b5e2] to-[#006c7a]"
+                className="px-8 py-3 rounded-md text-white text-[16px] bg-gradient-to-b from-[#67b5e2] to-[#006c7a]"
               >
                 Submit
               </button>
+
             </form>
           </div>
 
