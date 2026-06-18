@@ -141,14 +141,15 @@ export default function TopRatedHotels() {
 
   // CARD
   const renderCard = (hotel, idx) => (
-    <div
-      onClick={() => handleSearch(hotel)}
-      key={hotel.id}
-      className="w-full flex-shrink-0 px-2 sm:w-1/2 lg:w-1/4"
-    >
-      <Card
-        hoverable
-        className="overflow-hidden rounded-2xl border-0 shadow-md transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+   <div
+  onClick={() => handleSearch(hotel)}
+  key={hotel.id}
+  className="w-full flex-shrink-0 px-2 sm:w-1/2 lg:w-1/4 flex"
+>
+     <Card
+  hoverable
+  className="flex h-full w-full flex-col overflow-hidden rounded-2xl border-0 shadow-md transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+
         cover={
           <div className="relative h-[220px] overflow-hidden md:h-[240px]">
             <Image
@@ -164,17 +165,19 @@ export default function TopRatedHotels() {
           </div>
         }
       >
-        <div className="text-center">
-          <h3 className="text-lg font-semibold text-gray-800">{hotel.name}</h3>
+       <div className="flex h-full flex-col text-center">
+  <h3 className="text-lg font-semibold text-gray-800">
+    {hotel.name}
+  </h3>
 
-          <p className="mt-2 line-clamp-3 text-sm leading-6 text-gray-500">
-            {hotel.desc}
-          </p>
+  <p className="mt-2 flex-1 line-clamp-3 text-sm leading-6 text-gray-500">
+    {hotel.desc}
+  </p>
 
-          <div className="mt-3">
-            <Rate disabled allowHalf defaultValue={hotel.rating} />
-          </div>
-        </div>
+  <div className="mt-4">
+    <Rate disabled allowHalf defaultValue={hotel.rating} />
+  </div>
+</div>
       </Card>
     </div>
   );
