@@ -1,68 +1,209 @@
 import Wishlist from "./wishlist.model.js";
 
-export const toggleWishlistService = async (userId, payload) => {
-  const existing = await Wishlist.findOne({
-    userId,
-    hotelId: payload.hotelId,
-  });
+import Country from "../priceMarkup/countryData/country.model.js"
 
-  if (existing) {
-    await existing.deleteOne();
-    return {
-      wishlisted: false,
+
+export const toggleWishlistService = async (
+  userId,
+  payload
+) => {
+  try {
+    console.log("========== TOGGLE WISHLIST START ==========");
+    console.log("Incoming userId:", userId);
+    console.log("Incoming payload:", payload);
+
+    // STEP 1 → Check existing wishlist
+    const existing = await Wishlist.findOne({
+      userId,
+      hotelId: payload.hotelId,
+    });
+
+    console.log("Existing wishlist found:", !!existing);
+
+    if (existing) {
+      console.log(
+        "Hotel already wishlisted → deleting existing record"
+      );
+
+      await existing.deleteOne();
+
+      console.log("Wishlist removed successfully");
+      console.log("========== TOGGLE WISHLIST END ==========");
+
+      return {
+        wishlisted: false,
+      };
+    }
+
+    // STEP 2 → Validations
+    if (!payload.hotelName) {
+      console.log("❌ hotelName missing");
+      throw new Error("Hotel name is required");
+    }
+
+    if (!payload.cityId) {
+      console.log("❌ cityId missing");
+      throw new Error("City id is required");
+    }
+
+    // STEP 3 → Normalize city
+    const cityParts = (payload.cityName || "")
+      .split(",")
+      .map((v) => v.trim());
+
+    console.log("City parts:", cityParts);
+
+    let normalizedCity = "";
+
+    switch (payload.searchType) {
+      case "Hotel":
+      case "PointOfInterest":
+      case "Neighborhood":
+        normalizedCity =
+          cityParts[1] ||
+          cityParts[0] ||
+          "";
+        break;
+
+      default:
+        normalizedCity =
+          cityParts[0] || "";
+    }
+
+    console.log("Normalized city:", normalizedCity);
+
+    // STEP 4 → Facilities cleanup
+    const facilities = [
+      ...new Set(payload.facilities || []),
+    ];
+
+    console.log("Facilities count:", facilities.length);
+
+    // STEP 5 → Country lookup
+    console.log(
+      "Searching country with code:",
+      payload.countryCode
+    );
+
+    const country = await Country.findOne({
+      countryCode: payload.countryCode,   // check field name
+    }).lean();
+
+    console.log("Country found:", !!country);
+    console.log("Country data:", country);
+
+    const actualCountryName =
+      country?.countryName || "";
+
+    console.log(
+      "Resolved countryName:",
+      actualCountryName
+    );
+
+    // STEP 6 → Final create payload
+    const createPayload = {
+      userId,
+
+      hotelId: payload.hotelId,
+      hotelName: payload.hotelName,
+      hotelSlug: payload.hotelSlug,
+      hotelImage: payload.hotelImage,
+
+      cityId: payload.cityId,
+      cityName: payload.cityName,
+      normalizedCity,
+
+      stateName:
+        payload.stateName || "",
+
+      countryCode:
+        payload.countryCode || "",
+
+      // fixed value from DB
+      countryName:
+        actualCountryName,
+
+      address:
+        payload.address || "",
+
+      starRating: Number(
+        payload.starRating || 0
+      ),
+
+      checkInDate:
+        payload.CheckInDate || "",
+
+      checkOutDate:
+        payload.CheckOutDate || "",
+
+      roomCount: Number(
+        payload.RoomCount || 1
+      ),
+
+      facilities,
+
+      freeCancellation:
+        payload.freeCancellation ||
+        false,
+
+      savedPrice: Number(
+        payload.savedPrice || 0
+      ),
+
+      savedTax: Number(
+        payload.savedTax || 0
+      ),
+
+      supplier:
+        payload.supplier || "TBO",
     };
+
+    console.log(
+      "Final Wishlist Create Payload:"
+    );
+    console.log(
+      JSON.stringify(
+        createPayload,
+        null,
+        2
+      )
+    );
+
+    // STEP 7 → Create wishlist
+    const created =
+      await Wishlist.create(
+        createPayload
+      );
+
+    console.log(
+      "Wishlist created successfully"
+    );
+    console.log(
+      "Created document:",
+      created
+    );
+
+    console.log(
+      "========== TOGGLE WISHLIST END =========="
+    );
+
+    return {
+      wishlisted: true,
+    };
+
+  } catch (error) {
+    console.error(
+      "❌ Wishlist Service Error"
+    );
+    console.error(
+      "Message:",
+      error.message
+    );
+    console.error(error);
+
+    throw error;
   }
-
-  if (!payload.hotelName) {
-    throw new Error("Hotel name is required");
-  }
-  if (!payload.cityId) {
-    throw new Error("City id is required");
-  }
-  const cityParts = (payload.cityName || "").split(",").map((v) => v.trim());
-
-  let normalizedCity = "";
-
-  switch (payload.searchType) {
-    case "Hotel":
-    case "PointOfInterest":
-    case "Neighborhood":
-      normalizedCity = cityParts[1] || cityParts[0] || "";
-      break;
-
-    default:
-      normalizedCity = cityParts[0] || "";
-  }
-  const facilities = [...new Set(payload.facilities || [])];
-
-  await Wishlist.create({
-    userId,
-    hotelId: payload.hotelId,
-    hotelName: payload.hotelName,
-    hotelSlug: payload.hotelSlug,
-    hotelImage: payload.hotelImage,
-    cityId: payload.cityId,
-    cityName: payload.cityName,
-    normalizedCity,
-    stateName: payload.stateName || "",
-    countryCode: payload.countryCode || "",
-    countryName: payload.countryName || "",
-    address: payload.address || "",
-    starRating: Number(payload.starRating || 0),
-    checkInDate: payload.CheckInDate || "",
-    checkOutDate: payload.CheckOutDate || "",
-    roomCount: Number(payload.RoomCount || 1),
-    facilities,
-    freeCancellation: payload.freeCancellation || false,
-    savedPrice: Number(payload.savedPrice || 0),
-    savedTax: Number(payload.savedTax || 0),
-    supplier: payload.supplier || "TBO",
-  });
-  return {
-    wishlisted: true,
-  };
 };
-
 export const getWishlistService = async (userId) => {
   return Wishlist.aggregate([
     {
@@ -140,6 +281,8 @@ export const getWishlistCityService = async (userId, cityId) => {
     })
     .lean();
 };
+
+
 
 export const checkWishlistService = async (userId, hotelId) => {
   const exists = await Wishlist.exists({
