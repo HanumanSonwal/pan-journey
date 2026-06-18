@@ -15,6 +15,7 @@ import { useHotelDetails } from "@/modules/hotel/hooks/useHotelDetails";
 import { useSelectedHotelStore } from "@/modules/hotel/store/selectedHotel.store";
 import { useToggleWishlist } from "@/modules/wishlist/hooks/useToggleWishlist";
 import { useWishlistIds } from "@/modules/wishlist/hooks/useWishlistIds";
+import { slugify } from "@/utils/slug/slugify";
 import { HeartFilled } from "@ant-design/icons";
 import { message } from "antd";
 import { useSearchParams } from "next/navigation";
@@ -114,28 +115,6 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   );
   const isWishlisted = wishlistIds.has(payload?.hotelId?.toString());
 
-  const handleWishlist = () => {
-    requireAuth(async () => {
-      try {
-        await mutateAsync({
-          hotelId: payload?.hotelId?.toString(),
-          hotelName: supplierData?.HotelName,
-          hotelImage:
-            supplierData?.HotelImage || supplierData?.HotelGallery?.[0] || "",
-          cityId: appliedSearchData?.cityData?.id,
-          cityName: appliedSearchData?.city || "",
-          countryName: supplierData?.Country || "",
-        });
-
-        message.success(
-          isWishlisted ? "Removed from wishlist" : "Added to wishlist",
-        );
-      } catch {
-        message.error("Wishlist update failed");
-      }
-    });
-  };
-
   console.log("selectedHotel", selectedHotel);
   console.log("payload in hotel-detail", payload);
 
@@ -147,8 +126,8 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   const showSkeleton = isLoading || isFetching;
   const hotelData = data || {};
   const supplierData = hotelData?.supplierResponse || {};
-  const pricingSummary = hotelData?.pricingSummary || {};
   const ratePlans = supplierData?.RatePlanRecommendations || [];
+  const FirstRoomPrice = ratePlans?.[0];
   const hotelImages = supplierData?.HotelGallery || [];
   const amenities = supplierData?.Amenities
     ? supplierData.Amenities.split(",")
@@ -165,7 +144,6 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     if (!hotelData?.searchKey) return;
     setBookingData({
       supplierData,
-      pricingSummary,
       searchData: appliedSearchData,
       selectedHotel: {
         hotelKey: supplierData.HotelKey,
@@ -196,6 +174,47 @@ function HotelDetails({ initialPayload = null, cms = null }) {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  const handleWishlist = () => {
+    requireAuth(async () => {
+      try {
+        await mutateAsync({
+          hotelId: payload?.hotelId?.toString(),
+          hotelName: supplierData?.HotelName || "",
+          hotelSlug: slugify(supplierData?.HotelName || ""),
+          hotelImage:
+            supplierData?.HotelImage || supplierData?.HotelGallery?.[0] || "",
+          cityId: payload?.hotelMeta?.cityId || appliedSearchData?.cityData?.id,
+          cityName: appliedSearchData?.city || supplierData?.City || "",
+          stateName:
+            payload?.hotelMeta?.stateName ||
+            appliedSearchData?.cityData?.stateName ||
+            "",
+          countryCode:
+            payload?.hotelMeta?.countryCode ||
+            appliedSearchData?.cityData?.countryCode ||
+            "",
+          countryName: supplierData?.Country || "",
+          address: supplierData?.Address || "",
+          starRating: Number(supplierData?.StarRating || 0),
+          facilities: supplierData?.Amenities
+            ? supplierData.Amenities.split(",")
+                .map((item) => item.trim())
+                .filter(Boolean)
+            : [],
+          freeCancellation: false,
+          savedPrice: Number(FirstRoomPrice?.TotalAmount || 0),
+          savedTax: Number(FirstRoomPrice?.Tax || 0),
+        });
+
+        message.success(
+          isWishlisted ? "Removed from wishlist" : "Added to wishlist",
+        );
+      } catch {
+        message.error("Wishlist update failed");
+      }
+    });
+  };
 
   return (
     <div className="min-h-screen w-full bg-[#eaf3f9]">
@@ -272,7 +291,6 @@ function HotelDetails({ initialPayload = null, cms = null }) {
 
                 <div className="lg:col-span-1">
                   <ViewHotelPriceCard
-                    pricingSummary={pricingSummary}
                     ratePlans={ratePlans}
                     supplierData={supplierData}
                   />
@@ -302,7 +320,6 @@ function HotelDetails({ initialPayload = null, cms = null }) {
               <HotelSectionsContent
                 activeTab={activeTab}
                 supplierData={supplierData}
-                pricingSummary={pricingSummary}
                 ratePlans={ratePlans}
                 amenities={amenities}
                 hotelDetails={hotelDetails}

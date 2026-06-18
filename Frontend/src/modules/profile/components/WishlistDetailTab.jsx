@@ -214,11 +214,11 @@ export default function WishlistDetailTab() {
                 <div className="flex min-w-[180px] flex-col items-end justify-between">
                   <div className="text-right">
                     <p className="font-jost mb-0! text-[22px] font-bold text-gray-900">
-                      ₹ {Math.round(hotel.savedPrice || 0)}
+                      ₹ {hotel.savedPrice}
                     </p>
 
                     <p className="font-jost text-[12px] text-gray-900">
-                      + ₹ {Math.round(hotel.savedTax || 0)} taxes
+                      + ₹ {hotel.savedTax} taxes
                     </p>
                   </div>
                   <div className="flex items-end gap-3">
