@@ -49,7 +49,7 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
       },
     });
 
-    router.push("/hotelbooking");
+    router.push("/hotel-booking");
   };
 
   const handleRoomScroll = () => {

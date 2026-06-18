@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-import User from "../../user/user.model.js";
 import { generateAccessToken } from "../../../utils/authentication/token.util.js";
+import User from "../../user/user.model.js";
 
 export const refreshAccessToken = async (req, res) => {
   try {
@@ -16,10 +16,7 @@ export const refreshAccessToken = async (req, res) => {
     let decoded;
 
     try {
-      decoded = jwt.verify(
-        refreshToken,
-        process.env.JWT_REFRESH_SECRET
-      );
+      decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
     } catch (err) {
       return res.status(401).json({
         success: false,
@@ -32,6 +29,10 @@ export const refreshAccessToken = async (req, res) => {
     const userId = decoded.id || decoded.userId || decoded._id;
 
     const user = await User.findById(userId);
+
+    console.log("REQUEST REFRESH TOKEN:", refreshToken);
+    console.log("DB REFRESH TOKEN:", user?.refreshToken);
+    console.log("TOKEN MATCH:", user?.refreshToken === refreshToken);
 
     // 🔥 MOST IMPORTANT FIX
     if (!user || !user.isActive || user.refreshToken !== refreshToken) {
@@ -51,7 +52,6 @@ export const refreshAccessToken = async (req, res) => {
       success: true,
       accessToken: newAccessToken,
     });
-
   } catch (err) {
     console.log("❌ REFRESH ERROR:", err.message);
 

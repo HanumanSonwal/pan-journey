@@ -8,7 +8,6 @@ export default function LinksBlock({ data }) {
       style={{
         background: "#EDF7FF",
         padding: "40px 10%",
-
       }}
     >
       <div className="container">

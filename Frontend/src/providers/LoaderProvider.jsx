@@ -1,13 +1,7 @@
 "use client";
 
-
-import BookingWebsiteLoader from "@/components/common/BookingWebsiteLoader";
-import {
-  createContext,
-  useContext,
-  useMemo,
-  useState,
-} from "react";
+import BookingWebsiteLoader from "@/components/common/loder/BookingWebsiteLoader";
+import { createContext, useContext, useMemo, useState } from "react";
 
 const LoaderContext = createContext();
 
@@ -19,7 +13,7 @@ export default function LoaderProvider({ children }) {
       loading,
       setLoading,
     }),
-    [loading]
+    [loading],
   );
 
   return (

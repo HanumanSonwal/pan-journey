@@ -1,16 +1,12 @@
 "use client";
 
+import { slugify } from "@/utils/slug/slugify";
 import { Spin } from "antd";
+import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import RelatedHotelCard from "../cards/RelatedHotelCard";
 import { useInfiniteHotels } from "../hooks/useInfiniteHotels";
-
-function slugify(value) {
-  return value
-    ?.toLowerCase()
-    ?.replace(/[^a-z0-9\s-]/g, "")
-    ?.replace(/\s+/g, "-");
-}
+import { useSelectedHotelStore } from "../store/selectedHotel.store";
 
 export default function RelatedHotels({
   cityId,
@@ -18,6 +14,8 @@ export default function RelatedHotels({
   cityName,
   searchData,
 }) {
+  const router = useRouter();
+  const { setSelectedHotel } = useSelectedHotelStore();
   const params = useMemo(() => {
     if (!searchData?.cityData?.id) return null;
     return {
@@ -52,8 +50,9 @@ export default function RelatedHotels({
     );
     return uniqueHotels.slice(0, 4);
   }, [data, currentHotelId]);
-  console.log("RELATED HOTELS", hotels);
+
   if (!cityId) return null;
+
   if (isLoading) {
     return (
       <div className="mt-8 flex justify-center">
@@ -61,9 +60,31 @@ export default function RelatedHotels({
       </div>
     );
   }
+
   if (!hotels.length) {
     return null;
   }
+
+  const handleHotelClick = (hotel) => {
+    const hotelSlug = slugify(hotel?.hotelName);
+
+    setSelectedHotel({
+      hotelMeta: {
+        hotelId: hotel.hotelId,
+        cityId: searchData?.cityData?.id,
+        stateName: searchData?.cityData?.stateName,
+        countryCode: searchData?.cityData?.countryCode,
+        cityName: searchData?.city,
+        hotelSlug,
+      },
+      hotelKey: hotel?.hotelkey,
+    });
+    router.push(
+      `/hotel-details/${slugify(
+        cityName || "",
+      )}/${hotelSlug}?hid=${hotel.hotelId}&cityId=${searchData?.cityData?.id}`,
+    );
+  };
   return (
     <div className="mt-8">
       <h3 className="mb-5 text-2xl font-semibold text-[#303030]">
@@ -71,13 +92,11 @@ export default function RelatedHotels({
       </h3>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {hotels.map((hotel) => {
-          const hotelSlug = slugify(hotel?.hotelName);
-          const citySlug = slugify(cityName || "hotel");
           return (
             <RelatedHotelCard
               key={hotel?.hotelId}
               hotel={hotel}
-              href={`/hotel-details/${citySlug}/${hotelSlug}`}
+              onClick={() => handleHotelClick(hotel)}
             />
           );
         })}

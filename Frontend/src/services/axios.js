@@ -9,18 +9,32 @@ export const api = axios.create({
   baseURL,
 });
 
-api.interceptors.request.use(async (config) => {
-  const session = await getSession();
-  if (session?.accessToken) {
-    config.headers.Authorization = `Bearer ${session.accessToken}`;
-  }
-  const currency = useCurrencyStore.getState()?.selectedCurrency?.code || "INR";
-  config.headers["currency"] = currency;
-  return config;
-});
+api.interceptors.request.use(
+  async (config) => {
+    try {
+      const session = await getSession();
+
+      if (session?.accessToken) {
+        config.headers.Authorization = `Bearer ${session.accessToken}`;
+      }
+
+      const currency =
+        useCurrencyStore.getState()?.selectedCurrency?.code || "INR";
+
+      config.headers.currency = currency;
+
+      return config;
+    } catch (error) {
+      console.error("Request Interceptor Error:", error);
+      return config;
+    }
+  },
+  (error) => Promise.reject(error),
+);
 
 api.interceptors.response.use(
-  (res) => res,
+  (response) => response,
+
   async (error) => {
     const status = error?.response?.status;
 
@@ -28,16 +42,24 @@ api.interceptors.response.use(
 
     if (status === 401) {
       console.log("⚠️ 401 received");
-      const session = await getSession();
 
-      if (session?.error === "RefreshAccessTokenError") {
-        console.log("❌ Refresh failed → logout");
+      try {
+        const session = await getSession();
 
-        await signOut({ redirect: false });
+        // Refresh completely failed
+        if (session?.error === "RefreshAccessTokenError") {
+          console.log("❌ Refresh failed → logout");
 
-        if (typeof window !== "undefined") {
-          window.location.href = "/login";
+          await signOut({
+            redirect: false,
+          });
+
+          if (typeof window !== "undefined") {
+            window.location.href = "/";
+          }
         }
+      } catch (err) {
+        console.error("401 Handler Error:", err);
       }
     }
 

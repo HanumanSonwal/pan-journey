@@ -1,23 +1,19 @@
 "use client";
 
 import { EnvironmentOutlined } from "@ant-design/icons";
-import Link from "next/link";
 
-export default function RelatedHotelCard({
-  hotel,
-  href,
-}) {
+export default function RelatedHotelCard({ hotel, onClick }) {
   return (
-    <Link
-      href={href}
-      className="group overflow-hidden rounded border border-[#e5edf3] bg-white shadow-sm transition-all duration-300 hover:-translate-y-[2px] hover:shadow-md"
+    <div
+      onClick={onClick}
+      className="group cursor-pointer overflow-hidden rounded border border-[#e5edf3] bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
     >
       {/* IMAGE */}
       <div className="overflow-hidden">
         <img
           src={hotel?.image}
           alt={hotel?.hotelName}
-          className="h-[180px] w-full object-cover transition duration-300 group-hover:scale-105"
+          className="h-45 w-full object-cover transition duration-300 group-hover:scale-105"
         />
       </div>
 
@@ -33,8 +29,7 @@ export default function RelatedHotelCard({
           <EnvironmentOutlined className="mt-[2px] text-[#72C0F0]" />
 
           <p className="line-clamp-1 text-[12px] text-[#667085]">
-            {hotel?.location ||
-              hotel?.address}
+            {hotel?.location || hotel?.address}
           </p>
         </div>
 
@@ -47,21 +42,14 @@ export default function RelatedHotelCard({
           </div>
 
           <div className="text-right">
-            <p className="text-[11px] text-gray-400">
-              Per Night
-            </p>
+            <p className="text-[11px] text-gray-400">Per Night</p>
 
             <p className="text-[20px] font-bold text-[#303030]">
-              ₹
-              {Number(
-                hotel?.price || 0,
-              ).toLocaleString(
-                "en-IN",
-              )}
+              ₹{Number(hotel?.price || 0).toLocaleString("en-IN")}
             </p>
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }

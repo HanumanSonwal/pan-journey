@@ -32,7 +32,7 @@ const RoomOptions = ({ ratePlans = [], supplierData = {} }) => {
       },
     });
 
-    router.push("/hotelbooking");
+    router.push("/hotel-booking");
   };
   return (
     <div className="space-y-6">

@@ -77,7 +77,6 @@ export default function ImageContentBlock({ data }) {
                 style={{
                   color: "#475569",
                   lineHeight: 1.9,
-
                 }}
               >
                 <EditorContent editor={editor} />
