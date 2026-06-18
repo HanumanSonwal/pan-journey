@@ -17,7 +17,7 @@ export default function DestinationsSection() {
 
   return (
     <section className="mt-[-10px] overflow-hidden bg-[#EDF7FF] px-4 py-16 text-black md:pb-15">
-      <div className="mx-auto w-[88.87%] !mt-[-51] ">
+      <div className="mx-auto w-[88.87%] !mt-[-66] ">
         {/* Heading */}
         <SectionHeading
           title=" Popular Destinations"

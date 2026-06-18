@@ -1,28 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import RHFInput from "@/components/ui/RHFinputs/RHFInput";
+import { FormProvider, useForm } from "react-hook-form";
 
 export default function ContactFormSection() {
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    subject: "",
-    message: "",
+  const methods = useForm({
+    defaultValues: {
+      fullName: "",
+      email: "",
+      subject: "",
+      message: "",
+    },
   });
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.id]: e.target.value,
-    });
-  };
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = methods;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    console.log("Form Data:", formData);
-
-    alert("Form Submitted! Check Console.");
+  const onSubmit = (data) => {
+    console.log("Form Data:", data);
+    alert("Form Submitted!");
   };
 
   return (
@@ -48,24 +47,14 @@ export default function ContactFormSection() {
             </h3>
 
             <div className="space-y-6 lg:space-y-10">
-              <div className="border-b border-gray-300 pb-3 flex justify-between items-center">
-                <span className="text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] text-black">
-                  Monday - Sunday
-                </span>
-
-                <span className="text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] font-semibold text-black">
-                  10 AM - 6 PM
-                </span>
+              <div className="border-b border-gray-300 pb-3 flex justify-between">
+                <span>Monday - Sunday</span>
+                <span className="font-semibold">10 AM - 6 PM</span>
               </div>
 
-              <div className="border-b border-gray-300 pb-3 flex justify-between items-center">
-                <span className="text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] text-black">
-                  Online
-                </span>
-
-                <span className="text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] font-semibold text-black">
-                  24 Hrs.
-                </span>
+              <div className="border-b border-gray-300 pb-3 flex justify-between">
+                <span>Online</span>
+                <span className="font-semibold">24 Hrs.</span>
               </div>
             </div>
           </div>
@@ -76,112 +65,75 @@ export default function ContactFormSection() {
               Fill this form
             </h3>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <FormProvider {...methods}>
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 
-              {/* Full Name */}
-              <div className="relative">
-                <input
-                  type="text"
-                  id="fullName"
-                  value={formData.fullName}
-                  onChange={handleChange}
-                  placeholder=" "
-                  className="peer w-full h-[52px] border border-gray-300 rounded-md px-4 pt-4 outline-none focus:border-[#0f6b78]"
-                />
-                <label
-                  htmlFor="fullName"
-                  className="absolute left-3 -top-2 bg-white px-1 text-sm text-gray-500 transition-all
-                  peer-placeholder-shown:top-4
-                  peer-placeholder-shown:text-base
-                  peer-placeholder-shown:text-gray-400
-                  peer-focus:-top-2
-                  peer-focus:text-sm
-                  peer-focus:text-[#0f6b78]"
+                {/* Full Name */}
+                <div className="relative">
+                  <RHFInput
+                    name="fullName"
+                    label="Full Name"
+                    type="text"
+                    placeholder=" "
+                    className="peer w-full h-[52px] border border-gray-300 rounded-md px-4 pt-4 outline-none focus:border-[#0f6b78]"
+                  />
+                </div>
+
+
+                {/* Email */}
+                <div className="relative">
+  <RHFInput
+    name="email"
+    label="Email"
+    type="email"
+    placeholder=" "
+    className="peer w-full h-[52px] border border-gray-300 rounded-md px-4 pt-4 outline-none focus:border-[#0f6b78]"
+  />
+</div>
+               
+
+                {/* Subject */}
+                <div className="relative">
+  <RHFInput
+    name="subject"
+    label="Subject"
+    type="text"
+    placeholder=" "
+    className="peer w-full h-[52px] border border-gray-300 rounded-md px-4 pt-4 outline-none focus:border-[#0f6b78]"
+  />
+</div>
+
+                {/* Message */}
+                <div className="relative">
+                  <textarea
+                    {...register("message")}
+                    rows={5}
+                    placeholder=" "
+                    className="peer w-full border border-gray-300 rounded-md p-4 outline-none resize-none focus:border-[#0f6b78]"
+                  />
+
+                  <label
+                    className="absolute left-3 -top-2 bg-white px-1 text-sm text-gray-500
+                    peer-placeholder-shown:top-4
+                    peer-placeholder-shown:text-base
+                    peer-placeholder-shown:text-gray-400
+                    peer-focus:-top-2
+                    peer-focus:text-sm
+                    peer-focus:text-[#0f6b78]"
+                  >
+                    Message
+                  </label>
+                </div>
+
+                <button
+                  type="submit"
+                  className="px-8 py-3 rounded-md text-white text-[16px] bg-gradient-to-b from-[#67b5e2] to-[#006c7a]"
                 >
-                  Full Name *
-                </label>
-              </div>
+                  Submit
+                </button>
 
-              {/* Email */}
-              <div className="relative">
-                <input
-                  type="email"
-                  id="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder=" "
-                  className="peer w-full h-[52px] border border-gray-300 rounded-md px-4 pt-4 outline-none focus:border-[#0f6b78]"
-                />
-                <label
-                  htmlFor="email"
-                  className="absolute left-3 -top-2 bg-white px-1 text-sm text-gray-500 transition-all
-                  peer-placeholder-shown:top-4
-                  peer-placeholder-shown:text-base
-                  peer-placeholder-shown:text-gray-400
-                  peer-focus:-top-2
-                  peer-focus:text-sm
-                  peer-focus:text-[#0f6b78]"
-                >
-                  Email *
-                </label>
-              </div>
-
-              {/* Subject */}
-              <div className="relative">
-                <input
-                  type="text"
-                  id="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  placeholder=" "
-                  className="peer w-full h-[52px] border border-gray-300 rounded-md px-4 pt-4 outline-none focus:border-[#0f6b78]"
-                />
-                <label
-                  htmlFor="subject"
-                  className="absolute left-3 -top-2 bg-white px-1 text-sm text-gray-500 transition-all
-                  peer-placeholder-shown:top-4
-                  peer-placeholder-shown:text-base
-                  peer-placeholder-shown:text-gray-400
-                  peer-focus:-top-2
-                  peer-focus:text-sm
-                  peer-focus:text-[#0f6b78]"
-                >
-                  Subject *
-                </label>
-              </div>
-
-              {/* Message */}
-              <div className="relative">
-                <textarea
-                  id="message"
-                  rows={5}
-                  value={formData.message}
-                  onChange={handleChange}
-                  placeholder=" "
-                  className="peer w-full border border-gray-300 rounded-md p-4 outline-none resize-none focus:border-[#0f6b78]"
-                />
-                <label
-                  htmlFor="message"
-                  className="absolute left-3 -top-2 bg-white px-1 text-sm text-gray-500 transition-all
-                  peer-placeholder-shown:top-4
-                  peer-placeholder-shown:text-base
-                  peer-placeholder-shown:text-gray-400
-                  peer-focus:-top-2
-                  peer-focus:text-sm
-                  peer-focus:text-[#0f6b78]"
-                >
-                  Message
-                </label>
-              </div>
-
-              <button
-                type="submit"
-                className="px-8 py-3 rounded-md text-white text-[16px] bg-gradient-to-b from-[#67b5e2] to-[#006c7a]"
-              >
-                Submit
-              </button>
-
-            </form>
+              </form>
+            </FormProvider>
           </div>
 
         </div>
