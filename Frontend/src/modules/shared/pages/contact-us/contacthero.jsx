@@ -1,3 +1,4 @@
+"use client";
 import {
   ArrowRightOutlined,
   MailFilled,
