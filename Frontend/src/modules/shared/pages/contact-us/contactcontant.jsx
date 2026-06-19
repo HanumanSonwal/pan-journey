@@ -1,141 +1,157 @@
 "use client";
 
 import RHFInput from "@/components/ui/RHFinputs/RHFInput";
+import RHFTextarea from "@/components/ui/RHFinputs/RHFTextarea";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
+
+import RHFSelect from "@/components/ui/RHFinputs/RHFSelect";
+import { contactSchema } from "./schema/contactSchema";
 
 export default function ContactFormSection() {
   const methods = useForm({
+    resolver: zodResolver(contactSchema),
+    mode: "onSubmit",
     defaultValues: {
+      category: "",
       fullName: "",
       email: "",
       subject: "",
       message: "",
     },
   });
-
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = methods;
+  const supportCategories = [
+    { label: "Booking Issue", value: "booking" },
+    { label: "Refund Request", value: "refund" },
+    { label: "Payment Issue", value: "payment" },
+    { label: "Hotel Complaint", value: "complaint" },
+    { label: "Partnership / Business", value: "business" },
+    { label: "General Query", value: "general" },
+  ];
 
   const onSubmit = (data) => {
-    console.log("Form Data:", data);
-    alert("Form Submitted!");
+    console.log("Contact Form Data:", data);
+
+    // Future API Call
+    // await createContactInquiry(data);
+
+    methods.reset();
   };
 
   return (
-    <section className="bg-[#eef5fa] py-21 lg:py-28">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-20">
-
+    <section className="bg-[#eef5fa] py-10 lg:py-10">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:gap-20">
           {/* Left Content */}
           <div>
-            <h2 className="text-[22px] sm:text-[24px] md:text-[24px] lg:text-[28px] xl:text-[32px] font-bold text-black leading-[1.2] mb-6">
-              We’re Always Here To
+            <h2 className="mb-5 text-[22px] leading-[1.2] font-bold text-black sm:text-[24px] md:text-[28px] lg:text-[32px]">
+              We're Always Here To
               <br />
               Help You
             </h2>
 
-            <p className="text-[14px] sm:text-[15px] md:text-[16px] font-semibold text-black leading-[1.8] max-w-[700px] mb-12 lg:mb-20">
-              It is a long established fact that a reader will be distracted by
-              the readable content of a page when looking at its layout.
+            <p className="mb-8 max-w-[650px] text-[15px] leading-[1.8] text-[#4B5563]">
+              Our dedicated support team is available to assist you with hotel
+              bookings, payment issues, cancellations, refunds, and
+              travel-related inquiries. We strive to provide quick, reliable,
+              and hassle-free assistance whenever you need it.
             </p>
 
-            <h3 className="text-[28px] md:text-[32px] lg:text-[40px] font-semibold text-[#0f6b78] mb-8 lg:mb-10">
+            {/* Quick Stats */}
+            <div className="mb-10 grid grid-cols-2 gap-4">
+              <div className="rounded-lg border border-[#d7e8ee] bg-white p-4">
+                <p className="text-[24px] font-bold text-[#0f6b78]">24/7</p>
+                <p className="text-sm text-gray-600">Support Available</p>
+              </div>
+
+              <div className="rounded-lg border border-[#d7e8ee] bg-white p-4">
+                <p className="text-[24px] font-bold text-[#0f6b78]">&lt; 24h</p>
+                <p className="text-sm text-gray-600">Average Response</p>
+              </div>
+            </div>
+
+            {/* Business Hours */}
+            <h3 className="mb-6 text-[28px] font-semibold text-[#0f6b78] md:text-[32px]">
               Business Hours
             </h3>
 
-            <div className="space-y-6 lg:space-y-10">
-              <div className="border-b border-gray-300 pb-3 flex justify-between">
+            <div className="space-y-5">
+              <div className="flex justify-between border-b border-gray-300 pb-3">
                 <span>Monday - Sunday</span>
                 <span className="font-semibold">10 AM - 6 PM</span>
               </div>
 
-              <div className="border-b border-gray-300 pb-3 flex justify-between">
-                <span>Online</span>
-                <span className="font-semibold">24 Hrs.</span>
+              <div className="flex justify-between border-b border-gray-300 pb-3">
+                <span>Online Support</span>
+                <span className="font-semibold">24 Hours</span>
+              </div>
+            </div>
+
+            {/* Quick Contact */}
+            <div className="mt-10 rounded-xl border border-[#d7e8ee] bg-white p-5 shadow-sm">
+              <h4 className="mb-3 text-lg font-semibold text-[#0f6b78]">
+                Need Immediate Help?
+              </h4>
+
+              <div className="space-y-2 text-sm text-gray-700">
+                <p>📞 +91 98765 43210</p>
+                <p>📧 support@panjourney.com</p>
+                <p>💬 WhatsApp Support Available</p>
               </div>
             </div>
           </div>
 
           {/* Right Form */}
-          <div className="bg-white rounded-lg shadow-[0_8px_40px_rgba(0,0,0,0.12)] p-5 sm:p-6 md:p-8 lg:p-10">
-            <h3 className="text-[24px] sm:text-[28px] md:text-[32px] lg:text-[36px] font-bold text-black mb-5 md:mb-8">
-              Fill this form
-            </h3>
+          <div className="rounded-lg bg-white p-5 shadow-[0_8px_40px_rgba(0,0,0,0.12)] sm:p-6 md:p-8 lg:p-10">
+            <div className="mb-8">
+              <h3 className="text-[24px] font-bold text-black sm:text-[28px] md:text-[32px]">
+                How Can We Help You?
+              </h3>
 
+              <p className="mt-2 text-[14px] leading-relaxed text-gray-500 md:text-[15px]">
+                Select your query category and share the details below. Our
+                support team will get back to you as soon as possible.
+              </p>
+            </div>
             <FormProvider {...methods}>
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <form
+                onSubmit={methods.handleSubmit(onSubmit)}
+                className="space-y-5"
+              >
+                <RHFSelect
+                  name="category"
+                  label="Support Category"
+                  options={supportCategories}
+                />
+                <RHFInput name="fullName" label="Full Name" placeholder=" " />
 
-                {/* Full Name */}
-                <div className="relative">
-                  <RHFInput
-                    name="fullName"
-                    label="Full Name"
-                    type="text"
-                    placeholder=" "
-                    className="peer w-full h-[52px] border border-gray-300 rounded-md px-4 pt-4 outline-none focus:border-[#0f6b78]"
-                  />
-                </div>
+                <RHFInput
+                  name="email"
+                  label="Email"
+                  type="email"
+                  placeholder=" "
+                />
 
+                <RHFInput name="subject" label="Subject" placeholder=" " />
 
-                {/* Email */}
-                <div className="relative">
-  <RHFInput
-    name="email"
-    label="Email"
-    type="email"
-    placeholder=" "
-    className="peer w-full h-[52px] border border-gray-300 rounded-md px-4 pt-4 outline-none focus:border-[#0f6b78]"
-  />
-</div>
-               
-
-                {/* Subject */}
-                <div className="relative">
-  <RHFInput
-    name="subject"
-    label="Subject"
-    type="text"
-    placeholder=" "
-    className="peer w-full h-[52px] border border-gray-300 rounded-md px-4 pt-4 outline-none focus:border-[#0f6b78]"
-  />
-</div>
-
-                {/* Message */}
-                <div className="relative">
-                  <textarea
-                    {...register("message")}
-                    rows={5}
-                    placeholder=" "
-                    className="peer w-full border border-gray-300 rounded-md p-4 outline-none resize-none focus:border-[#0f6b78]"
-                  />
-
-                  <label
-                    className="absolute left-3 -top-2 bg-white px-1 text-sm text-gray-500
-                    peer-placeholder-shown:top-4
-                    peer-placeholder-shown:text-base
-                    peer-placeholder-shown:text-gray-400
-                    peer-focus:-top-2
-                    peer-focus:text-sm
-                    peer-focus:text-[#0f6b78]"
-                  >
-                    Message
-                  </label>
-                </div>
+                <RHFTextarea
+                  name="message"
+                  label="Message"
+                  rows={5}
+                  placeholder=" "
+                />
 
                 <button
                   type="submit"
-                  className="px-8 py-3 rounded-md text-white text-[16px] bg-gradient-to-b from-[#67b5e2] to-[#006c7a]"
+                  disabled={methods.formState.isSubmitting}
+                  className="w-full rounded-lg bg-gradient-to-b from-[#67b5e2] to-[#006c7a] px-8 py-3.5 font-medium text-white! transition-all duration-300 hover:-translate-y-[1px] hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  Submit
+                  {methods.formState.isSubmitting ? "Submitting..." : "Submit"}
                 </button>
-
               </form>
             </FormProvider>
           </div>
-
         </div>
       </div>
     </section>

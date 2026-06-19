@@ -22,8 +22,11 @@ export default function AppSelect({
           value={value}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          className={`custom-select h-[44px]! w-full rounded ${
-            error ? "select-error" : ""
+          // className={`custom-select h-[44px]! w-full rounded ${
+          //   error ? "select-error" : ""
+          // } ${className}`}
+          className={`custom-select h-[44px]! w-full rounded pt-[10px]! text-[16px]! ${
+            error ? "border-red-500!" : ""
           } ${className}`}
           {...props}
         />
@@ -41,7 +44,7 @@ export default function AppSelect({
         )}
       </div>
 
-      {error && <p className="mt-2 text-xs text-red-500">{error}</p>}
+      {error && <p className="mt-2! text-xs text-red-500">{error}</p>}
     </div>
   );
 }
