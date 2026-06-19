@@ -3,7 +3,9 @@
 import RHFInput from "@/components/ui/RHFinputs/RHFInput";
 import RHFSelect from "@/components/ui/RHFinputs/RHFSelect";
 import RHFTextarea from "@/components/ui/RHFinputs/RHFTextarea";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
+import { grievanceSchema } from "./schema/grievanceSchema";
 
 const grievanceCategories = [
   { label: "Refund Issue", value: "refund" },
@@ -16,7 +18,8 @@ const grievanceCategories = [
 
 export default function GrievanceOfficerAndFormSection() {
   const methods = useForm({
-    // resolver: zodResolver(() => ({})), // schema later
+    resolver: zodResolver(grievanceSchema),
+    mode: "onSubmit",
     defaultValues: {
       fullName: "",
       email: "",
@@ -30,13 +33,17 @@ export default function GrievanceOfficerAndFormSection() {
   });
 
   const onSubmit = (data) => {
-    console.log("Grievance Form Data:", data);
+    console.log("SUCCESS", data);
+  };
+
+  const onError = (errors) => {
+    console.log("ERRORS", errors);
   };
 
   return (
     <section className="bg-[#eef5fa] py-12 lg:py-16">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.2fr] lg:gap-12">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.2fr] lg:gap-8">
           <div className="rounded bg-white p-6 shadow-[0_8px_30px_rgba(0,0,0,0.06)] lg:p-8">
             <div className="mb-6">
               <span className="rounded-full bg-[#eef5fa] px-3 py-1 text-xs font-medium text-[#0f6b78]">
@@ -127,7 +134,7 @@ export default function GrievanceOfficerAndFormSection() {
 
             <FormProvider {...methods}>
               <form
-                onSubmit={methods.handleSubmit(onSubmit)}
+                onSubmit={methods.handleSubmit(onSubmit, onError)}
                 className="space-y-5"
               >
                 <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
