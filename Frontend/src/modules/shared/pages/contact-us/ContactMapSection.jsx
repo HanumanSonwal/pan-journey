@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  FacebookFilled,
-  InstagramFilled,
-  LinkedinFilled,
-  WhatsAppOutlined,
-} from "@ant-design/icons";
+import Image from "next/image";
 
 export default function ContactMapSection() {
   return (
@@ -17,7 +12,7 @@ export default function ContactMapSection() {
             Visit Our Office
           </h2>
 
-          <p className="mx-auto mt-3 max-w-[700px] text-[15px] text-gray-600">
+          <p className="mx-auto mt-3 max-w-[500px] text-[15px] text-gray-600">
             We'd love to hear from you. Reach out to us through any of the
             channels below or visit our office during business hours.
           </p>
@@ -77,21 +72,25 @@ export default function ContactMapSection() {
             <div className="rounded-lg border border-[#d8eaf0] bg-[#f9fcfd] p-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 {/* Contact Info */}
-                <div>
-                  <p className="mb-2 text-sm font-semibold text-[#0f6b78]">
-                    Emergency Contact
+                <div className="space-y-2 text-sm">
+                  <p>
+                    <span className="font-medium text-gray-500">Phone:</span>{" "}
+                    <a
+                      href="tel:+919876543210"
+                      className="font-semibold text-[#0f6b78]"
+                    >
+                      +91 98765 43210
+                    </a>
                   </p>
 
-                  <p className="mb-3 text-sm text-gray-700">
-                    📞 +91 98765 43210
-                  </p>
-
-                  <p className="mb-2 text-sm font-semibold text-[#0f6b78]">
-                    Support Email
-                  </p>
-
-                  <p className="text-sm text-gray-700">
-                    ✉️ support@panjourney.com
+                  <p>
+                    <span className="font-medium text-gray-500">Email:</span>{" "}
+                    <a
+                      href="mailto:support@panjourney.com"
+                      className="font-semibold text-[#0f6b78]"
+                    >
+                      support@panjourney.com
+                    </a>
                   </p>
                 </div>
 
@@ -103,35 +102,59 @@ export default function ContactMapSection() {
 
                   <div className="flex flex-wrap items-center gap-3">
                     <a
-                      href="#"
+                      href="https://instagram.com/panjourney"
                       target="_blank"
-                      className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#0f6b78] shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
+                      rel="noopener noreferrer"
+                      className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
                     >
-                      <InstagramFilled />
+                      <Image
+                        src="/images/icons/instagram-logo.svg"
+                        alt="Instagram"
+                        width={20}
+                        height={20}
+                      />
                     </a>
 
                     <a
-                      href="#"
+                      href="https://facebook.com/panjourney"
                       target="_blank"
-                      className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#0f6b78] shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
+                      rel="noopener noreferrer"
+                      className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
                     >
-                      <FacebookFilled />
+                      <Image
+                        src="/images/icons/facebook-logo.svg"
+                        alt="Instagram"
+                        width={20}
+                        height={20}
+                      />
                     </a>
 
                     <a
-                      href="#"
+                      href="https://www.linkedin.com/panjourney"
                       target="_blank"
-                      className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#0f6b78] shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
+                      rel="noopener noreferrer"
+                      className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
                     >
-                      <LinkedinFilled />
+                      <Image
+                        src="/images/icons/LinkedIn-logo.svg"
+                        alt="Instagram"
+                        width={20}
+                        height={20}
+                      />
                     </a>
 
                     <a
-                      href="#"
+                      href="https://www.whatsapp.com/panjourney"
                       target="_blank"
-                      className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#0f6b78] shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
+                      rel="noopener noreferrer"
+                      className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
                     >
-                      <WhatsAppOutlined />
+                      <Image
+                        src="/images/icons/whatsapp-logo.svg"
+                        alt="Instagram"
+                        width={20}
+                        height={20}
+                      />
                     </a>
                   </div>
                 </div>

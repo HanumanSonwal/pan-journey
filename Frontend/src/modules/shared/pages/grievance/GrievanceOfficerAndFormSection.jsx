@@ -45,7 +45,7 @@ export default function GrievanceOfficerAndFormSection() {
   return (
     <section className="bg-[#eef5fa] py-12 lg:py-16">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.2fr] lg:gap-8">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_1.2fr] lg:gap-8">
           <div className="rounded bg-white p-6 shadow-[0_8px_30px_rgba(0,0,0,0.06)] lg:p-8">
             <div className="mb-6">
               <span className="rounded-full bg-[#eef5fa] px-3 py-1 text-xs font-medium text-[#0f6b78]">
@@ -63,37 +63,47 @@ export default function GrievanceOfficerAndFormSection() {
               independent review.
             </p>
 
-            <div className="mb-3! grid grid-cols-2 gap-2">
-              <div className="rounded-xl bg-[#eef5fa] p-3">
-                <p className="text-xs text-gray-500">Review Time</p>
-                <p className="mt-1 text-xl font-bold text-[#0f6b78]">
+            <div className="mb-1 grid grid-cols-2 gap-2">
+              <div className="rounded-lg bg-[#eef5fa] px-5 py-2">
+                <p className="text-[11px] text-gray-500">Review Time</p>
+                <p className="mt-0.5 text-[18px] font-bold text-[#0f6b78]">
                   48 Hours
                 </p>
               </div>
 
-              <div className="rounded-xl bg-[#eef5fa] p-3">
-                <p className="text-xs text-gray-500">Resolution</p>
-                <p className="mt-1 text-xl font-bold text-[#0f6b78]">7 Days</p>
+              <div className="rounded-lg bg-[#eef5fa] px-5 py-2">
+                <p className="text-[11px] text-gray-500">Resolution</p>
+                <p className="mt-0.5 text-[18px] font-bold text-[#0f6b78]">
+                  7 Days
+                </p>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 border-t border-gray-100 pt-5 sm:grid-cols-2">
-              <div className="rounded-lg bg-[#eef5fa] p-4">
-                <p className="text-xs font-medium text-[#0f6b78]">
+            <div className="grid grid-cols-1 gap-3 border-t border-gray-100 pt-4 sm:grid-cols-2">
+              <div className="rounded-lg border border-[#dcecf1] bg-[#f8fcfd] px-4 py-3">
+                <p className="text-[11px] font-medium tracking-wide text-gray-500 uppercase">
                   Grievance Email
                 </p>
-                <p className="mt-1 text-sm font-medium text-gray-700">
+
+                <a
+                  href="mailto:grievance@panjourney.com"
+                  className="mt-1 block text-[14px] font-semibold text-[#0f6b78] hover:underline"
+                >
                   grievance@panjourney.com
-                </p>
+                </a>
               </div>
 
-              <div className="rounded-lg bg-[#eef5fa] p-4">
-                <p className="text-xs font-medium text-[#0f6b78]">
+              <div className="rounded-lg border border-[#dcecf1] bg-[#f8fcfd] px-4 py-3">
+                <p className="text-[11px] font-medium tracking-wide text-gray-500 uppercase">
                   Contact Number
                 </p>
-                <p className="mt-1 text-sm font-medium text-gray-700">
+
+                <a
+                  href="tel:+919876543210"
+                  className="mt-1 block text-[14px] font-semibold text-[#0f6b78] hover:underline"
+                >
                   +91 XXXXX XXXXX
-                </p>
+                </a>
               </div>
             </div>
 

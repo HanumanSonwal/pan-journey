@@ -91,19 +91,19 @@ export default function ContactFormSection() {
             {/* Quick Contact */}
             <div className="mt-10 rounded-xl border border-[#d7e8ee] bg-white p-5 shadow-sm">
               <h4 className="mb-3 text-lg font-semibold text-[#0f6b78]">
-                Need Immediate Help?
+                Customer Support Commitment
               </h4>
 
-              <div className="space-y-2 text-sm text-gray-700">
-                <p>📞 +91 98765 43210</p>
-                <p>📧 support@panjourney.com</p>
-                <p>💬 WhatsApp Support Available</p>
-              </div>
+              <p className="text-sm leading-relaxed text-gray-600">
+                We strive to respond to all customer inquiries as quickly as
+                possible and provide reliable assistance for bookings, payments,
+                cancellations, and refunds.
+              </p>
             </div>
           </div>
 
           {/* Right Form */}
-          <div className="rounded-lg bg-white p-5 shadow-[0_8px_40px_rgba(0,0,0,0.12)] sm:p-6 md:p-8 lg:p-10">
+          <div className="rounded-lg bg-white p-5 shadow-[0_8px_40px_rgba(0,0,0,0.12)] sm:p-4 md:p-5 lg:p-7">
             <div className="mb-8">
               <h3 className="text-[24px] font-bold text-black sm:text-[28px] md:text-[32px]">
                 How Can We Help You?
