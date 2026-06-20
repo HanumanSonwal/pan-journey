@@ -35,9 +35,9 @@ const timeline = [
 
 export default function ResolutionTimelineSection() {
   return (
-    <section className="bg-white py-12 lg:py-16">
+    <section className="bg-white py-10 lg:py-12">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
-        <div className="mb-10 text-center">
+        <div className="mb-8 text-center">
           <h2 className="text-[28px] font-bold text-black md:text-[36px]">
             Resolution Timeline
           </h2>
@@ -47,29 +47,28 @@ export default function ResolutionTimelineSection() {
             Below is our standard resolution process timeline.
           </p>
         </div>
-
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
           {timeline.map((item, index) => {
             const Icon = item.icon;
 
             return (
               <div
                 key={index}
-                className="rounded-xl bg-[#eef5fa] p-6 text-center"
+                className="rounded-xl bg-[#eef5fa] p-4 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-md md:p-5"
               >
-                <div className="mb-4 flex justify-center">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-sm">
-                    <Icon className="text-[24px] text-[#0f6b78]" />
+                <div className="mb-3 flex justify-center">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm">
+                    <Icon className="text-[18px] text-[#0f6b78]" />
                   </div>
                 </div>
 
-                <p className="mb-2 text-[24px] font-bold text-[#0f6b78]">
+                <p className="mb-1 text-[18px] font-bold text-[#0f6b78]">
                   {item.time}
                 </p>
 
-                <h3 className="mb-2 text-[18px] font-semibold">{item.title}</h3>
+                <h3 className="mb-1 text-[15px] font-semibold">{item.title}</h3>
 
-                <p className="text-sm leading-relaxed text-gray-600">
+                <p className="text-[12px] leading-5 text-gray-600">
                   {item.desc}
                 </p>
               </div>
