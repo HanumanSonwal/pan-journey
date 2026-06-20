@@ -67,7 +67,7 @@ export default function TestimonialsSection() {
 
             <h2 className="mt-1 max-w-[550px] text-[24px] md:text-[30px] lg:text-[36px] font-bold leading-[1.15]">
               Real Feedback from Our Happy Travelers Worldwide
-            </h2>
+          </h2>
           </div>
 
           <div className="lg:pl-8">
