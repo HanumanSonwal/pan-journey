@@ -42,7 +42,7 @@ export default function ContactFormSection() {
   return (
     <section className="bg-[#eef5fa] py-10 lg:py-10">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:gap-20">
+        <div className="grid grid-cols-1 gap-10 min-[901px]:grid-cols-2 min-[901px]:gap-20">
           {/* Left Content */}
           <div>
             <h2 className="mb-5 text-[22px] leading-[1.2] font-bold text-black sm:text-[24px] md:text-[28px] lg:text-[32px]">
@@ -59,18 +59,17 @@ export default function ContactFormSection() {
             </p>
 
             {/* Quick Stats */}
-            <div className="mb-10 grid grid-cols-2 gap-4">
-              <div className="rounded-lg border border-[#d7e8ee] bg-white p-4">
-                <p className="text-[24px] font-bold text-[#0f6b78]">24/7</p>
-                <p className="text-sm text-gray-600">Support Available</p>
+            <div className="mb-7 grid grid-cols-2 gap-5 ">
+              <div className="rounded-lg border border-[#d7e8ee] bg-[#f8fcfd] p-3 p-3 pt-1 !pb-0">
+                <p className="text-[20px] font-bold text-[#0f6b78] !mb-2">24/7</p>
+                <p className="text-[13px] text-gray-600">Support Available</p>
               </div>
 
-              <div className="rounded-lg border border-[#d7e8ee] bg-white p-4">
-                <p className="text-[24px] font-bold text-[#0f6b78]">&lt; 24h</p>
-                <p className="text-sm text-gray-600">Average Response</p>
+              <div className="rounded-lg border border-[#d7e8ee] bg-[#f8fcfd] p-3 pt-1 !pb-0">
+                <p className="text-[20px] font-bold text-[#0f6b78] !mb-2">&lt; 24h</p>
+                <p className="text-[13px] text-gray-600">Average Response</p>
               </div>
             </div>
-
             {/* Business Hours */}
             <h3 className="mb-6 text-[28px] font-semibold text-[#0f6b78] md:text-[32px]">
               Business Hours
@@ -119,22 +118,38 @@ export default function ContactFormSection() {
                 onSubmit={methods.handleSubmit(onSubmit)}
                 className="space-y-5"
               >
-                <RHFSelect
-                  name="category"
-                  label="Support Category"
-                  options={supportCategories}
-                />
-                <RHFInput name="fullName" label="Full Name" placeholder=" " />
+                {/* Row 1 */}
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                  <RHFInput
+                    name="fullName"
+                    label="Full Name"
+                    placeholder=" "
+                  />
 
-                <RHFInput
-                  name="email"
-                  label="Email"
-                  type="email"
-                  placeholder=" "
-                />
+                  <RHFInput
+                    name="email"
+                    label="Email"
+                    type="email"
+                    placeholder=" "
+                  />
+                </div>
 
-                <RHFInput name="subject" label="Subject" placeholder=" " />
+                {/* Row 2 */}
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                  <RHFSelect
+                    name="category"
+                    label="Support Category"
+                    options={supportCategories}
+                  />
 
+                  <RHFInput
+                    name="subject"
+                    label="Subject"
+                    placeholder=" "
+                  />
+                </div>
+
+                {/* Message */}
                 <RHFTextarea
                   name="message"
                   label="Message"
@@ -142,6 +157,7 @@ export default function ContactFormSection() {
                   placeholder=" "
                 />
 
+                {/* Button */}
                 <button
                   type="submit"
                   disabled={methods.formState.isSubmitting}
