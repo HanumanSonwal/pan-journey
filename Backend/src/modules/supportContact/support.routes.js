@@ -14,7 +14,7 @@ router.post("/createSupport", createSupport);
 
 router.get("/getAllSupport", getAllSupport);
 
-router.get("/getSingleSupport/:id", getSingleSupport);
+router.get("/getSingleSupport/:supportType", getSingleSupport);
 
 router.put("/updateSupport/:id", updateSupport);
 

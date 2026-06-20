@@ -57,8 +57,20 @@ export const getAllSupportService = async () => {
 
 
 // GET SINGLE
-export const getSingleSupportService = async (id) => {
-  const support = await Support.findById(id);
+// export const getSingleSupportService = async (id) => {
+//   const support = await Support.findById(id);
+
+//   if (!support) {
+//     throw new Error("Support not found");
+//   }
+
+//   return support;
+// };
+
+export const getSingleSupportService = async (supportType) => {
+  const support = await Support.findOne({
+    supportType: supportType,
+  });
 
   if (!support) {
     throw new Error("Support not found");
@@ -66,7 +78,6 @@ export const getSingleSupportService = async (id) => {
 
   return support;
 };
-
 
 // UPDATE
 // export const updateSupportService = async (id, payload) => {
