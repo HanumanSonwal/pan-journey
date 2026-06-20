@@ -40,12 +40,12 @@ export default function ContactFormSection() {
   };
 
   return (
-    <section className="bg-[#eef5fa] py-10 lg:py-10">
+    <section className="font-roboto! bg-[#eef5fa] py-10 lg:py-10">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
-        <div className="grid grid-cols-1 gap-10 min-[901px]:grid-cols-2 min-[901px]:gap-20">
+        <div className="grid grid-cols-1 gap-10 min-[901px]:grid-cols-2 min-[901px]:gap-8">
           {/* Left Content */}
-          <div>
-            <h2 className="mb-5 text-[22px] leading-[1.2] font-bold text-black sm:text-[24px] md:text-[28px] lg:text-[32px]">
+          <div className="rounded bg-white p-6 shadow-[0_8px_30px_rgba(0,0,0,0.06)] lg:p-8">
+            <h2 className="mb-5 text-[18px] leading-[1.2] font-bold text-[#0f6b78] sm:text-[18px] md:text-[28px] lg:text-[32px]">
               We're Always Here To
               <br />
               Help You
@@ -59,14 +59,18 @@ export default function ContactFormSection() {
             </p>
 
             {/* Quick Stats */}
-            <div className="mb-7 grid grid-cols-2 gap-5 ">
-              <div className="rounded-lg border border-[#d7e8ee] bg-[#f8fcfd] p-3 p-3 pt-1 !pb-0">
-                <p className="text-[20px] font-bold text-[#0f6b78] !mb-2">24/7</p>
+            <div className="mb-7 grid grid-cols-2 gap-5">
+              <div className="rounded-lg border border-[#d7e8ee] bg-[#f8fcfd] p-3 pt-1 !pb-0">
+                <p className="!mb-2 text-[20px] font-bold text-[#0f6b78]">
+                  24/7
+                </p>
                 <p className="text-[13px] text-gray-600">Support Available</p>
               </div>
 
               <div className="rounded-lg border border-[#d7e8ee] bg-[#f8fcfd] p-3 pt-1 !pb-0">
-                <p className="text-[20px] font-bold text-[#0f6b78] !mb-2">&lt; 24h</p>
+                <p className="!mb-2 text-[20px] font-bold text-[#0f6b78]">
+                  &lt; 24h
+                </p>
                 <p className="text-[13px] text-gray-600">Average Response</p>
               </div>
             </div>
@@ -120,11 +124,7 @@ export default function ContactFormSection() {
               >
                 {/* Row 1 */}
                 <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-                  <RHFInput
-                    name="fullName"
-                    label="Full Name"
-                    placeholder=" "
-                  />
+                  <RHFInput name="fullName" label="Full Name" placeholder=" " />
 
                   <RHFInput
                     name="email"
@@ -134,20 +134,13 @@ export default function ContactFormSection() {
                   />
                 </div>
 
-                {/* Row 2 */}
-                <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-                  <RHFSelect
-                    name="category"
-                    label="Support Category"
-                    options={supportCategories}
-                  />
+                <RHFSelect
+                  name="category"
+                  label="Support Category"
+                  options={supportCategories}
+                />
 
-                  <RHFInput
-                    name="subject"
-                    label="Subject"
-                    placeholder=" "
-                  />
-                </div>
+                <RHFInput name="subject" label="Subject" placeholder=" " />
 
                 {/* Message */}
                 <RHFTextarea

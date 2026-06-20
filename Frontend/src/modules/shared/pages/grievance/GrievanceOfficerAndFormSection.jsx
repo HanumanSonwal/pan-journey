@@ -102,7 +102,7 @@ export default function GrievanceOfficerAndFormSection() {
                   href="tel:+919876543210"
                   className="mt-1 block text-[14px] font-semibold text-[#0f6b78] hover:underline"
                 >
-                  +91 XXXXX XXXXX
+                  +91 9876543210
                 </a>
               </div>
             </div>
