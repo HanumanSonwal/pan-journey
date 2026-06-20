@@ -6,15 +6,15 @@ import ContactSection from "@/modules/shared/pages/contact-us/contacthero";
 import ContactMapSection from "@/modules/shared/pages/contact-us/ContactMapSection";
 
 export default async function ContactSectionPages() {
-  const homeCms = await fetchCmsBySlug("home");
+  const contactUsCms = await fetchCmsBySlug("contact-us");
 
-  const faqBlock = homeCms?.data?.blocks?.find((block) => block.type === "faq");
+  const faqBlock = contactUsCms?.data?.blocks?.find((block) => block.type === "faq");
 
   const faqCms = faqBlock
     ? {
-        ...homeCms,
+        ...contactUsCms,
         data: {
-          ...homeCms.data,
+          ...contactUsCms.data,
           blocks: [faqBlock],
         },
       }
