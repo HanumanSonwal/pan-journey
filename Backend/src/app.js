@@ -30,7 +30,10 @@ import userRoutes from "./modules/user/user.routes.js";
 import wishlistRoutes from "./modules/wishlist/wishlist.routes.js";
 import testRoutes from "./test.routes.js";
 import {currencyMiddleware} from "./middleware/currency.middleware.js"
-import contactUs from "./modules/contactUs/contact.routes.js"
+import contactUs from "./modules/contactUsForm/contact.routes.js"
+import support from "./modules/supportContact/support.routes.js"
+
+import grievanceRedressal from "./modules/grievanceRedressal/grievanceRedressal.routes.js"
 
 const app = express();
 app.use((req, res, next) => {
@@ -60,6 +63,8 @@ app.use(express.json());
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/media", mediaRoutes);
 app.use("/api/v1", contactUs);
+app.use("/api/v1", support);
+app.use("/api/v1", grievanceRedressal);
 
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/seo-content", seoContentRoutes);

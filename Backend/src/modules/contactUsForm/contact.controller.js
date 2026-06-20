@@ -16,7 +16,12 @@ import {
 // CREATE CONTACT
 export const createContact = async (req, res) => {
   try {
-    const result = await createContactService(req.body);
+    const payload = {
+      ...req.body,
+      UserId: req.user._id,
+    };
+
+    const result = await createContactService(payload);
 
     return sendSuccess(
       res,
@@ -26,20 +31,18 @@ export const createContact = async (req, res) => {
       201
     );
   } catch (error) {
-    return sendError(
-      res,
-      error.message,
-      500
-    );
+    return sendError(res, error.message, 500);
   }
 };
-
 
 
 // GET ALL CONTACTS
 export const getAllContacts = async (req, res) => {
   try {
-    const result = await getAllContactsService(req.query);
+    const result = await getAllContactsService({
+      ...req.query,
+      UserId: req.user._id,
+    });
 
     return sendSuccess(
       res,
@@ -47,21 +50,17 @@ export const getAllContacts = async (req, res) => {
       result
     );
   } catch (error) {
-    return sendError(
-      res,
-      error.message,
-      500
-    );
+    return sendError(res, error.message, 500);
   }
 };
-
 
 
 // GET SINGLE CONTACT
 export const getSingleContact = async (req, res) => {
   try {
     const result = await getSingleContactService(
-      req.params.id
+      req.params.id,
+      req.user._id
     );
 
     return sendSuccess(
@@ -70,11 +69,7 @@ export const getSingleContact = async (req, res) => {
       result
     );
   } catch (error) {
-    return sendError(
-      res,
-      error.message,
-      404
-    );
+    return sendError(res, error.message, 404);
   }
 };
 
@@ -85,6 +80,7 @@ export const updateContact = async (req, res) => {
   try {
     const result = await updateContactService(
       req.params.id,
+      req.user._id,
       req.body
     );
 
@@ -94,11 +90,7 @@ export const updateContact = async (req, res) => {
       result
     );
   } catch (error) {
-    return sendError(
-      res,
-      error.message,
-      404
-    );
+    return sendError(res, error.message, 404);
   }
 };
 
@@ -108,7 +100,8 @@ export const updateContact = async (req, res) => {
 export const deleteContact = async (req, res) => {
   try {
     await deleteContactService(
-      req.params.id
+      req.params.id,
+      req.user._id
     );
 
     return sendSuccess(
@@ -116,10 +109,6 @@ export const deleteContact = async (req, res) => {
       "Contact deleted successfully"
     );
   } catch (error) {
-    return sendError(
-      res,
-      error.message,
-      404
-    );
+    return sendError(res, error.message, 404);
   }
 };
