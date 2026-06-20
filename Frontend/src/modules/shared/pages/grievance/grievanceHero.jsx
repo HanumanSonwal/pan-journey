@@ -1,4 +1,5 @@
 "use client";
+
 import {
   ArrowRightOutlined,
   MailFilled,
@@ -8,7 +9,6 @@ import {
 } from "@ant-design/icons";
 import Image from "next/image";
 import Link from "next/link";
-
 const contactCards = [
   {
     icon: PhoneFilled,
@@ -49,8 +49,7 @@ const contactCards = [
     badgeColor: "bg-orange-100 text-orange-700",
   },
 ];
-
-export default function ContactSection() {
+export default function GrievanceHero() {
   return (
     <section className="relative">
       {/* Hero Banner */}
@@ -72,12 +71,13 @@ export default function ContactSection() {
           <div className="mx-auto w-full max-w-[1400px] px-6 md:px-10 lg:px-16">
             <div className="max-w-[600px]">
               <h1 className="text-[32px] leading-tight font-bold text-white md:text-[42px] lg:text-[52px]">
-                Contact Us
+                Grievance Redressal
               </h1>
 
               <p className="mt-3 text-[15px] leading-relaxed text-white/90 md:text-[17px] lg:text-[18px]">
-                We're here to help with your bookings, travel plans, and any
-                questions you may have. Reach out to our support team anytime.
+                We are committed to resolving customer concerns fairly and
+                promptly. If your issue remains unresolved through our regular
+                support channels, you may submit a grievance for further review.
               </p>
             </div>
           </div>
