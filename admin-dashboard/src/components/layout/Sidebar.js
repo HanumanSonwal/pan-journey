@@ -69,8 +69,14 @@ const Sidebar = ({ collapsed }) => {
       collapsedWidth={80}
       breakpoint="lg"
       style={{
-        background: colorBgContainer,
+        background: isDark
+          ? "linear-gradient(180deg,#0D1B1E 0%,#08161A 100%)"
+          : "linear-gradient(180deg,#72C0F0 0%,#0F6A75 100%)",
         height: "100vh",
+        boxShadow: isDark
+          ? "2px 0 25px rgba(0,0,0,.35)"
+          : "2px 0 25px rgba(15,106,117,.25)",
+        zIndex: 100,
       }}
     >
       <div
@@ -113,7 +119,8 @@ const Sidebar = ({ collapsed }) => {
             selectedKeys={[pathname]}
             defaultOpenKeys={["/dashboard/staff"]}
             items={filteredItems}
-            theme={isDark ? "dark" : "light"}
+            // theme={isDark ? "dark" : "light"}
+            theme="dark"
             inlineCollapsed={collapsed}
             style={{
               borderRight: 0,
@@ -127,7 +134,8 @@ const Sidebar = ({ collapsed }) => {
             mode="inline"
             items={bottomItems}
             onClick={handleMenuClick}
-            theme={isDark ? "dark" : "light"}
+            // theme={isDark ? "dark" : "light"}
+            theme="dark"
             selectable={false}
             inlineCollapsed={collapsed}
             style={{

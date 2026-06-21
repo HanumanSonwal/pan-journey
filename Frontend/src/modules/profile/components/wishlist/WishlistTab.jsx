@@ -6,7 +6,7 @@ import { Card, Empty } from "antd";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import WishlistSkeleton from "./lodding/WishlistSkeleton";
+import WishlistSkeleton from "../../lodding/WishlistSkeleton";
 
 export default function WishlistTab() {
   const [mounted, setMounted] = useState(false);

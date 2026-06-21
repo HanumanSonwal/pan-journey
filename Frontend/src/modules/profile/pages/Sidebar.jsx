@@ -13,7 +13,7 @@ import { useLogout } from "@/modules/auth/hooks/useAuth";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
-import LogoutModal from "./LogoutModal";
+import LogoutModal from "../components/LogoutModal";
 
 export default function Sidebar({ activeTab, setActiveTab, horizontal }) {
   const { data: session } = useSession();

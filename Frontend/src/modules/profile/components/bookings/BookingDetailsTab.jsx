@@ -16,11 +16,11 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useBookingDetails } from "../hooks/useBookingDetails";
-import { useCancelBooking } from "../hooks/useCancelBooking";
-import { useDownloadInvoice } from "../hooks/useDownloadInvoice";
 import CancelBookingModal from "./CancelBookingModal";
 import ShareBookingModal from "./ShareBookingModal";
+import { useBookingDetails } from "../../hooks/useBookingDetails";
+import { useCancelBooking } from "../../hooks/useCancelBooking";
+import { useDownloadInvoice } from "../../hooks/useDownloadInvoice";
 dayjs.extend(customParseFormat);
 
 export default function BookingDetailsTab({ bookingRefNo }) {

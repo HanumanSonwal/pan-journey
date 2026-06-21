@@ -1,14 +1,14 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import ProfileOverview from "../../components/ ProfileOverview";
-import BookingDetailsTab from "../../components/BookingDetailsTab";
-import BookingHistoryTab from "../../components/BookingHistoryTab";
-import DocumentsTab from "../../components/DocumentsTab";
-import HelpSupportPage from "../../components/HelpSupportPage";
-import Sidebar from "../../components/Sidebar";
-import WishlistDetailTab from "../../components/WishlistDetailTab";
-import WishlistTab from "../../components/WishlistTab";
+import ProfileOverview from "../components/ ProfileOverview";
+import DocumentsTab from "../components/DocumentsTab";
+import HelpSupportPage from "../components/HelpSupportPage";
+import Sidebar from "./Sidebar";
+import BookingDetailsTab from "../components/bookings/BookingDetailsTab";
+import BookingHistoryTab from "../components/bookings/BookingHistoryTab";
+import WishlistTab from "../components/wishlist/WishlistTab";
+import WishlistDetailTab from "../components/wishlist/WishlistDetailTab";
 
 export default function ProfilePage() {
   const searchParams = useSearchParams();
