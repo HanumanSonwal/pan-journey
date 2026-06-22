@@ -13,7 +13,7 @@ import {
 import { Button, Card, Empty, message, Tag } from "antd";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import WishlistSkeleton from "./lodding/WishlistSkeleton";
+import WishlistSkeleton from "../../lodding/WishlistSkeleton";
 
 export default function WishlistDetailTab() {
   const router = useRouter();

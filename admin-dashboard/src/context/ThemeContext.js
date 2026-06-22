@@ -14,6 +14,10 @@ export const ThemeProviderCustom = ({ children }) => {
     }
   }, []);
 
+  useEffect(() => {
+    document.body.classList.toggle("dark", isDark);
+  }, [isDark]);
+
   const toggleTheme = () => {
     const newTheme = !isDark;
     setIsDark(newTheme);

@@ -14,22 +14,20 @@ export const createContactService = async (payload) => {
 export const getAllContactsService = async ({
   page = 1,
   limit = 10,
-  status,
+  UserId,
 }) => {
-  const query = {};
-
-  if (status) {
-    query.status = status;
-  }
-
   const skip = (page - 1) * limit;
 
-  const contacts = await Contact.find(query)
+  const contacts = await Contact.find({
+    UserId,
+  })
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit);
 
-  const total = await Contact.countDocuments(query);
+  const total = await Contact.countDocuments({
+    UserId,
+  });
 
   return {
     contacts,
@@ -45,23 +43,10 @@ export const getAllContactsService = async ({
 
 
 // GET SINGLE CONTACT
-export const getSingleContactService = async (id) => {
-  const contact = await Contact.findById(id);
-
-  if (!contact) {
-    throw new Error("Contact not found");
-  }
-
-  return contact;
-};
-
-
-
-// UPDATE CONTACT
-export const updateContactService = async (id, payload) => {
-  const contact = await Contact.findByIdAndUpdate(id, payload, {
-    new: true,
-    runValidators: true,
+export const getSingleContactService = async (id, userId) => {
+  const contact = await Contact.findOne({
+    _id: id,
+    UserId: userId,
   });
 
   if (!contact) {
@@ -73,9 +58,42 @@ export const updateContactService = async (id, payload) => {
 
 
 
+// UPDATE CONTACT
+export const updateContactService = async (
+  id,
+  userId,
+  payload
+) => {
+  const contact = await Contact.findOneAndUpdate(
+    {
+      _id: id,
+      UserId: userId,
+    },
+    payload,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  if (!contact) {
+    throw new Error("Contact not found");
+  }
+
+  return contact;
+};
+
+
+
 // DELETE CONTACT
-export const deleteContactService = async (id) => {
-  const contact = await Contact.findByIdAndDelete(id);
+export const deleteContactService = async (
+  id,
+  userId
+) => {
+  const contact = await Contact.findOneAndDelete({
+    _id: id,
+    UserId: userId,
+  });
 
   if (!contact) {
     throw new Error("Contact not found");

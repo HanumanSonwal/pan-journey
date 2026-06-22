@@ -105,13 +105,14 @@ export default function ContactMapSection() {
                       href="https://instagram.com/panjourney"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
+                      className="group flex h-9 w-9 transform-gpu items-center justify-center rounded-full bg-white shadow-sm transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[3px] hover:shadow-lg"
                     >
                       <Image
                         src="/images/icons/instagram-logo.svg"
                         alt="Instagram"
                         width={20}
                         height={20}
+                        className="transition-transform duration-300 ease-out group-hover:scale-110"
                       />
                     </a>
 
@@ -119,13 +120,14 @@ export default function ContactMapSection() {
                       href="https://facebook.com/panjourney"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
+                      className="group flex h-9 w-9 transform-gpu items-center justify-center rounded-full bg-white shadow-sm transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[3px] hover:shadow-lg"
                     >
                       <Image
                         src="/images/icons/facebook-logo.svg"
                         alt="Instagram"
                         width={20}
                         height={20}
+                        className="transition-transform duration-300 ease-out group-hover:scale-110"
                       />
                     </a>
 
@@ -133,13 +135,14 @@ export default function ContactMapSection() {
                       href="https://www.linkedin.com/panjourney"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
+                      className="group flex h-9 w-9 transform-gpu items-center justify-center rounded-full bg-white shadow-sm transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[3px] hover:shadow-lg"
                     >
                       <Image
                         src="/images/icons/LinkedIn-logo.svg"
                         alt="Instagram"
                         width={20}
                         height={20}
+                        className="transition-transform duration-300 ease-out group-hover:scale-110"
                       />
                     </a>
 
@@ -147,13 +150,14 @@ export default function ContactMapSection() {
                       href="https://www.whatsapp.com/panjourney"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
+                      className="group flex h-9 w-9 transform-gpu items-center justify-center rounded-full bg-white shadow-sm transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[3px] hover:shadow-lg"
                     >
                       <Image
                         src="/images/icons/whatsapp-logo.svg"
                         alt="Instagram"
                         width={20}
                         height={20}
+                        className="transition-transform duration-300 ease-out group-hover:scale-110"
                       />
                     </a>
                   </div>

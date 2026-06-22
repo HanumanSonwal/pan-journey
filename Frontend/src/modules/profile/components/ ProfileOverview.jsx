@@ -26,7 +26,7 @@ import {
   maritalStatusOptions,
 } from "@/modules/shared/home/components/data/profileData";
 
-import { profileSchema } from "./schema/profileValidation";
+import { profileSchema } from "../schema/profileValidation";
 
 const ViewField = memo(({ label, value, type }) => (
   <div className="space-y-[2px]">

@@ -3,7 +3,7 @@
 import { useAuthGuard } from "@/modules/auth/hooks/useAuthGuard";
 import { useSelectedHotelStore } from "@/modules/hotel/store/selectedHotel.store";
 import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
-import ImageGallery from "@/modules/profile/components/ImageGallery";
+import ImageGallery from "@/modules/profile/components/bookings/ImageGallery";
 import HotelBookingComingSoonModal from "@/modules/shared/home/components/HotelBookingComingSoonModal";
 import { useToggleWishlist } from "@/modules/wishlist/hooks/useToggleWishlist";
 import { slugify } from "@/utils/slug/slugify";
