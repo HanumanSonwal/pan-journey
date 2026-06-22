@@ -1,4 +1,4 @@
-import { getNextSequence } from "./sequence.util.js";
+import { getNextSequence } from "../sequence.util.js";
 
 export const generatePrefixedId = async (
   sequenceName,
