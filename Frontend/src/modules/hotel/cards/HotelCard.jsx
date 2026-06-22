@@ -169,7 +169,7 @@ function HotelCard({ hotel, wishlistIds }) {
         className="cursor-pointer overflow-hidden rounded-xl border border-gray-100 bg-white shadow-[0_2px_10px_rgba(0,0,0,0.06)] transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(0,0,0,0.12)]"
       >
         <div className="flex flex-col lg:flex-row">
-          <div className="w-full p-3 lg:w-[260px]">
+          <div className="w-full p-3 xl:w-[220px] 2xl:w-[260px] shrink-0">
             {hotelImages.length > 1 ? (
               <ImageGallery images={hotelImages} />
             ) : (
@@ -180,7 +180,7 @@ function HotelCard({ hotel, wishlistIds }) {
                   width={320}
                   height={240}
                   loading="lazy"
-                  className="h-[200px] w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                 className="h-[170px] xl:h-[180px] 2xl:h-[200px] w-full rounded-lg object-cover transition-transform duration-500 ease-out hover:scale-[1.03]"
                 />
               </div>
             )}
