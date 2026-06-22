@@ -10,7 +10,7 @@ export const moduleConfig = {
   },
 
   roles: {
-    label: "roles",
+    label: "Roles",
     actions: ["read", "write", "update", "delete"],
   },
 
@@ -24,9 +24,9 @@ export const moduleConfig = {
     actions: ["read", "write", "update", "delete"],
   },
 
-  calendar: {
-    label: "Calendar",
-    actions: ["read"],
+  cmsPages: {
+    label: "CMS Pages",
+    actions: ["read", "write", "update", "delete"],
   },
 
   revenue: {

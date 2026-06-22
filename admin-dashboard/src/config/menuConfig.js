@@ -21,7 +21,7 @@ export const menuItems = [
   {
     key: "/dashboard/bookings",
     icon: <BookOutlined />,
-    label: <Link href="/dashboard/bookings">Bookings</Link>,
+    label: <Link href="/dashboard#">Bookings</Link>,
     module: "bookings",
   },
 
@@ -57,42 +57,29 @@ export const menuItems = [
     children: [
       {
         key: "/dashboard/cms/pages",
-        label: <Link href="/dashboard/cms/pages">Pages</Link>,
+        label: <Link href="/dashboard/cms/pages">All Pages</Link>,
         module: "cmsPages",
       },
 
       {
-        key: "/dashboard/cms/hotel-seo",
-        label: <Link href="/dashboard/cms/hotel-seo">Hotel SEO</Link>,
-        module: "hotelSeo",
-      },
-
-      {
-        key: "/dashboard/cms/city-seo",
-        label: <Link href="/dashboard/cms/city-seo">City SEO</Link>,
-        module: "citySeo",
+        key: "/dashboard/cms/create",
+        label: <Link href="/dashboard/cms/create">Create Pages</Link>,
+        module: "cmsPages",
       },
     ],
   },
 
   {
-    key: "/dashboard/calendar",
-    icon: <CalendarOutlined />,
-    label: <Link href="/dashboard/calendar">Calendar</Link>,
-    module: "calendar", // ✅ FIX
-  },
-
-  {
-    key: "/dashboard/users",
+    key: "/dashboard/customers",
     icon: <UserOutlined />,
-    label: <Link href="/dashboard/users">Users</Link>,
-    module: "users", // ✅ FIX
+    label: <Link href="/dashboard/customers">Customers</Link>,
+    module: "customers", // ✅ FIX
   },
 
   {
     key: "/dashboard/revenue",
     icon: <DollarOutlined />,
-    label: <Link href="/dashboard/revenue">Revenue</Link>,
+    label: <Link href="/dashboard#">Revenue</Link>,
     module: "revenue", // ✅ FIX
   },
 ];

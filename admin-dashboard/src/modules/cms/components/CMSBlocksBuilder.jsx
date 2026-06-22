@@ -437,7 +437,7 @@ export default function CMSBlocksBuilder({ form }) {
                   header: {
                     background: "#111827",
                     border: "1px solid #2a2a2a",
-                    borderRadius: 12,
+                    borderRadius: 5,
                     marginBottom: 10,
                   },
 

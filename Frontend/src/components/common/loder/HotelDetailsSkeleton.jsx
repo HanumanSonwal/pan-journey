@@ -10,7 +10,7 @@ function ImageSkeleton({ height }) {
       style={{
         width: "100%",
         height,
-        borderRadius: 12,
+        borderRadius: 5,
       }}
     >
       <svg

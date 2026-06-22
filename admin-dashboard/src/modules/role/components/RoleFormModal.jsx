@@ -22,12 +22,12 @@ import {
   theme,
 } from "antd";
 
-import { useEffect } from "react";
 import { menuItems } from "@/config/menuConfig";
 import { moduleConfig } from "@/config/module.config";
 import { createRole, updateRole } from "@/modules/role/api/role.service";
 import { usePermission } from "@/modules/shared/hooks/usePermission";
 import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 const { Title, Text } = Typography;
 const { TextArea } = Input;
 
@@ -72,7 +72,6 @@ export default function RoleFormModal({ open, setOpen, editData }) {
       }
     }
   }, [editData, open, form, hasAccess]);
-
 
   const onFinish = async (values) => {
     if (!hasAccess) return;
@@ -127,7 +126,7 @@ export default function RoleFormModal({ open, setOpen, editData }) {
                 style={{
                   width: 52,
                   height: 52,
-                  borderRadius: 16,
+                  borderRadius: 5,
                   background: "rgba(22,119,255,0.10)",
                   display: "flex",
                   alignItems: "center",

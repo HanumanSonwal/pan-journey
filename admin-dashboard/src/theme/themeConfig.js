@@ -3,7 +3,7 @@ export const lightTheme = {
     colorPrimary: "#0F6A75",
     colorInfo: "#72C0F0",
 
-    borderRadius: 12,
+    borderRadius: 5,
 
     colorBgLayout: "#f4fbfd",
     colorBgContainer: "#ffffff",
@@ -50,7 +50,7 @@ export const darkTheme = {
     colorPrimary: "#72C0F0",
     colorInfo: "#0F6A75",
 
-    borderRadius: 12,
+    borderRadius: 5,
 
     colorBgLayout: "#08161a",
     colorBgContainer: "#102027",

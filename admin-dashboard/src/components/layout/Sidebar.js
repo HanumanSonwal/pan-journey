@@ -47,10 +47,10 @@ const Sidebar = ({ collapsed }) => {
       key: "settings",
       icon: <SettingOutlined />,
       label: "Settings",
-      children: [
-        { key: "profile", label: "Profile Settings" },
-        { key: "account", label: "Account Settings" },
-      ],
+      // children: [
+      //   { key: "#", label: "Profile Settings" },
+      //   { key: "#", label: "Account Settings" },
+      // ],
     },
     {
       key: "logout",
@@ -77,13 +77,18 @@ const Sidebar = ({ collapsed }) => {
           ? "2px 0 25px rgba(0,0,0,.35)"
           : "2px 0 25px rgba(15,106,117,.25)",
         zIndex: 100,
+        height: "100vh",
+        overflow: "hidden",
       }}
     >
       <div
+        className="sidebar-scroll"
         style={{
           display: "flex",
           flexDirection: "column",
           height: "100%",
+          overflowY: "auto",
+          overflowX: "hidden",
           padding: "16px 12px",
         }}
       >

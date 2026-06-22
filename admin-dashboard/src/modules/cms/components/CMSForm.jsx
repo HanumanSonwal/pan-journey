@@ -72,7 +72,7 @@ export default function CMSForm({ id }) {
         <Col xs={24} lg={16}>
           <Card
             style={{
-              borderRadius: 16,
+              borderRadius: 5,
             }}
           >
             <Form.Item
@@ -186,7 +186,7 @@ export default function CMSForm({ id }) {
             <Card
               title="SEO Settings"
               style={{
-                borderRadius: 16,
+                borderRadius: 5,
               }}
             >
               <CMSSeoFields />

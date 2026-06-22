@@ -101,7 +101,7 @@ const ViewHotelModal = ({ open, onClose, images = [] }) => {
                       height: 310,
                       objectFit: "cover",
                       display: "block",
-                      borderRadius: 12,
+                      borderRadius: 5,
                     }}
                   />
                 </div>

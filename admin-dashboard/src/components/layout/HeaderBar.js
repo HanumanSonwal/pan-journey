@@ -99,7 +99,7 @@ const HeaderBar = ({ collapsed, setCollapsed }) => {
           style={{
             width: 40,
             height: 40,
-            borderRadius: 12,
+            borderRadius: 5,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",

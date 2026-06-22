@@ -63,7 +63,7 @@ const LoginPage = () => {
           style={{
             width: "100%",
             maxWidth: 380,
-            borderRadius: 14,
+            borderRadius: 5,
             background: colorBgContainer,
             boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
           }}

@@ -281,7 +281,7 @@ export default function PermissionPopover({
       placement="bottom"
       styles={{
         body: {
-          borderRadius: 18,
+          borderRadius: 5,
           padding: 16,
         },
       }}
