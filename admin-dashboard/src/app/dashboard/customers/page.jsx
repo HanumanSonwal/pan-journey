@@ -1,18 +1,15 @@
 "use client";
 
 import TableFilters from "@/modules/shared/components/TableFilters";
-import { usePermission } from "@/modules/shared/hooks/usePermission"; // ✅ NEW
-import StaffFormModal from "@/modules/staff/components/StaffFormModal";
+import { usePermission } from "@/modules/shared/hooks/usePermission";
 import { useCustomers } from "@/modules/staff/hooks/useCustomer";
 import {
   GoogleOutlined,
   MailOutlined,
   MobileOutlined,
-  PlusOutlined,
 } from "@ant-design/icons";
 import {
   Avatar,
-  Button,
   Card,
   Empty,
   Space,
@@ -23,7 +20,7 @@ import {
 } from "antd";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
-export default function StaffPage() {
+export default function CustomersPage() {
   const [open, setOpen] = useState(false);
   const [editData, setEditData] = useState(null);
   const [search, setSearch] = useState("");
@@ -143,23 +140,7 @@ export default function StaffPage() {
   ];
 
   return (
-    <Card
-      title="Staff Management"
-      extra={
-        canCreate && (
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => {
-              setEditData(null);
-              setOpen(true);
-            }}
-          >
-            Add Staff
-          </Button>
-        )
-      }
-    >
+    <Card title="Customers Management">
       {canFetch ? (
         <div style={{ width: "100%", overflowX: "auto" }}>
           <TableFilters
@@ -203,8 +184,6 @@ export default function StaffPage() {
       ) : (
         <Empty description="No permission to view data" />
       )}
-
-      <StaffFormModal open={open} setOpen={setOpen} editData={editData} />
     </Card>
   );
 }

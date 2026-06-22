@@ -29,6 +29,11 @@ export const moduleConfig = {
     actions: ["read", "write", "update", "delete"],
   },
 
+  customers: {
+    label: "Customers",
+    actions: ["read", "write", "update", "delete"],
+  },
+
   revenue: {
     label: "Revenue",
     actions: ["read"],
