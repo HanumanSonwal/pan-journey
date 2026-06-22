@@ -39,7 +39,7 @@ const features = [
 export default function WhySection() {
   return (
     <section className="mt-[-10px] overflow-hidden bg-[#EDF7FF] px-4 py-16 md:py-20">
-      <div className="mx-auto w-[85.87%]">
+      <div className="mx-auto w-[85.87%] mt-0 sm:mt-[2px] md:mt-[5px] lg:-mt-[90px] xl:mt-[15px]">
         {/* Heading */}
         <SectionHeading
           title="Why Choose Our Platform"

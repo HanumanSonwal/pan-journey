@@ -12,14 +12,42 @@ export default function VacationSection() {
   const [activeTab, setActiveTab] = useState("beach");
 
   return (
-    <SectionWrapper className="bg-[#edf7ff] mt-[-4px] ">
-      <div className="mt-[-20px] md:mt-[70px] lg:mt-[180px] !xl:mt-[26px] 2xl:mt-[134px] ">
+    <SectionWrapper className="bg-[#edf7ff] mt-0 md:mt-[-4px]">
+
+      {/* Heading */}
+      <div
+        className="
+          mt-0
+          pt-8
+          sm:pt-10
+          md:mt-12
+          md:pt-0
+          lg:mt-20
+          xl:mt-8
+          2xl:mt-32
+        "
+      >
         <SectionHeading
           title="Places As Per Your Vibe"
-          description="We're committed to offering more than just products— we provide exceptional experiences."
+          description="We're committed to offering more than just products—we provide exceptional experiences."
         />
       </div>
-      <div className="scrollbar-hide mb-8 flex justify-center overflow-x-auto mt-19">
+
+      {/* Tabs */}
+      <div
+        className="
+          scrollbar-hide
+          mt-6
+          sm:mt-8
+          md:mt-10
+          lg:mt-12
+          mb-8
+          flex
+          justify-center
+          overflow-x-auto
+          px-0
+        "
+      >
         <ButtonTab
           tabs={tabs}
           activeTab={activeTab}
@@ -27,7 +55,11 @@ export default function VacationSection() {
         />
       </div>
 
-      <HotelType activeTab={activeTab} />
+      {/* Hotels */}
+      <div className="pb-8">
+        <HotelType activeTab={activeTab} />
+      </div>
+
     </SectionWrapper>
   );
 }
