@@ -216,4 +216,5 @@ useEffect(() => {
   );
 }
 
+
 export default memo(HotelList);
