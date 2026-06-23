@@ -29,13 +29,12 @@ export default function VacationType({ activeTab }) {
 
     const updatePerPage = () => {
       const width = window.innerWidth;
-
       if (width < 640) {
         setPerPage(data.length); // mobile
       } else if (width < 1024) {
         setPerPage(2); // tablet
       } else {
-        setPerPage(3); // desktop (CHANGED from 4 → 3)
+        setPerPage(4); // desktop FIXED (3 → 4)
       }
     };
 
@@ -94,7 +93,7 @@ export default function VacationType({ activeTab }) {
     router.push(`/hotels?${query.toString()}`);
   };
   return (
-    <div className="px-0 xs:px-1 sm:px-1 md:px-2 lg:px-4 xl:px-4 py-2 -mt-5 sm:-mt-[50px] md:mt-[2px] lg:mt-[2px]
+    <div className="px-0 xs:px-1 sm:px-1 md:px-2 lg:px-4 xl:px-4 py-2 -mt-7 !sm:-mt-[50px] md:mt-[2px] lg:mt-[2px]
 ">
       <div className="flex items-center gap-2 sm:gap-3">
         {/* PREV BUTTON - Hide on Mobile */}
@@ -119,10 +118,10 @@ export default function VacationType({ activeTab }) {
               return (
                 <div
                   key={item.id || idx}
-                  className="min-w-[169px] max-w-[169px] overflow-hidden rounded-[2px] bg-white shadow-sm transition duration-300"
+                  className="min-w-[159px] max-w-[159px] overflow-hidden rounded-[2px] bg-white shadow-sm transition !p-0 !m-0"
                 >
                   {/* Image */}
-                  <div className="relative h-[180px] overflow-hidden">
+                  <div className="relative h-[150px] overflow-hidden ">
                     <Image
                       src={image}
                       alt={item.name}
@@ -132,22 +131,23 @@ export default function VacationType({ activeTab }) {
                   </div>
 
                   {/* Content */}
-                  <div className="bg-white px-0 py-1 text-center">
-                    <h2 className="text-[14px]  font-semibold text-gray-900 line-clamp-1">
+                  <div className="bg-white px-2 py-1 text-center">
+                    <h2 className="text-[14px] font-semibold text-gray-900 leading-tight line-clamp-1">
                       {item.name}
                     </h2>
 
-                    <p className="-mt-2 text-[11px] text-gray-700 line-clamp-1">
+                    <p className=" text-[11px] text-gray-600 leading-tight line-clamp-1">
                       {item.City}
                     </p>
+
                     <button
                       onClick={() => handleSearch(item)}
-                      className="!-mt-[21px] text-[13px] lg:text-[16px] font-medium !text-[#72C0F0]  px-3 py-1 rounded"
+                      className=" text-[12px] lg:text-[16px] font-medium !text-[#72C0F0]"
                     >
                       View Details
                     </button>
 
-                    <div className="mx-auto mb-2 w-20 border-b border-dotted border-[#5FA8C9]" />
+                    <div className="mx-auto mt-1 w-20 border-b border-dotted !border-[#5FA8C9]" />
                   </div>
                 </div>
               );
@@ -155,7 +155,7 @@ export default function VacationType({ activeTab }) {
           </div>
 
           {/* Tablet + Desktop Grid */}
-          <div className="hidden lg:grid mb-8 grid-cols-3 gap-4">
+          <div className="hidden lg:grid mb-8 grid-cols-4 gap-4 ">
             {visibleData.map((item, idx) => {
               const image =
                 VacationsimageMap?.[activeTab]?.[

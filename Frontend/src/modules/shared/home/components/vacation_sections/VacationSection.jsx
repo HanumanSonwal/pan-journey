@@ -14,7 +14,21 @@ export default function VacationSection() {
   return (
     <SectionWrapper className="mt-0 bg-[#edf7ff] md:mt-[-4px]">
       {/* Heading */}
-      <div className="mt-0 pt-8 sm:pt-10 md:mt-12 md:pt-0 lg:mt-20 xl:mt-8 2xl:mt-32">
+      <div
+        className="
+          mt-0
+          pt-8
+          mt-[39px]
+        min-[375px]:mt-[40px]
+        min-[425px]:mt-[34px]
+        min-[430px]:mt-[66px]
+        min-[430px]:mt-[16px]
+        md:mt-[47px]
+        lg:mt-[-39px]
+        min-[1440px]:!mt-[59px]
+        min-[2560px]:!mt-[76px]
+        "
+      >
         <SectionHeading
           title="Places As Per Your Vibe"
           description="We're committed to offering more than just products—we provide exceptional experiences."
@@ -22,7 +36,20 @@ export default function VacationSection() {
       </div>
 
       {/* Tabs */}
-      <div className="scrollbar-hide mt-6 mb-8 flex justify-center overflow-x-auto px-0 sm:mt-8 md:mt-10 lg:mt-12">
+      <div
+        className="
+          scrollbar-hide
+          mt-2
+          sm:mt-6
+          md:mt-6
+          lg:mt-6
+          mb-8
+          flex
+          justify-center
+          overflow-x-auto
+          px-0
+        "
+      >
         <ButtonTab
           tabs={tabs}
           activeTab={activeTab}
