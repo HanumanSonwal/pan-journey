@@ -8,6 +8,41 @@ export const createContactService = async (payload) => {
   return contact;
 };
 
+export const getAllContactsAdminService = async ({
+  page = 1,
+  limit = 10,
+  ticketId,
+  status,
+}) => {
+  const query = {};
+
+  // filter by ticket number
+  if (ticketId) {
+    query.ticketId = { $regex: ticketId, $options: "i" };
+  }
+
+  // optional status filter
+  if (status) {
+    query.status = status;
+  }
+
+  const contacts = await Contact.find(query)
+    .sort({ createdAt: -1 })
+    .skip((page - 1) * limit)
+    .limit(Number(limit));
+
+  const total = await Contact.countDocuments(query);
+
+  return {
+    contacts,
+    pagination: {
+      total,
+      page: Number(page),
+      limit: Number(limit),
+      pages: Math.ceil(total / limit),
+    },
+  };
+};
 
 
 // GET ALL CONTACTS
@@ -83,6 +118,27 @@ export const updateContactService = async (
   return contact;
 };
 
+
+export const updateContactServiceAdmin = async (id, data) => {
+  const contact = await Contact.findById(id);
+
+  if (!contact) {
+    throw new Error("Contact not found");
+  }
+
+  const updatedContact = await Contact.findByIdAndUpdate(
+    id,
+    {
+      $set: data,
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  return updatedContact;
+};
 
 
 // DELETE CONTACT
