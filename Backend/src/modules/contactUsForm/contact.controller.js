@@ -10,10 +10,129 @@ import {
   sendSuccess,
   sendError,
 } from "../../utils/response/ApiResponse.js";
+import User from "../user/user.model.js";
+import { sendMail } from "../contactUsForm/mail.service.js";
+import { contactUsTemplate } from "./contactUsTemplate.js";
+import HotelBooking from "../hotel/hotelTempBooking/hotelTempBooking.model.js";
 
 
 
 // CREATE CONTACT
+// export const createContact = async (req, res) => {
+//   try {
+//     const payload = {
+//       ...req.body,
+//       UserId: req.user._id,
+//     };
+
+//     const result = await createContactService(payload);
+
+//     return sendSuccess(
+//       res,
+//       "Contact created successfully",
+//       result,
+//       null,
+//       201
+//     );
+//   } catch (error) {
+//     return sendError(res, error.message, 500);
+//   }
+// };
+
+
+// export const createContact = async (req, res) => {
+//   try {
+//     const payload = {
+//       ...req.body,
+//       UserId: req.user._id,
+//     };
+
+//     // Save contact
+//     const result = await createContactService(payload);
+
+//     // Send mail to payload email
+//     if (result?.email) {
+//       await sendMail({
+//         to: result.email,
+//         subject: "Your Support Request Has Been Received",
+//         html: contactUsTemplate({
+//           fullName: result.fullName,
+//           ticketId: result.ticketId,
+//           subject: result.subject,
+//           supportCategory: result.supportCategory,
+//           status: result.status,
+//         }),
+//       });
+//     }
+
+//     return sendSuccess(
+//       res,
+//       "Contact created successfully",
+//       result,
+//       null,
+//       201
+//     );
+//   } catch (error) {
+//     return sendError(res, error.message, 500);
+//   }
+// };
+
+
+// export const createContact = async (req, res) => {
+//   try {
+//     const payload = {
+//       ...req.body,
+//       UserId: req.user._id,
+//     };
+
+//     // Step 1: Check booking exists
+//     const bookingExists = await HotelBooking.findOne({
+//       "responsePayload.BookingRefNo":
+//         payload.BookingRefNo,
+
+//       // optional security check → booking same user ki honi chahiye
+//       "requestPayload.UserId": req.user._id,
+//     });
+
+//     if (!bookingExists) {
+//       return sendError(
+//         res,
+//         "Invalid Booking Reference Number",
+//         400
+//       );
+//     }
+
+//     // Step 2: Save contact
+//     const result = await createContactService(payload);
+
+//     // Step 3: Send mail on submitted email
+//     if (result?.email) {
+//       await sendMail({
+//         to: result.email,
+//         subject: "Your Support Request Has Been Received",
+//         html: contactUsTemplate({
+//           fullName: result.fullName,
+//           ticketId: result.ticketId,
+//           subject: result.subject,
+//           supportCategory: result.supportCategory,
+//           status: "Received", // better than result.status if not in schema
+//         }),
+//       });
+//     }
+
+//     return sendSuccess(
+//       res,
+//       "Contact created successfully",
+//       result,
+//       null,
+//       201
+//     );
+
+//   } catch (error) {
+//     return sendError(res, error.message, 500);
+//   }
+// };
+
 export const createContact = async (req, res) => {
   try {
     const payload = {
@@ -21,7 +140,56 @@ export const createContact = async (req, res) => {
       UserId: req.user._id,
     };
 
+
+    // first check only booking ref
+    const bookingByRef = await HotelBooking.findOne({
+      "responsePayload.BookingRefNo": payload.BookingRefNo,
+    });
+
+   
+
+    // then strict check with user
+    const bookingExists = await HotelBooking.findOne({
+      "responsePayload.BookingRefNo": payload.BookingRefNo,
+
+      // force string compare if stored as string
+      "requestPayload.UserId": req.user._id.toString(),
+    });
+
+   
+    if (!bookingExists) {
+     
+
+      return sendError(
+        res,
+        "Invalid Booking Reference Number",
+        400
+      );
+    }
+
+
     const result = await createContactService(payload);
+
+  
+
+    if (result?.email) {
+   
+
+      await sendMail({
+        to: result.email,
+        subject: "Your Support Request Has Been Received",
+        html: contactUsTemplate({
+          fullName: result.fullName,
+          ticketId: result.ticketId,
+          subject: result.subject,
+          supportCategory: result.supportCategory,
+          status: result.status,
+          BookingRefNo:result.BookingRefNo
+        }),
+      });
+
+    
+    }
 
     return sendSuccess(
       res,
@@ -30,11 +198,12 @@ export const createContact = async (req, res) => {
       null,
       201
     );
+
   } catch (error) {
+
     return sendError(res, error.message, 500);
   }
 };
-
 
 // GET ALL CONTACTS
 export const getAllContacts = async (req, res) => {
