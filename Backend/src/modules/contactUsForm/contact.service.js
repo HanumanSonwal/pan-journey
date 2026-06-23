@@ -1,6 +1,5 @@
 import Contact from "./contact.model.js";
 
-
 // CREATE CONTACT
 export const createContactService = async (payload) => {
   const contact = await Contact.create(payload);
@@ -44,7 +43,6 @@ export const getAllContactsAdminService = async ({
   };
 };
 
-
 // GET ALL CONTACTS
 export const getAllContactsService = async ({
   page = 1,
@@ -75,8 +73,6 @@ export const getAllContactsService = async ({
   };
 };
 
-
-
 // GET SINGLE CONTACT
 export const getSingleContactService = async (id, userId) => {
   const contact = await Contact.findOne({
@@ -91,14 +87,8 @@ export const getSingleContactService = async (id, userId) => {
   return contact;
 };
 
-
-
 // UPDATE CONTACT
-export const updateContactService = async (
-  id,
-  userId,
-  payload
-) => {
+export const updateContactService = async (id, userId, payload) => {
   const contact = await Contact.findOneAndUpdate(
     {
       _id: id,
@@ -108,7 +98,7 @@ export const updateContactService = async (
     {
       new: true,
       runValidators: true,
-    }
+    },
   );
 
   if (!contact) {
@@ -117,7 +107,6 @@ export const updateContactService = async (
 
   return contact;
 };
-
 
 export const updateContactServiceAdmin = async (id, data) => {
   const contact = await Contact.findById(id);
@@ -134,18 +123,14 @@ export const updateContactServiceAdmin = async (id, data) => {
     {
       new: true,
       runValidators: true,
-    }
+    },
   );
 
   return updatedContact;
 };
 
-
 // DELETE CONTACT
-export const deleteContactService = async (
-  id,
-  userId
-) => {
+export const deleteContactService = async (id, userId) => {
   const contact = await Contact.findOneAndDelete({
     _id: id,
     UserId: userId,

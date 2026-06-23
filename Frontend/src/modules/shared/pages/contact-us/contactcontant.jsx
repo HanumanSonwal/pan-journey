@@ -17,7 +17,7 @@ export default function ContactFormSection() {
     mode: "onSubmit",
     defaultValues: {
       category: "",
-      bookingRefId: "",
+      BookingRefNo: "",
       fullName: "",
       email: "",
       subject: "",
@@ -26,12 +26,12 @@ export default function ContactFormSection() {
   });
 
   const supportCategories = [
-    { label: "Booking Issue", value: "booking_issue" },
-    { label: "Refund Request", value: "refund_request" },
-    { label: "Payment Issue", value: "payment_issue" },
-    { label: "Hotel Complaint", value: "hotel_complaint" },
-    { label: "Partnership / Business", value: "partnership_business" },
-    { label: "General Query", value: "general_query" },
+    { label: "Booking Issue", value: "Booking_Issue" },
+    { label: "Refund Request", value: "Refund_request" },
+    { label: "Payment Issue", value: "Payment_issue" },
+    { label: "Hotel Complaint", value: "Hotel_Complaint" },
+    { label: "Partnership / Business", value: "Partnership_Business" },
+    { label: "General Query", value: "General_Query" },
   ];
 
   const { mutateAsync: createContact, isPending } = useCreateContact();
@@ -44,7 +44,7 @@ export default function ContactFormSection() {
         email: data.email,
         subject: data.subject,
         message: data.message,
-        bookingRefId: data.bookingRefId,
+        BookingRefNo: data.BookingRefNo,
         supportCategory: data.category,
       };
 
@@ -188,7 +188,7 @@ export default function ContactFormSection() {
                     options={supportCategories}
                   />
                   <RHFInput
-                    name="bookingRefId"
+                    name="BookingRefNo"
                     label="booking Refrence Id"
                     placeholder=" "
                   />
