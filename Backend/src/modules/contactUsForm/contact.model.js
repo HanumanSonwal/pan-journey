@@ -26,12 +26,15 @@ const contactSchema = new mongoose.Schema(
       trim: true,
     },
       status: {
-      type: String,
-        enum: ["Pending", "Proccesing", "Completed"],
-      required: true,
-      trim: true,
-      default:"Pending"
-    },
+  type: String,
+  enum: [
+    "Open",
+    "In Progress",
+    "Resolved",
+    "Closed"
+  ],
+  default: "Open"
+},
        BookingRefNo  : {
       type: String,
       required: true,
