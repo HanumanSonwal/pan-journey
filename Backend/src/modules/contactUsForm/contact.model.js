@@ -25,7 +25,14 @@ const contactSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-       bookingRefIdx  : {
+      status: {
+      type: String,
+        enum: ["Pending", "Proccesing", "Completed"],
+      required: true,
+      trim: true,
+      default:"Pending"
+    },
+       BookingRefNo  : {
       type: String,
       required: true,
       trim: true,
@@ -44,8 +51,8 @@ const contactSchema = new mongoose.Schema(
 
     supportCategory: {
       type: String,
-      enum: ["booking_issue", "refund_request", "payment_issue", "hotel_complaint", "partnership_business","general_query"],
-      default: "general_query",
+      enum: ["Booking_Issue", "Refund_request", "Payment_issue", "Hotel_Complaint", "Partnership_Business","General_Query"],
+      default: "General_Query",
         required: true,
     },
 
