@@ -24,7 +24,7 @@ const grievanceRedressalSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    bookingRefIdx: {
+    bookingRefId: {
       type: String,
       required: true,
       trim: true,

@@ -239,54 +239,41 @@ export default function CMSForm({ id }) {
                 boxShadow: "0 4px 20px rgba(0,0,0,0.04)",
               }}
             >
-              <Card title="SEO Settings">
-                <CMSSeoFields />
-              </Card>
+              <CMSSeoFields />
 
-              <Card
-                title="Publish"
+              <Form.Item
+                name="isPublished"
+                label="Published"
+                valuePropName="checked"
+              >
+                <Switch />
+              </Form.Item>
+
+              <Space
+                orientation="vertical"
                 style={{
-                  marginTop: 20,
-                  borderRadius: 5,
+                  width: "100%",
                 }}
               >
-                <Form.Item
-                  name="isPublished"
-                  label="Published"
-                  valuePropName="checked"
+                <Button
+                  block
+                  size="large"
+                  onClick={handlePreview}
+                  disabled={!id}
                 >
-                  <Switch
-                    checkedChildren="Published"
-                    unCheckedChildren="Draft"
-                  />
-                </Form.Item>
+                  Preview
+                </Button>
 
-                <Space
-                  orientation="vertical"
-                  style={{
-                    width: "100%",
-                  }}
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  block
+                  size="large"
+                  loading={isSubmitting}
                 >
-                  <Button
-                    block
-                    size="large"
-                    onClick={handlePreview}
-                    disabled={!id}
-                  >
-                    Preview
-                  </Button>
-
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    block
-                    size="large"
-                    loading={isSubmitting}
-                  >
-                    {id ? "Update Page" : "Publish Page"}
-                  </Button>
-                </Space>
-              </Card>
+                  {id ? "Update Page" : "Publish Page"}
+                </Button>
+              </Space>
             </Card>
           </div>
         </Col>
