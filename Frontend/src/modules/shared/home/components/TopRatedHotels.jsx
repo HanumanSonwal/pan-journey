@@ -145,28 +145,18 @@ export default function TopRatedHotels() {
     <div
       onClick={() => handleSearch(hotel)}
       key={hotel.id}
-      className="
-flex
-flex-shrink-0
-px-1
-w-1/2
-md:w-1/3
-lg:w-1/4
-xl:w-1/5
-"
+      className="flex w-1/2 flex-shrink-0 px-1 md:w-1/3 lg:w-1/4 xl:w-1/5"
     >
-     <Card
-  hoverable
-  styles={{
-    body: {
-      padding: "10px",
-    },
-  }}
-  className="flex h-full w-full flex-col overflow-hidden rounded-xl border-0 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
-
-
+      <Card
+        hoverable
+        styles={{
+          body: {
+            padding: "10px",
+          },
+        }}
+        className="flex h-full w-full flex-col overflow-hidden rounded-xl border-0 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
         cover={
-          <div className="relative h-[180px] sm:h-[180px] md:h-[210px] lg:h-[240px] overflow-hidden">
+          <div className="relative h-[180px] overflow-hidden sm:h-[180px] md:h-[210px] lg:h-[240px]">
             <Image
               src={hotel.image}
               alt={hotel.name}
@@ -181,14 +171,14 @@ xl:w-1/5
         }
       >
         <div className="flex h-full flex-col text-center">
-          <h3 className="text-xs sm:text-base lg:text-lg font-semibold text-gray-800 line-clamp-1">
+          <h3 className="line-clamp-1 text-xs font-semibold text-gray-800 sm:text-base lg:text-lg">
             {hotel.name}
           </h3>
 
-          <p className="mt-1 flex-1 line-clamp-2 text-[10px] sm:text-sm leading-4 sm:leading-6 text-gray-500">
+          <p className="mt-1 line-clamp-2 flex-1 text-[10px] leading-4 text-gray-500 sm:text-sm sm:leading-6">
             {hotel.desc}
           </p>
-          <div className=" scale-75 sm:scale-90 lg:scale-100">
+          <div className="scale-75 sm:scale-90 lg:scale-100">
             <Rate disabled allowHalf defaultValue={hotel.rating} />
           </div>
         </div>
@@ -198,7 +188,7 @@ xl:w-1/5
 
   return (
     <div className="!mt-[-10px] bg-[#EDF7FF] px-0 py-8 md:py-12">
-      <div className="mx-auto w-full rounded-lg sm:rounded-xl md:rounded-2xl lg:rounded-3xl bg-gradient-to-br from-sky-400 to-teal-700 px-0 sm:px-0  lg:px-8 xl:px-10 py-10 md:px-8 md:py-14 lg:w-[85.87%]">
+      <div className="mx-auto w-full rounded-lg bg-gradient-to-br from-sky-400 to-teal-700 px-0 py-10 sm:rounded-xl sm:px-0 md:rounded-2xl md:px-8 md:py-14 lg:w-[85.87%] lg:rounded-3xl lg:px-8 xl:px-10">
         {/* HEADING */}
         <div className="mb-8 text-center text-white md:mb-10">
           <h2 className="text-2xl font-bold sm:text-3xl lg:text-4xl">

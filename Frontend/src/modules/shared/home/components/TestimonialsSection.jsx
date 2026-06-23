@@ -56,18 +56,17 @@ export default function TestimonialsSection() {
   };
 
   return (
-    <section className="mt-[-10px] bg-[#EDF7FF] pt-10 pb-8 md:pt-12 md:pb-10 lg:mt-[-105px] lg:pt-16 lg:pb-12 overflow-hidden">
+    <section className="mt-[-10px] overflow-hidden bg-[#EDF7FF] pt-10 pb-8 md:pt-12 md:pb-10 lg:mt-[-105px] lg:pt-16 lg:pb-12">
       <div className="mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-8">
-
-        <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 items-center">
+        <div className="grid grid-cols-1 items-center gap-3 lg:grid-cols-2">
           <div>
             <p className="text-[21px] font-semibold text-[#3B9BC6]">
               Our Testimonial
             </p>
 
-            <h2 className="mt-1 max-w-[550px] text-[24px] md:text-[30px] lg:text-[36px] font-bold leading-[1.15]">
+            <h2 className="mt-1 max-w-[550px] text-[24px] leading-[1.15] font-bold md:text-[30px] lg:text-[36px]">
               Real Feedback from Our Happy Travelers Worldwide
-          </h2>
+            </h2>
           </div>
 
           <div className="lg:pl-8">
@@ -81,9 +80,8 @@ export default function TestimonialsSection() {
         <div className="mt-8 lg:mt-14">
           <Slider {...settings}>
             {testimonials.map((item) => (
-              <div key={item.id} className="px-2 lg:px-3 py-12">
-                <div className="relative flex min-h-[300px] md:min-h-[320px] lg:min-h-[330px] flex-col rounded-[22px] bg-white shadow-[0_8px_25px_rgba(0,0,0,0.10)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_15px_35px_rgba(0,0,0,0.15)]">
-
+              <div key={item.id} className="px-2 py-12 lg:px-3">
+                <div className="relative flex min-h-[300px] flex-col rounded-[22px] bg-white shadow-[0_8px_25px_rgba(0,0,0,0.10)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_15px_35px_rgba(0,0,0,0.15)] md:min-h-[320px] lg:min-h-[330px]">
                   {/* Profile Image */}
                   <div className="absolute -top-10 left-6 z-10">
                     <div className="relative h-[74px] w-[74px] overflow-hidden rounded-full border-4 border-white shadow-md">
@@ -99,11 +97,7 @@ export default function TestimonialsSection() {
                   {/* Body */}
                   <div className="flex-1 px-6 pt-16 pb-5">
                     <div className="flex items-center justify-between">
-                      <Rate
-                        disabled
-                        defaultValue={5}
-                        className="text-[16px]"
-                      />
+                      <Rate disabled defaultValue={5} className="text-[16px]" />
 
                       <MessageOutlined className="text-[42px] text-[#3B9BC6]" />
                     </div>
@@ -123,13 +117,11 @@ export default function TestimonialsSection() {
                       {item.country}
                     </span>
                   </div>
-
                 </div>
               </div>
             ))}
           </Slider>
         </div>
-
       </div>
     </section>
   );
