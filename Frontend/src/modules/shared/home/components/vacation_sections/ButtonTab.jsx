@@ -9,7 +9,7 @@ export default function ButtonTab({ tabs = [], activeTab, setActiveTab }) {
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
             className={`relative border-0 border-b-0 bg-transparent pb-4 
-            !text-[13px] sm:!text-[21px] md:!text-[21px] lg:!text-[21px]
+            !text-[15px] sm:!text-[21px] md:!text-[18px] lg:!text-[21px]
             font-medium whitespace-nowrap shadow-none transition-all duration-200 outline-none focus:ring-0 focus:outline-none
             ${activeTab === tab.key
                 ? "!text-[#72C0F0]"

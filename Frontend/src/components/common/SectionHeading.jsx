@@ -15,8 +15,8 @@ export default function SectionHeading({
         min-[430px]:mt-[-16px]
         md:mt-[-67px]
         lg:mt-[139px]
-        min-[1440px]:!mt-[-12px]
-        min-[2560px]:mt-[16px]
+        min-[1440px]:!mt-[12px]
+        min-[2560px]:!mt-[16px]
 
         mb-4
         sm:mb-2
@@ -60,7 +60,7 @@ export default function SectionHeading({
             mt-2
             sm:mt-3
             md:mt-4
-
+            px-4
             text-gray-500
 
             text-xs
