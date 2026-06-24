@@ -75,18 +75,50 @@ export default function Hero() {
   };
   return (
     <section
-      className="relative w-full bg-[#EDF7FF] pb-60 md:pb-60 lg:pb-45 xl:pb-15"
+      className="relative w-full bg-[#EDF7FF] pb-0 md:pb-30 lg:pb-45 xl:pb-15 "
       id="hero-search"
     >
       <div className={styles.heroBg} />
-      <div className="!max-lg:top-[22%] !max-md:top-[25%] absolute !top-[27%] left-1/2 h-[60%] w-[80.83%] -translate-x-1/2 px-4 max-lg:w-[92%] max-md:w-[95%] xl:top-[40%]">
-        <div className="w-full rounded-[10px] bg-white !pb-21 shadow-2xl max-lg:p-6 max-md:p-4 md:p-8">
+      <div
+        className="
+    absolute
+    left-1/2
+    -translate-x-1/2
+
+    top-[40px]
+    w-[92%]
+    px-0
+
+    min-[700px]:top-[22%]
+    min-[700px]:w-[92%]
+
+    lg:top-[27%]
+    lg:w-[80.83%]
+
+    xl:top-[40%]
+  "
+      >
+        <div
+          className="
+    w-full
+    rounded-xl
+    bg-white
+    shadow-2xl
+
+    p-6
+    pb-20
+
+    min-[700px]:p-6
+    md:p-8
+    md:pb-20
+  "
+        >
           <Tabs
             tabs={HOME_TABS}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
           />
-          <h2 className="mb-2 text-center text-[20px] font-bold text-[#72C0F0] min-[700px]:text-[22px] lg:text-[28px] xl:text-[32px]">
+          <h2 className="mb-3 text-center text-[16px] font-bold text-[#72C0F0] min-[480px]:text-[18px] min-[700px]:text-[22px] lg:text-[28px] xl:text-[32px]">
             Find What You Are Looking For
           </h2>
           {ActiveForm && (
@@ -99,5 +131,6 @@ export default function Hero() {
         </div>
       </div>
     </section>
+
   );
 }

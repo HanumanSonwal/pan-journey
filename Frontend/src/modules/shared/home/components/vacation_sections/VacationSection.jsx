@@ -12,9 +12,9 @@ export default function VacationSection() {
   const [activeTab, setActiveTab] = useState("beach");
 
   return (
-    <SectionWrapper className="mt-0 bg-[#edf7ff] md:mt-[-4px]">
+    <SectionWrapper className="-mt-20 bg-[#edf7ff] md:mt-[-1px]">
       {/* Heading */}
-      <div className="mt-0 mt-[39px] pt-8 min-[375px]:mt-[40px] min-[425px]:mt-[34px] min-[430px]:mt-[16px] min-[430px]:mt-[66px] min-[1440px]:!mt-[59px] min-[2560px]:!mt-[76px] md:mt-[47px] lg:mt-[-39px]">
+      <div className="mt-[9px] pt-8 min-[375px]:mt-[40px] min-[425px]:mt-[34px] min-[430px]:mt-[16px] md:mt-[66px] lg:mt-[-39px] xl:mt-[89px] 2xl:mt-[76px]">
         <SectionHeading
           title="Places As Per Your Vibe"
           description="We're committed to offering more than just products—we provide exceptional experiences."

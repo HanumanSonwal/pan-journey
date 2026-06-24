@@ -15,7 +15,7 @@ export default function DestinationsSection() {
   const activeDestinations =
     destinations[activeTab] || destinations["All Destinations"];
 
-  return (<section className="!mt-[-30px] overflow-hidden bg-[#EDF7FF] px-3 sm:px-4 md:px-6 lg:px-8 xl:px-10 py-0 sm:py-0 md:py-16 text-black">
+  return (<section className="!mt-[-30px] overflow-hidden bg-[#EDF7FF] px-3 sm:px-4 md:px-6 lg:px-8 xl:px-10 py-0 sm:py-0 md:py-0 text-black">
     <div className="mx-auto w-full max-w-[1600px] lg:w-[88.87%]">
       {/* Heading */}
       <SectionHeading

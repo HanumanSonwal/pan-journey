@@ -10,7 +10,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import SidebarFilters from "../cards/SidebarFilters";
 import HotelList from "../components/hotels/HotelList";
 import SearchBar from "../components/hotels/SearchBar";
-import SortBar from "../components/SortBar";
 import DynamicSeoFallback from "../seo/DynamicSeoFallback";
 import HotelsSeoSection from "../seo/HotelsSeoSection";
 import { useHotelSearchStore } from "../store/serchData.store";
@@ -141,7 +140,7 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
     setDraftSearchData,
     setAppliedSearchData,
   ]);
-  const handleSearch = useCallback(() => {}, []);
+  const handleSearch = useCallback(() => { }, []);
   const isFilterActive = useCallback((value) => {
     if (
       value === "" ||
@@ -189,7 +188,7 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
 
         <div className="relative mx-auto mt-[-28px] flex max-w-7xl gap-4 p-3 md:flex-nowrap">
           {/* SIDEBAR */}
-          <div
+          {/* <div
             className={`sticky top-[98px] max-h-[calc(100vh-40px)] w-full overflow-y-auto sm:w-64 md:w-72 ${
               sidebarZ0 ? "z-0" : "z-20"
             }`}
@@ -201,25 +200,24 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
                 setMapOpen(true);
               }}
             />
-          </div>
+          </div> */}
 
           {/* RIGHT CONTENT */}
           <div className="min-w-0 flex-1">
             {/* SORT BAR */}
-            <div
+            {/* <div
               className={`sticky top-[98px] ${
                 sidebarZ0 ? "!-z-10" : "z-20"
               } bg-[#edf7ff]`}
             >
               <SortBar sort={sort} setSort={setSort} />
-            </div>
+            </div> */}
 
             {/* ACTIVE FILTERS */}
             {hasActiveFilters && (
               <div
-                className={`sticky top-[138px] min-[700px]:max-[850px]:top-[155px] ${
-                  sidebarZ0 ? "!-z-10" : "z-12"
-                } bg-[#edf7ff] !pt-[5px]`}
+                className={`sticky top-[138px] min-[700px]:max-[850px]:top-[155px] ${sidebarZ0 ? "!-z-10" : "z-12"
+                  } bg-[#edf7ff] !pt-[5px]`}
               >
                 <div className="!mb-4 flex flex-wrap gap-2">
                   {activeFilters.map(([key, value]) => {
