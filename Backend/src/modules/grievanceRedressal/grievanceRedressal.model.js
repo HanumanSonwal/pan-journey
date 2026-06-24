@@ -25,7 +25,7 @@ const grievanceRedressalSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-       bookingRefIdx  : {
+       BookingRefNo  : {
       type: String,
       required: true,
       trim: true,
@@ -40,7 +40,11 @@ const grievanceRedressalSchema = new mongoose.Schema(
     type: String,
 
   },
-
+ grievanceRedressalid: {
+    type: String,
+    unique: true,
+   
+  },
     supportCategory: {
       type: String,
       enum: ["booking_issue", "refund_request", "payment_issue", "hotel_complaint", "partnership_business","general_query"],
@@ -48,7 +52,16 @@ const grievanceRedressalSchema = new mongoose.Schema(
         required: true,
     },
 
-
+status: {
+  type: String,
+  enum: [
+    "Open",
+    "In Progress",
+    "Resolved",
+    "Closed"
+  ],
+  default: "Open"
+},
  
     
     Type: {
