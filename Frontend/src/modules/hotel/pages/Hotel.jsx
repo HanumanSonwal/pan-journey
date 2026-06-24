@@ -13,6 +13,7 @@ import SearchBar from "../components/hotels/SearchBar";
 import DynamicSeoFallback from "../seo/DynamicSeoFallback";
 import HotelsSeoSection from "../seo/HotelsSeoSection";
 import { useHotelSearchStore } from "../store/serchData.store";
+import SortBar from "../components/SortBar";
 const defaultSearchData = {
   city: "",
   cityData: { id: "" },

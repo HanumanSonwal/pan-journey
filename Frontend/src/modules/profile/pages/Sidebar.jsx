@@ -38,6 +38,11 @@ export default function Sidebar({ activeTab, setActiveTab, horizontal }) {
       icon: <AccountBookOutlined />,
     },
     {
+      key: "support-tickets",
+      label: "Support Tickets",
+      icon: <CustomerServiceOutlined />,
+    },
+    {
       key: "support",
       label: "Help & Support",
       icon: <CustomerServiceOutlined />,

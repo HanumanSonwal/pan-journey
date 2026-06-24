@@ -9,6 +9,7 @@ import BookingDetailsTab from "../components/bookings/BookingDetailsTab";
 import BookingHistoryTab from "../components/bookings/BookingHistoryTab";
 import WishlistTab from "../components/wishlist/WishlistTab";
 import WishlistDetailTab from "../components/wishlist/WishlistDetailTab";
+import SupportTicketsTab from "../components/support-tickets/pages/SupportTicketsTab";
 
 export default function ProfilePage() {
   const searchParams = useSearchParams();
@@ -73,6 +74,7 @@ export default function ProfilePage() {
             )}
 
             {activeTab === "support" && <HelpSupportPage />}
+            {activeTab === "support-tickets" && <SupportTicketsTab />}
           </div>
         </div>
       </div>

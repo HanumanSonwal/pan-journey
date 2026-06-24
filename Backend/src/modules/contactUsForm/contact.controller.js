@@ -100,7 +100,7 @@ export const updateContactAdmin = async (req, res) => {
     const result = await updateContactServiceAdmin(req.params.id, req.body);
 
     if (result?.email) {
-      await sendMail({
+       sendMail({
         to: result.email,
         subject: "Your Support Request Has Been Received",
         html: contactUsTemplate({
