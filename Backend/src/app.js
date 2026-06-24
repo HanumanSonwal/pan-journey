@@ -32,7 +32,7 @@ import testRoutes from "./test.routes.js";
 import {currencyMiddleware} from "./middleware/currency.middleware.js"
 import contactUs from "./modules/contactUsForm/contact.routes.js"
 import support from "./modules/supportContact/support.routes.js"
-
+import newsletter from "./modules/contactUsForm/newsletter.routes.js";
 import grievanceRedressal from "./modules/grievanceRedressal/grievanceRedressal.routes.js"
 
 const app = express();
@@ -81,6 +81,7 @@ app.use("/api/v1/customer/profile", profileRoutes);
 app.use("/api/v1/markup", markeupRoutes);
 app.use("/api/v1/currency", currencyRoutes);
 app.use("/api/v1", testRoutes);
+app.use("/api/v1/newsletter",newsletter)
 app.use("/api/v1", invoiceRoutes);
 app.use("/api/v1", destinationRoutes);
 app.use("/api/v1/customer", customerProfileRoutes);

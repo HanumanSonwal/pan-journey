@@ -1,14 +1,15 @@
 "use client";
 
 import SectionHeading from "@/components/common/SectionHeading";
+import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
 import {
   destinations,
   tabs,
 } from "@/modules/shared/home/components/data/destinationsData";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import ButtonTab from "./vacation_sections/ButtonTab";
-
 export default function DestinationsSection() {
   const [activeTab, setActiveTab] = useState("All Destinations");
 
@@ -94,8 +95,36 @@ export default function DestinationsSection() {
 /* ================= Destination Card ================= */
 
 function DestinationCard({ item }) {
+  const router = useRouter();
+  const { draftSearchData } = useHotelSearchStore();
+  const handleSearch = () => {
+    const citySlug = item?.title
+      ?.trim()
+      ?.toLowerCase()
+      ?.replace(/[^a-z0-9\s-]/g, "")
+      ?.replace(/\s+/g, "-");
+
+    const query = new URLSearchParams({
+      city: citySlug || "",
+      cityName: item?.title || "",
+      cityId: String(item?.id || ""),
+
+      checkIn: draftSearchData?.checkIn || "",
+      checkOut: draftSearchData?.checkOut || "",
+
+      rooms: String(draftSearchData?.rooms || 1),
+      adults: String(draftSearchData?.adults || 2),
+      children: String(draftSearchData?.children || 0),
+
+      pets: draftSearchData?.pets ? "true" : "false",
+    });
+
+    router.push(`/hotels?${query.toString()}`);
+  };
+
   return (
     <div
+      onClick={handleSearch}
       className={`group relative h-[260px] cursor-pointer overflow-hidden rounded-xl shadow-md transition-all duration-500 hover:shadow-xl sm:h-[300px] sm:rounded-2xl md:h-[340px] lg:rounded-[20px] ${item.height} `}
     >
       {/* Image */}
