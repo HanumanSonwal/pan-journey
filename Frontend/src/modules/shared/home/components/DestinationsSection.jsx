@@ -16,14 +16,13 @@ export default function DestinationsSection() {
   const activeDestinations =
     destinations[activeTab] || destinations["All Destinations"];
 
-  return (
-    <section className="!mt-[-30px] overflow-hidden bg-[#EDF7FF] px-3 py-0 text-black sm:px-4 sm:py-0 md:px-6 md:py-16 lg:px-8 xl:px-10">
-      <div className="mx-auto w-full max-w-[1600px] lg:w-[88.87%]">
-        {/* Heading */}
-        <SectionHeading
-          title="Popular Destinations"
-          description="We’re committed to offering more than just products we provide exceptional experiences."
-        />
+  return (<section className="!mt-[-30px] overflow-hidden bg-[#EDF7FF] px-3 sm:px-4 md:px-6 lg:px-8 xl:px-10 py-0 sm:py-0 md:py-0 text-black">
+    <div className="mx-auto w-full max-w-[1600px] lg:w-[88.87%]">
+      {/* Heading */}
+      <SectionHeading
+        title="Popular Destinations"
+        description="We’re committed to offering more than just products we provide exceptional experiences."
+      />
 
         {/* Tabs */}
         <div className="mt-5 flex justify-center">

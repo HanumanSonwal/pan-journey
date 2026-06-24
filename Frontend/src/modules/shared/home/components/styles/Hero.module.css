@@ -19,7 +19,39 @@
   object-fit: contain;
 }
 
-/* Tablet */
+/* ===================== Mobile Only ===================== */
+@media (max-width: 699px) {
+  .heroBg {
+    height: 580px;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .heroBg img {
+    width: 92%;
+    max-width: 100%;
+    height: auto;
+    max-height: 190px;
+    object-fit: contain;
+  }
+
+  .cardWrapper {
+    width: calc(100% - 4px);
+    max-width: 420px;
+    margin: -95px auto 0;
+    padding: 0 12px;
+    position: relative;
+    z-index: 10;
+  }
+
+  .custom-scroll {
+    padding-bottom: 4px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ===================== Tablet ===================== */
 @media (min-width: 700px) and (max-width: 1024px) {
   .heroBg {
     height: 350px !important;
@@ -34,7 +66,7 @@
   }
 }
 
-/* Small Laptop */
+/* ===================== Small Laptop ===================== */
 @media (min-width: 1025px) and (max-width: 1280px) {
   .heroBg {
     height: 650px !important;
@@ -45,18 +77,19 @@
   }
 }
 
-/* Overlay */
+/* ===================== Overlay ===================== */
 .heroBg::after {
   content: "";
   position: absolute;
   inset: 0;
 }
 
-/* Default Desktop */
+/* ===================== Desktop ===================== */
 .cardWrapper {
   margin-top: -520px;
 }
 
+/* ===================== Scroll ===================== */
 .custom-scroll {
   width: 100%;
   max-width: 100%;
