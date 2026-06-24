@@ -12,7 +12,7 @@ export  const tabs = [
 export const destinations = {
   "All Destinations": [
     {
-      id: 1,
+      id: 246754,
       title: "Udaipur",
       subtitle: "City of Lakes and Royal Palaces",
       image:
@@ -20,7 +20,7 @@ export const destinations = {
       height: "h-[260px] md:h-[320px]",
     },
     {
-      id: 2,
+      id: 228284,
       title: "Malé",
       subtitle: "Crystal Clear Beaches and Luxury Resorts",
       image:
@@ -28,7 +28,7 @@ export const destinations = {
       height: "h-[260px] md:h-[320px]",
     },
     {
-      id: 3,
+      id: 358095,
       title: "Bali",
       subtitle: "Tropical Paradise with Stunning Temples",
       image:
@@ -36,7 +36,7 @@ export const destinations = {
       height: "h-[260px] md:h-[420px]",
     },
     {
-      id: 4,
+      id: 329297,
       title: "Hanoi",
       subtitle: "Historic Streets and Authentic Culture",
       image:
@@ -44,7 +44,7 @@ export const destinations = {
       height: "h-[260px] md:h-[420px]",
     },
     {
-      id: 5,
+      id: 437162,
       title: "London",
       subtitle: "Iconic Landmarks and Timeless Charm",
       image:
@@ -52,7 +52,7 @@ export const destinations = {
       height: "h-[260px] md:h-[420px]",
     },
     {
-      id: 6,
+      id: 221688,
       title: "Dubai",
       subtitle: "Luxury Skylines and Desert Adventures",
       image:
@@ -60,7 +60,7 @@ export const destinations = {
       height: "h-[260px] md:h-[320px]",
     },
     {
-      id: 7,
+      id: 281988,
       title: "Phuket",
       subtitle: "Beautiful Beaches and Island Nightlife",
       image:
@@ -68,7 +68,7 @@ export const destinations = {
       height: "h-[260px] md:h-[320px]",
     },
     {
-      id: 8,
+      id: 227736,
       title: "Jaipur",
       subtitle: "Pink City Filled with Royal Heritage",
       image:
@@ -76,7 +76,7 @@ export const destinations = {
       height: "h-[260px] md:h-[420px]",
     },
     {
-      id: 9,
+      id: 328687,
       title: "Seminyak",
       subtitle: "Luxury Villas and Sunset Beach Views",
       image:
@@ -84,7 +84,7 @@ export const destinations = {
       height: "h-[260px] md:h-[420px]",
     },
     {
-      id: 10,
+      id: 281987,
       title: "Bangkok",
       subtitle: "Street Food Heaven and Vibrant Markets",
       image:
@@ -95,7 +95,7 @@ export const destinations = {
 
   India: [
     {
-      id: 1,
+      id: 227736,
       title: "Jaipur",
       subtitle: "Royal Forts and Colorful Heritage Streets",
       image:
@@ -103,7 +103,7 @@ export const destinations = {
       height: "h-[260px] md:h-[320px]",
     },
     {
-      id: 2,
+      id: 246754,
       title: "Udaipur",
       subtitle: "Romantic Lakeside City with Palaces",
       image:
@@ -111,7 +111,7 @@ export const destinations = {
       height: "h-[260px] md:h-[320px]",
     },
     {
-      id: 3,
+      id: 328959,
       title: "Goa",
       subtitle: "Golden Beaches and Vibrant Nightlife",
       image:
@@ -119,7 +119,7 @@ export const destinations = {
       height: "h-[260px] md:h-[420px]",
     },
     {
-      id: 4,
+      id: 329184,
       title: "Kerala",
       subtitle: "Backwaters, Nature, and Peaceful Resorts",
       image:
@@ -127,7 +127,7 @@ export const destinations = {
       height: "h-[260px] md:h-[420px]",
     },
     {
-      id: 5,
+      id: 334045,
       title: "Manali",
       subtitle: "Snowy Mountains and Adventure Escapes",
       image:
@@ -135,7 +135,7 @@ export const destinations = {
       height: "h-[260px] md:h-[420px]",
     },
     {
-      id: 6,
+      id: 357389,
       title: "Mumbai",
       subtitle: "City of Dreams and Marine Drive",
       image:
@@ -143,7 +143,7 @@ export const destinations = {
       height: "h-[260px] md:h-[320px]",
     },
     {
-      id: 7,
+      id: 246663,
       title: "Agra",
       subtitle: "Home of the Beautiful Taj Mahal",
       image:
@@ -151,7 +151,7 @@ export const destinations = {
       height: "h-[260px] md:h-[320px]",
     },
     {
-      id: 8,
+      id: 329199,
       title: "Rishikesh",
       subtitle: "Yoga Capital Beside the Ganges River",
       image:
@@ -159,7 +159,7 @@ export const destinations = {
       height: "h-[260px] md:h-[420px]",
     },
     {
-      id: 9,
+      id: 227728,
       title: "Leh Ladakh",
       subtitle: "High Mountain Roads and Scenic Valleys",
       image:
@@ -167,7 +167,7 @@ export const destinations = {
       height: "h-[260px] md:h-[420px]",
     },
     {
-      id: 10,
+      id: 227738,
       title: "Jodhpur",
       subtitle: "Blue City with Historic Fort Views",
       image:
@@ -178,7 +178,7 @@ export const destinations = {
 
   Maldives: [
     {
-      id: 1,
+      id: 228284,
       title: "Malé",
       subtitle: "Luxury Resorts and Crystal Blue Waters",
       image:
@@ -186,7 +186,7 @@ export const destinations = {
       height: "h-[260px] md:h-[320px]",
     },
     {
-      id: 2,
+      id: 334967,
       title: "Maafushi",
       subtitle: "Affordable Island Escapes with Beaches",
       image:
@@ -194,7 +194,7 @@ export const destinations = {
       height: "h-[260px] md:h-[320px]",
     },
     {
-      id: 3,
+      id: 282597,
       title: "Vaadhoo Island",
       subtitle: "Famous Glowing Beach Under the Stars",
       image:
@@ -202,7 +202,7 @@ export const destinations = {
       height: "h-[260px] md:h-[420px]",
     },
     {
-      id: 4,
+      id: 334945,
       title: "Hulhumale",
       subtitle: "Relaxing Beaches and Luxury Villas",
       image:
@@ -210,7 +210,7 @@ export const destinations = {
       height: "h-[260px] md:h-[420px]",
     },
     {
-      id: 5,
+      id: 359351,
       title: "Baa Atoll",
       subtitle: "Scenic Coral Reefs and Diving Adventures",
       image:
@@ -221,7 +221,7 @@ export const destinations = {
 
   Bali: [
     {
-      id: 1,
+      id: 227633,
       title: "Ubud",
       subtitle: "Rice Terraces and Jungle Retreats",
       image:
@@ -229,7 +229,7 @@ export const destinations = {
       height: "h-[260px] md:h-[320px]",
     },
     {
-      id: 2,
+      id: 328687,
       title: "Seminyak",
       subtitle: "Luxury Villas and Sunset Beaches",
       image:
@@ -237,7 +237,7 @@ export const destinations = {
       height: "h-[260px] md:h-[320px]",
     },
     {
-      id: 3,
+      id: 227536,
       title: "Kuta",
       subtitle: "Surfing Paradise with Vibrant Nightlife",
       image:
@@ -245,7 +245,7 @@ export const destinations = {
       height: "h-[260px] md:h-[420px]",
     },
     {
-      id: 4,
+      id: 350677,
       title: "Nusa Penida",
       subtitle: "Cliffside Views and Hidden Beaches",
       image:
@@ -253,7 +253,7 @@ export const destinations = {
       height: "h-[260px] md:h-[420px]",
     },
     {
-      id: 5,
+      id: 328867,
       title: "Canggu",
       subtitle: "Trendy Cafes and Peaceful Coastal Vibes",
       image:
@@ -264,7 +264,7 @@ export const destinations = {
 
   Vietnam: [
     {
-      id: 1,
+      id: 329297,
       title: "Hanoi",
       subtitle: "Historic Streets and Rich Local Culture",
       image:
@@ -272,7 +272,7 @@ export const destinations = {
       height: "h-[260px] md:h-[320px]",
     },
     {
-      id: 2,
+      id: 348466,
       title: "Da Nang",
       subtitle: "Beautiful Beaches and Modern City Views",
       image:
@@ -280,7 +280,7 @@ export const destinations = {
       height: "h-[260px] md:h-[320px]",
     },
     {
-      id: 3,
+      id: 246665,
       title: "Ho Chi Minh City",
       subtitle: "Bustling Markets and Vibrant Nightlife",
       image:
@@ -288,7 +288,7 @@ export const destinations = {
       height: "h-[260px] md:h-[420px]",
     },
     {
-      id: 4,
+      id: 327840,
       title: "Ha Long Bay",
       subtitle: "Scenic Limestone Islands and Cruises",
       image:
@@ -296,7 +296,7 @@ export const destinations = {
       height: "h-[260px] md:h-[420px]",
     },
     {
-      id: 5,
+      id: 328592,
       title: "Hoi An",
       subtitle: "Lantern Streets and Riverside Charm",
       image:
@@ -307,7 +307,7 @@ export const destinations = {
 
   London: [
     {
-      id: 1,
+      id: 486729,
       title: "Central London",
       subtitle: "Historic Landmarks and City Attractions",
       image:
@@ -315,7 +315,7 @@ export const destinations = {
       height: "h-[260px] md:h-[320px]",
     },
     {
-      id: 2,
+      id: 149004,
       title: "Camden",
       subtitle: "Street Markets and Musical Culture",
       image:
@@ -323,7 +323,7 @@ export const destinations = {
       height: "h-[260px] md:h-[320px]",
     },
     {
-      id: 3,
+      id: 78112,
       title: "Notting Hill",
       subtitle: "Colorful Streets and Stylish Cafes",
       image:
@@ -331,7 +331,7 @@ export const destinations = {
       height: "h-[260px] md:h-[420px]",
     },
     {
-      id: 4,
+      id: 52545,
       title: "Greenwich",
       subtitle: "Riverside Views and Historic Architecture",
       image:
@@ -339,7 +339,7 @@ export const destinations = {
       height: "h-[260px] md:h-[420px]",
     },
     {
-      id: 5,
+      id: 153794,
       title: "Chelsea",
       subtitle: "Luxury Shopping and Elegant Streets",
       image:
@@ -350,7 +350,7 @@ export const destinations = {
 
   Dubai: [
     {
-      id: 1,
+      id: 222906,
       title: "Downtown Dubai",
       subtitle: "Luxury Towers and Burj Khalifa Views",
       image:
@@ -358,7 +358,7 @@ export const destinations = {
       height: "h-[260px] md:h-[320px]",
     },
     {
-      id: 2,
+      id: 221946,
       title: "Palm Jumeirah",
       subtitle: "Luxury Resorts and Beachfront Living",
       image:
@@ -366,7 +366,7 @@ export const destinations = {
       height: "h-[260px] md:h-[320px]",
     },
     {
-      id: 3,
+      id: 222753,
       title: "Dubai Marina",
       subtitle: "Modern Skyline and Waterfront Dining",
       image:
@@ -374,26 +374,18 @@ export const destinations = {
       height: "h-[260px] md:h-[420px]",
     },
     {
-      id: 4,
+      id: 219841,
       title: "Jumeirah",
       subtitle: "Beachside Cafes and Relaxing Atmosphere",
       image:
         "https://images.unsplash.com/photo-1496417263034-38ec4f0b665a",
       height: "h-[260px] md:h-[420px]",
     },
-    {
-      id: 5,
-      title: "Desert Safari",
-      subtitle: "Adventure Dunes and Arabian Experiences",
-      image:
-        "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-      height: "h-[260px] md:h-[420px]",
-    },
   ],
 
   Thailand: [
     {
-      id: 1,
+      id: 282789,
       title: "Bangkok",
       subtitle: "Street Food and Vibrant Night Markets",
       image:
@@ -401,7 +393,7 @@ export const destinations = {
       height: "h-[260px] md:h-[320px]",
     },
     {
-      id: 2,
+      id: 281988,
       title: "Phuket",
       subtitle: "Luxury Beaches and Island Adventures",
       image:
@@ -409,7 +401,7 @@ export const destinations = {
       height: "h-[260px] md:h-[320px]",
     },
     {
-      id: 3,
+      id: 327812,
       title: "Krabi",
       subtitle: "Limestone Cliffs and Crystal Waters",
       image:
@@ -417,7 +409,7 @@ export const destinations = {
       height: "h-[260px] md:h-[420px]",
     },
     {
-      id: 4,
+      id: 329381,
       title: "Pattaya",
       subtitle: "Beachfront Entertainment and Water Activities",
       image:
@@ -425,7 +417,7 @@ export const destinations = {
       height: "h-[260px] md:h-[420px]",
     },
     {
-      id: 5,
+      id: 329376,
       title: "Chiang Mai",
       subtitle: "Mountain Temples and Peaceful Nature Escapes",
       image:
