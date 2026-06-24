@@ -7,3 +7,9 @@ export const getContactQuery = async (params = {}) => {
 
   return res.data;
 };
+
+export const updateContactStatus = async (id, payload) => {
+  const res = await api.patch(`/admin/update-contact/${id}`, payload);
+
+  return res.data;
+};

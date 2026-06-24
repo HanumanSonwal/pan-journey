@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  CheckCircleOutlined,
-  HeartOutlined,
-  ShareAltOutlined,
-} from "@ant-design/icons";
+import { HeartOutlined, ShareAltOutlined } from "@ant-design/icons";
 import { Card } from "antd";
 import { useEffect, useMemo, useState } from "react";
 
@@ -232,21 +228,19 @@ function HotelDetails({ initialPayload = null, cms = null }) {
             <Card className="overflow-hidden rounded-md border-0 shadow-lg">
               {/* HEADER */}
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div className="flex min-w-0 items-start gap-3">
-                  <div className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#eef8fd]">
-                    <CheckCircleOutlined className="text-[18px] text-[#5bb7ec]!" />
-                  </div>
-
-                  <div className="min-w-0">
-                    <h1 className="mb-1! text-[26px] font-semibold text-[#303030]">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <h1 className="text-[26px] font-semibold text-[#303030]">
                       {supplierData?.HotelName || "Hotel Name"}
                     </h1>
 
-                    <p className="mt-1! text-sm text-gray-500">
-                      {[supplierData?.City, supplierData?.Country]
-                        .filter(Boolean)
-                        .join(", ")}
-                    </p>
+                    {(supplierData?.City || supplierData?.Country) && (
+                      <span className="rounded-full bg-[#eef8fd] px-3 py-1 text-sm font-medium text-[#5bb7ec]">
+                        {[supplierData?.City, supplierData?.Country]
+                          .filter(Boolean)
+                          .join(", ")}
+                      </span>
+                    )}
                   </div>
                 </div>
 

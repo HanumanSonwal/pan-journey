@@ -120,3 +120,30 @@ body {
 .booking-radio .ant-radio-checked::after {
   border-color: #0f6a75 !important;
 }
+
+.mmt-gallery-modal {
+  top: 0 !important;
+}
+
+.mmt-gallery-modal .ant-modal {
+  max-width: 100vw !important;
+  width: 100vw !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.mmt-gallery-modal .ant-modal-content {
+  background: #000 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
+.mmt-gallery-modal .ant-modal-body {
+  background: #000 !important;
+  padding: 0 !important;
+}
+
+.mmt-gallery-modal .ant-modal-close {
+  display: none;
+}

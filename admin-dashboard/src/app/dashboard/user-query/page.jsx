@@ -2,149 +2,207 @@
 
 import TableFilters from "@/modules/shared/components/TableFilters";
 import { usePermission } from "@/modules/shared/hooks/usePermission";
-import { getContactQuery } from "@/modules/User-Query/api/query.service";
+import { useContactQuery } from "@/modules/User-Query/hook/useContactQuery";
+import { useUpdateContactStatus } from "@/modules/User-Query/hook/useUpdateContactStatus";
+import { EyeOutlined } from "@ant-design/icons";
 import {
-  GoogleOutlined,
-  MailOutlined,
-  MobileOutlined,
-} from "@ant-design/icons";
-import {
-  Avatar,
+  App,
+  Button,
   Card,
   Empty,
+  Modal,
+  Select,
   Space,
   Table,
   Tag,
-  Tooltip,
   Typography,
 } from "antd";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
+
 export default function CustomersPage() {
-  const [open, setOpen] = useState(false);
-  const [editData, setEditData] = useState(null);
+  const [tableData, setTableData] = useState([]);
+  const [updatingId, setUpdatingId] = useState(null);
   const [search, setSearch] = useState("");
-  const [debouncedSearch] = useDebounce(search, 500);
   const [status, setStatus] = useState();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
-  const [sortBy, setSortBy] = useState("createdAt");
-  const [order, setOrder] = useState("desc");
-  const { canRead, canCreate, canEdit, isAdmin } = usePermission("users");
+  const [messageModalOpen, setMessageModalOpen] = useState(false);
+  const [selectedMessage, setSelectedMessage] = useState("");
+
+  const [debouncedSearch] = useDebounce(search, 500);
+  const { message } = App.useApp();
+  const { canRead, isAdmin } = usePermission("users");
   const canFetch = canRead || isAdmin;
 
-  useEffect(() => {
-    setPage(1);
-  }, [debouncedSearch]);
-
-  const { data, isLoading } = getContactQuery({
+  // FIRST: query call
+  const { data, isLoading } = useContactQuery({
     search: debouncedSearch,
     page,
     limit,
     isActive: status,
-    sortBy,
-    order,
   });
 
-  console.log("data in userquery", data);
+  // SECOND: mutation
+  const { mutate: updateStatus, isPending } = useUpdateContactStatus();
+  const statusOptions = ["Open", "In Progress", "Resolved", "Closed"];
+  // THIRD: sync local table state
+  useEffect(() => {
+    setTableData(data?.data?.contacts || []);
+  }, [data]);
 
-  const customers = data?.contacts || [];
+  // FOURTH: reset page on search
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch]);
 
+  const customers = tableData;
   const hasActiveFilters = status !== undefined || search?.trim();
 
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Open":
+        return "blue";
+      case "In Progress":
+        return "orange";
+      case "Resolved":
+        return "green";
+      case "Closed":
+        return "red";
+      default:
+        return "default";
+    }
+  };
   const columns = [
     {
-      title: "avtar",
-      width: 70,
-      render: (_, r) => <Avatar src={r.avatar}>{r.name?.charAt(0)}</Avatar>,
+      title: "Name",
+      dataIndex: "fullName",
+      width: 180,
+      render: (value) => value || "-",
     },
-
     {
-      title: "Customer",
-      render: (_, r) => (
-        <Space orientation="vertical" size={0}>
-          <span>{r.fullName || "-"}</span>
-          <Typography.Text type="secondary">{r.email}</Typography.Text>
+      title: "Email",
+      dataIndex: "email",
+      width: 280,
+      render: (value) => (
+        <Typography.Text
+          copyable
+          ellipsis={{ tooltip: value }}
+          style={{
+            maxWidth: 220,
+            display: "inline-block",
+          }}
+        >
+          {value || "-"}
+        </Typography.Text>
+      ),
+    },
+    {
+      title: "Type",
+      dataIndex: "Type",
+      width: 120,
+      render: (value) => <Tag color="magenta">{value || "-"}</Tag>,
+    },
+    {
+      title: "Ticket ID",
+      dataIndex: "ticketId",
+      width: 150,
+      render: (value) => (value ? <Tag color="gold">{value}</Tag> : "-"),
+    },
+    {
+      title: "Subject",
+      dataIndex: "subject",
+      width: 180,
+      render: (value) => <Tag color="purple">{value || "-"}</Tag>,
+    },
+    {
+      title: "Message",
+      dataIndex: "message",
+      width: 100,
+      render: (value) => (
+        <Space size={4}>
+          <Typography.Text
+            ellipsis={{ tooltip: value }}
+            style={{
+              maxWidth: 100,
+              display: "inline-block",
+            }}
+          >
+            {value}
+          </Typography.Text>
+
+          <Button
+            type="text"
+            size="small"
+            icon={<EyeOutlined />}
+            onClick={() => {
+              setSelectedMessage(value);
+              setMessageModalOpen(true);
+            }}
+          />
         </Space>
       ),
-      sorter: true,
     },
-
     {
-      title: "Mobile",
-      dataIndex: "mobile",
-      render: (val) => val || "-",
+      title: "Booking Ref",
+      dataIndex: "BookingRefNo",
+      width: 170,
+      render: (value) => (value ? <Tag color="geekblue">{value}</Tag> : "-"),
     },
-
     {
-      title: "City",
-      dataIndex: "city",
-      render: (val) => val || "-",
-    },
-
-    {
-      title: "Provider",
-      render: (_, r) => {
-        const icons = {
-          google: {
-            icon: <GoogleOutlined />,
-            color: "#DB4437",
-            title: "Google",
-          },
-          email: {
-            icon: <MailOutlined />,
-            color: "#2563EB",
-            title: "Email",
-          },
-          otp: {
-            icon: <MobileOutlined />,
-            color: "#059669",
-            title: "OTP",
-          },
-        };
-
-        return (
-          <Space size={12}>
-            {r.providers?.map((p) => {
-              const item = icons[p];
-              if (!item) return null;
-
-              return (
-                <Tooltip key={p} title={item.title}>
-                  <span
-                    style={{
-                      color: item.color,
-                      fontSize: 18,
-                      cursor: "pointer",
-                    }}
-                  >
-                    {item.icon}
-                  </span>
-                </Tooltip>
-              );
-            })}
-          </Space>
-        );
-      },
+      title: "Category",
+      dataIndex: "supportCategory",
+      width: 180,
+      render: (value) => (
+        <Tag color="cyan">{value?.replaceAll("_", " ") || "-"}</Tag>
+      ),
     },
     {
       title: "Status",
-      dataIndex: "isActive",
-      render: (val) =>
-        val ? <Tag color="green">Active</Tag> : <Tag color="red">Inactive</Tag>,
-    },
+      dataIndex: "status",
+      width: 180,
+      render: (value, record) => (
+        <Select
+          size="small"
+          value={value}
+          style={{ width: 150 }}
+          loading={updatingId === record._id}
+          onChange={(status) => {
+            setTableData((prev) =>
+              prev.map((item) =>
+                item._id === record._id ? { ...item, status } : item,
+              ),
+            );
 
+            updateStatus({
+              id: record._id,
+              payload: {
+                status,
+              },
+            });
+          }}
+          options={statusOptions.map((item) => ({
+            value: item,
+            label: <Tag color={getStatusColor(item)}>{item}</Tag>,
+          }))}
+        />
+      ),
+    },
     {
       title: "Created",
       dataIndex: "createdAt",
-      render: (val) => new Date(val).toLocaleDateString("en-IN"),
+      width: 180,
+      render: (value) => (
+        <Typography.Text type="secondary">
+          {new Date(value).toLocaleString("en-IN")}
+        </Typography.Text>
+      ),
     },
   ];
-
   return (
     <Card title="Customers Management">
       {canFetch ? (
-        <div style={{ width: "100%", overflowX: "auto" }}>
+        <div style={{ width: "100%" }}>
           <TableFilters
             search={search}
             setSearch={setSearch}
@@ -164,28 +222,41 @@ export default function CustomersPage() {
             columns={columns}
             dataSource={customers}
             rowKey="_id"
-            scroll={{ x: 900 }}
+            scroll={{ x: 1600 }}
             pagination={{
               current: page,
               pageSize: limit,
-              total: data?.meta?.total,
+              total: data?.data?.pagination?.total,
               showSizeChanger: true,
               onChange: (page, size) => {
                 setPage(page);
                 setLimit(size);
               },
             }}
-            onChange={(pagination, filters, sorter) => {
-              if (!Array.isArray(sorter) && sorter.field) {
-                setSortBy(sorter.field);
-                setOrder(sorter.order === "ascend" ? "asc" : "desc");
-              }
-            }}
           />
         </div>
       ) : (
         <Empty description="No permission to view data" />
       )}
+
+      <Modal
+        title="User Message"
+        open={messageModalOpen}
+        footer={null}
+        onCancel={() => setMessageModalOpen(false)}
+        width={700}
+      >
+        <Typography.Paragraph
+          style={{
+            whiteSpace: "pre-wrap",
+            marginBottom: 0,
+            maxHeight: "400px",
+            overflowY: "auto",
+          }}
+        >
+          {selectedMessage}
+        </Typography.Paragraph>
+      </Modal>
     </Card>
   );
 }
