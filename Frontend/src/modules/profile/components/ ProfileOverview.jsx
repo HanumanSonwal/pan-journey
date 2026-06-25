@@ -26,24 +26,30 @@ import {
   maritalStatusOptions,
 } from "@/modules/shared/home/components/data/profileData";
 
+import RHFPhoneInput from "@/components/ui/RHFinputs/RHFPhoneInput";
 import { profileSchema } from "../schema/profileValidation";
 
-const ViewField = memo(({ label, value, type }) => (
-  <div className="space-y-[2px]">
+const ViewField = memo(({ label, value, type, prefix }) => (
+  <div className="space-y-1">
     <p className="text-[14px] font-medium text-[#4b4b4b]">{label}</p>
-    <p className="text-[16px] font-semibold text-[#1f1f1f]">
-      {value !== null && value !== undefined && value !== "" ? (
-        type === "date" ? (
+
+    {value !== null && value !== undefined && value !== "" ? (
+      <div className="flex items-center gap-1 text-[16px] font-semibold text-[#1f1f1f]">
+        {type === "date" ? (
           dayjs(value).format("DD MMM YYYY")
         ) : (
-          String(value)
-        )
-      ) : (
-        <span className="text-[13px] font-medium text-[#63B3ED]">
-          Add {label}
-        </span>
-      )}
-    </p>
+          <>
+            {prefix && <span className="text-[#63B3ED]">{prefix}</span>}
+
+            <span>{value}</span>
+          </>
+        )}
+      </div>
+    ) : (
+      <span className="text-[13px] font-medium text-[#63B3ED]">
+        Add {label}
+      </span>
+    )}
   </div>
 ));
 
@@ -101,7 +107,11 @@ const VerifySection = ({
     <>
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
         <div className="w-full">
-          <RHFInput name={name} label={label} />
+          {name === "mobile" ? (
+            <RHFPhoneInput name="mobile" codeName="phoneCode" label={label} />
+          ) : (
+            <RHFInput name={name} label={label} />
+          )}
         </div>
 
         <Button
@@ -147,6 +157,7 @@ const defaultValues = {
   gender: "",
   email: "",
   mobile: "",
+  phoneCode: "+91",
   city: "",
   state: "",
   nationality: "",
@@ -268,6 +279,8 @@ export default function ProfileOverview() {
   const [emailVerified, setEmailVerified] = useState(false);
   const [mobileVerified, setMobileVerified] = useState(false);
 
+  console.log("USER: in profile section", user);
+
   // ================= FORM =================
 
   const methods = useForm({
@@ -387,6 +400,7 @@ export default function ProfileOverview() {
       gender: user.gender || "",
       email: user.email || "",
       mobile: user.mobile || "",
+      phoneCode: user.phoneCode || "+91",
       city: user.city || "",
       state: user.state || "",
       nationality: user.nationality || "",
@@ -417,17 +431,41 @@ export default function ProfileOverview() {
 
   // ================= SUBMIT =================
 
-  const onSubmit = (data) =>
+  const originalEmail = user?.email || "";
+  const originalMobile = user?.mobile || "";
+  const emailChanged = formValues.email !== user?.email;
+  const mobileChanged = formValues.mobile !== user?.mobile;
+
+  const canSave =
+    (!emailChanged || emailVerified) && (!mobileChanged || mobileVerified);
+
+  const onSubmit = (data) => {
+    const emailChanged = data.email !== originalEmail;
+    const mobileChanged = data.mobile !== originalMobile;
+
+    if (emailChanged && !emailVerified) {
+      message.error("Please verify your email first.");
+      return;
+    }
+
+    if (mobileChanged && !mobileVerified) {
+      message.error("Please verify your mobile number first.");
+      return;
+    }
+
     updateProfile.mutate(buildPayload(data, user), {
       onSuccess: () => {
         message.success("Profile updated successfully");
         setIsEdit(false);
       },
-      onError: () => message.error("Failed to update profile"),
+      onError: () => {
+        message.error("Failed to update profile");
+      },
     });
+  };
 
   // ================= VIEW FIELD =================
-
+  const phoneCode = formValues.phoneCode || "+91";
   return (
     <div className="min-h-screen">
       <div className="bg-white p-5">
@@ -512,7 +550,12 @@ export default function ProfileOverview() {
                     setVerified={setMobileVerified}
                   />
                 ) : (
-                  <ViewField label="Mobile Number" value={formValues.mobile} />
+                  // <ViewField label="Mobile Number" value={formValues.mobile} />
+                  <ViewField
+                    label="Mobile Number"
+                    value={formValues.mobile}
+                    prefix={phoneCode}
+                  />
                 )}
               </div>
             </div>
@@ -529,6 +572,7 @@ export default function ProfileOverview() {
                 <Button
                   htmlType="submit"
                   type="primary"
+                  disabled={!canSave}
                   loading={updateProfile.isPending}
                   className="!h-[42px] !border-none !px-6"
                   style={{

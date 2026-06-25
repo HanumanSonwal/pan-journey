@@ -10,33 +10,20 @@ export const profileSchema = z
       .trim()
       .min(1, "First name required")
       .max(50, "Maximum 50 characters allowed")
-      .regex(
-        /^[A-Za-z\s]+$/,
-        "Only alphabets are allowed"
-      ),
+      .regex(/^[A-Za-z\s]+$/, "Only alphabets are allowed"),
 
     lastName: z
       .string()
       .trim()
-      .max(
-        50,
-        "Maximum 50 characters allowed"
-      )
-      .regex(
-        /^[A-Za-z\s]*$/,
-        "Only alphabets are allowed"
-      )
+      .max(50, "Maximum 50 characters allowed")
+      .regex(/^[A-Za-z\s]*$/, "Only alphabets are allowed")
       .optional(),
 
-    gender: z.enum(
-      ["Male", "Female", "Other"],
-      {
-        errorMap: () => ({
-          message:
-            "Please select valid gender",
-        }),
-      }
-    ),
+    gender: z.enum(["Male", "Female", "Other"], {
+      errorMap: () => ({
+        message: "Please select valid gender",
+      }),
+    }),
 
     email: z
       .string()
@@ -47,41 +34,20 @@ export const profileSchema = z
     mobile: z
       .string()
       .trim()
-      .min(
-        1,
-        "Mobile number is required"
-      )
-      .regex(
-        /^[6-9]\d{9}$/,
-        "Invalid mobile number"
-      ),
+      .min(1, "Mobile number is required")
+      .regex(/^[6-9]\d{9}$/, "Invalid mobile number"),
 
-    nationality: z
-      .string()
-      .min(1, "Nationality required"),
+    nationality: z.string().min(1, "Nationality required"),
 
-    state: z
-      .string()
-      .min(1, "State required"),
+    state: z.string().min(1, "State required"),
 
-    city: z
-      .string()
-      .min(1, "City required"),
+    city: z.string().min(1, "City required"),
 
-    maritalStatus: z.enum(
-      [
-        "Single",
-        "Married",
-        "Divorced",
-        "Widowed",
-      ],
-      {
-        errorMap: () => ({
-          message:
-            "Please select marital status",
-        }),
-      }
-    ),
+    maritalStatus: z.enum(["Single", "Married", "Divorced", "Widowed"], {
+      errorMap: () => ({
+        message: "Please select marital status",
+      }),
+    }),
 
     dateOfBirth: z
       .any()
@@ -90,104 +56,70 @@ export const profileSchema = z
         (date) => {
           if (!date) return false;
 
-          return dayjs(date).isBefore(
-            dayjs(),
-            "day"
-          );
+          return dayjs(date).isBefore(dayjs(), "day");
         },
         {
-          message:
-            "Future date not allowed",
-        }
+          message: "Future date not allowed",
+        },
       ),
 
-    anniversary: z
-      .any()
-      .nullable()
-      .optional(),
+    anniversary: z.any().nullable().optional(),
   })
 
   .refine(
     (data) => {
-      if (
-        !data.nationality ||
-        !data.state ||
-        !data.city
-      ) {
+      if (!data.nationality || !data.state || !data.city) {
         return true;
       }
 
       return (
-        countryStateCityData[
-          data.nationality
-        ]?.[
-          data.state
-        ]?.includes(data.city) || false
+        countryStateCityData[data.nationality]?.[data.state]?.includes(
+          data.city,
+        ) || false
       );
     },
     {
-      message:
-        "Selected city does not belong to selected state",
+      message: "Selected city does not belong to selected state",
       path: ["city"],
-    }
+    },
   )
 
   .refine(
     (data) => {
-      if (
-        data.maritalStatus ===
-        "Single"
-      ) {
+      if (data.maritalStatus === "Single") {
         return !data.anniversary;
       }
 
       return true;
     },
     {
-      message:
-        "Single person cannot add anniversary date",
+      message: "Single person cannot add anniversary date",
       path: ["anniversary"],
-    }
+    },
   )
 
   .refine(
     (data) => {
-      if (
-        !data.dateOfBirth ||
-        !data.anniversary
-      ) {
+      if (!data.dateOfBirth || !data.anniversary) {
         return true;
       }
 
-      return dayjs(
-        data.anniversary
-      ).isAfter(
-        dayjs(data.dateOfBirth),
-        "day"
-      );
+      return dayjs(data.anniversary).isAfter(dayjs(data.dateOfBirth), "day");
     },
     {
-      message:
-        "Anniversary cannot be before date of birth",
+      message: "Anniversary cannot be before date of birth",
       path: ["anniversary"],
-    }
+    },
   )
 
   .refine(
     (data) => {
-      if (!data.anniversary)
-        return true;
+      if (!data.anniversary) return true;
 
-      return dayjs(
-        data.anniversary
-      ).isBefore(
-        dayjs(),
-        "day"
-      );
+      return !dayjs(data.anniversary).isAfter(dayjs(), "day");
     },
     {
-      message:
-        "Anniversary cannot be in future",
+      message: "Anniversary cannot be in future",
       path: ["anniversary"],
-    }
+    },
   );

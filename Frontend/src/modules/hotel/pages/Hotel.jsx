@@ -10,10 +10,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import SidebarFilters from "../cards/SidebarFilters";
 import HotelList from "../components/hotels/HotelList";
 import SearchBar from "../components/hotels/SearchBar";
+import SortBar from "../components/SortBar";
 import DynamicSeoFallback from "../seo/DynamicSeoFallback";
 import HotelsSeoSection from "../seo/HotelsSeoSection";
 import { useHotelSearchStore } from "../store/serchData.store";
-import SortBar from "../components/SortBar";
 const defaultSearchData = {
   city: "",
   cityData: { id: "" },

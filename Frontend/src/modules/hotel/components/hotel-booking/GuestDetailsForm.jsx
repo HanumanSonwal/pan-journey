@@ -7,6 +7,7 @@ import { Card, ConfigProvider, Radio, Typography } from "antd";
 import { forwardRef, useImperativeHandle, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
+import RHFPhoneInput from "@/components/ui/RHFinputs/RHFPhoneInput";
 import { primaryGuestSchema } from "../../schema/guest.schema";
 import AddGuestModal from "./AddGuestModal";
 
@@ -24,6 +25,7 @@ const GuestDetailsForm = forwardRef(({ onSubmit }, ref) => {
       lastName: "",
       email: "",
       mobile: "",
+      phoneCode: "+91",
     },
   });
 
@@ -107,7 +109,11 @@ const GuestDetailsForm = forwardRef(({ onSubmit }, ref) => {
 
               <RHFInput name="email" label="Email" />
 
-              <RHFInput name="mobile" label="Mobile No." />
+              <RHFPhoneInput
+                name="mobile"
+                codeName="phoneCode"
+                label="Mobile No."
+              />
             </div>
 
             {!!guests.length && (
