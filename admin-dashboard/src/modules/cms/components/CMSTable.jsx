@@ -12,6 +12,8 @@ export default function CMSTable({
   isLoading,
   deleteCMS,
 }) {
+  const URL = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
+
   const columns = [
     {
       title: "Title",
@@ -64,7 +66,7 @@ export default function CMSTable({
           <Tooltip title="Preview">
             <Button
               icon={<EyeOutlined />}
-              href={`/${record.slug}`}
+              href={`${URL}/${record.slug}?preview=true`}
               target="_blank"
             />
           </Tooltip>

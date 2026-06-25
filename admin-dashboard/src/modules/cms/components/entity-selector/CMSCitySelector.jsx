@@ -1,15 +1,40 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Form, Select } from "antd";
 
 import { getCitiesHotelsApi } from "@/modules/markeups/services/markup.service";
 
 export default function CMSCitySelector({ form }) {
-  const [loading, setLoading] = useState(false);
+  console.log("CMSCitySelector", form);
 
+  const [loading, setLoading] = useState(false);
   const [options, setOptions] = useState([]);
+
+  const selectedCity = Form.useWatch("selectedCity", form);
+
+  useEffect(() => {
+    const cityMeta = form.getFieldValue("cityMeta");
+
+    if (
+      selectedCity &&
+      cityMeta?.destination &&
+      !options.some((o) => o.value === selectedCity)
+    ) {
+      setOptions((prev) => [
+        ...prev,
+        {
+          label: cityMeta.destination,
+          value: selectedCity,
+          raw: {
+            name: cityMeta.destination,
+            id: selectedCity,
+          },
+        },
+      ]);
+    }
+  }, [selectedCity, form]);
 
   const fetchCities = async (value = "jaipur") => {
     setLoading(true);

@@ -1,24 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-import { Form, Input, Select, Spin } from "antd";
-
 import api from "@/services/api";
+import { Form, Input, Select, Spin } from "antd";
+import { useEffect, useState } from "react";
 
 export default function CMSHotelSelector({ form }) {
   const [loading, setLoading] = useState(false);
-
   const [options, setOptions] = useState([]);
-
   const cityMeta = Form.useWatch("cityMeta", form);
-
   const selectedHotelId = Form.useWatch("selectedHotel", form);
 
-  /*
-  LOAD HOTELS
-  AFTER CITY SELECT
-  */
   useEffect(() => {
     const loadHotels = async () => {
       if (!cityMeta?.destinationId) {

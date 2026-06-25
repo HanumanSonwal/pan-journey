@@ -18,6 +18,8 @@ export default function StaffFormModal({ open, setOpen, editData }) {
     canCreate || canEdit,
   );
 
+  console.log("roleOptions", roleOptions);
+
   useEffect(() => {
     if (open) {
       if (editData) {
@@ -84,10 +86,7 @@ export default function StaffFormModal({ open, setOpen, editData }) {
             <Select
               placeholder="Select Role"
               loading={dropdownLoading}
-              options={roleOptions.map((r) => ({
-                label: r.name,
-                value: r._id,
-              }))}
+              options={roleOptions}
             />
           </Form.Item>
         )}
