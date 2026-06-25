@@ -147,3 +147,11 @@ body {
 .mmt-gallery-modal .ant-modal-close {
   display: none;
 }
+
+.swiper-slide {
+  height: auto;
+}
+
+.swiper-slide > div {
+  height: 100%;
+}

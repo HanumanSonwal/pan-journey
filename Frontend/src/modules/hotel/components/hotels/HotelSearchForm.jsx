@@ -18,12 +18,12 @@ export default function HotelSearchForm({
 
   return (
     <div className="w-full">
-      <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-        <h3 className="text-[18px] font-extrabold text-gray-900 min-[700px]:text-[20px] lg:text-[22px] xl:text-[24px]">
+      <div className="hidden md:flex md:items-center md:justify-between">
+        <h3 className="text-[20px] font-extrabold text-gray-900 lg:text-[22px] xl:text-[24px]">
           Select Your Hotels
         </h3>
 
-        <h3 className="text-xs font-semibold text-gray-600 md:text-sm">
+        <h3 className="text-sm font-semibold text-gray-600">
           Book Domestic and International Property Online.
         </h3>
       </div>
