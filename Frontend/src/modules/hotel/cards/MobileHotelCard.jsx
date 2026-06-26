@@ -8,6 +8,7 @@ import HotelBookingComingSoonModal from "@/modules/shared/home/components/HotelB
 import { useToggleWishlist } from "@/modules/wishlist/hooks/useToggleWishlist";
 import { slugify } from "@/utils/slug/slugify";
 
+
 import {
   CheckOutlined,
   EnvironmentOutlined,
@@ -383,12 +384,12 @@ function MobileHotelCard({ hotel, wishlistIds }) {
                   className="flex items-start gap-2 py-[2px]"
                 >
                   {isCashback ? (
-                    <TbCoinRupee className="mt-[2px] !text-[14px] !text-gray-900 shrink-0" />
+                    <TbCoinRupee className=" !text-[14px] !text-gray-900 shrink-0" />
                   ) : (
-                    <CheckOutlined className="mt-[2px] !text-[24px] !text-[#22C55E] shrink-0" />
+                    <CheckOutlined className="mt-[2px] !text-[14px] !text-[#22C55E] shrink-0" />
                   )}
 
-                  <span className=" mt-2 text-[13px] leading-[18px] text-[#3D3D3D]">
+                  <span className=" !mt-0 text-[13px] leading-[18px] text-[#3D3D3D]">
                     {item}
                   </span>
                 </div>

@@ -2,60 +2,70 @@
 
 import { EditOutlined } from "@ant-design/icons";
 import { useState } from "react";
+import { Drawer } from "antd";
+
 import HotelList from "../components/hotels/HotelList";
 import MobileSortBar from "../components/MobileSortBar";
-
-import { Drawer } from "antd";
 import SidebarFilters from "../cards/SidebarFilters";
+
+const defaultFilters = {
+  price: null,
+  rating: null,
+  amenities: [],
+};
 
 export default function HotelMobile({
   filters,
   setFilters,
   appliedSearchData,
-
   sort,
   setSort,
-
   setMapOpen,
-
   setHotelsForMap,
   setHotelsLoading,
   setHasHotels,
 }) {
-  // ✅ UI STATES
   const [showSort, setShowSort] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
 
+  const handleReset = () => {
+    setSort("default");
+    setFilters(defaultFilters);
+    setShowSort(false);
+    setShowFilters(false);
+  };
+
   return (
     <div className="min-h-screen bg-[#eef6fd] p-3">
+
       {/* Header */}
-      <div className="rounded-[2px] border-1 border-gray-300 bg-white p-2">
+      <div className="rounded border border-gray-300 !bg-white p-2">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">
             {appliedSearchData?.city || "City"}
           </h2>
-
           <EditOutlined className="text-lg" />
         </div>
       </div>
 
-      {/* Buttons */}
-      <div className="mt-1 mb-0 grid grid-cols-3 gap-1">
+      {/* Controls */}
+      <div className="mt-2 grid grid-cols-3 gap-2 ">
+
         {/* SORT */}
         <div className="relative">
           <button
             onClick={() => setShowSort(!showSort)}
-            className="w-full rounded-[2px] border-gray-300 bg-white p-2 font-medium"
+            className="w-full rounded border border-gray-300 bg-white p-2 font-medium"
           >
             Sort By
           </button>
 
           {showSort && (
-            <div className="absolute top-full z-[999] mt-2 w-[280px]">
+            <div className="absolute top-full z-50 mt-2 w-[260px]">
               <MobileSortBar
                 sort={sort}
-                setSort={(value) => {
-                  setSort(value);
+                setSort={(val) => {
+                  setSort(val);
                   setShowSort(false);
                 }}
               />
@@ -64,46 +74,42 @@ export default function HotelMobile({
         </div>
 
         {/* FILTER */}
-        {/* FILTER BUTTON */}
-        <div className="relative">
-          <button
-            onClick={() => setShowFilters(true)}
-            className="w-full rounded-[2px] border-gray-300 bg-white p-2 font-medium"
-          >
-            Filter
-          </button>
-        </div>
-
-        {/* ANTD DRAWER */}
-        <Drawer
-          title="Filters"
-          placement="right"
-          open={showFilters}
-          onClose={() => setShowFilters(false)}
-          size="95%"
-          destroyOnClose
-          styles={{
-            body: {
-              padding: 0,
-            },
-          }}
+        <button
+          onClick={() => setShowFilters(true)}
+          className="rounded border bg-white border-gray-300 p-2 font-medium"
         >
-          <SidebarFilters
-            filters={filters}
-            setFilters={setFilters}
-            onClose={() => setShowFilters(false)}
-            onMapClick={() => {
-              setShowFilters(false);
-              setMapOpen(true);
-            }}
-          />
-        </Drawer>
+          Filter
+        </button>
 
-        {/* MAP */}
-        <button className="rounded-[2px] border-gray-300 bg-white p-2">
-          Map
+        {/* RESET */}
+        <button
+          onClick={handleReset}
+          className="rounded border bg-white p-2 text-red-600 border-gray-300 font-medium"
+        >
+          Reset
         </button>
       </div>
+
+      {/* DRAWER */}
+      <Drawer
+        title="Filters"
+        placement="right"
+        open={showFilters}
+        onClose={() => setShowFilters(false)}
+        size="85%"
+        destroyOnClose={false}
+        styles={{ body: { padding: 0 } }}
+      >
+        <SidebarFilters
+          filters={filters}
+          setFilters={setFilters}
+          onClose={() => setShowFilters(false)}
+          onMapClick={() => {
+            setShowFilters(false);
+            setMapOpen(true);
+          }}
+        />
+      </Drawer>
 
       {/* HOTEL LIST */}
       <div className="mt-3">
