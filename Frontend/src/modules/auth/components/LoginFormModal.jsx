@@ -5,23 +5,25 @@ import { Modal } from "antd";
 import Image from "next/image";
 import { useState } from "react";
 
+import { signIn } from "next-auth/react";
 import EmailOtpLogin from "./EmailOtpLogin";
 import MobileOtpLogin from "./MobileOtpLogin";
-import { signIn } from "next-auth/react";
 
-export default function LoginModal({ isOpen, onClose,onSuccess  }) {
+export default function LoginModal({ isOpen, onClose, onSuccess }) {
   const [activeView, setActiveView] = useState("mobile");
   const [resetKey, setResetKey] = useState(0);
 
   const handleClose = () => {
     setActiveView("mobile");
-    setResetKey((prev) => prev + 1); 
+    setResetKey((prev) => prev + 1);
     onClose();
   };
 
-    const handleGoogleLogin = () => {
-    signIn("google", { callbackUrl: "/" });
-     onSuccess();
+  const handleGoogleLogin = () => {
+    signIn("google", {
+      callbackUrl: window.location.href,
+    });
+    onSuccess();
   };
 
   return (
@@ -33,14 +35,14 @@ export default function LoginModal({ isOpen, onClose,onSuccess  }) {
       width={1000}
       closable
       closeIcon={
-        <span className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-800 text-white hover:bg-gray-700">
+        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-800 text-white hover:bg-gray-700">
           <CloseOutlined className="text-[14px]" />
         </span>
       }
     >
-      <div className="flex h-150 rounded-xl overflow-hidden">
+      <div className="flex h-150 overflow-hidden rounded-xl">
         {/* Left Image */}
-        <div className="w-1/2 h-full relative">
+        <div className="relative h-full w-1/2">
           <Image
             src="/images/auth/login.png"
             alt="travel"
@@ -50,15 +52,15 @@ export default function LoginModal({ isOpen, onClose,onSuccess  }) {
         </div>
 
         {/* Right Content */}
-        <div className="w-1/2 px-10 py-8 flex flex-col justify-between">
+        <div className="flex w-1/2 flex-col justify-between px-10 py-8">
           <div className="flex flex-col gap-6">
             {/* Heading */}
             <div className="flex flex-col gap-2">
-              <h2 className="font-roboto font-semibold text-[32px] leading-tight">
+              <h2 className="font-roboto text-[32px] leading-tight font-semibold">
                 Login / Sign Up
               </h2>
 
-              <p className="font-roboto font-medium text-[14px] text-gray-500 leading-relaxed">
+              <p className="font-roboto text-[14px] leading-relaxed font-medium text-gray-500">
                 Login or create an account to continue booking your perfect
                 stay.
               </p>
@@ -67,7 +69,7 @@ export default function LoginModal({ isOpen, onClose,onSuccess  }) {
             {/* Forms */}
             <div key={resetKey} className="flex flex-col gap-4">
               {activeView === "mobile" && (
-              <MobileOtpLogin onSuccess={onSuccess} />
+                <MobileOtpLogin onSuccess={onSuccess} />
               )}
 
               {activeView === "email" && (
@@ -76,12 +78,12 @@ export default function LoginModal({ isOpen, onClose,onSuccess  }) {
                   <button
                     onClick={() => setActiveView("mobile")}
                     // className="text-sm text-gray-500  hover:text-black text-left "
-                    className="font-roboto font-medium text-[14px] text-gray-500 leading-relaxed text-left"
+                    className="font-roboto text-left text-[14px] leading-relaxed font-medium text-gray-500"
                   >
                     ← Back to Mobile Login
                   </button>
 
-                 <EmailOtpLogin onSuccess={onSuccess} />
+                  <EmailOtpLogin onSuccess={onSuccess} />
                 </div>
               )}
             </div>
@@ -95,7 +97,10 @@ export default function LoginModal({ isOpen, onClose,onSuccess  }) {
               {/* Social Buttons */}
               <div className="flex justify-center gap-4">
                 {/* Google */}
-                <button onClick={handleGoogleLogin}  className="w-[48px] h-[48px] border rounded-lg flex items-center justify-center hover:bg-gray-100 transition">
+                <button
+                  onClick={handleGoogleLogin}
+                  className="flex h-[48px] w-[48px] items-center justify-center rounded-lg border transition hover:bg-gray-100"
+                >
                   <Image
                     src="/images/google.png"
                     alt="google"
@@ -107,7 +112,7 @@ export default function LoginModal({ isOpen, onClose,onSuccess  }) {
                 {/* Email */}
                 <button
                   onClick={() => setActiveView("email")}
-                  className="w-[48px] h-[48px] border rounded-lg flex items-center justify-center hover:bg-gray-100 transition"
+                  className="flex h-[48px] w-[48px] items-center justify-center rounded-lg border transition hover:bg-gray-100"
                 >
                   <MailOutlined className="text-[18px]" />
                 </button>
@@ -116,7 +121,7 @@ export default function LoginModal({ isOpen, onClose,onSuccess  }) {
           </div>
 
           {/* Footer */}
-          <p className="text-xs text-gray-400 text-center">
+          <p className="text-center text-xs text-gray-400">
             By continuing, you agree to Terms & Privacy Policy.
           </p>
         </div>

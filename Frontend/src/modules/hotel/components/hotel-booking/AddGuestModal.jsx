@@ -1,6 +1,7 @@
 "use client";
 
 import RHFInput from "@/components/ui/RHFinputs/RHFInput";
+import RHFPhoneInput from "@/components/ui/RHFinputs/RHFPhoneInput";
 import RHFSelect from "@/components/ui/RHFinputs/RHFSelect";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Checkbox, Modal } from "antd";
@@ -16,6 +17,7 @@ export default function AddGuestModal({ open, onClose, onSave, guestNo }) {
       lastName: "",
       email: "",
       mobile: "",
+      phoneCode: "+91",
       isChild: false,
     },
   });
@@ -33,9 +35,9 @@ export default function AddGuestModal({ open, onClose, onSave, guestNo }) {
   return (
     <Modal open={open} footer={null} onCancel={onClose} width={820} centered>
       <div className="m-5 p-5">
-        <h2 className="mb-2 text-[28px] font-semibold">Add Guest {guestNo}</h2>
+        <h2 className="mb-0! text-[24px] font-roboto font-semibold">Add Guest {guestNo}</h2>
 
-        <p className="mb-7 text-[#555]">
+        <p className="mb-7 text-[#555] font-roboto">
           Name should be as per official govt. ID & travelers below 18 years of
           age cannot travel alone
         </p>
@@ -65,13 +67,17 @@ export default function AddGuestModal({ open, onClose, onSave, guestNo }) {
               <RHFInput name="firstName" label="First Name" />
 
               <RHFInput name="lastName" label="Last Name" />
-
-              <RHFInput name="mobile" label="Mobile No." />
-
               <RHFInput name="email" label="Email" />
+
+              {/* <RHFInput name="mobile" label="Mobile No." /> */}
+              <RHFPhoneInput
+                name="mobile"
+                codeName="phoneCode"
+                label="Mobile No."
+              />
             </div>
 
-            <div className="mt-5">
+            <div className="mt-5 font-semibold font-roboto">
               <Checkbox
                 checked={watch("isChild")}
                 onChange={(e) => setValue("isChild", e.target.checked)}

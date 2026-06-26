@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuthGuard } from "@/modules/auth/hooks/useAuthGuard";
 import { useHotelBookingStore } from "@/modules/hotel/store/booking.store";
 import { Button } from "antd";
 import Image from "next/image";
@@ -8,6 +9,7 @@ import { useRouter } from "next/navigation";
 const RoomOptions = ({ ratePlans = [], supplierData = {} }) => {
   const router = useRouter();
   const { setBookingData } = useHotelBookingStore();
+  const { requireAuth } = useAuthGuard();
   const getHDImage = (url) => {
     if (!url) {
       return "/no-room.jpg";
@@ -118,15 +120,17 @@ const RoomOptions = ({ ratePlans = [], supplierData = {} }) => {
                   {room?.GroupName}
                 </h3>
 
-                <p className="mt-1 text-gray-500 font-semibold font-roboto">{room?.HotelRoomTypeDesc}</p>
+                <p className="font-roboto mt-1 font-semibold text-gray-500">
+                  {room?.HotelRoomTypeDesc}
+                </p>
 
                 {/* Room Features */}
                 <div className="mt-0! flex flex-wrap gap-2">
-                  <span className="rounded-full bg-slate-100 px-3  text-xs text-slate-600">
+                  <span className="rounded-full bg-slate-100 px-3 text-xs text-slate-600">
                     {smoking ? "Smoking Allowed" : "Non Smoking"}
                   </span>
 
-                  <span className="rounded-full bg-slate-100 px-3  text-xs text-slate-600">
+                  <span className="rounded-full bg-slate-100 px-3 text-xs text-slate-600">
                     {room?.GroupName}
                   </span>
                 </div>
@@ -140,7 +144,7 @@ const RoomOptions = ({ ratePlans = [], supplierData = {} }) => {
                       ?.map((item, i) => (
                         <span
                           key={i}
-                          className="rounded-full bg-green-50 px-3 py-1 text-sm text-green-600 font-semibold font-roboto"
+                          className="font-roboto rounded-full bg-green-50 px-3 py-1 text-sm font-semibold text-green-600"
                         >
                           ✓ {item}
                         </span>
@@ -220,7 +224,15 @@ const RoomOptions = ({ ratePlans = [], supplierData = {} }) => {
                   type="primary"
                   size="large"
                   onClick={() =>
-                    handleSelectRoom(plan, room, basicAmount, tax, totalAmount)
+                    requireAuth(() =>
+                      handleSelectRoom(
+                        plan,
+                        room,
+                        basicAmount,
+                        tax,
+                        totalAmount,
+                      ),
+                    )
                   }
                   className="!mt-5 !h-[48px] w-full rounded! bg-[#0f766e]! text-sm font-semibold tracking-wide text-white!"
                 >
