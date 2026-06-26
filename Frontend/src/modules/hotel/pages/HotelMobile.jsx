@@ -80,7 +80,7 @@ export default function HotelMobile({
           placement="right"
           open={showFilters}
           onClose={() => setShowFilters(false)}
-          size="85%"
+          size="95%"
           destroyOnClose
           styles={{
             body: {
