@@ -1,12 +1,13 @@
 "use client";
 
 import { EditOutlined } from "@ant-design/icons";
-import { useState } from "react";
 import { Drawer } from "antd";
+import { useState } from "react";
 
+import SidebarFilters from "../cards/SidebarFilters";
 import HotelList from "../components/hotels/HotelList";
 import MobileSortBar from "../components/MobileSortBar";
-import SidebarFilters from "../cards/SidebarFilters";
+import SearchBar from "../components/hotels/SearchBar";
 
 const defaultFilters = {
   price: null,
@@ -28,6 +29,8 @@ export default function HotelMobile({
   const [showSort, setShowSort] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
 
+  console.log("appliedSearchData in mobile", appliedSearchData);
+
   const handleReset = () => {
     setSort("default");
     setFilters(defaultFilters);
@@ -37,20 +40,14 @@ export default function HotelMobile({
 
   return (
     <div className="min-h-screen bg-[#eef6fd] p-3">
-
       {/* Header */}
-      <div className="rounded border border-gray-300 !bg-white p-2">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">
-            {appliedSearchData?.city || "City"}
-          </h2>
-          <EditOutlined className="text-lg" />
-        </div>
-      </div>
+   
+    <SearchBar />
+
+      
 
       {/* Controls */}
-      <div className="mt-2 grid grid-cols-3 gap-2 ">
-
+      <div className="mt-2 grid grid-cols-3 gap-2">
         {/* SORT */}
         <div className="relative">
           <button
@@ -76,7 +73,7 @@ export default function HotelMobile({
         {/* FILTER */}
         <button
           onClick={() => setShowFilters(true)}
-          className="rounded border bg-white border-gray-300 p-2 font-medium"
+          className="rounded border border-gray-300 bg-white p-2 font-medium"
         >
           Filter
         </button>
@@ -84,7 +81,7 @@ export default function HotelMobile({
         {/* RESET */}
         <button
           onClick={handleReset}
-          className="rounded border bg-white p-2 text-red-600 border-gray-300 font-medium"
+          className="rounded border border-gray-300 bg-white p-2 font-medium text-red-600"
         >
           Reset
         </button>

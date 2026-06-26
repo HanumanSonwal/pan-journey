@@ -10,6 +10,7 @@ import { useRef, useState } from "react";
 export default function HotelSearchForm({
   destinationError,
   setDestinationError,
+  onClose,
 }) {
   const { draftSearchData, setDraftSearchData } = useHotelSearchStore();
   const [dateOpen, setDateOpen] = useState(false);
