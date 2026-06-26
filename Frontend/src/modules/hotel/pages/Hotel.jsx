@@ -195,10 +195,22 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
   }, [activeFilters, isFilterActive]);
   if (!mounted) return null;
   return (
-
     <>
       {isMobile ? (
-        <HotelMobile cms={cms} />
+        // <HotelMobile cms={cms} />
+        <HotelMobile
+          appliedSearchData={appliedSearchData}
+          filters={filters}
+          setFilters={setFilters}
+          sort={sort}
+          setSort={setSort}
+          mapOpen={mapOpen}
+          setMapOpen={setMapOpen}
+          hotelsLoading={hotelsLoading}
+          hasHotels={hasHotels}
+          hotelsForMap={hotelsForMap}
+          setHotelsForMap={setHotelsForMap}
+        />
       ) : (
         <>
           <div className="bg-[#edf7ff]">
@@ -207,8 +219,9 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
             <div className="relative mx-auto mt-[-28px] flex max-w-7xl gap-4 p-3 md:flex-nowrap">
               {/* SIDEBAR */}
               <div
-                className={`sticky top-[98px] max-h-[calc(100vh-40px)] w-full overflow-y-auto sm:w-64 md:w-72 ${sidebarZ0 ? "z-0" : "z-20"
-                  }`}
+                className={`sticky top-[98px] max-h-[calc(100vh-40px)] w-full overflow-y-auto sm:w-64 md:w-72 ${
+                  sidebarZ0 ? "z-0" : "z-20"
+                }`}
               >
                 <SidebarFilters
                   filters={filters}
@@ -223,8 +236,9 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
               <div className="min-w-0 flex-1">
                 {/* SORT BAR */}
                 <div
-                  className={`sticky top-[98px] ${sidebarZ0 ? "!-z-10" : "z-20"
-                    } bg-[#edf7ff]`}
+                  className={`sticky top-[98px] ${
+                    sidebarZ0 ? "!-z-10" : "z-20"
+                  } bg-[#edf7ff]`}
                 >
                   <SortBar sort={sort} setSort={setSort} />
                 </div>
@@ -232,8 +246,9 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
                 {/* ACTIVE FILTERS */}
                 {hasActiveFilters && (
                   <div
-                    className={`sticky top-[138px] min-[700px]:max-[850px]:top-[155px] ${sidebarZ0 ? "!-z-10" : "z-12"
-                      } bg-[#edf7ff] !pt-[5px]`}
+                    className={`sticky top-[138px] min-[700px]:max-[850px]:top-[155px] ${
+                      sidebarZ0 ? "!-z-10" : "z-12"
+                    } bg-[#edf7ff] !pt-[5px]`}
                   >
                     <div className="!mb-4 flex flex-wrap gap-2">
                       {activeFilters.map(([key, value]) => {
@@ -284,7 +299,8 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
 
                       {(filters?.minPrice || filters?.maxPrice) && (
                         <div className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600">
-                          ₹{filters?.minPrice || 0} - ₹{filters?.maxPrice || 50000}
+                          ₹{filters?.minPrice || 0} - ₹
+                          {filters?.maxPrice || 50000}
                           <CloseOutlined
                             className="cursor-pointer text-xs"
                             onClick={() =>
@@ -336,47 +352,52 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
               </div>
             </div>
           </div>
-          <Modal
-            open={mapOpen}
-            footer={null}
-            closable={false}
-            width="95vw"
-            onCancel={() => setMapOpen(false)}
-            centered
-            styles={{
-              body: {
-                padding: 0,
-                height: "85vh",
-                overflow: "hidden",
-              },
-            }}
-          >
-            <div className="flex items-center justify-between border-b px-5 py-2">
-              <h2 className="my-0! text-2xl font-semibold">Hotels on Map</h2>
-
-              <button
-                onClick={() => setMapOpen(false)}
-                className="rounded-md bg-red-400 px-4 py-2 text-sm font-medium text-white! hover:bg-red-600"
-              >
-                Close
-              </button>
-            </div>
-            <div className="flex h-[85vh]">
-              <div className="flex-1">
-                <HotelMap hotels={hotelsForMap} />
-              </div>
-
-              <div className="w-[340px] overflow-y-auto border-l bg-white">
-                <SidebarFilters
-                  filters={filters}
-                  setFilters={setFilters}
-                  hideMapSection
-                />
-              </div>
-            </div>
-          </Modal>
         </>
       )}
+
+      <Modal
+        open={mapOpen}
+        footer={null}
+        closable={false}
+        width="95vw"
+        centered
+        onCancel={() => setMapOpen(false)}
+        styles={{
+          body: {
+            padding: 0,
+            overflow: "hidden",
+          },
+        }}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between border-b px-4 py-3">
+          <h2 className="text-lg font-semibold md:text-xl">Hotels on Map</h2>
+
+          <button
+            onClick={() => setMapOpen(false)}
+            className="rounded-md bg-red-500 px-3 py-2 text-sm font-medium text-white hover:bg-red-600"
+          >
+            Close
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="flex h-[70vh] md:h-[80vh] lg:h-[85vh]">
+          {/* Map */}
+          <div className="flex-1">
+            <HotelMap hotels={hotelsForMap} />
+          </div>
+
+          {/* Sidebar */}
+          <div className="hidden overflow-y-auto border-l bg-white md:block md:w-[280px] lg:w-[340px]">
+            <SidebarFilters
+              filters={filters}
+              setFilters={setFilters}
+              hideMapSection
+            />
+          </div>
+        </div>
+      </Modal>
     </>
   );
 }

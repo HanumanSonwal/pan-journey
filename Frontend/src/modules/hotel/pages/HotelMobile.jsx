@@ -1,49 +1,33 @@
 "use client";
 
-import {
-  EditOutlined
-} from "@ant-design/icons";
+import { EditOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import HotelList from "../components/hotels/HotelList";
 import MobileSortBar from "../components/MobileSortBar";
 
 import { Drawer } from "antd";
 import SidebarFilters from "../cards/SidebarFilters";
-import { useHotelSearchStore } from "../store/serchData.store";
 
-export default function HotelMobile() {
-  const { appliedSearchData } = useHotelSearchStore();
-  const [open, setOpen] = useState(false);
+export default function HotelMobile({
+  filters,
+  setFilters,
+  appliedSearchData,
 
-  // ✅ FILTER STATE (FIXED)
-  const [filters, setFilters] = useState({
-    freeCancellation: false,
-    search: "",
-    starRating: "",
-    minPrice: "",
-    maxPrice: "",
-    suggested: [],
-    propertyType: [],
-    rating: [],
-    locations: [],
-  });
+  sort,
+  setSort,
 
+  setMapOpen,
+
+  setHotelsForMap,
+  setHotelsLoading,
+  setHasHotels,
+}) {
   // ✅ UI STATES
   const [showSort, setShowSort] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
 
-  // ✅ SORT STATE
-  const [sort, setSort] = useState("recommended");
-  const [mapOpen, setMapOpen] = useState(false);
-
-  // ✅ HOTEL STATES
-  const [hotelsLoading, setHotelsLoading] = useState(true);
-  const [hasHotels, setHasHotels] = useState(false);
-  const [hotelsForMap, setHotelsForMap] = useState([]);
-
   return (
     <div className="min-h-screen bg-[#eef6fd] p-3">
-
       {/* Header */}
       <div className="rounded-[2px] border-1 border-gray-300 bg-white p-2">
         <div className="flex items-center justify-between">
@@ -56,8 +40,7 @@ export default function HotelMobile() {
       </div>
 
       {/* Buttons */}
-      <div className="mt-1 grid grid-cols-3 gap-1 mb-0">
-
+      <div className="mt-1 mb-0 grid grid-cols-3 gap-1">
         {/* SORT */}
         <div className="relative">
           <button
@@ -68,7 +51,7 @@ export default function HotelMobile() {
           </button>
 
           {showSort && (
-            <div className="absolute top-full mt-2 z-[999] w-[280px]">
+            <div className="absolute top-full z-[999] mt-2 w-[280px]">
               <MobileSortBar
                 sort={sort}
                 setSort={(value) => {
@@ -92,33 +75,29 @@ export default function HotelMobile() {
         </div>
 
         {/* ANTD DRAWER */}
-<Drawer
-  title="Filters"
-  placement="right"
-  open={showFilters}
-  onClose={() => setShowFilters(false)}
-  width="85%"
-  destroyOnClose
-  styles={{
-    body: {
-      padding: 0,
-    },
-  }}
->
-  <SidebarFilters
-    filters={filters}
-    setFilters={setFilters}
-    onClose={() => setShowFilters(false)}
-    onMapClick={() => {
-      setShowFilters(false);
-      setMapOpen(true);
-    }}
-  />
-</Drawer>
-
-
-
-
+        <Drawer
+          title="Filters"
+          placement="right"
+          open={showFilters}
+          onClose={() => setShowFilters(false)}
+          size="85%"
+          destroyOnClose
+          styles={{
+            body: {
+              padding: 0,
+            },
+          }}
+        >
+          <SidebarFilters
+            filters={filters}
+            setFilters={setFilters}
+            onClose={() => setShowFilters(false)}
+            onMapClick={() => {
+              setShowFilters(false);
+              setMapOpen(true);
+            }}
+          />
+        </Drawer>
 
         {/* MAP */}
         <button className="rounded-[2px] border-gray-300 bg-white p-2">
@@ -137,10 +116,6 @@ export default function HotelMobile() {
           onResultChange={setHasHotels}
         />
       </div>
-
-
-
-
     </div>
   );
 }
