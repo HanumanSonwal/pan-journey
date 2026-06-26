@@ -5,6 +5,7 @@ import ContactFormSection from "@/modules/shared/pages/contact-us/contactcontant
 import ContactSection from "@/modules/shared/pages/contact-us/contacthero";
 import ContactMapSection from "@/modules/shared/pages/contact-us/ContactMapSection";
 
+
 export default async function ContactSectionPages() {
   const contactUsCms = await fetchCmsBySlug("contact-us");
 
@@ -12,12 +13,12 @@ export default async function ContactSectionPages() {
 
   const faqCms = faqBlock
     ? {
-        ...contactUsCms,
-        data: {
-          ...contactUsCms.data,
-          blocks: [faqBlock],
-        },
-      }
+      ...contactUsCms,
+      data: {
+        ...contactUsCms.data,
+        blocks: [faqBlock],
+      },
+    }
     : null;
 
   return (
@@ -31,6 +32,8 @@ export default async function ContactSectionPages() {
       <ContactMapSection />
 
       <NewsletterSection />
+
+
     </>
   );
 }

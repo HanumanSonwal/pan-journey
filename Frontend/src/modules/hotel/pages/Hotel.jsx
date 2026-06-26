@@ -14,6 +14,7 @@ import SortBar from "../components/SortBar";
 import DynamicSeoFallback from "../seo/DynamicSeoFallback";
 import HotelsSeoSection from "../seo/HotelsSeoSection";
 import { useHotelSearchStore } from "../store/serchData.store";
+import HotelMobile from "./HotelMobile";
 const defaultSearchData = {
   city: "",
   cityData: { id: "" },
@@ -41,9 +42,20 @@ const defaultFilters = {
 export default function HotelContent({ initialSearchData = null, cms = null }) {
   console.log("CMS DATA in HotelContent", cms);
   console.log("initialSearchData in HotelContent", initialSearchData);
+
   const HotelMap = dynamic(() => import("../components/map/HotelMap"), {
     ssr: false,
   });
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+
+    check();
+    window.addEventListener("resize", check);
+
+    return () => window.removeEventListener("resize", check);
+  }, []);
   const {
     draftSearchData,
     appliedSearchData,
@@ -183,184 +195,188 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
   }, [activeFilters, isFilterActive]);
   if (!mounted) return null;
   return (
+
     <>
-      <div className="bg-[#edf7ff]">
-        <SearchBar searchData={draftSearchData} onSearch={handleSearch} />
+      {isMobile ? (
+        <HotelMobile cms={cms} />
+      ) : (
+        <>
+          <div className="bg-[#edf7ff]">
+            <SearchBar searchData={draftSearchData} onSearch={handleSearch} />
 
-        <div className="relative mx-auto mt-[-28px] flex max-w-7xl gap-4 p-3 md:flex-nowrap">
-          {/* SIDEBAR */}
-          <div
-            className={`sticky top-[98px] max-h-[calc(100vh-40px)] w-full overflow-y-auto sm:w-64 md:w-72 ${
-              sidebarZ0 ? "z-0" : "z-20"
-            }`}
-          >
-            <SidebarFilters
-              filters={filters}
-              setFilters={setFilters}
-              onMapClick={() => {
-                setMapOpen(true);
-              }}
-            />
-          </div>
-
-          {/* RIGHT CONTENT */}
-          <div className="min-w-0 flex-1">
-            {/* SORT BAR */}
-            <div
-              className={`sticky top-[98px] ${
-                sidebarZ0 ? "!-z-10" : "z-20"
-              } bg-[#edf7ff]`}
-            >
-              <SortBar sort={sort} setSort={setSort} />
-            </div>
-
-            {/* ACTIVE FILTERS */}
-            {hasActiveFilters && (
+            <div className="relative mx-auto mt-[-28px] flex max-w-7xl gap-4 p-3 md:flex-nowrap">
+              {/* SIDEBAR */}
               <div
-                className={`sticky top-[138px] min-[700px]:max-[850px]:top-[155px] ${
-                  sidebarZ0 ? "!-z-10" : "z-12"
-                } bg-[#edf7ff] !pt-[5px]`}
+                className={`sticky top-[98px] max-h-[calc(100vh-40px)] w-full overflow-y-auto sm:w-64 md:w-72 ${sidebarZ0 ? "z-0" : "z-20"
+                  }`}
               >
-                <div className="!mb-4 flex flex-wrap gap-2">
-                  {activeFilters.map(([key, value]) => {
-                    if (!isFilterActive(value)) return null;
+                <SidebarFilters
+                  filters={filters}
+                  setFilters={setFilters}
+                  onMapClick={() => {
+                    setMapOpen(true);
+                  }}
+                />
+              </div>
 
-                    if (key === "minPrice" || key === "maxPrice") {
-                      return null;
-                    }
+              {/* RIGHT CONTENT */}
+              <div className="min-w-0 flex-1">
+                {/* SORT BAR */}
+                <div
+                  className={`sticky top-[98px] ${sidebarZ0 ? "!-z-10" : "z-20"
+                    } bg-[#edf7ff]`}
+                >
+                  <SortBar sort={sort} setSort={setSort} />
+                </div>
 
-                    if (Array.isArray(value)) {
-                      return value.map((v, i) => (
-                        <div
-                          key={`${key}-${i}`}
-                          className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
-                        >
-                          {v}
+                {/* ACTIVE FILTERS */}
+                {hasActiveFilters && (
+                  <div
+                    className={`sticky top-[138px] min-[700px]:max-[850px]:top-[155px] ${sidebarZ0 ? "!-z-10" : "z-12"
+                      } bg-[#edf7ff] !pt-[5px]`}
+                  >
+                    <div className="!mb-4 flex flex-wrap gap-2">
+                      {activeFilters.map(([key, value]) => {
+                        if (!isFilterActive(value)) return null;
+
+                        if (key === "minPrice" || key === "maxPrice") {
+                          return null;
+                        }
+
+                        if (Array.isArray(value)) {
+                          return value.map((v, i) => (
+                            <div
+                              key={`${key}-${i}`}
+                              className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
+                            >
+                              {v}
+                              <CloseOutlined
+                                className="cursor-pointer text-xs"
+                                onClick={() => removeFilter(key, v)}
+                              />
+                            </div>
+                          ));
+                        }
+
+                        let label = value;
+
+                        if (key === "freeCancellation") {
+                          label = "Free Cancellation";
+                        }
+
+                        if (key === "starRating") {
+                          label = `${value} Star`;
+                        }
+
+                        return (
+                          <div
+                            key={key}
+                            className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
+                          >
+                            {label}
+                            <CloseOutlined
+                              className="cursor-pointer text-xs"
+                              onClick={() => removeFilter(key)}
+                            />
+                          </div>
+                        );
+                      })}
+
+                      {(filters?.minPrice || filters?.maxPrice) && (
+                        <div className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600">
+                          ₹{filters?.minPrice || 0} - ₹{filters?.maxPrice || 50000}
                           <CloseOutlined
                             className="cursor-pointer text-xs"
-                            onClick={() => removeFilter(key, v)}
+                            onClick={() =>
+                              setFilters((prev) => ({
+                                ...prev,
+                                minPrice: "",
+                                maxPrice: "",
+                              }))
+                            }
                           />
                         </div>
-                      ));
-                    }
+                      )}
 
-                    let label = value;
-
-                    if (key === "freeCancellation") {
-                      label = "Free Cancellation";
-                    }
-
-                    if (key === "starRating") {
-                      label = `${value} Star`;
-                    }
-
-                    return (
-                      <div
-                        key={key}
-                        className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
+                      <button
+                        onClick={clearAll}
+                        className="rounded bg-red-200 px-3 py-1 text-xs text-red-600"
                       >
-                        {label}
-                        <CloseOutlined
-                          className="cursor-pointer text-xs"
-                          onClick={() => removeFilter(key)}
-                        />
-                      </div>
-                    );
-                  })}
-
-                  {(filters?.minPrice || filters?.maxPrice) && (
-                    <div className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600">
-                      ₹{filters?.minPrice || 0} - ₹{filters?.maxPrice || 50000}
-                      <CloseOutlined
-                        className="cursor-pointer text-xs"
-                        onClick={() =>
-                          setFilters((prev) => ({
-                            ...prev,
-                            minPrice: "",
-                            maxPrice: "",
-                          }))
-                        }
-                      />
+                        Clear All
+                      </button>
                     </div>
-                  )}
+                  </div>
+                )}
 
-                  <button
-                    onClick={clearAll}
-                    className="rounded bg-red-200 px-3 py-1 text-xs text-red-600"
-                  >
-                    Clear All
-                  </button>
+                {/* HOTEL LIST */}
+                <div id="hotel-list-section">
+                  <HotelList
+                    searchData={appliedSearchData}
+                    filters={filters}
+                    sort={sort}
+                    onHotelsChange={setHotelsForMap}
+                    onLoadingChange={setHotelsLoading}
+                    onResultChange={setHasHotels}
+                  />
                 </div>
+
+                {/* SEO CONTENT */}
+                {cms ? (
+                  <HotelsSeoSection>
+                    <CMSContentRenderer cms={cms} />
+                  </HotelsSeoSection>
+                ) : (
+                  !hotelsLoading &&
+                  hasHotels && (
+                    <HotelsSeoSection>
+                      <DynamicSeoFallback cityName={appliedSearchData?.city} />
+                    </HotelsSeoSection>
+                  )
+                )}
               </div>
-            )}
-
-            {/* HOTEL LIST */}
-            <div id="hotel-list-section">
-              <HotelList
-                searchData={appliedSearchData}
-                filters={filters}
-                sort={sort}
-                onHotelsChange={setHotelsForMap}
-                onLoadingChange={setHotelsLoading}
-                onResultChange={setHasHotels}
-              />
             </div>
-
-            {/* SEO CONTENT */}
-            {cms ? (
-              <HotelsSeoSection>
-                <CMSContentRenderer cms={cms} />
-              </HotelsSeoSection>
-            ) : (
-              !hotelsLoading &&
-              hasHotels && (
-                <HotelsSeoSection>
-                  <DynamicSeoFallback cityName={appliedSearchData?.city} />
-                </HotelsSeoSection>
-              )
-            )}
           </div>
-        </div>
-      </div>
-      <Modal
-        open={mapOpen}
-        footer={null}
-        closable={false}
-        width="95vw"
-        onCancel={() => setMapOpen(false)}
-        centered
-        styles={{
-          body: {
-            padding: 0,
-            height: "85vh",
-            overflow: "hidden",
-          },
-        }}
-      >
-        <div className="flex items-center justify-between border-b px-5 py-2">
-          <h2 className="my-0! text-2xl font-semibold">Hotels on Map</h2>
-
-          <button
-            onClick={() => setMapOpen(false)}
-            className="rounded-md bg-red-400 px-4 py-2 text-sm font-medium text-white! hover:bg-red-600"
+          <Modal
+            open={mapOpen}
+            footer={null}
+            closable={false}
+            width="95vw"
+            onCancel={() => setMapOpen(false)}
+            centered
+            styles={{
+              body: {
+                padding: 0,
+                height: "85vh",
+                overflow: "hidden",
+              },
+            }}
           >
-            Close
-          </button>
-        </div>
-        <div className="flex h-[85vh]">
-          <div className="flex-1">
-            <HotelMap hotels={hotelsForMap} />
-          </div>
+            <div className="flex items-center justify-between border-b px-5 py-2">
+              <h2 className="my-0! text-2xl font-semibold">Hotels on Map</h2>
 
-          <div className="w-[340px] overflow-y-auto border-l bg-white">
-            <SidebarFilters
-              filters={filters}
-              setFilters={setFilters}
-              hideMapSection
-            />
-          </div>
-        </div>
-      </Modal>
+              <button
+                onClick={() => setMapOpen(false)}
+                className="rounded-md bg-red-400 px-4 py-2 text-sm font-medium text-white! hover:bg-red-600"
+              >
+                Close
+              </button>
+            </div>
+            <div className="flex h-[85vh]">
+              <div className="flex-1">
+                <HotelMap hotels={hotelsForMap} />
+              </div>
+
+              <div className="w-[340px] overflow-y-auto border-l bg-white">
+                <SidebarFilters
+                  filters={filters}
+                  setFilters={setFilters}
+                  hideMapSection
+                />
+              </div>
+            </div>
+          </Modal>
+        </>
+      )}
     </>
   );
 }
