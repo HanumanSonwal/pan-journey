@@ -22,7 +22,8 @@
 /* ===================== Mobile Only ===================== */
 @media (max-width: 699px) {
   .heroBg {
-    height: 580px;
+    height: 515px;
+       background-image: url("/images/heromobile.png");
     background-size: cover;
     background-position: center;
   }
