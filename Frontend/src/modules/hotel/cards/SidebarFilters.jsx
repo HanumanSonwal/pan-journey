@@ -1,93 +1,79 @@
 "use client";
+
 import { Checkbox, Collapse, Input } from "antd";
 import Image from "next/image";
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 
+// options (OUTSIDE COMPONENT)
 const suggestedOptions = [
   "5 Star",
   "Breakfast Included",
   "Couple Friendly",
   "Free Cancellation",
 ];
+
 const propertyOptions = ["Hotel", "Villa", "Resort", "Apartment", "Homestay"];
+
 const userRatingOptions = ["Excellent: 4.2+", "Very Good: 4+", "Good: 3.5+"];
-const locationOptions = [
-  "North Goa",
-  "Calangute",
-  "Baga",
-  "Candolim",
-  "Anjuna",
-];
+
+const locationOptions = ["North Goa", "Calangute", "Baga", "Candolim", "Anjuna"];
+
 const starOptions = [3, 4, 5];
+
 const priceRanges = [
-  {
-    label: "₹ 0 - ₹ 3000",
-    min: 0,
-    max: 3000,
-  },
-  {
-    label: "₹ 3000 - ₹ 6000",
-    min: 3000,
-    max: 6000,
-  },
-  {
-    label: "₹ 6000 - ₹ 10000",
-    min: 6000,
-    max: 10000,
-  },
-  {
-    label: "₹ 10000+",
-    min: 10000,
-    max: 50000,
-  },
+  { label: "₹ 0 - ₹ 3000", min: 0, max: 3000 },
+  { label: "₹ 3000 - ₹ 6000", min: 3000, max: 6000 },
+  { label: "₹ 6000 - ₹ 10000", min: 6000, max: 10000 },
+  { label: "₹ 10000+", min: 10000, max: 50000 },
 ];
 
 function SidebarFilters({
   filters,
   setFilters,
   onMapClick,
+  onClose,
   hideMapSection = false,
 }) {
+  const [isMobile, setIsMobile] = useState(false);
   const [hotelSearch, setHotelSearch] = useState(filters?.search || "");
 
-  const handleSearch = useCallback(
-    (e) => {
-      const value = e.target.value;
-      setHotelSearch(value);
-      setFilters((prev) => ({
-        ...prev,
-        search: value,
-      }));
-    },
-    [setFilters],
-  );
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
 
-  const handleCheckbox = useCallback(
-    (key, value) => {
-      setFilters((prev) => {
-        const current = prev[key] || [];
-        const updated = current.includes(value)
-          ? current.filter((v) => v !== value)
-          : [...current, value];
-        return {
-          ...prev,
-          [key]: updated,
-        };
-      });
-    },
-    [setFilters],
-  );
+    check();
+    window.addEventListener("resize", check);
 
-  const handleStarRating = useCallback(
-    (rating) => {
-      setFilters((prev) => ({
-        ...prev,
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
-        starRating: prev.starRating === String(rating) ? "" : String(rating),
-      }));
-    },
-    [setFilters],
-  );
+  const handleSearch = useCallback((e) => {
+    const value = e.target.value;
+    setHotelSearch(value);
+
+    setFilters((prev) => ({
+      ...prev,
+      search: value,
+    }));
+  }, [setFilters]);
+
+  const handleCheckbox = useCallback((key, value) => {
+    setFilters((prev) => {
+      const current = prev[key] || [];
+
+      const updated = current.includes(value)
+        ? current.filter((v) => v !== value)
+        : [...current, value];
+
+      return { ...prev, [key]: updated };
+    });
+  }, [setFilters]);
+
+  const handleStarRating = useCallback((rating) => {
+    setFilters((prev) => ({
+      ...prev,
+      starRating: prev.starRating === String(rating) ? "" : String(rating),
+    }));
+  }, [setFilters]);
 
   const handleFreeCancellation = useCallback(() => {
     setFilters((prev) => ({
@@ -96,26 +82,22 @@ function SidebarFilters({
     }));
   }, [setFilters]);
 
-  const handlePriceRange = useCallback(
-    (min, max) => {
-      setFilters((prev) => ({
-        ...prev,
-        minPrice: String(min),
-        maxPrice: String(max),
-      }));
-    },
-    [setFilters],
-  );
+  const handlePriceRange = useCallback((min, max) => {
+    setFilters((prev) => ({
+      ...prev,
+      minPrice: String(min),
+      maxPrice: String(max),
+    }));
+  }, [setFilters]);
 
-  const handleCustomPrice = useCallback(
-    (key, value) => {
-      setFilters((prev) => ({
-        ...prev,
-        [key]: value || "",
-      }));
-    },
-    [setFilters],
-  );
+  const handleCustomPrice = useCallback((key, value) => {
+    setFilters((prev) => ({
+      ...prev,
+      [key]: value || "",
+    }));
+  }, [setFilters]);
+
+
 
   const filterSections = useMemo(() => {
     return [
@@ -281,7 +263,14 @@ function SidebarFilters({
   ]);
 
   return (
-    <div className="bg-white p-4 shadow-md">
+    <div className="bg-white p-4 shadow-md h-full flex flex-col ">
+      {isMobile && (
+        <div className="flex w-100% ">
+          <h2 className="text-lg font-semibold"></h2>
+
+
+        </div>
+      )}
       {!hideMapSection && (
         <div
           onClick={() => onMapClick?.()}
@@ -315,30 +304,30 @@ function SidebarFilters({
         />
       </div>
 
-      <Collapse
-        defaultActiveKey={[
-          "suggested",
-          "freeCancellation",
-          "price",
-          "propertyType",
-          "starCategory",
-          "rating",
-          "locations",
-        ]}
-        ghost
-        expandIconPlacement="end"
-        items={filterSections.map((section) => ({
-          key: section.key,
-
-          label: (
-            <span className="font-roboto! text-sm font-semibold text-gray-800">
-              {section.title}
-            </span>
-          ),
-
-          children: section.content,
-        }))}
-      />
+      <div className="flex-1 overflow-y-auto">
+        <Collapse
+          defaultActiveKey={[
+            "suggested",
+            "freeCancellation",
+            "price",
+            "propertyType",
+            "starCategory",
+            "rating",
+            "locations",
+          ]}
+          ghost
+          expandIconPlacement="end"
+          items={filterSections.map((section) => ({
+            key: section.key,
+            label: (
+              <span className="font-roboto! text-sm font-semibold text-gray-800">
+                {section.title}
+              </span>
+            ),
+            children: section.content,
+          }))}
+        />
+      </div>
     </div>
   );
 }

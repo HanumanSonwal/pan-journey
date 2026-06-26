@@ -192,7 +192,9 @@ useEffect(() => {
   }
 
   return (
+    
     <div className="mt-3 flex flex-col gap-4">
+      
       {/* HOTELS */}
       {mappedHotels.map((hotel, index) => (
         <HotelCard
