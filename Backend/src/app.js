@@ -36,6 +36,7 @@ import support from "./modules/supportContact/support.routes.js"
 import grievanceRedressal from "./modules/grievanceRedressal/grievanceRedressal.routes.js"
 
 const app = express();
+app.set("trust proxy", 1);
 app.use((req, res, next) => {
   console.log("📡 REQUEST HIT:", req.method, req.url);
   next();
