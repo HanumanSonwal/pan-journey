@@ -223,7 +223,11 @@ export default function SearchBar({ onSearch }) {
         className="md:!max-w-[700px]"
         onCancel={() => setSearchModalOpen(false)}
       >
-        <HotelSearchForm onClose={() => setSearchModalOpen(false)} />
+        <HotelSearchForm
+          showSearchButton
+          onSearch={handleSearch}
+          onClose={() => setSearchModalOpen(false)}
+        />
       </Modal>
     </>
   );

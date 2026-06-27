@@ -4,6 +4,7 @@ import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
 import DateRangeField from "@/modules/shared/home/components/DateRangeField";
 import DestinationSearchField from "@/modules/shared/home/components/DestinationSearchField";
 import GuestsField from "@/modules/shared/home/components/GuestsField";
+import SearchButton from "@/modules/shared/home/components/hero_section/SearchButton";
 import dayjs from "dayjs";
 import { useRef, useState } from "react";
 
@@ -11,6 +12,8 @@ export default function HotelSearchForm({
   destinationError,
   setDestinationError,
   onClose,
+  showSearchButton = false,
+  onSearch,
 }) {
   const { draftSearchData, setDraftSearchData } = useHotelSearchStore();
   const [dateOpen, setDateOpen] = useState(false);
@@ -116,6 +119,15 @@ export default function HotelSearchForm({
           />
         </div>
       </div>
+      {showSearchButton && (
+        <SearchButton
+          floating={false}
+          onSearch={() => {
+            onSearch?.();
+            onClose?.();
+          }}
+        />
+      )}
     </div>
   );
 }
