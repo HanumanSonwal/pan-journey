@@ -69,11 +69,10 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
         {/* Badge */}
         <div className="mb-3">
           <span
-            className={`font-roboto rounded-full px-3 py-[6px] text-[11px] font-medium ${
-              refundable
-                ? "bg-green-100 text-green-700"
-                : "bg-red-100 text-red-600"
-            }`}
+            className={`font-roboto rounded-full px-3 py-[6px] text-[11px] font-medium ${refundable
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-600"
+              }`}
           >
             {refundable ? "Free Cancellation" : "Non Refundable"}
           </span>
@@ -174,9 +173,15 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
         <Button
           size="large"
           onClick={handleRoomScroll}
-          className="!h-[48px] flex-1 !rounded"
+          className="flex-1 !h-[50px] sm:!h-[48px] !rounded px-2 sm:px-4 text-[12px] sm:text-[14px] md:text-[16px] whitespace-normal leading-tight"
         >
-          {moreRooms > 0 ? `${moreRooms} More Room Options` : "View Room"}
+          <span className="hidden sm:inline">
+            {moreRooms > 0 ? `${moreRooms} More Room Options` : "View Room"}
+          </span>
+
+          <span className="sm:hidden">
+            {moreRooms > 0 ? `${moreRooms} Rooms` : "View Room"}
+          </span>
         </Button>
       </div>
     </div>

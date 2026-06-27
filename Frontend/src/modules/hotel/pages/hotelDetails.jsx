@@ -214,7 +214,9 @@ function HotelDetails({ initialPayload = null, cms = null }) {
 
   return (
     <div className="min-h-screen w-full bg-[#eaf3f9]">
-      <SearchBar />
+       <div className="sticky top-0 z-[99] bg-white min-[660px]:block hidden">
+             <SearchBar />
+           </div>
 
       <div
         className={`relative mx-auto w-full max-w-7xl px-2 pb-8 transition-all duration-300 sm:px-4 md:px-6 ${
@@ -225,49 +227,49 @@ function HotelDetails({ initialPayload = null, cms = null }) {
           {showSkeleton ? (
             <HotelDetailsSkeleton />
           ) : (
-            <Card className="overflow-hidden rounded-md border-0 shadow-lg">
+           <Card className="overflow-hidden rounded-md border-0 shadow-lg p-3 sm:p-6">
               {/* HEADER */}
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <h1 className="text-[26px] font-semibold text-[#303030]">
-                      {supplierData?.HotelName || "Hotel Name"}
-                    </h1>
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+  <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+    <h1 className="text-[18px] font-semibold leading-tight text-[#303030] sm:text-[26px]">
+      {supplierData?.HotelName || "Hotel Name"}
+    </h1>
 
-                    {(supplierData?.City || supplierData?.Country) && (
-                      <span className="rounded-full bg-[#eef8fd] px-3 py-1 text-sm font-medium text-[#5bb7ec]">
-                        {[supplierData?.City, supplierData?.Country]
-                          .filter(Boolean)
-                          .join(", ")}
-                      </span>
-                    )}
-                  </div>
-                </div>
+    {(supplierData?.City || supplierData?.Country) && (
+      <span className="w-fit rounded-full bg-[#eef8fd] px-2 py-1 text-[11px] font-medium text-[#5bb7ec] sm:px-3 sm:text-sm">
+        {[supplierData?.City, supplierData?.Country]
+          .filter(Boolean)
+          .join(", ")}
+      </span>
+    )}
+  </div>
+</div>
 
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={handleWishlist}
-                    className="group flex h-11 w-11 items-center justify-center rounded-full border bg-white transition-all duration-200 hover:shadow-md active:scale-95"
-                  >
-                    <span
-                      className={`inline-flex items-center justify-center transition-all duration-300 ease-in-out ${
-                        isWishlisted
-                          ? "scale-[1.35] text-red-500"
-                          : "scale-100 text-gray-700 group-hover:scale-110"
-                      }`}
-                    >
-                      {isWishlisted ? (
-                        <HeartFilled className="text-[20px]" />
-                      ) : (
-                        <HeartOutlined className="text-[20px]" />
-                      )}
-                    </span>
-                  </button>
+            <div className="flex items-center gap-2 sm:gap-3">
+  <button
+    onClick={handleWishlist}
+    className="group flex h-9 w-9 items-center justify-center rounded-full border bg-white transition-all duration-200 hover:shadow-md active:scale-95 sm:h-11 sm:w-11"
+  >
+    <span
+      className={`inline-flex items-center justify-center transition-all duration-300 ${
+        isWishlisted
+          ? "scale-110 text-red-500"
+          : "text-gray-700 group-hover:scale-110"
+      }`}
+    >
+      {isWishlisted ? (
+        <HeartFilled className="text-[16px] sm:text-[20px]" />
+      ) : (
+        <HeartOutlined className="text-[16px] sm:text-[20px]" />
+      )}
+    </span>
+  </button>
 
-                  <button className="flex h-11 w-11 items-center justify-center rounded-full border bg-white">
-                    <ShareAltOutlined className="text-[19px]" />
-                  </button>
-                </div>
+  <button className="flex h-9 w-9 items-center justify-center rounded-full border bg-white sm:h-11 sm:w-11">
+    <ShareAltOutlined className="text-[16px] sm:text-[19px]" />
+  </button>
+</div>
               </div>
 
               {/* GALLERY + PRICE */}
