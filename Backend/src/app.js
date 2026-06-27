@@ -49,6 +49,7 @@ app.use(
       "http://localhost:3001",
       "http://main.d1lddnidhuqzni.amplifyapp.com",
       "https://main.d1lddnidhuqzni.amplifyapp.com",
+      https://main.d2s4wo3hb5kyyq.amplifyapp.com/,
       "https://www.panjourney.com",
       "https://panjourney.com",
     ],
