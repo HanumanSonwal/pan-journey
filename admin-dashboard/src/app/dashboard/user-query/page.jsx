@@ -200,7 +200,7 @@ export default function CustomersPage() {
     },
   ];
   return (
-    <Card title="Customers Management">
+    <Card title="Customer Queries">
       {canFetch ? (
         <div style={{ width: "100%" }}>
           <TableFilters
