@@ -127,8 +127,8 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   const hotelImages = supplierData?.HotelGallery || [];
   const amenities = supplierData?.Amenities
     ? supplierData.Amenities.split(",")
-        .map((i) => i.trim())
-        .filter(Boolean)
+      .map((i) => i.trim())
+      .filter(Boolean)
     : [];
   const hotelDetails = supplierData || [];
   const handleReloadHotels = async () => {
@@ -195,8 +195,8 @@ function HotelDetails({ initialPayload = null, cms = null }) {
           starRating: Number(supplierData?.StarRating || 0),
           facilities: supplierData?.Amenities
             ? supplierData.Amenities.split(",")
-                .map((item) => item.trim())
-                .filter(Boolean)
+              .map((item) => item.trim())
+              .filter(Boolean)
             : [],
           freeCancellation: false,
           savedPrice: Number(FirstRoomPrice?.TotalAmount || 0),
@@ -222,9 +222,8 @@ function HotelDetails({ initialPayload = null, cms = null }) {
       </div>
 
       <div
-        className={`relative mx-auto w-full max-w-7xl px-2 pb-8 transition-all duration-300 sm:px-4 md:px-6 ${
-          isScrolled ? "z-0" : "!z-[820]"
-        }`}
+        className={`relative mx-auto w-full max-w-7xl px-2 !pt-5 sm:!pt-0 md:!pt-0 lg:!pt-0 xl:!pt-0 2xl:!pb-0 transition-all duration-300 sm:px-4 md:px-6 ${isScrolled ? "z-0" : "!z-[820]"
+          }`}
       >
         <div className="-mt-3">
           {showSkeleton ? (
