@@ -1,12 +1,8 @@
 "use client";
 
-import {
-  CheckCircleOutlined,
-  HeartOutlined,
-  ShareAltOutlined,
-} from "@ant-design/icons";
+import { HeartOutlined, ShareAltOutlined } from "@ant-design/icons";
 import { Card } from "antd";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import HotelDetailsSkeleton from "@/components/common/loder/HotelDetailsSkeleton";
 import { useAuthGuard } from "@/modules/auth/hooks/useAuthGuard";
@@ -131,8 +127,8 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   const hotelImages = supplierData?.HotelGallery || [];
   const amenities = supplierData?.Amenities
     ? supplierData.Amenities.split(",")
-        .map((i) => i.trim())
-        .filter(Boolean)
+      .map((i) => i.trim())
+      .filter(Boolean)
     : [];
   const hotelDetails = supplierData || [];
   const handleReloadHotels = async () => {
@@ -199,8 +195,8 @@ function HotelDetails({ initialPayload = null, cms = null }) {
           starRating: Number(supplierData?.StarRating || 0),
           facilities: supplierData?.Amenities
             ? supplierData.Amenities.split(",")
-                .map((item) => item.trim())
-                .filter(Boolean)
+              .map((item) => item.trim())
+              .filter(Boolean)
             : [],
           freeCancellation: false,
           savedPrice: Number(FirstRoomPrice?.TotalAmount || 0),
@@ -216,62 +212,64 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     });
   };
 
+  const handleSearch = useCallback(() => {}, []);
+
   return (
     <div className="min-h-screen w-full bg-[#eaf3f9]">
-      <SearchBar />
+      <div className="sticky top-0 z-[99] hidden bg-white min-[660px]:block">
+        {/* <SearchBar /> */}
+        <SearchBar searchData={supplierData} onSearch={handleSearch} />
+      </div>
 
       <div
-        className={`relative mx-auto w-full max-w-7xl px-2 pb-8 transition-all duration-300 sm:px-4 md:px-6 ${
-          isScrolled ? "z-0" : "!z-[820]"
-        }`}
+        className={`relative mx-auto w-full max-w-7xl px-2 !pt-5 sm:!pt-0 md:!pt-0 lg:!pt-0 xl:!pt-0 2xl:!pb-0 transition-all duration-300 sm:px-4 md:px-6 ${isScrolled ? "z-0" : "!z-[820]"
+          }`}
       >
         <div className="-mt-3">
           {showSkeleton ? (
             <HotelDetailsSkeleton />
           ) : (
-            <Card className="overflow-hidden rounded-md border-0 shadow-lg">
+            <Card className="overflow-hidden rounded-md border-0 p-3 shadow-lg sm:p-6">
               {/* HEADER */}
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div className="flex min-w-0 items-start gap-3">
-                  <div className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#eef8fd]">
-                    <CheckCircleOutlined className="text-[18px] text-[#5bb7ec]!" />
-                  </div>
-
-                  <div className="min-w-0">
-                    <h1 className="mb-1! text-[26px] font-semibold text-[#303030]">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+                    <h1 className="text-[18px] leading-tight font-semibold text-[#303030] sm:text-[26px]">
                       {supplierData?.HotelName || "Hotel Name"}
                     </h1>
 
-                    <p className="mt-1! text-sm text-gray-500">
-                      {[supplierData?.City, supplierData?.Country]
-                        .filter(Boolean)
-                        .join(", ")}
-                    </p>
+                    {(supplierData?.City || supplierData?.Country) && (
+                      <span className="w-fit rounded-full bg-[#eef8fd] px-2 py-1 text-[11px] font-medium text-[#5bb7ec] sm:px-3 sm:text-sm">
+                        {[supplierData?.City, supplierData?.Country]
+                          .filter(Boolean)
+                          .join(", ")}
+                      </span>
+                    )}
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 sm:gap-3">
                   <button
                     onClick={handleWishlist}
-                    className="group flex h-11 w-11 items-center justify-center rounded-full border bg-white transition-all duration-200 hover:shadow-md active:scale-95"
+                    className="group flex h-9 w-9 items-center justify-center rounded-full border bg-white transition-all duration-200 hover:shadow-md active:scale-95 sm:h-11 sm:w-11"
                   >
                     <span
-                      className={`inline-flex items-center justify-center transition-all duration-300 ease-in-out ${
+                      className={`inline-flex items-center justify-center transition-all duration-300 ${
                         isWishlisted
-                          ? "scale-[1.35] text-red-500"
-                          : "scale-100 text-gray-700 group-hover:scale-110"
+                          ? "scale-110 text-red-500"
+                          : "text-gray-700 group-hover:scale-110"
                       }`}
                     >
                       {isWishlisted ? (
-                        <HeartFilled className="text-[20px]" />
+                        <HeartFilled className="text-[16px] sm:text-[20px]" />
                       ) : (
-                        <HeartOutlined className="text-[20px]" />
+                        <HeartOutlined className="text-[16px] sm:text-[20px]" />
                       )}
                     </span>
                   </button>
 
-                  <button className="flex h-11 w-11 items-center justify-center rounded-full border bg-white">
-                    <ShareAltOutlined className="text-[19px]" />
+                  <button className="flex h-9 w-9 items-center justify-center rounded-full border bg-white sm:h-11 sm:w-11">
+                    <ShareAltOutlined className="text-[16px] sm:text-[19px]" />
                   </button>
                 </div>
               </div>

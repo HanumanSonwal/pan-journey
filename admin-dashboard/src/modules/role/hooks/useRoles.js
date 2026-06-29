@@ -37,6 +37,8 @@ export const useRoles = (enabled = false, dropdownEnabled = false) => {
     retry: false,
   });
 
+  console.log("dropdownData in useRoles", dropdownData);
+
   const createMutation = useMutation({
     mutationFn: createRole,
     onSuccess: (newRole) => {
@@ -88,12 +90,27 @@ export const useRoles = (enabled = false, dropdownEnabled = false) => {
     },
   });
 
+  console.log("dropdownData", dropdownData);
+
+  console.log(
+    "mapped roleOptions",
+    (dropdownData?.data || []).map((r) => ({
+      label: r.name,
+      value: r._id,
+    })),
+  );
+
   return {
     roles: enabled ? data?.data || [] : [],
     isLoading: enabled ? isLoading : false,
     isFetching,
 
-    roleOptions: dropdownEnabled ? dropdownData?.data || [] : [],
+    roleOptions: dropdownEnabled
+      ? (dropdownData?.data || []).map((r) => ({
+          label: r.name,
+          value: r._id,
+        }))
+      : [],
     dropdownLoading,
 
     createRole: createMutation.mutateAsync,

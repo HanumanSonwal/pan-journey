@@ -1,6 +1,7 @@
 import ComingSoonModal from "@/components/common/ComingSoonModal";
 import Footer from "@/components/common/Footer";
 import Header from "@/components/common/Header";
+import GlobalLoginModal from "@/modules/auth/components/GlobalLoginModal";
 import ProfileCompletionHandler from "@/modules/auth/components/ProfileCompletionHandler";
 import LoaderProvider from "@/providers/LoaderProvider";
 import QueryProvider from "@/providers/QueryProvider";
@@ -97,6 +98,7 @@ export default function RootLayout({ children }) {
                 <main className="flex-1">
                   <App>
                     <ComingSoonModal />
+                    <GlobalLoginModal />
                     {children}
                   </App>
                 </main>

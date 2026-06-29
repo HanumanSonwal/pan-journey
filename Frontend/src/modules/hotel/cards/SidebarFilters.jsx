@@ -1,16 +1,21 @@
 "use client";
+
 import { Checkbox, Collapse, Input } from "antd";
 import Image from "next/image";
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 
+// options (OUTSIDE COMPONENT)
 const suggestedOptions = [
   "5 Star",
   "Breakfast Included",
   "Couple Friendly",
   "Free Cancellation",
 ];
+
 const propertyOptions = ["Hotel", "Villa", "Resort", "Apartment", "Homestay"];
+
 const userRatingOptions = ["Excellent: 4.2+", "Very Good: 4+", "Good: 3.5+"];
+
 const locationOptions = [
   "North Goa",
   "Calangute",
@@ -18,42 +23,40 @@ const locationOptions = [
   "Candolim",
   "Anjuna",
 ];
+
 const starOptions = [3, 4, 5];
+
 const priceRanges = [
-  {
-    label: "₹ 0 - ₹ 3000",
-    min: 0,
-    max: 3000,
-  },
-  {
-    label: "₹ 3000 - ₹ 6000",
-    min: 3000,
-    max: 6000,
-  },
-  {
-    label: "₹ 6000 - ₹ 10000",
-    min: 6000,
-    max: 10000,
-  },
-  {
-    label: "₹ 10000+",
-    min: 10000,
-    max: 50000,
-  },
+  { label: "₹ 0 - ₹ 3000", min: 0, max: 3000 },
+  { label: "₹ 3000 - ₹ 6000", min: 3000, max: 6000 },
+  { label: "₹ 6000 - ₹ 10000", min: 6000, max: 10000 },
+  { label: "₹ 10000+", min: 10000, max: 50000 },
 ];
 
 function SidebarFilters({
   filters,
   setFilters,
   onMapClick,
+  onClose,
   hideMapSection = false,
 }) {
+  const [isMobile, setIsMobile] = useState(false);
   const [hotelSearch, setHotelSearch] = useState(filters?.search || "");
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+
+    check();
+    window.addEventListener("resize", check);
+
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const handleSearch = useCallback(
     (e) => {
       const value = e.target.value;
       setHotelSearch(value);
+
       setFilters((prev) => ({
         ...prev,
         search: value,
@@ -66,13 +69,12 @@ function SidebarFilters({
     (key, value) => {
       setFilters((prev) => {
         const current = prev[key] || [];
+
         const updated = current.includes(value)
           ? current.filter((v) => v !== value)
           : [...current, value];
-        return {
-          ...prev,
-          [key]: updated,
-        };
+
+        return { ...prev, [key]: updated };
       });
     },
     [setFilters],
@@ -82,7 +84,6 @@ function SidebarFilters({
     (rating) => {
       setFilters((prev) => ({
         ...prev,
-
         starRating: prev.starRating === String(rating) ? "" : String(rating),
       }));
     },
@@ -123,7 +124,7 @@ function SidebarFilters({
         key: "suggested",
         title: "Suggested For You",
         content: (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 text-[13px] md:text-sm">
             {suggestedOptions.map((option) => (
               <Checkbox
                 key={option}
@@ -281,11 +282,11 @@ function SidebarFilters({
   ]);
 
   return (
-    <div className="bg-white p-4 shadow-md">
+    <div className={`flex h-full flex-col bg-white p-3 shadow-md md:p-4`}>
       {!hideMapSection && (
         <div
           onClick={() => onMapClick?.()}
-          className="relative mb-5 h-[105px] cursor-pointer! overflow-hidden rounded"
+          className="relative mb-4 h-[80px] cursor-pointer overflow-hidden rounded sm:h-[70px] md:h-[105px]"
         >
           <Image
             src="/images/filterMap.png"
@@ -297,48 +298,83 @@ function SidebarFilters({
           <div className="absolute inset-0 flex items-center justify-center">
             <button
               type="button"
-              className="cursor-pointer! rounded border-1 border-[#0B6CFF] bg-white px-3 py-2 text-[10px] font-bold text-[#0B6CFF] shadow-md"
+              className="cursor-pointer rounded border border-[#0B6CFF] bg-white px-2 py-1 text-[10px] font-semibold text-[#0B6CFF] shadow-md transition-all duration-200 hover:bg-[#0B6CFF] hover:text-white sm:px-3 sm:py-1.5 sm:text-[11px] md:px-4 md:py-2 md:text-xs lg:px-5 lg:py-2.5 lg:text-sm"
             >
               Explore on Map
             </button>
           </div>
         </div>
       )}
-
-      <div className="mb-2">
+      <div className="mb-3 md:mb-4">
         <Input
           allowClear
           placeholder="Search Hotel Name"
           value={hotelSearch}
-          className="[&_.ant-input]:!border-0 [&_.ant-input]:!shadow-none [&_.ant-input]:focus:!shadow-none"
           onChange={handleSearch}
+          className="h-8 rounded-lg border border-gray-200 md:h-11 [&_.ant-input]:!border-0 [&_.ant-input]:!text-[13px] [&_.ant-input]:!shadow-none [&_.ant-input]:focus:!shadow-none md:[&_.ant-input]:!text-[14px] [&_.ant-input::placeholder]:!text-gray-400"
         />
       </div>
 
-      <Collapse
-        defaultActiveKey={[
-          "suggested",
-          "freeCancellation",
-          "price",
-          "propertyType",
-          "starCategory",
-          "rating",
-          "locations",
-        ]}
-        ghost
-        expandIconPlacement="end"
-        items={filterSections.map((section) => ({
-          key: section.key,
+      <div className="flex flex-1 flex-col overflow-hidden">
+        <div className="flex-1 overflow-y-auto pr-1">
+          <Collapse
+            defaultActiveKey={[
+              "suggested",
+              "freeCancellation",
+              "price",
+              "propertyType",
+              "starCategory",
+              "rating",
+              "locations",
+            ]}
+            ghost
+            expandIconPlacement="end"
+            items={filterSections.map((section) => ({
+              key: section.key,
+              label: (
+                <span className="text-[13px] font-semibold text-gray-800 md:text-sm">
+                  {section.title}
+                </span>
+              ),
+              children: section.content,
+            }))}
+          />
+        </div>
 
-          label: (
-            <span className="font-roboto! text-sm font-semibold text-gray-800">
-              {section.title}
-            </span>
-          ),
+        {isMobile && (
+          <div className="sticky right-0 bottom-0 left-0 mt-3 border-t bg-white p-3 shadow-[0_-4px_12px_rgba(0,0,0,0.08)]">
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setFilters({
+                    freeCancellation: false,
+                    search: "",
+                    starRating: "",
+                    minPrice: "",
+                    maxPrice: "",
+                    suggested: [],
+                    propertyType: [],
+                    rating: [],
+                    locations: [],
+                  });
 
-          children: section.content,
-        }))}
-      />
+                  onClose?.();
+                }}
+                className="h-8 flex-1 rounded-lg border border-gray-300 bg-white text-sm font-semibold text-gray-700 transition hover:border-[#0B5ED7] hover:text-[#0B5ED7]"
+              >
+                Reset
+              </button>
+
+              <button
+                onClick={() => onClose?.()}
+                className="h-8 flex-1 rounded bg-[#0B6CFF] text-sm font-semibold text-white! transition hover:bg-[#0953be]"
+              >
+                View Properties
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

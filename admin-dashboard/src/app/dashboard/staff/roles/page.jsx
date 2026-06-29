@@ -248,7 +248,7 @@ export default function RolesPage() {
 
       <Card
         style={{
-          borderRadius: 18,
+          borderRadius: 5,
         }}
         styles={{
           body: {

@@ -1,8 +1,8 @@
 import express from "express";
+
 import {
   createStaffController,
   getAllUsersController,
-  getCustomersController,
   getSingleUserController,
   updateUserController,
   updateUserStatusController,
@@ -19,7 +19,10 @@ import {
 
 const router = express.Router();
 
-// 🔐 CREATE STAFF
+/**
+ * CREATE STAFF
+ * POST /api/v1/users/staff
+ */
 router.post(
   "/staff",
   protect,
@@ -28,6 +31,16 @@ router.post(
   createStaffController,
 );
 
+/**
+ * GET USERS
+ *
+ * Examples:
+ * GET /users
+ * GET /users?type=staff
+ * GET /users?type=customer
+ * GET /users?search=aditya
+ * GET /users?roleName=manager
+ */
 router.get(
   "/",
   protect,
@@ -35,14 +48,9 @@ router.get(
   getAllUsersController,
 );
 
-router.get(
-  "/customers",
-  protect,
-  checkPermission("users", "read"),
-  getCustomersController,
-);
-
-// 🔐 GET SINGLE USER
+/**
+ * GET SINGLE USER
+ */
 router.get(
   "/:id",
   protect,
@@ -50,7 +58,9 @@ router.get(
   getSingleUserController,
 );
 
-// 🔐 UPDATE USER
+/**
+ * UPDATE USER
+ */
 router.put(
   "/:id",
   protect,
@@ -59,11 +69,24 @@ router.put(
   updateUserController,
 );
 
+/**
+ * UPDATE USER STATUS
+ */
 router.patch(
   "/:id/status",
   protect,
   checkPermission("users", "update"),
   updateUserStatusController,
 );
+
+/**
+ * DELETE USER
+ */
+// router.delete(
+//   "/:id",
+//   protect,
+//   checkPermission("users", "delete"),
+//   deleteUserController,
+// );
 
 export default router;

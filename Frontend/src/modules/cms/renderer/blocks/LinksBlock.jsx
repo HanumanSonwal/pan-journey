@@ -41,6 +41,7 @@ export default function LinksBlock({ data }) {
                 <span key={i}>
                   <Link
                     href={item?.url || "#"}
+                    className="text-[14px]! text-gray-600! transition-colors duration-100 hover:text-sky-600!"
                     style={{
                       color: "#374151",
                       textDecoration: "none",

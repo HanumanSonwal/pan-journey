@@ -1,6 +1,10 @@
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
-import { deleteByPattern, getCache, setCache } from "../../utils/cache/cache.js";
+import {
+  deleteByPattern,
+  getCache,
+  setCache,
+} from "../../utils/cache/cache.js";
 import ApiError from "../../utils/response/ApiError.js";
 import Role from "../role/role.model.js";
 import User from "./user.model.js";
@@ -29,14 +33,26 @@ export const createStaff = async (data) => {
   }
 
   const roleDoc = await Role.findById(data.role);
-  if (!roleDoc) throw new ApiError(400, "Role not found");
 
-  if (roleDoc.name === "customer") {
-    throw new ApiError(400, "Cannot assign customer role");
+  if (!roleDoc) {
+    throw new ApiError(400, "Role not found");
   }
 
-  const existing = await User.findOne({ email: data.email });
-  if (existing) throw new ApiError(400, "Email already exists");
+  const existingEmail = await User.findOne({
+    email: data.email,
+  });
+
+  if (existingEmail) {
+    throw new ApiError(400, "Email already exists");
+  }
+
+  const existingMobile = await User.findOne({
+    mobile: data.mobile,
+  });
+
+  if (existingMobile) {
+    throw new ApiError(400, "Mobile already exists");
+  }
 
   const hashedPassword = await bcrypt.hash(data.password, 10);
 
@@ -46,14 +62,16 @@ export const createStaff = async (data) => {
     mobile: data.mobile,
     password: hashedPassword,
     role: roleDoc._id,
-    provider: "local",
+    type: "staff",
+    providers: ["email"],
     isEmailVerified: true,
   });
 
   await deleteByPattern("users:*");
 
-  user.password = undefined;
-  return user;
+  return User.findById(user._id)
+    .select("-password -refreshToken")
+    .populate("role", "name permissions");
 };
 
 // GET ALL USERS (ADMIN / STAFF)
@@ -62,42 +80,86 @@ export const getAllUsers = async (query) => {
   const cacheKey = `users:${JSON.stringify(query)}`;
   const cached = await getCache(cacheKey);
   if (cached) return cached;
+  const { page, skip, sortBy, order, limit } = getPagination(query);
+  const search = query.search?.trim() || "";
 
-  const { skip, sortBy, order, limit } = getPagination(query);
-  const search = query.search || "";
+  if (
+    query.type &&
+    !["admin", "staff", "customer"].includes(query.type.toLowerCase())
+  ) {
+    throw new ApiError(400, "Invalid user type");
+  }
+  if (query.roleId && query.roleName) {
+    throw new ApiError(400, "Use either roleId or roleName");
+  }
+  const allowedSortFields = ["createdAt", "updatedAt", "name", "email"];
+  const finalSortBy = allowedSortFields.includes(sortBy) ? sortBy : "createdAt";
+  const filters = {};
 
-  let roleFilter = {};
-
-  if (query.roleId) {
-    roleFilter.role = query.roleId;
+  // Filter by user type
+  if (query.type) {
+    filters.type = query.type.toLowerCase();
   }
 
+  if (query.isActive !== undefined) {
+    filters.isActive = query.isActive === "true";
+  }
+
+  // Filter by role id
+  if (query.roleId) {
+    if (!mongoose.Types.ObjectId.isValid(query.roleId)) {
+      throw new ApiError(400, "Invalid role ID");
+    }
+
+    filters.role = query.roleId;
+  }
+
+  // Filter by role name
   if (query.roleName) {
     const roleDoc = await Role.findOne({
       name: query.roleName.toLowerCase(),
     });
 
-    if (!roleDoc) throw new ApiError(400, "Role not found");
+    if (!roleDoc) {
+      throw new ApiError(400, "Role not found");
+    }
 
-    roleFilter.role = roleDoc._id;
+    filters.role = roleDoc._id;
   }
 
   const searchQuery = {
-    ...roleFilter,
+    ...filters,
+
     ...(search && {
       $or: [
-        { name: { $regex: search, $options: "i" } },
-        { email: { $regex: search, $options: "i" } },
-        { mobile: { $regex: search, $options: "i" } },
+        {
+          name: {
+            $regex: search,
+            $options: "i",
+          },
+        },
+        {
+          email: {
+            $regex: search,
+            $options: "i",
+          },
+        },
+        {
+          mobile: {
+            $regex: search,
+            $options: "i",
+          },
+        },
       ],
     }),
   };
-
   const [data, total] = await Promise.all([
     User.find(searchQuery)
       .select("-password -refreshToken")
       .populate("role", "name permissions")
-      .sort({ [sortBy]: order })
+      .sort({
+        [finalSortBy]: order,
+      })
       .skip(skip)
       .limit(limit)
       .lean(),
@@ -109,82 +171,90 @@ export const getAllUsers = async (query) => {
     data,
     pagination: {
       total,
-      page: getPagination(query).page,
+      page,
       limit,
       totalPages: Math.ceil(total / limit),
     },
   };
 
   await setCache(cacheKey, result, 300);
+
   return result;
 };
 
 // GET CUSTOMERS (SEPARATE - FUTURE READY)
 
-export const getCustomers = async (query) => {
-  const cacheKey = `customers:${JSON.stringify(query)}`;
-  const cached = await getCache(cacheKey);
-  if (cached) return cached;
+// export const getCustomers = async (query) => {
+//   const cacheKey = `customers:${JSON.stringify(query)}`;
+//   const cached = await getCache(cacheKey);
+//   if (cached) return cached;
 
-  const roleDoc = await Role.findOne({ name: "customer" });
-  if (!roleDoc) throw new ApiError(400, "Customer role not found");
+//   const roleDoc = await Role.findOne({ name: "customer" });
+//   if (!roleDoc) throw new ApiError(400, "Customer role not found");
 
-  const { skip, sortBy, order, limit } = getPagination(query);
-  const search = query.search || "";
+//   const { skip, sortBy, order, limit } = getPagination(query);
+//   const search = query.search || "";
 
-  const searchQuery = {
-    role: roleDoc._id,
-    ...(search && {
-      $or: [
-        { name: { $regex: search, $options: "i" } },
-        { mobile: { $regex: search, $options: "i" } },
-      ],
-    }),
-  };
+//   const searchQuery = {
+//     role: roleDoc._id,
+//     ...(search && {
+//       $or: [
+//         { name: { $regex: search, $options: "i" } },
+//         { mobile: { $regex: search, $options: "i" } },
+//       ],
+//     }),
+//   };
 
-  const [data, total] = await Promise.all([
-    User.find(searchQuery)
-      .select("-password -refreshToken")
-      .populate("role", "name")
-      .sort({ [sortBy]: order })
-      .skip(skip)
-      .limit(limit)
-      .lean(),
+//   const [data, total] = await Promise.all([
+//     User.find(searchQuery)
+//       .select("-password -refreshToken")
+//       .populate("role", "name")
+//       .sort({ [sortBy]: order })
+//       .skip(skip)
+//       .limit(limit)
+//       .lean(),
 
-    User.countDocuments(searchQuery),
-  ]);
+//     User.countDocuments(searchQuery),
+//   ]);
 
-  const result = {
-    data,
-    pagination: {
-      total,
-      page: getPagination(query).page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-    },
-  };
+//   const result = {
+//     data,
+//     pagination: {
+//       total,
+//       page: getPagination(query).page,
+//       limit,
+//       totalPages: Math.ceil(total / limit),
+//     },
+//   };
 
-  await setCache(cacheKey, result, 300);
-  return result;
-};
+//   await setCache(cacheKey, result, 300);
+//   return result;
+// };
 
 // GET SINGLE USER
 export const getSingleUser = async (id) => {
+  // Validate Mongo ID
   if (!mongoose.Types.ObjectId.isValid(id)) {
     throw new ApiError(400, "Invalid ID");
   }
 
   const user = await User.findById(id)
     .select("-password -refreshToken")
-    .populate("role", "name permissions");
+    .populate("role", "name permissions")
+    .lean();
 
-  if (!user) throw new ApiError(404, "User not found");
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
 
   return user;
 };
 
 // UPDATE USER
 export const updateUser = async (id, data) => {
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new ApiError(400, "Invalid ID");
+  }
   const user = await User.findById(id);
   if (!user) throw new ApiError(404, "User not found");
 
@@ -204,6 +274,9 @@ export const updateUser = async (id, data) => {
   }
 
   if (data.role) {
+    if (!mongoose.Types.ObjectId.isValid(data.role)) {
+      throw new ApiError(400, "Invalid role ID");
+    }
     const roleDoc = await Role.findById(data.role);
     if (!roleDoc) throw new ApiError(400, "Role not found");
 
@@ -218,18 +291,16 @@ export const updateUser = async (id, data) => {
 };
 
 export const updateUserStatus = async (id, isActive) => {
-  console.log("SERVICE INPUT:", id, isActive);
-
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new ApiError(400, "Invalid ID");
+  }
   const user = await User.findById(id);
-
-  console.log("BEFORE UPDATE:", user.isActive);
-
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
   user.isActive = isActive;
-
   await user.save();
-
-  console.log("AFTER UPDATE:", user.isActive);
-
+  await deleteByPattern("users:*");
   return user;
 };
 

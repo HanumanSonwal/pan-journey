@@ -34,7 +34,7 @@ const createAdmin = async () => {
     }
 
     const existingAdmin = await User.findOne({
-      email: "admin@trainscafe.com",
+      email: "admin@panjourney.com",
     });
 
     if (existingAdmin) {
@@ -45,7 +45,7 @@ const createAdmin = async () => {
     const hashedPassword = await bcrypt.hash("Admin@123", 10);
     await User.create({
       name: "Super Admin",
-      email: "admin@trainscafe.com",
+      email: "admin@panjourney.com",
       password: hashedPassword,
       role: adminRole._id,
       provider: "local",

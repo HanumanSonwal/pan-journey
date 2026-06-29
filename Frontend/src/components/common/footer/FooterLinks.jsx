@@ -49,7 +49,7 @@ const socialLinks = [
 ];
 export default function FooterLinks() {
   return (
-    <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] font-roboto! font-semibold">
+    <div className="font-roboto! grid grid-cols-1 gap-10 font-semibold sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
       {/* About */}
       <div className="max-w-[340px]">
         <div className="relative mb-5 h-14 w-[180px]">
@@ -77,10 +77,10 @@ export default function FooterLinks() {
           </a>
 
           <a
-            href="tel:+91XXXXXXXXXX"
+            href="tel:+91 9876543210"
             className="block font-medium text-[#0f6b78] transition-colors hover:text-[#0c5863]"
           >
-            +91 XXXXX XXXXX
+            +91 9876543210
           </a>
         </div>
 
@@ -115,7 +115,7 @@ export default function FooterLinks() {
           <h3 className="mb-4 text-lg font-semibold">Payment Methods</h3>
 
           <div className="flex flex-wrap items-center gap-1">
-            <div className="relative  h-7 w-14">
+            <div className="relative h-7 w-14">
               <Image
                 src="/images/payments/visa.svg"
                 alt="Visa"
@@ -124,7 +124,7 @@ export default function FooterLinks() {
               />
             </div>
 
-            <div className="relative  h-7 w-14">
+            <div className="relative h-7 w-14">
               <Image
                 src="/images/payments/mastercard.svg"
                 alt="Mastercard"
@@ -133,7 +133,7 @@ export default function FooterLinks() {
               />
             </div>
 
-            <div className="relative  h-7 w-14">
+            <div className="relative h-7 w-14">
               <Image
                 src="/images/payments/paypal.svg"
                 alt="PayPal"
@@ -142,7 +142,7 @@ export default function FooterLinks() {
               />
             </div>
 
-            <div className="relative  h-7 w-14">
+            <div className="relative h-7 w-14">
               <Image
                 src="/images/payments/upi.svg"
                 alt="UPI"
@@ -164,7 +164,7 @@ export default function FooterLinks() {
                 href={item.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative  h-7 w-14 transition-all duration-300 hover:-translate-y-1 hover:scale-110"
+                className="relative h-7 w-14 transition-all duration-300 hover:-translate-y-1 hover:scale-110"
               >
                 <Image
                   src={item.icon}

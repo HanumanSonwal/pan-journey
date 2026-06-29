@@ -20,9 +20,15 @@ export default function useCMSForm({ id, form }) {
         form.setFieldsValue({
           ...page,
           keywords: page?.keywords?.join(", "),
-          cityMeta: page?.cityMeta,
-          selectedCity: page?.selectedCity,
-          selectedHotel: page?.selectedHotel,
+          cityMeta: page?.data?.cityMeta,
+
+          selectedCity: page?.data?.cityMeta?.destinationId || page?.entityId,
+
+          selectedHotel: page?.data?.hotelMeta?.hotelId || page?.entityId,
+
+          data: page?.data,
+
+          entityId: page?.entityId,
         });
       } catch {
         message.error("Failed to load page");
@@ -57,10 +63,8 @@ export default function useCMSForm({ id, form }) {
           id,
           data: payload,
         });
-        message.success("Page updated successfully");
       } else {
         await createCMS.mutateAsync(payload);
-        message.success("Page created successfully");
       }
 
       router.push("/dashboard/cms/pages");

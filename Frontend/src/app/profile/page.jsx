@@ -1,7 +1,12 @@
 "use client";
 
-import ProfilePage from "@/modules/profile/hooks/pages/ProfilePage";
+import AuthGuard from "@/modules/auth/components/AuthGuard";
+import ProfilePage from "@/modules/profile/pages/ProfilePage";
 
 export default function Page() {
-  return <ProfilePage />;
+  return (
+    <AuthGuard>
+      <ProfilePage />
+    </AuthGuard>
+  );
 }

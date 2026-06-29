@@ -2,6 +2,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
 //import "./cron/hotelCache.cron.js";
+import { currencyMiddleware } from "./middleware/currency.middleware.js";
 import { errorHandler } from "./middleware/error.middleware.js";
 import addBalanceRoute from "./modules/addPayment/addPaymentRoutes.js";
 import authRoutes from "./modules/auth/admin-auth/auth.routes.js";
@@ -10,9 +11,12 @@ import customerProfileRoutes from "./modules/auth/customer-auth/customer-documen
 import profileRoutes from "./modules/auth/customer-auth/customerProfile/profile.routes.js";
 import citySearch from "./modules/citysearch/supplierCity.routes.js";
 import cmsRoutes from "./modules/cms/cms.routes.js";
+import contactUs from "./modules/contactUsForm/contact.routes.js";
+import newsletter from "./modules/contactUsForm/newsletter.routes.js";
 import currencyRoutes from "./modules/currencyConverter/currency.route.js";
 import dashboardhotelsearch from "./modules/dashboardHotels/hotel.routes.js";
 import destinationRoutes from "./modules/exploreDesitanation/desitanation.routes.js";
+import grievanceRedressal from "./modules/grievanceRedressal/grievanceRedressal.routes.js";
 import hotelSearch from "./modules/hotel/hotel.route.js";
 import hotelCancellation from "./modules/hotel/hotelCancellation/cancellation.route.js";
 import hotelDetails from "./modules/hotel/hotelDetails/hotel.routes.js";
@@ -26,14 +30,10 @@ import countryRoutes from "./modules/priceMarkup/countryData/country.routes.js";
 import markeupRoutes from "./modules/priceMarkup/markup/markup.routes.js";
 import stateRoutes from "./modules/priceMarkup/stateData/state.routes.js";
 import roleRoutes from "./modules/role/role.routes.js";
+import support from "./modules/supportContact/support.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
 import wishlistRoutes from "./modules/wishlist/wishlist.routes.js";
 import testRoutes from "./test.routes.js";
-import {currencyMiddleware} from "./middleware/currency.middleware.js"
-import contactUs from "./modules/contactUsForm/contact.routes.js"
-import support from "./modules/supportContact/support.routes.js"
-
-import grievanceRedressal from "./modules/grievanceRedressal/grievanceRedressal.routes.js"
 
 const app = express();
 app.set("trust proxy", 1);
@@ -48,7 +48,7 @@ app.use(
     origin: [
       "http://localhost:3000",
       "http://localhost:3001",
-      "https://main.d11ddnidhuqzni.amplifyapp.com",
+      "http://main.d1lddnidhuqzni.amplifyapp.com",
       "https://main.d2s4wo3hb5kyyq.amplifyapp.com",
       "https://www.panjourney.com",
       "https://panjourney.com",
@@ -82,6 +82,7 @@ app.use("/api/v1/customer/profile", profileRoutes);
 app.use("/api/v1/markup", markeupRoutes);
 app.use("/api/v1/currency", currencyRoutes);
 app.use("/api/v1", testRoutes);
+app.use("/api/v1/newsletter", newsletter);
 app.use("/api/v1", invoiceRoutes);
 app.use("/api/v1", destinationRoutes);
 app.use("/api/v1/customer", customerProfileRoutes);

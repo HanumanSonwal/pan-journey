@@ -3,17 +3,38 @@
 import RHFInput from "@/components/ui/RHFinputs/RHFInput";
 import RHFSelect from "@/components/ui/RHFinputs/RHFSelect";
 import RHFTextarea from "@/components/ui/RHFinputs/RHFTextarea";
+import { useAuthModalStore } from "@/modules/auth/store/authModal.store";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { message } from "antd";
 import { FormProvider, useForm } from "react-hook-form";
+import { useCreateGrievance } from "./hooks/useGrievance";
 import { grievanceSchema } from "./schema/grievanceSchema";
 
 const grievanceCategories = [
-  { label: "Refund Issue", value: "refund" },
-  { label: "Booking Issue", value: "booking" },
-  { label: "Payment Dispute", value: "payment" },
-  { label: "Hotel Complaint", value: "hotel" },
-  { label: "Customer Service Complaint", value: "service" },
-  { label: "Other", value: "other" },
+  {
+    label: "Refund Issue",
+    value: "refund_request",
+  },
+  {
+    label: "Booking Issue",
+    value: "booking_issue",
+  },
+  {
+    label: "Payment Dispute",
+    value: "payment_issue",
+  },
+  {
+    label: "Hotel Complaint",
+    value: "hotel_complaint",
+  },
+  {
+    label: "General Query",
+    value: "general_query",
+  },
+  {
+    label: "Partnership Business",
+    value: "partnership_business",
+  },
 ];
 
 export default function GrievanceOfficerAndFormSection() {
@@ -33,8 +54,60 @@ export default function GrievanceOfficerAndFormSection() {
     },
   });
 
-  const onSubmit = (data) => {
-    console.log("SUCCESS", data);
+  const { mutateAsync: createGrievance, isPending } = useCreateGrievance();
+
+  const { openLoginModal } = useAuthModalStore();
+
+  const onSubmit = async (data) => {
+    try {
+      const payload = {
+        fullName: data.fullName,
+        email: data.email,
+        subject: data.subject,
+        bookingRefId: data.bookingRefNo,
+        message: data.description,
+        ticketId: data.supportTicketId,
+        supportCategory: data.category,
+      };
+
+      const res = await createGrievance(payload);
+
+      const grievanceId = res?.data?.data?.grievanceId || "PAN-CS-000003";
+
+      message.success({
+        duration: 5,
+        content: (
+          <span>
+            Your grievance has been submitted successfully.
+            <br />
+            Please keep{" "}
+            <strong className="text-[#006c7a]">
+              Reference ID: {grievanceId}
+            </strong>{" "}
+            for future reference.
+          </span>
+        ),
+      });
+
+      methods.reset();
+    } catch (error) {
+      const status = error?.response?.status;
+      const errorMessage = error?.response?.data?.message;
+
+      if (status === 401 && errorMessage === "No token provided") {
+        message.warning({
+          key: "login-required",
+          content: "Please login to continue.",
+        });
+
+        openLoginModal();
+        return;
+      }
+
+      message.error(
+        errorMessage || "Unable to submit your grievance. Please try again.",
+      );
+    }
   };
 
   const onError = (errors) => {

@@ -3,10 +3,12 @@
 import RHFInput from "@/components/ui/RHFinputs/RHFInput";
 import RHFTextarea from "@/components/ui/RHFinputs/RHFTextarea";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { FormProvider, useForm } from "react-hook-form";
-
 import RHFSelect from "@/components/ui/RHFinputs/RHFSelect";
+import { useAuthModalStore } from "@/modules/auth/store/authModal.store";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { message } from "antd";
+import { FormProvider, useForm } from "react-hook-form";
+import { useCreateContact } from "./hooks/useContact";
 import { contactSchema } from "./schema/contactSchema";
 
 export default function ContactFormSection() {
@@ -15,35 +17,81 @@ export default function ContactFormSection() {
     mode: "onSubmit",
     defaultValues: {
       category: "",
+      BookingRefNo: "",
       fullName: "",
       email: "",
       subject: "",
       message: "",
     },
   });
+
   const supportCategories = [
-    { label: "Booking Issue", value: "booking" },
-    { label: "Refund Request", value: "refund" },
-    { label: "Payment Issue", value: "payment" },
-    { label: "Hotel Complaint", value: "complaint" },
-    { label: "Partnership / Business", value: "business" },
-    { label: "General Query", value: "general" },
+    { label: "Booking Issue", value: "Booking_Issue" },
+    { label: "Refund Request", value: "Refund_request" },
+    { label: "Payment Issue", value: "Payment_issue" },
+    { label: "Hotel Complaint", value: "Hotel_Complaint" },
+    { label: "Partnership / Business", value: "Partnership_Business" },
+    { label: "General Query", value: "General_Query" },
   ];
 
-  const onSubmit = (data) => {
-    console.log("Contact Form Data:", data);
+  const { mutateAsync: createContact, isPending } = useCreateContact();
+  const { openLoginModal } = useAuthModalStore();
 
-    // Future API Call
-    // await createContactInquiry(data);
+  const onSubmit = async (data) => {
+    try {
+      const payload = {
+        fullName: data.fullName,
+        email: data.email,
+        subject: data.subject,
+        message: data.message,
+        BookingRefNo: data.BookingRefNo,
+        supportCategory: data.category,
+      };
 
-    methods.reset();
+      const res = await createContact(payload);
+
+      const ticketId = res?.data?.data?.ticketId;
+
+      message.success({
+        duration: 5,
+        content: (
+          <span>
+            Your support request has been submitted successfully.
+            <br />
+            Please keep{" "}
+            <strong className="text-[#006c7a]">
+              Ticket ID: {ticketId}
+            </strong>{" "}
+            for future reference.
+          </span>
+        ),
+      });
+
+      methods.reset();
+    } catch (error) {
+      const status = error?.response?.status;
+      const errorMessage = error?.response?.data?.message;
+
+      // User not logged in
+      if (status === 401 && errorMessage === "No token provided") {
+        message.warning({
+          key: "login-required",
+          content: "Please login to continue.",
+        });
+
+        openLoginModal();
+        return;
+      }
+
+      message.error(
+        errorMessage || "Unable to submit your request. Please try again.",
+      );
+    }
   };
-
   return (
     <section className="font-roboto! bg-[#eef5fa] py-10 lg:py-10">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
         <div className="grid grid-cols-1 gap-10 min-[901px]:grid-cols-2 min-[901px]:gap-8">
-          {/* Left Content */}
           <div className="rounded bg-white p-6 shadow-[0_8px_30px_rgba(0,0,0,0.06)] lg:p-8">
             <h2 className="mb-5 text-[18px] leading-[1.2] font-bold text-[#0f6b78] sm:text-[18px] md:text-[28px] lg:text-[32px]">
               We're Always Here To
@@ -133,13 +181,18 @@ export default function ContactFormSection() {
                     placeholder=" "
                   />
                 </div>
-
-                <RHFSelect
-                  name="category"
-                  label="Support Category"
-                  options={supportCategories}
-                />
-
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                  <RHFSelect
+                    name="category"
+                    label="Support Category"
+                    options={supportCategories}
+                  />
+                  <RHFInput
+                    name="BookingRefNo"
+                    label="booking Refrence Id"
+                    placeholder=" "
+                  />
+                </div>
                 <RHFInput name="subject" label="Subject" placeholder=" " />
 
                 {/* Message */}
@@ -153,10 +206,10 @@ export default function ContactFormSection() {
                 {/* Button */}
                 <button
                   type="submit"
-                  disabled={methods.formState.isSubmitting}
+                  disabled={isPending}
                   className="w-full rounded-lg bg-gradient-to-b from-[#67b5e2] to-[#006c7a] px-8 py-3.5 font-medium text-white! transition-all duration-300 hover:-translate-y-[1px] hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {methods.formState.isSubmitting ? "Submitting..." : "Submit"}
+                  {isPending ? "Submitting..." : "Submit"}
                 </button>
               </form>
             </FormProvider>

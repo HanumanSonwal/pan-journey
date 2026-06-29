@@ -13,7 +13,6 @@ const cookieOptions = {
   secure: true,
   sameSite: "none",
 };
-
 export const login = asyncHandler(async (req, res) => {
   const data = await loginUser(req.body);
 
@@ -26,7 +25,6 @@ export const login = asyncHandler(async (req, res) => {
     ...cookieOptions,
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
-
   sendSuccess(res, "Login successful", {
     user: {
       id: data.user.id,

@@ -50,7 +50,9 @@ export default function Header() {
       .toUpperCase()
       .slice(0, 2);
   };
-
+const closeMobileMenu = () => {
+  setMobileMenu(false);
+};
   const handleLogout = () => {
     logout(session?.refreshToken);
   };
@@ -126,7 +128,7 @@ export default function Header() {
         </Link>
 
         {/* Desktop Menu */}
-       <nav className="font-roboto! hidden min-[901px]:flex items-center text-gray-900 gap-3 min-[1024px]:gap-4 min-[1200px]:gap-6 min-[1400px]:gap-8">
+        <nav className="font-roboto! hidden min-[901px]:flex items-center text-gray-900 gap-3 min-[1024px]:gap-4 min-[1200px]:gap-6 min-[1400px]:gap-8">
           <Link
             href="/"
             className="relative transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:text-[#0f766e] hover:after:w-full"
@@ -261,9 +263,9 @@ export default function Header() {
           )}
 
           {/* Mobile Menu */}
-        <button
-  className="text-xl !text-[#4A9BB5] min-[901px]:hidden transition-all duration-300 hover:scale-110 hover:text-gray-800!"
-  onClick={() => setMobileMenu(true)}
+          <button
+            className="text-xl !text-[#4A9BB5] min-[901px]:hidden transition-all duration-300 hover:scale-110 hover:text-gray-800!"
+            onClick={() => setMobileMenu(true)}
 
           >
             <MenuOutlined />
@@ -280,35 +282,40 @@ export default function Header() {
       >
         <div className="flex flex-col gap-5 text-[16px] font-medium">
           <Link
-  href="/"
-  className="relative w-fit !text-black transition-colors duration-200 hover:!text-[#0f766e] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:after:w-full"
->
-  Hotels
-</Link>
+            href="/"
+            onClick={closeMobileMenu}
+            className="relative w-fit !text-black transition-colors duration-200 hover:!text-[#0f766e] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:after:w-full"
+          >
+            Hotels
+          </Link>
 
           <Link
             href="/gift-cards"
-className="relative w-fit !text-black transition-colors duration-200 hover:!text-[#0f766e] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:after:w-full"
+            onClick={closeMobileMenu}
+            className="relative w-fit !text-black transition-colors duration-200 hover:!text-[#0f766e] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:after:w-full"
           >
             Best Offers
           </Link>
-
-          <span className="relative w-fit cursor-pointer transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:text-[#0f766e] hover:after:w-full">
-            Flights
-          </span>
-
-          <span className="relative w-fit cursor-pointer transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:text-[#0f766e] hover:after:w-full">
-            Bus
-          </span>
+          <Tooltip title="Coming Soon" color="#0f766e">
+            <span className="relative w-fit cursor-pointer transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:text-[#0f766e] hover:after:w-full">
+              Flights
+            </span>
+          </Tooltip>
+          <Tooltip title="Coming Soon" color="#0f766e">
+            <span className="relative w-fit cursor-pointer transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:text-[#0f766e] hover:after:w-full">
+              Bus
+            </span>
+          </Tooltip>
 
           <Link
             href="/contact-us"
-           className="relative w-fit !text-black transition-colors duration-200 hover:!text-[#0f766e] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:after:w-full"
+            onClick={closeMobileMenu}
+            className="relative w-fit !text-black transition-colors duration-200 hover:!text-[#0f766e] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:after:w-full"
           >
             Support
           </Link>
         </div>
-  
+
       </Drawer>
 
       {/* Modals */}

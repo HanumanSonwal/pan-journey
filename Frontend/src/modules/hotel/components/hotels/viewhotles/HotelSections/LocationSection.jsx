@@ -104,18 +104,18 @@ const LocationSection = ({ supplierData = {} }) => {
       {/* MAP */}
       <div className="overflow-hidden rounded border border-gray-200 bg-white shadow-sm">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
+        <div className="flex items-center justify-between border-b border-gray-100 px-4 py-4">
           <div>
-            <h3 className="text-[18px] font-semibold text-gray-800">
+            <h3 className="mb-1! text-[18px] font-semibold text-gray-800">
               View on Map
             </h3>
 
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="mb-0! text-xs text-gray-500">
               Explore nearby surroundings
             </p>
           </div>
 
-          <div className="rounded-full bg-[#eef8fd] px-3 py-1 text-xs text-[#0ea5e9]">
+          <div className="rounded-full bg-[#eef8fd] px-1! py-1! text-xs text-[#0ea5e9]">
             Live Map
           </div>
         </div>
@@ -125,7 +125,7 @@ const LocationSection = ({ supplierData = {} }) => {
           src={`https://www.google.com/maps?q=${encodeURIComponent(
             mapQuery,
           )}&z=15&output=embed`}
-          className=" w-full"
+          className="h-[340px] w-full border-0"
           loading="lazy"
           title="hotel-map"
         />

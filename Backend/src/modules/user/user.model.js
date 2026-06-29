@@ -45,6 +45,7 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
       index: true,
+      match: /^\S+@\S+\.\S+$/,
     },
 
     mobile: {
@@ -52,6 +53,7 @@ const userSchema = new mongoose.Schema(
       unique: true,
       sparse: true,
       trim: true,
+      index: true,
     },
 
     type: {
@@ -74,7 +76,12 @@ const userSchema = new mongoose.Schema(
     },
 
     providers: {
-      type: [String], // ["otp", "email", "google"]
+      type: [
+        {
+          type: String,
+          enum: ["email", "otp", "google"],
+        },
+      ],
       default: [],
     },
 
@@ -114,9 +121,17 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
 
-    refreshToken: String,
+    refreshToken: {
+      type: String,
+      default: null,
+    },
   },
   { timestamps: true },
 );
+
+userSchema.index({ type: 1 });
+userSchema.index({ role: 1 });
+userSchema.index({ email: 1 });
+userSchema.index({ mobile: 1 });
 
 export default mongoose.model("User", userSchema);
