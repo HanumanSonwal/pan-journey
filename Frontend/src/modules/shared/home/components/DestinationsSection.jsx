@@ -16,7 +16,7 @@ export default function DestinationsSection() {
   const activeDestinations =
     destinations[activeTab] || destinations["All Destinations"];
 
-  return (<section className="!mt-[-30px] overflow-hidden bg-[#EDF7FF] px-3 sm:px-4 md:px-6 lg:px-8 xl:px-10 py-0 sm:py-0 md:py-0 text-black">
+  return (<section className="!mt-[-30px] overflow-hidden bg-[#EDF7FF] px-3 sm:px-4 md:px-6 lg:px-8 xl:px-10 py-0 sm:py-0 md:py-24 text-black">
     <div className="mx-auto w-full max-w-[1600px] lg:w-[88.87%]">
       {/* Heading */}
       <SectionHeading
@@ -24,71 +24,71 @@ export default function DestinationsSection() {
         description="We’re committed to offering more than just products we provide exceptional experiences."
       />
 
-        {/* Tabs */}
-        <div className="mt-5 flex justify-center">
-          <div className="scrollbar-hide flex max-w-full items-center gap-4 overflow-x-auto pb-2 whitespace-nowrap sm:gap-6 lg:gap-8">
-            <ButtonTab
-              tabs={tabs.map((tab) => ({
-                key: tab,
-                label: tab,
-              }))}
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-            />
-          </div>
-        </div>
-
-        {/* ================= MOBILE ================= */}
-        <div className="mt-8 md:hidden">
-          <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-2">
-            {activeDestinations.map((item) => (
-              <div key={item.id} className="w-[230px] flex-shrink-0">
-                <DestinationCard item={item} />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ================= DESKTOP ================= */}
-        <div className="hidden md:block">
-          {/* First Row */}
-          {activeDestinations.length >= 2 && (
-            <div className="mt-16 grid grid-cols-2 gap-5">
-              {activeDestinations.slice(0, 2).map((item) => (
-                <DestinationCard key={item.id} item={item} />
-              ))}
-            </div>
-          )}
-
-          {/* Second Row */}
-          {activeDestinations.length > 2 && (
-            <div className="mt-5 grid grid-cols-3 gap-5">
-              {activeDestinations.slice(2, 5).map((item) => (
-                <DestinationCard key={item.id} item={item} />
-              ))}
-            </div>
-          )}
-
-          {/* Third Row */}
-          {activeDestinations.length > 5 && (
-            <div className="mt-5 grid grid-cols-2 gap-5">
-              {activeDestinations.slice(5, 7).map((item) => (
-                <DestinationCard key={item.id} item={item} />
-              ))}
-            </div>
-          )}
-
-          {/* Fourth Row */}
-          {activeDestinations.length > 7 && (
-            <div className="mt-5 grid grid-cols-3 gap-5">
-              {activeDestinations.slice(7, 10).map((item) => (
-                <DestinationCard key={item.id} item={item} />
-              ))}
-            </div>
-          )}
+      {/* Tabs */}
+      <div className="mt-5 flex justify-center">
+        <div className="scrollbar-hide flex max-w-full items-center gap-4 overflow-x-auto pb-2 whitespace-nowrap sm:gap-6 lg:gap-8">
+          <ButtonTab
+            tabs={tabs.map((tab) => ({
+              key: tab,
+              label: tab,
+            }))}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
         </div>
       </div>
-    </section>
+
+      {/* ================= MOBILE ================= */}
+      <div className="mt-8 md:hidden">
+        <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-2">
+          {activeDestinations.map((item) => (
+            <div key={item.id} className="w-[230px] flex-shrink-0">
+              <DestinationCard item={item} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ================= DESKTOP ================= */}
+      <div className="hidden md:block">
+        {/* First Row */}
+        {activeDestinations.length >= 2 && (
+          <div className="mt-16 grid grid-cols-2 gap-5">
+            {activeDestinations.slice(0, 2).map((item) => (
+              <DestinationCard key={item.id} item={item} />
+            ))}
+          </div>
+        )}
+
+        {/* Second Row */}
+        {activeDestinations.length > 2 && (
+          <div className="mt-5 grid grid-cols-3 gap-5">
+            {activeDestinations.slice(2, 5).map((item) => (
+              <DestinationCard key={item.id} item={item} />
+            ))}
+          </div>
+        )}
+
+        {/* Third Row */}
+        {activeDestinations.length > 5 && (
+          <div className="mt-5 grid grid-cols-2 gap-5">
+            {activeDestinations.slice(5, 7).map((item) => (
+              <DestinationCard key={item.id} item={item} />
+            ))}
+          </div>
+        )}
+
+        {/* Fourth Row */}
+        {activeDestinations.length > 7 && (
+          <div className="mt-5 grid grid-cols-3 gap-5">
+            {activeDestinations.slice(7, 10).map((item) => (
+              <DestinationCard key={item.id} item={item} />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
   );
 }
 /* ================= Destination Card ================= */
