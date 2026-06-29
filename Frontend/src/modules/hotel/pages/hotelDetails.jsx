@@ -2,7 +2,7 @@
 
 import { HeartOutlined, ShareAltOutlined } from "@ant-design/icons";
 import { Card } from "antd";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import HotelDetailsSkeleton from "@/components/common/loder/HotelDetailsSkeleton";
 import { useAuthGuard } from "@/modules/auth/hooks/useAuthGuard";
@@ -212,10 +212,13 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     });
   };
 
+  const handleSearch = useCallback(() => {}, []);
+
   return (
     <div className="min-h-screen w-full bg-[#eaf3f9]">
-      <div className="sticky top-0 z-[99] bg-white min-[660px]:block hidden">
-        <SearchBar />
+      <div className="sticky top-0 z-[99] hidden bg-white min-[660px]:block">
+        {/* <SearchBar /> */}
+        <SearchBar searchData={supplierData} onSearch={handleSearch} />
       </div>
 
       <div
@@ -226,12 +229,12 @@ function HotelDetails({ initialPayload = null, cms = null }) {
           {showSkeleton ? (
             <HotelDetailsSkeleton />
           ) : (
-            <Card className="overflow-hidden rounded-md border-0 shadow-lg p-3 sm:p-6">
+            <Card className="overflow-hidden rounded-md border-0 p-3 shadow-lg sm:p-6">
               {/* HEADER */}
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-                    <h1 className="text-[18px] font-semibold leading-tight text-[#303030] sm:text-[26px]">
+                    <h1 className="text-[18px] leading-tight font-semibold text-[#303030] sm:text-[26px]">
                       {supplierData?.HotelName || "Hotel Name"}
                     </h1>
 
@@ -251,10 +254,11 @@ function HotelDetails({ initialPayload = null, cms = null }) {
                     className="group flex h-9 w-9 items-center justify-center rounded-full border bg-white transition-all duration-200 hover:shadow-md active:scale-95 sm:h-11 sm:w-11"
                   >
                     <span
-                      className={`inline-flex items-center justify-center transition-all duration-300 ${isWishlisted
-                        ? "scale-110 text-red-500"
-                        : "text-gray-700 group-hover:scale-110"
-                        }`}
+                      className={`inline-flex items-center justify-center transition-all duration-300 ${
+                        isWishlisted
+                          ? "scale-110 text-red-500"
+                          : "text-gray-700 group-hover:scale-110"
+                      }`}
                     >
                       {isWishlisted ? (
                         <HeartFilled className="text-[16px] sm:text-[20px]" />

@@ -6,16 +6,23 @@ import { useEffect } from "react";
 import MainLayout from "../../components/layout/MainLayout";
 
 export default function DashboardLayout({ children }) {
-  const { isAuthenticated, loading, user } = useAuthStore();
+console.log("Dashboard Layout Render");
+  const { isAuthenticated, isLoading } = useAuthStore();
+  console.log({
+  isAuthenticated,
+  isLoading,
+});
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && !isAuthenticated) {
+    if (!isLoading && !isAuthenticated) {
       router.replace("/");
     }
-  }, [loading, isAuthenticated]);
+  }, [isLoading, isAuthenticated, router]);
 
-  if (loading) return <div>Checking auth...</div>;
+  if (isLoading) return <div>Checking auth...</div>;
+
+
 
   if (!isAuthenticated) return null;
   return <MainLayout>{children}</MainLayout>;

@@ -23,12 +23,15 @@ export function AuthProvider({ children }) {
 
       try {
         const res = await getMe();
+          console.log("AUTH ME RESPONSE", res);
 
         if (!mounted) return;
 
         if (res?.success && res?.data?.user) {
+              console.log("SET USER FROM AUTH PROVIDER");
           setUser(res.data.user);
         } else {
+           console.log("CLEAR USER FROM AUTH PROVIDER");
           clearUser();
         }
       } catch {

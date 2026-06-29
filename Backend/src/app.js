@@ -36,6 +36,8 @@ import wishlistRoutes from "./modules/wishlist/wishlist.routes.js";
 import testRoutes from "./test.routes.js";
 
 const app = express();
+app.set("trust proxy", 1);
+
 app.use((req, res, next) => {
   console.log("📡 REQUEST HIT:", req.method, req.url);
   next();
@@ -48,7 +50,7 @@ app.use(
       "http://localhost:3000",
       "http://localhost:3001",
       "http://main.d1lddnidhuqzni.amplifyapp.com",
-      "https://main.d1lddnidhuqzni.amplifyapp.com",
+      "https://main.d2s4wo3hb5kyyq.amplifyapp.com",
       "https://www.panjourney.com",
       "https://panjourney.com",
     ],
