@@ -26,7 +26,12 @@ const ViewHotelGallery = ({ images = [], onOpen }) => {
       {/* MAIN IMAGE */}
       <div
         onClick={onOpen}
-        className="relative cursor-pointer overflow-hidden rounded h-[200px] sm:h-[280px] md:h-[420px] lg:h-[520px]"
+        className="relative cursor-pointer overflow-hidden rounded
+        h-[200px]
+        sm:h-[280px]
+        md:h-[300px]
+        lg:h-[340px]
+        xl:h-[380px]"
       >
         <Image
           src={mainImage}
@@ -37,10 +42,10 @@ const ViewHotelGallery = ({ images = [], onOpen }) => {
           className="object-cover transition duration-500 hover:scale-105"
         />
 
-        {/* MOBILE OVERLAY */}
+        {/* Mobile Only */}
         <div
           onClick={onOpen}
-          className="absolute inset-0 flex items-end justify-end p-3"
+          className="absolute inset-0 flex items-end justify-end p-3 md:hidden"
         >
           <div className="rounded bg-black/60 px-3 py-2 text-white text-sm">
             View All Photos ({totalPhotos})
@@ -48,33 +53,37 @@ const ViewHotelGallery = ({ images = [], onOpen }) => {
         </div>
       </div>
 
-      {/* RIGHT SIDE (NOW ALSO VISIBLE ON MOBILE) */}
-      <div className="flex h-full flex-col gap-2 md:gap-3">
-
-        {/* TOP RIGHT IMAGE */}
+      {/* Desktop Right Side */}
+      <div
+        className="hidden md:flex flex-col gap-3
+        md:h-[300px]
+        lg:h-[340px]
+        xl:h-[380px]"
+      >
+        {/* Top */}
         <div
           onClick={onOpen}
-          className="relative flex-1 h-[120px] sm:h-[150px] md:h-auto cursor-pointer overflow-hidden rounded"
+          className="relative flex-1 cursor-pointer overflow-hidden rounded"
         >
           <Image
             src={topRightImage}
             alt="hotel-gallery-top"
             fill
-            sizes="(max-width:768px) 50vw, 30vw"
+            sizes="30vw"
             className="object-cover transition duration-500 hover:scale-105"
           />
         </div>
 
-        {/* BOTTOM RIGHT IMAGE */}
+        {/* Bottom */}
         <div
           onClick={onOpen}
-          className="relative flex-1 h-[120px] sm:h-[150px] md:h-auto cursor-pointer overflow-hidden rounded"
+          className="relative flex-1 cursor-pointer overflow-hidden rounded"
         >
           <Image
             src={bottomRightImage}
             alt="hotel-gallery-more"
             fill
-            sizes="(max-width:768px) 50vw, 30vw"
+            sizes="30vw"
             className="object-cover transition duration-500 hover:scale-105"
           />
 
@@ -85,7 +94,6 @@ const ViewHotelGallery = ({ images = [], onOpen }) => {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );
