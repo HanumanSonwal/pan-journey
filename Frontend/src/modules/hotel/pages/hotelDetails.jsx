@@ -127,8 +127,8 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   const hotelImages = supplierData?.HotelGallery || [];
   const amenities = supplierData?.Amenities
     ? supplierData.Amenities.split(",")
-      .map((i) => i.trim())
-      .filter(Boolean)
+        .map((i) => i.trim())
+        .filter(Boolean)
     : [];
   const hotelDetails = supplierData || [];
   const handleReloadHotels = async () => {
@@ -195,8 +195,8 @@ function HotelDetails({ initialPayload = null, cms = null }) {
           starRating: Number(supplierData?.StarRating || 0),
           facilities: supplierData?.Amenities
             ? supplierData.Amenities.split(",")
-              .map((item) => item.trim())
-              .filter(Boolean)
+                .map((item) => item.trim())
+                .filter(Boolean)
             : [],
           freeCancellation: false,
           savedPrice: Number(FirstRoomPrice?.TotalAmount || 0),
@@ -216,14 +216,14 @@ function HotelDetails({ initialPayload = null, cms = null }) {
 
   return (
     <div className="min-h-screen w-full bg-[#eaf3f9]">
-      <div className="sticky top-0 z-[99] hidden bg-white min-[660px]:block">
-        {/* <SearchBar /> */}
+      <div className="md:sticky md:top-0 md:z-[99] md:bg-white">
         <SearchBar searchData={supplierData} onSearch={handleSearch} />
       </div>
 
       <div
-        className={`relative mx-auto w-full max-w-7xl px-2 !pt-5 sm:!pt-0 md:!pt-0 lg:!pt-0 xl:!pt-0 2xl:!pb-0 transition-all duration-300 sm:px-4 md:px-6 ${isScrolled ? "z-0" : "!z-[820]"
-          }`}
+        className={`relative mx-auto w-full max-w-7xl px-2 !pt-5 transition-all duration-300 sm:px-4 sm:!pt-0 md:px-6 md:!pt-0 lg:!pt-0 xl:!pt-0 2xl:!pb-0 ${
+          isScrolled ? "z-0" : "!z-[820]"
+        }`}
       >
         <div className="-mt-3">
           {showSkeleton ? (
