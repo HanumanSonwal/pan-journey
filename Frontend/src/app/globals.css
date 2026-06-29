@@ -164,3 +164,72 @@ body {
 .ant-select-focused .ant-select-selector {
   box-shadow: none !important;
 }
+
+/* Desktop */
+.premium-hotel-calendar {
+  max-width: 720px;
+}
+
+/* Tablet */
+@media (max-width: 992px) {
+  .premium-hotel-calendar {
+    width: 95vw !important;
+    max-width: 95vw !important;
+  }
+
+  .premium-hotel-calendar .ant-picker-panels {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .premium-hotel-calendar .ant-picker-panel {
+    width: 100%;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .premium-hotel-calendar {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+
+    width: 100vw !important;
+    max-width: 90vw !important;
+    padding: 0px !important;
+    border-radius: 12px;
+  }
+
+  .premium-hotel-calendar .ant-picker-panels {
+    flex-direction: column;
+  }
+
+  .premium-hotel-calendar .ant-picker-panel {
+    width: 100%;
+  }
+
+  .premium-hotel-calendar .ant-picker-content th,
+  .premium-hotel-calendar .ant-picker-content td {
+    width: 36px;
+    height: 20px !important;
+    font-size: 12px !important;
+  }
+}
+
+.ant-picker-dropdown {
+  margin-top: 8px !important;
+}
+
+.premium-hotel-calendar .ant-picker-footer {
+  position: absolute;
+  top: 16px !important;
+  right: 7px;
+  border: none !important;
+  padding: 0 !important;
+  z-index: 100;
+}
+
+.premium-hotel-calendar .ant-picker-footer-extra {
+  margin: 0 !important;
+}

@@ -172,11 +172,11 @@ export default function SearchBar({ onSearch }) {
         <div className="rounded border border-gray-200 bg-white p-2 shadow-sm">
           <div className="flex items-start justify-between">
             <div className="min-w-0">
-              <h2 className="font-jost! truncate text-[14px]! font-bold">
+              <h2 className="font-jost! mb-0! truncate text-[14px]! font-bold!">
                 {appliedSearchData?.city || "Select Destination"}
               </h2>
 
-              <div className="mt-1 flex flex-wrap items-center gap-1 text-sm text-gray-500">
+              <div className="mt-0! flex flex-wrap items-center gap-1 text-sm text-[12px]! text-gray-500">
                 <span>
                   {dayjs(appliedSearchData?.checkIn).format("DD MMM")}
                 </span>

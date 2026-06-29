@@ -32,17 +32,23 @@ export default function LoginModal({ isOpen, onClose, onSuccess }) {
       onCancel={handleClose}
       footer={null}
       centered
-      width={1000}
+      width="95%"
+      className="sm:!max-w-[560px] md:!max-w-[700px] lg:!max-w-[900px] xl:!max-w-[1000px]"
       closable
+      styles={{
+        body: {
+          padding: 0,
+        },
+      }}
       closeIcon={
         <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-800 text-white hover:bg-gray-700">
           <CloseOutlined className="text-[14px]" />
         </span>
       }
     >
-      <div className="flex h-150 overflow-hidden rounded-xl">
+      <div className="flex flex-col overflow-hidden rounded-xl lg:h-[600px] lg:flex-row">
         {/* Left Image */}
-        <div className="relative h-full w-1/2">
+        <div className="relative h-[220px] w-full sm:h-[260px] lg:h-full lg:w-1/2">
           <Image
             src="/images/auth/login.png"
             alt="travel"
@@ -52,15 +58,15 @@ export default function LoginModal({ isOpen, onClose, onSuccess }) {
         </div>
 
         {/* Right Content */}
-        <div className="flex w-1/2 flex-col justify-between px-10 py-8">
+        <div className="flex w-full flex-col justify-between px-5 py-6 sm:px-8 lg:w-1/2 lg:px-10 lg:py-8">
           <div className="flex flex-col gap-6">
             {/* Heading */}
             <div className="flex flex-col gap-2">
-              <h2 className="font-roboto text-[32px] leading-tight font-semibold">
+              <h2 className="font-roboto text-[24px] leading-tight font-semibold sm:text-[28px] lg:text-[32px]">
                 Login / Sign Up
               </h2>
 
-              <p className="font-roboto text-[14px] leading-relaxed font-medium text-gray-500">
+              <p className="font-roboto text-[13px] leading-relaxed font-medium text-gray-500 sm:text-[14px] lg:text-[15px]">
                 Login or create an account to continue booking your perfect
                 stay.
               </p>
@@ -95,11 +101,11 @@ export default function LoginModal({ isOpen, onClose, onSuccess }) {
               </p>
 
               {/* Social Buttons */}
-              <div className="flex justify-center gap-4">
+              <div className="flex justify-center gap-3 sm:gap-4">
                 {/* Google */}
                 <button
                   onClick={handleGoogleLogin}
-                  className="flex h-[48px] w-[48px] items-center justify-center rounded-lg border transition hover:bg-gray-100"
+                  className="flex h-[44px] w-[44px] items-center justify-center rounded-lg border transition hover:bg-gray-100 sm:h-[48px] sm:w-[48px]"
                 >
                   <Image
                     src="/images/google.png"
@@ -112,7 +118,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess }) {
                 {/* Email */}
                 <button
                   onClick={() => setActiveView("email")}
-                  className="flex h-[48px] w-[48px] items-center justify-center rounded-lg border transition hover:bg-gray-100"
+                  className="flex h-[44px] w-[44px] items-center justify-center rounded-lg border transition hover:bg-gray-100 sm:h-[48px] sm:w-[48px]"
                 >
                   <MailOutlined className="text-[18px]" />
                 </button>
@@ -121,7 +127,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess }) {
           </div>
 
           {/* Footer */}
-          <p className="text-center text-xs text-gray-400">
+          <p className="mt-6 text-center text-[11px] text-gray-400 sm:text-xs">
             By continuing, you agree to Terms & Privacy Policy.
           </p>
         </div>
