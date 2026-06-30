@@ -3,7 +3,7 @@
 import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
 import DateRangeField from "@/modules/shared/home/components/DateRangeField";
 import DestinationSearchField from "@/modules/shared/home/components/DestinationSearchField";
-import GuestsField from "@/modules/shared/home/components/GuestsField";
+
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -11,6 +11,7 @@ import { useState } from "react";
 import { EditOutlined } from "@ant-design/icons";
 import { Modal } from "antd";
 import HotelSearchForm from "./HotelSearchForm";
+import GuestsField from "@/modules/shared/home/components/GuestsField/GuestsField";
 
 export default function SearchBar({ onSearch }) {
   const router = useRouter();

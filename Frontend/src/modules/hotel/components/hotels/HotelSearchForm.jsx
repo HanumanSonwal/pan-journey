@@ -3,7 +3,7 @@
 import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
 import DateRangeField from "@/modules/shared/home/components/DateRangeField";
 import DestinationSearchField from "@/modules/shared/home/components/DestinationSearchField";
-import GuestsField from "@/modules/shared/home/components/GuestsField";
+import GuestsField from "@/modules/shared/home/components/GuestsField/GuestsField";
 import SearchButton from "@/modules/shared/home/components/hero_section/SearchButton";
 import dayjs from "dayjs";
 import { useRef, useState } from "react";

@@ -13,7 +13,7 @@ import {
   MenuOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Drawer, Dropdown, Input, Tooltip } from "antd";
+import { Drawer, Dropdown, Tooltip } from "antd";
 import {
   Banknote,
   Bus,
@@ -28,7 +28,8 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
+import CurrencyDropdown from "./CurrencyDropdown";
 
 const navigationItems = [
   {
@@ -103,17 +104,8 @@ export default function Header() {
   const { mutate: logout } = useLogout();
   const router = useRouter();
   const { selectedCurrency, setCurrency } = useCurrencyStore();
-  const [search, setSearch] = useState("");
   const { data: wishlistIdsData } = useWishlistIds();
   const wishlistCount = wishlistIdsData?.length || 0;
-
-  const filteredCurrencies = useMemo(() => {
-    return currencies.filter(
-      (currency) =>
-        currency.name.toLowerCase().includes(search.toLowerCase()) ||
-        currency.code.toLowerCase().includes(search.toLowerCase()),
-    );
-  }, [currencies, search]);
 
   const user = session?.user;
 
@@ -185,48 +177,14 @@ export default function Header() {
   const mobileNavigationItems = navigationItems.filter((item) => item.mobile);
 
   const currencyDropdownContent = (
-    <div
-      className="w-[350px] rounded-xl bg-white p-3 shadow-lg"
-      onClick={(e) => e.stopPropagation()}
-      onMouseDown={(e) => e.stopPropagation()}
-      onPointerDown={(e) => e.stopPropagation()}
-    >
-      <div className="mb-2">
-        <Input
-          allowClear
-          placeholder="Search Currency"
-          value={search}
-          className="[&_.ant-input]:!border-0 [&_.ant-input]:!shadow-none [&_.ant-input]:focus:!shadow-none"
-          onClick={(e) => e.stopPropagation()}
-          onMouseDown={(e) => e.stopPropagation()}
-          onPointerDown={(e) => e.stopPropagation()}
-          onFocus={(e) => e.stopPropagation()}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
-
-      <div className="mt-3 max-h-87.5 overflow-y-auto">
-        {filteredCurrencies.map((currency) => (
-          <div
-            key={currency.code}
-            onClick={() => {
-              setCurrency(currency);
-              setSearch("");
-              if (window.innerWidth < 901) {
-                setMobileCurrencyOpen(false);
-              } else {
-                setDesktopCurrencyOpen(false);
-              }
-            }}
-            className="flex cursor-pointer items-center justify-between rounded-md px-3 py-2 hover:bg-gray-100"
-          >
-            <span>{currency.name}</span>
-
-            <span className="font-semibold">{currency.code}</span>
-          </div>
-        ))}
-      </div>
-    </div>
+    <CurrencyDropdown
+      currencies={currencies}
+      setCurrency={setCurrency}
+      closeDropdown={() => {
+        setDesktopCurrencyOpen(false);
+        setMobileCurrencyOpen(false);
+      }}
+    />
   );
 
   return (
