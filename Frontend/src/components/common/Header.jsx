@@ -209,47 +209,6 @@ export default function Header() {
           />
         </Link>
 
-        {/* Desktop Menu */}
-        {/* <nav className="font-roboto! hidden items-center gap-3 text-gray-900 min-[901px]:flex min-[1024px]:gap-4 min-[1200px]:gap-6 min-[1400px]:gap-8">
-          <Link
-            href="/"
-            className="relative transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:text-[#0f766e] hover:after:w-full"
-          >
-            Hotels
-          </Link>
-
-          <Tooltip title="Coming Soon" color="#0f766e">
-            <span className="relative transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:text-[#0f766e] hover:after:w-full">
-              Flight Booking
-            </span>
-          </Tooltip>
-
-          <Tooltip title="Coming Soon" color="#0f766e">
-            <span className="relative transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:text-[#0f766e] hover:after:w-full">
-              Bus Booking
-            </span>
-          </Tooltip>
-
-          <Link
-            href="/gift-cards"
-            className="relative transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:text-[#0f766e] hover:after:w-full"
-          >
-            Best Offers
-          </Link>
-          <Link
-            href="/about-us"
-            className="relative transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:text-[#0f766e] hover:after:w-full"
-          >
-            About Us
-          </Link>
-          <Link
-            href="/contact-us"
-            className="relative transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:text-[#0f766e] hover:after:w-full"
-          >
-            Support
-          </Link>
-        </nav> */}
-
         <nav className="font-roboto hidden items-center gap-3 text-gray-900 min-[901px]:flex min-[1024px]:gap-4 min-[1200px]:gap-6 min-[1400px]:gap-8">
           {desktopNavigationItems.map((item) =>
             item.type === "comingSoon" ? (
@@ -353,7 +312,7 @@ export default function Header() {
             />
 
             <div>
-              <h3 className="text-[18px] font-bold text-[#0F6A75]">
+              <h3 className="text-[18px] font-bold text-[#0F6A75] mb-0!">
                 PAN Journey
               </h3>
 
