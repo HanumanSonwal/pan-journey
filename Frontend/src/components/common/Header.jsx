@@ -1,5 +1,6 @@
 "use client";
 
+import useIsMobile from "@/hooks/useIsMobile";
 import LoginModal from "@/modules/auth/components/LoginFormModal";
 import { useLogout } from "@/modules/auth/hooks/useAuth";
 import { useAuthGuard } from "@/modules/auth/hooks/useAuthGuard";
@@ -106,7 +107,7 @@ export default function Header() {
   const { selectedCurrency, setCurrency } = useCurrencyStore();
   const { data: wishlistIdsData } = useWishlistIds();
   const wishlistCount = wishlistIdsData?.length || 0;
-
+  const isMobile = useIsMobile();
   const user = session?.user;
 
   const { requireAuth } = useAuthGuard();
@@ -195,7 +196,13 @@ export default function Header() {
       </div>
 
       {/* Navbar */}
-      <header className="flex h-18 justify-between bg-white px-4 py-1 !pt-0 shadow-sm md:px-10 lg:px-20">
+      <header
+        className={`flex justify-between bg-white shadow-sm ${
+          isMobile
+            ? "h-12 px-3 py-1 pt-0"
+            : "h-18 px-4 py-1 pt-0 md:px-10 lg:px-20"
+        }`}
+      >
         {/* Logo */}
         <Link href="/" className="flex items-center">
           <Image
@@ -205,7 +212,11 @@ export default function Header() {
             height={110}
             priority
             unoptimized
-            className="absolute top-8 left-2 h-[100px] w-[100px] object-contain"
+            className={`absolute left-2 object-contain transition-all duration-300 ${
+              isMobile
+                ? " top-9 h-[50px] w-[50px]"
+                : "top-8 h-[100px] w-[100px]"
+            }`}
           />
         </Link>
 
@@ -262,26 +273,41 @@ export default function Header() {
           {!session ? (
             <button
               onClick={() => setOpen(true)}
-              className="bg-offer-gradient flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
+              className={`bg-offer-gradient flex items-center rounded-lg text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg ${
+                isMobile
+                  ? "gap-1 px-2 py-2 text-[13px]"
+                  : "gap-2 px-3 py-2 text-sm"
+              }`}
             >
-              <UserOutlined />
-              <span className="hidden md:block">Login</span>
+              <UserOutlined
+                className={isMobile ? "text-[12px]" : "text-[18px]"}
+              />
+
+              {!isMobile && <span>Login</span>}
             </button>
           ) : (
             <Dropdown menu={{ items }} placement="bottomRight">
               <div className="flex cursor-pointer items-center gap-2 transition-all duration-300 hover:scale-105">
                 {/* ✅ PERFECT ROUND AVATAR */}
-                <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border-2 border-[#4A9BB5] bg-gray-100">
+                <div
+                  className={`flex items-center justify-center overflow-hidden rounded-full border-2 border-[#4A9BB5] bg-gray-100 transition-all duration-300 ${
+                    isMobile ? "h-2! w-2!" : "h-9 w-9"
+                  }`}
+                >
                   {user?.image ? (
                     <Image
                       src={user.image}
                       alt="avatar"
-                      width={40}
-                      height={40}
+                      width={isMobile ? 32 : 40}
+                      height={isMobile ? 32 : 40}
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <span className="text-sm font-semibold text-[#4A9BB5]">
+                    <span
+                      className={`font-semibold text-[#4A9BB5] ${
+                        isMobile ? "text-xs" : "text-sm"
+                      }`}
+                    >
                       {getInitials(user?.name)}
                     </span>
                   )}
@@ -303,7 +329,7 @@ export default function Header() {
       {/* Mobile Drawer */}
       <Drawer
         title={
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <Image
               src="/images/PJ_LOGO-removebg-preview.png"
               alt="PAN Journey"
@@ -312,11 +338,13 @@ export default function Header() {
             />
 
             <div>
-              <h3 className="text-[18px] font-bold text-[#0F6A75] mb-0!">
+              <h3 className="mb-0! text-[16px] font-bold text-[#0F6A75]">
                 PAN Journey
               </h3>
 
-              <p className="text-xs text-gray-500">Explore • Book • Travel</p>
+              <p className="text-[12px] text-gray-500">
+                Explore • Book • Travel
+              </p>
             </div>
           </div>
         }
@@ -332,35 +360,37 @@ export default function Header() {
 
               const content = (
                 <div className={drawerItemClass}>
-                  <div className="flex items-center gap-3">
-                    {/* Icon */}
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F5FBFE]">
-                      <Icon size={20} className="text-[#0F6A75]" />
+                  <div className="flex items-center justify-between!">
+                    {/* Left Side */}
+                    <div className="flex min-w-0 items-center gap-1">
+                      {/* Icon */}
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F5FBFE]">
+                        <Icon size={20} className="text-[#0F6A75]" />
+                      </div>
+
+                      {/* Content */}
+                      <div className="min-w-0 flex-1">
+                        <p className="mb-1! text-[15px] font-semibold text-gray-900">
+                          {item.label}
+                        </p>
+
+                        <p className="mb-0! text-xs text-gray-500">
+                          {item.subtitle}
+                        </p>
+                      </div>
                     </div>
-
-                    {/* Content */}
-                    <div className="flex-1">
-                      <p className="mb-1! text-[15px] font-semibold text-gray-900">
-                        {item.label}
-                      </p>
-
-                      <p className="mb-0! text-xs text-gray-500">
-                        {item.subtitle}
-                      </p>
-                    </div>
-
-                    {/* Right Side */}
-                    {item.type === "comingSoon" ? (
-                      <span className="rounded-full bg-[#EAF7FB] px-3 py-1 text-[11px] font-medium text-[#0F6A75]">
-                        Soon
-                      </span>
-                    ) : (
-                      <ChevronRight
-                        size={20}
-                        className="text-[#0F6A75] transition-transform duration-300 group-hover:translate-x-1"
-                      />
-                    )}
                   </div>
+                  {/* Right Side */}
+                  {item.type === "comingSoon" ? (
+                    <span className="shrink-0 rounded-full bg-[#EAF7FB] px-3 py-1 text-[11px] font-medium text-[#0F6A75]">
+                      Soon
+                    </span>
+                  ) : (
+                    <ChevronRight
+                      size={20}
+                      className="shrink-0 text-[#0F6A75] transition-transform duration-300 group-hover:translate-x-1"
+                    />
+                  )}
                 </div>
               );
 
@@ -384,7 +414,7 @@ export default function Header() {
               popupRender={() => currencyDropdownContent}
             >
               <div className={drawerItemClass}>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F5FBFE]">
                     <Banknote size={20} className="text-[#0F6A75]" />
                   </div>
@@ -398,14 +428,14 @@ export default function Header() {
                       {selectedCurrency?.code}
                     </p>
                   </div>
-
-                  <ChevronRight
-                    size={20}
-                    className={`text-[#0F6A75] transition-transform duration-300 ${
-                      mobileCurrencyOpen ? "rotate-90" : ""
-                    }`}
-                  />
                 </div>
+
+                <ChevronRight
+                  size={20}
+                  className={`text-[#0F6A75] transition-transform duration-300 ${
+                    mobileCurrencyOpen ? "rotate-90" : ""
+                  }`}
+                />
               </div>
             </Dropdown>
           </div>
