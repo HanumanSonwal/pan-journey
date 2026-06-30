@@ -86,7 +86,7 @@ export default function HotelBookingContent({ hotelBookingData }) {
 
               <BookingAgreement checked={agreement} onChange={setAgreement} />
 
-              <div className="pt-2">
+              <div className="pt-2 mb-[36px] md:mb-[49px] xl:mb-0">
                 <Button
                   type="primary"
                   size="large"
