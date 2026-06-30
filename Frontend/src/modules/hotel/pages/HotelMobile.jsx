@@ -43,7 +43,7 @@ export default function HotelMobile({
       <SearchBar />
       {/* Controls */}
       <div className="min-h-screen bg-[#eef6fd]">
-        <div className="sticky top-[72px] z-40 bg-[#eef6fd] px-1 pr-2 pt-1 pb-1">
+        <div className="sticky top-[62px] z-40 bg-[#eef6fd] px-1 pr-2 pt-1 pb-1">
           <div className=" grid grid-cols-3 gap-2 ml-2">
             {/* SORT */}
             <div className="relative">
