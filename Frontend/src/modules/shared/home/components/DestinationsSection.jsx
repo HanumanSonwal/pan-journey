@@ -16,8 +16,8 @@ export default function DestinationsSection() {
   const activeDestinations =
     destinations[activeTab] || destinations["All Destinations"];
 
-  return (<section className="!mt-[-30px] overflow-hidden bg-[#EDF7FF] px-3 sm:px-4 md:px-6 lg:px-8 xl:px-10 py-0 sm:py-0 md:py-24 text-black">
-    <div className="mx-auto w-full max-w-[1600px] lg:w-[88.87%]">
+  return (<section className="!mt-[-30px] sm:!mt-[-30px] md:!mt-[-30px] lg:!mt-[-70px] xl:!mt-[-90px] 2xl:!mt-[-50px] overflow-hidden bg-[#EDF7FF] px-3 !px-0 sm:!px-0 md:!px-2 lg:!px-3 xl:!px-4 2xl:!px-0 py-0 sm:py-0 md:py-24 text-black">
+    <div className="mx-auto w-full  lg:w-[88.87%] lg:!mt-[-170px]  xl:!mt-[10px]">
       {/* Heading */}
       <SectionHeading
         title="Popular Destinations"
@@ -39,7 +39,7 @@ export default function DestinationsSection() {
       </div>
 
       {/* ================= MOBILE ================= */}
-      <div className="mt-8 md:hidden">
+      <div className="mt-4 md:hidden">
         <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-2">
           {activeDestinations.map((item) => (
             <div key={item.id} className="w-[230px] flex-shrink-0">
