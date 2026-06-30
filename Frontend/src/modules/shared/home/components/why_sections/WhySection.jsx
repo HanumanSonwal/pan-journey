@@ -38,8 +38,8 @@ const features = [
 
 export default function WhySection() {
   return (
-    <section className="mt-[-10px] overflow-hidden bg-[#EDF7FF] px-4 py-10 sm:py-12 md:py-16 lg:py-20">
-      <div className="mx-auto mt-0 w-full max-w-[1650px] px-2 sm:mt-2 sm:px-4 md:mt-4 lg:-mt-20 lg:w-[86%] lg:px-0 xl:mt-4">
+    <section className="mt-[-10px] overflow-hidden bg-[#EDF7FF] !px-0 sm:!px-0 md:!px-2 lg:!px-3 xl:!px-4 2xl:!px-0 py-10 sm:py-12 md:py-16 lg:py-20">
+      <div className="mx-auto mt-0 w-full  px-2 sm:mt-2 sm:px-4 md:mt-4 lg:-mt-20 lg:w-[86%] lg:px-0 xl:mt-4">
         {/* Heading */}
         <SectionHeading
           title="Why Choose Our Platform"

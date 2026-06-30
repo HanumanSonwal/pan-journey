@@ -12,7 +12,7 @@ export default function VacationSection() {
   const [activeTab, setActiveTab] = useState("beach");
 
   return (
-    <SectionWrapper className="-mt-20 bg-[#edf7ff] md:mt-[-1px]">
+    <SectionWrapper className="-mt-20 bg-[#edf7ff] md:mt-[-1px] !px-0 sm:!px-0 md:!px-2 lg:!px-3 xl:!px-4 2xl:!px-0">
       {/* Heading */}
       <div className="mt-[9px] pt-8 min-[375px]:mt-[40px] min-[425px]:mt-[34px] min-[430px]:mt-[16px] md:mt-[66px] lg:mt-[-39px] xl:mt-[89px] 2xl:mt-[76px]">
         <SectionHeading

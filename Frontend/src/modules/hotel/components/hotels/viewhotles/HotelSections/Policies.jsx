@@ -61,7 +61,7 @@ const Policies = ({ ratePlans = [] }) => {
     <div className="space-y-6">
       {/* Cancellation */}
       <div className="rounded border border-red-100 bg-red-50 p-6 shadow-sm">
-        <div className=" flex items-center gap-3">
+        <div className="block !xl:flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-red-100 text-lg text-red-600">
             <FileProtectOutlined />
           </div>
@@ -106,7 +106,7 @@ const Policies = ({ ratePlans = [] }) => {
                 key={i}
                 className={`rounded border p-4 ${color.bg} ${color.border}`}
               >
-                <div className="flex items-start gap-4">
+                <div className=" items-start gap-4">
                   {/* Icon */}
                   <div
                     className={`flex h-11 w-11 shrink-0 items-center justify-center rounded bg-white text-lg shadow-sm ${color.icon}`}

@@ -13,8 +13,8 @@ import { testimonials } from "./data/TestimonialData";
 
 export default function TestimonialsSection() {
   return (
-    <section className="bg-[#EDF7FF] pt-10 pb-8 md:pt-12 md:pb-10 lg:pt-16 lg:pb-12">
-      <div className="mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-8">
+    <section className="bg-[#EDF7FF] pt-10 pb-8 md:pt-12 md:pb-10 lg:pt-16 lg:pb-12 !px-0 sm:!px-0 md:!px-2 lg:!px-3 xl:!px-4 2xl:!px-26">
+      <div className="mx-auto w-full  px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 items-center gap-3 lg:grid-cols-2">
           <div>
             <p className="text-[21px] font-semibold text-[#3B9BC6]">
