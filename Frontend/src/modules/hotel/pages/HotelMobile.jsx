@@ -42,45 +42,47 @@ export default function HotelMobile({
       {/* Header */}
       <SearchBar />
       {/* Controls */}
-      <div className="min-h-screen bg-[#eef6fd] pl-2 pr-4 mt-2">
-        <div className=" grid grid-cols-3 gap-2 ml-2">
-          {/* SORT */}
-          <div className="relative">
+      <div className="min-h-screen bg-[#eef6fd]">
+        <div className="sticky top-[72px] z-40 bg-[#eef6fd] px-1 pr-2 pt-1 pb-1">
+          <div className=" grid grid-cols-3 gap-2 ml-2">
+            {/* SORT */}
+            <div className="relative">
+              <button
+                onClick={() => setShowSort(!showSort)}
+                className="w-full rounded border border-gray-300 bg-white p-2 font-medium"
+              >
+                Sort By
+              </button>
+
+              {showSort && (
+                <div className="absolute top-full z-50 mt-2 w-[260px]">
+                  <MobileSortBar
+                    sort={sort}
+                    setSort={(val) => {
+                      setSort(val);
+                      setShowSort(false);
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* FILTER */}
             <button
-              onClick={() => setShowSort(!showSort)}
-              className="w-full rounded border border-gray-300 bg-white p-2 font-medium"
+              onClick={() => setShowFilters(true)}
+              className="rounded border border-gray-300 bg-white p-2 font-medium"
             >
-              Sort By
+              Filter
             </button>
 
-            {showSort && (
-              <div className="absolute top-full z-50 mt-2 w-[260px]">
-                <MobileSortBar
-                  sort={sort}
-                  setSort={(val) => {
-                    setSort(val);
-                    setShowSort(false);
-                  }}
-                />
-              </div>
-            )}
+            {/* RESET */}
+            <button
+              onClick={handleReset}
+              className="rounded border border-gray-300 bg-white p-2 font-medium text-red-600"
+            >
+              Reset
+            </button>
           </div>
-
-          {/* FILTER */}
-          <button
-            onClick={() => setShowFilters(true)}
-            className="rounded border border-gray-300 bg-white p-2 font-medium"
-          >
-            Filter
-          </button>
-
-          {/* RESET */}
-          <button
-            onClick={handleReset}
-            className="rounded border border-gray-300 bg-white p-2 font-medium text-red-600"
-          >
-            Reset
-          </button>
         </div>
 
         {/* DRAWER */}
@@ -105,7 +107,7 @@ export default function HotelMobile({
         </Drawer>
 
         {/* HOTEL LIST */}
-        <div className="mt-3">
+        <div className="mt-3 px-2">
           <HotelList
             searchData={appliedSearchData}
             filters={filters}
@@ -116,6 +118,6 @@ export default function HotelMobile({
           />
         </div>
       </div>
-    </div>
+    </div >
   );
 }
