@@ -3,11 +3,12 @@ import GrievanceRedressal from "./grievanceRedressal.model.js";
 
 // CREATE
 
-export const createGrievanceService = async (payload) => {
-  const grievanceRedressal = await GrievanceRedressal.create(payload);
+export const createGrievanceService = async (data) => {
+  data.grievanceRedressalid =
+    `GR${Math.floor(100000 + Math.random() * 900000)}`;
 
-  return grievanceRedressal;
-};
+  return await GrievanceRedressal.create(data);
+};;
 
 
 // GET ALL (only logged in user)
@@ -16,7 +17,21 @@ export const getAllGrievanceService = async (userId) => {
     UserId: userId,
   }).sort({ createdAt: -1 });
 };
+export const getAllGrievanceAdminService = async (
+  grievanceId
+) => {
+  const query = {};
 
+  if (grievanceId) {
+    query.grievanceRedressalid = {
+      $regex: grievanceId,   // ✅ use parameter
+      $options: "i",
+    };
+  }
+
+  return await GrievanceRedressal.find(query)
+    .sort({ createdAt: -1 });
+};
 
 // GET SINGLE
 export const getSingleGrievanceService = async (
@@ -63,6 +78,28 @@ export const updateGrievanceService = async (
 };
 
 
+export const updateGrievanceStatusAdminService = async (
+  id,
+  data
+) => {
+  const grievance =
+    await GrievanceRedressal.findByIdAndUpdate(
+      id,
+      {
+        $set: data,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+  if (!grievance) {
+    throw new Error("Grievance not found");
+  }
+
+  return grievance;
+};
 // DELETE
 export const deleteGrievanceService = async (
   id,
