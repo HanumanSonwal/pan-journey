@@ -49,7 +49,7 @@ export default function HotelMobile({
             <div className="relative">
               <button
                 onClick={() => setShowSort(!showSort)}
-                className="w-full rounded border border-gray-300 bg-white p-2 font-medium"
+                className="w-full rounded border border-gray-300 bg-white p-1 font-medium"
               >
                 Sort By
               </button>
@@ -70,7 +70,7 @@ export default function HotelMobile({
             {/* FILTER */}
             <button
               onClick={() => setShowFilters(true)}
-              className="rounded border border-gray-300 bg-white p-2 font-medium"
+              className="rounded border border-gray-300 bg-white p-1 font-medium"
             >
               Filter
             </button>
@@ -78,7 +78,7 @@ export default function HotelMobile({
             {/* RESET */}
             <button
               onClick={handleReset}
-              className="rounded border border-gray-300 bg-white p-2 font-medium text-red-600"
+              className="rounded border border-gray-300 bg-white p-1 font-medium text-red-600"
             >
               Reset
             </button>

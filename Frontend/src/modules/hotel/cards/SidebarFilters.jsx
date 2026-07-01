@@ -40,8 +40,9 @@ function SidebarFilters({
   onClose,
   hideMapSection = false,
 }) {
+  const [tempFilters, setTempFilters] = useState(filters);
   const [isMobile, setIsMobile] = useState(false);
-  const [hotelSearch, setHotelSearch] = useState(filters?.search || "");
+
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -52,22 +53,32 @@ function SidebarFilters({
     return () => window.removeEventListener("resize", check);
   }, []);
 
+  useEffect(() => {
+    setTempFilters(filters);
+  }, [filters]);
+
+  const updateFilters = (callback) => {
+    if (isMobile) {
+      setTempFilters(callback);
+    } else {
+      setFilters(callback);
+    }
+  };
   const handleSearch = useCallback(
     (e) => {
       const value = e.target.value;
-      setHotelSearch(value);
 
-      setFilters((prev) => ({
+      updateFilters((prev) => ({
         ...prev,
         search: value,
       }));
     },
-    [setFilters],
+    [updateFilters],
   );
-
+  const currentFilters = isMobile ? tempFilters : filters;
   const handleCheckbox = useCallback(
     (key, value) => {
-      setFilters((prev) => {
+      updateFilters((prev) => {
         const current = prev[key] || [];
 
         const updated = current.includes(value)
@@ -77,45 +88,48 @@ function SidebarFilters({
         return { ...prev, [key]: updated };
       });
     },
-    [setFilters],
+    [updateFilters],
   );
 
   const handleStarRating = useCallback(
     (rating) => {
-      setFilters((prev) => ({
+      updateFilters((prev) => ({
         ...prev,
-        starRating: prev.starRating === String(rating) ? "" : String(rating),
+        starRating:
+          prev.starRating === String(rating)
+            ? ""
+            : String(rating),
       }));
     },
-    [setFilters],
+    [updateFilters],
   );
 
   const handleFreeCancellation = useCallback(() => {
-    setFilters((prev) => ({
+    updateFilters((prev) => ({
       ...prev,
       freeCancellation: !prev.freeCancellation,
     }));
-  }, [setFilters]);
+  }, [updateFilters]);
 
   const handlePriceRange = useCallback(
     (min, max) => {
-      setFilters((prev) => ({
+      updateFilters((prev) => ({
         ...prev,
         minPrice: String(min),
         maxPrice: String(max),
       }));
     },
-    [setFilters],
+    [updateFilters],
   );
 
   const handleCustomPrice = useCallback(
     (key, value) => {
-      setFilters((prev) => ({
+      updateFilters((prev) => ({
         ...prev,
         [key]: value || "",
       }));
     },
-    [setFilters],
+    [updateFilters],
   );
 
   const filterSections = useMemo(() => {
@@ -128,7 +142,7 @@ function SidebarFilters({
             {suggestedOptions.map((option) => (
               <Checkbox
                 key={option}
-                checked={filters?.suggested?.includes(option) || false}
+                checked={currentFilters?.suggested?.includes(option) || false}
                 onChange={() => handleCheckbox("suggested", option)}
               >
                 {option}
@@ -144,7 +158,7 @@ function SidebarFilters({
         content: (
           <div className="flex flex-col gap-2">
             <Checkbox
-              checked={filters?.freeCancellation || false}
+              checked={currentFilters?.freeCancellation || false}
               onChange={handleFreeCancellation}
             >
               Free Cancellation
@@ -163,8 +177,8 @@ function SidebarFilters({
                 <Checkbox
                   key={item.label}
                   checked={
-                    Number(filters?.minPrice) === item.min &&
-                    Number(filters?.maxPrice) === item.max
+                    Number(currentFilters?.minPrice) === item.min &&
+                    Number(currentFilters?.maxPrice) === item.max
                   }
                   onChange={() => handlePriceRange(item.min, item.max)}
                 >
@@ -181,7 +195,7 @@ function SidebarFilters({
               <div className="flex gap-2">
                 <Input
                   placeholder="Min"
-                  value={filters?.minPrice}
+                  value={currentFilters?.minPrice}
                   onChange={(e) =>
                     handleCustomPrice("minPrice", e.target.value)
                   }
@@ -189,7 +203,7 @@ function SidebarFilters({
 
                 <Input
                   placeholder="Max"
-                  value={filters?.maxPrice}
+                  value={currentFilters?.maxPrice}
                   onChange={(e) =>
                     handleCustomPrice("maxPrice", e.target.value)
                   }
@@ -208,7 +222,7 @@ function SidebarFilters({
             {propertyOptions.map((option) => (
               <Checkbox
                 key={option}
-                checked={filters?.propertyType?.includes(option) || false}
+                checked={currentFilters?.propertyType?.includes(option) || false}
                 onChange={() => handleCheckbox("propertyType", option)}
               >
                 {option}
@@ -226,7 +240,7 @@ function SidebarFilters({
             {starOptions.map((rating) => (
               <Checkbox
                 key={rating}
-                checked={filters?.starRating === String(rating)}
+                checked={currentFilters?.starRating === String(rating)}
                 onChange={() => handleStarRating(rating)}
               >
                 {rating} Star
@@ -244,7 +258,7 @@ function SidebarFilters({
             {userRatingOptions.map((option) => (
               <Checkbox
                 key={option}
-                checked={filters?.rating?.includes(option) || false}
+                checked={currentFilters?.rating?.includes(option) || false}
                 onChange={() => handleCheckbox("rating", option)}
               >
                 {option}
@@ -262,7 +276,7 @@ function SidebarFilters({
             {locationOptions.map((option) => (
               <Checkbox
                 key={option}
-                checked={filters?.locations?.includes(option) || false}
+                checked={currentFilters?.locations?.includes(option) || false}
                 onChange={() => handleCheckbox("locations", option)}
               >
                 {option}
@@ -272,14 +286,15 @@ function SidebarFilters({
         ),
       },
     ];
-  }, [
-    filters,
-    handleCheckbox,
-    handleStarRating,
-    handlePriceRange,
-    handleCustomPrice,
-    handleFreeCancellation,
-  ]);
+  }, 
+  [
+  currentFilters,
+  handleCheckbox,
+  handleStarRating,
+  handlePriceRange,
+  handleCustomPrice,
+  handleFreeCancellation,
+]);
 
   return (
     <div className={`flex h-full flex-col bg-white p-3 shadow-md md:p-4`}>
@@ -309,7 +324,7 @@ function SidebarFilters({
         <Input
           allowClear
           placeholder="Search Hotel Name"
-          value={hotelSearch}
+          value={currentFilters?.search || ""}
           onChange={handleSearch}
           className="h-8 rounded-lg border border-gray-200 md:h-11 [&_.ant-input]:!border-0 [&_.ant-input]:!text-[13px] [&_.ant-input]:!shadow-none [&_.ant-input]:focus:!shadow-none md:[&_.ant-input]:!text-[14px] [&_.ant-input::placeholder]:!text-gray-400"
         />
@@ -346,17 +361,19 @@ function SidebarFilters({
             <div className="flex gap-3">
               <button
                 onClick={() => {
-                  setFilters({
-                    freeCancellation: false,
-                    search: "",
-                    starRating: "",
-                    minPrice: "",
-                    maxPrice: "",
-                    suggested: [],
-                    propertyType: [],
-                    rating: [],
-                    locations: [],
-                  });
+             const resetFilters = {
+  freeCancellation: false,
+  search: "",
+  starRating: "",
+  minPrice: "",
+  maxPrice: "",
+  suggested: [],
+  propertyType: [],
+  rating: [],
+  locations: [],
+};
+
+setTempFilters(resetFilters);
 
                   onClose?.();
                 }}
@@ -366,7 +383,10 @@ function SidebarFilters({
               </button>
 
               <button
-                onClick={() => onClose?.()}
+                onClick={() => {
+  setFilters(tempFilters);
+  onClose?.();
+}}
                 className="h-8 flex-1 rounded bg-[#0B6CFF] text-sm font-semibold text-white! transition hover:bg-[#0953be]"
               >
                 View Properties
