@@ -34,6 +34,7 @@ import support from "./modules/supportContact/support.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
 import wishlistRoutes from "./modules/wishlist/wishlist.routes.js";
 import testRoutes from "./test.routes.js";
+import tax from "./modules/tax/tax.route.js";
 
 const app = express();
 app.set("trust proxy", 1);
@@ -66,6 +67,7 @@ app.use("/api/v1/media", mediaRoutes);
 app.use("/api/v1", contactUs);
 app.use("/api/v1", support);
 app.use("/api/v1", grievanceRedressal);
+app.use("/api/v1/tax", tax);
 
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/seo-content", seoContentRoutes);

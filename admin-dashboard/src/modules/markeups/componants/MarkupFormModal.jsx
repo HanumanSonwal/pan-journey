@@ -20,19 +20,64 @@ import { useEffect } from "react";
 import { LEVEL_OPTIONS } from "../data/MarkupsData";
 import { useMarkups } from "../hooks/useMarkups";
 import LevelFields from "./LevelFields";
+import ServiceTaxFields from "./ServiceTaxFields";
 const { Text, Title } = Typography;
 
-export default function MarkupFormModal({ open, setOpen, editData }) {
+export default function MarkupFormModal({
+  open,
+  setOpen,
+  editData,
+  isTaxEdit,
+  setEditData,
+  setIsTaxEdit,
+}) {
   const [form] = Form.useForm();
   const level = Form.useWatch("level", form);
+  const ruleType = Form.useWatch("ruleType", form);
+  const taxType = Form.useWatch("taxType", form);
   const markupType = Form.useWatch("markupType", form);
   const markupValue = Form.useWatch("markupValue", form);
-  const { createMarkup, updateMarkup } = useMarkups();
+  const { createMarkup, updateMarkup, createTax, updateTax } = useMarkups();
+
+  const handleClose = () => {
+    form.resetFields();
+    setEditData(null);
+    setIsTaxEdit(false);
+
+    setOpen(false);
+  };
 
   // ================= EDIT =================
 
   useEffect(() => {
     if (open && editData) {
+      // ================= TAX EDIT =================
+
+      if (isTaxEdit) {
+        console.log("isTaxEdit", isTaxEdit);
+        console.log("editData", editData);
+        console.log("Flat Tax Value:", editData?.taxValue);
+        form.setFieldsValue({
+          level: "serviceTax",
+          countryCode: editData?.countryCode,
+          ruleType: editData?.ruleType,
+          taxType: editData?.taxType,
+
+          ...(editData?.ruleType === "flat"
+            ? {
+                taxValue: editData?.taxValue,
+              }
+            : {
+                slabs:
+                  editData?.slabs?.map((item) => ({
+                    minAmount: item?.minAmount,
+                    taxValue: item?.taxValue,
+                  })) || [],
+              }),
+        });
+
+        return;
+      }
       form.setFieldsValue({
         level: editData?.level,
         countryCode: editData?.countryCode,
@@ -63,15 +108,56 @@ export default function MarkupFormModal({ open, setOpen, editData }) {
             : undefined,
         markupType: editData?.markupType,
         markupValue: editData?.markupValue,
+        serviceChargeValue: editData?.serviceChargeValue,
       });
     } else {
       form.resetFields();
     }
-  }, [editData, open, form]);
+  }, [editData, open, form, isTaxEdit]);
 
   // ================= SUBMIT =================
 
   const onFinish = async (values) => {
+    console.log("values", values);
+    // ================= SERVICE TAX =================
+
+    if (values.level === "serviceTax") {
+      const payload = {
+        countryCode: values.countryCode,
+        ruleType: values.ruleType,
+        taxType: values.taxType,
+        serviceType: "hotel",
+        isActive: editData?.isActive ?? true,
+      };
+
+      if (values.ruleType === "flat") {
+        payload.taxValue = values.taxValue;
+      } else {
+        payload.slabs = values.slabs;
+      }
+
+      // ================= UPDATE =================
+
+      if (isTaxEdit) {
+        await updateTax.mutateAsync({
+          id: editData._id,
+          data: payload,
+        });
+      }
+
+      // ================= CREATE =================
+      else {
+        await createTax.mutateAsync(payload);
+      }
+
+      form.resetFields();
+
+      setOpen(false);
+
+      return;
+    }
+
+    // ================= MARKUP =================
     // CITY
 
     if (values?.cityData) {
@@ -124,11 +210,7 @@ export default function MarkupFormModal({ open, setOpen, editData }) {
       centered
       width={760}
       destroyOnHidden
-      onCancel={() => {
-        form.resetFields();
-
-        setOpen(false);
-      }}
+      onCancel={handleClose}
       styles={{
         body: {
           paddingTop: 10,
@@ -143,9 +225,19 @@ export default function MarkupFormModal({ open, setOpen, editData }) {
               fontSize: 18,
             }}
           >
-            {editData ? "Edit Markup" : "Create Markup"}
+            {level === "serviceTax"
+              ? editData
+                ? "Edit Service Tax"
+                : "Create Service Tax"
+              : editData
+                ? "Edit Markup"
+                : "Create Markup"}
           </Title>
-          <Text type="secondary">Configure pricing rules</Text>
+          <Text type="secondary">
+            {level === "serviceTax"
+              ? "Configure service tax rules"
+              : "Configure pricing rules"}
+          </Text>
         </div>
       }
     >
@@ -259,90 +351,148 @@ export default function MarkupFormModal({ open, setOpen, editData }) {
             <LevelFields level={level} />
           </div>
         )}
+        {level === "serviceTax" && (
+          <div
+            style={{
+              marginBottom: 18,
+            }}
+          >
+            <Text
+              strong
+              style={{
+                display: "block",
+                marginBottom: 12,
+              }}
+            >
+              Service Tax Configuration
+            </Text>
+
+            <ServiceTaxFields />
+          </div>
+        )}
 
         {/* ================= MARKUP CONFIG ================= */}
 
-        <div
-          style={{
-            marginBottom: 18,
-          }}
-        >
-          <Text
-            strong
+        {level !== "serviceTax" && (
+          <div
             style={{
-              display: "block",
-              marginBottom: 12,
+              marginBottom: 18,
             }}
           >
-            Pricing Configuration
-          </Text>
+            <Text
+              strong
+              style={{
+                display: "block",
+                marginBottom: 12,
+              }}
+            >
+              Pricing Configuration
+            </Text>
 
-          <Row gutter={16}>
-            {/* TYPE */}
+            <Row gutter={16}>
+              {/* TYPE */}
 
-            <Col xs={24} md={12}>
-              <Form.Item
-                label="Markup Type"
-                name="markupType"
-                rules={[
-                  {
-                    required: true,
-                  },
-                ]}
-              >
-                <Select
-                  size="large"
-                  placeholder="Select Type"
-                  options={[
+              <Col xs={24} md={8}>
+                <Form.Item
+                  label="Markup Type"
+                  name="markupType"
+                  rules={[
                     {
-                      label: "Percentage",
-                      value: "percentage",
-                    },
-
-                    {
-                      label: "Fixed",
-                      value: "fixed",
+                      required: true,
                     },
                   ]}
-                />
-              </Form.Item>
-            </Col>
-
-            {/* VALUE */}
-
-            <Col xs={24} md={12}>
-              <Form.Item
-                label="Markup Value"
-                name="markupValue"
-                rules={[
-                  {
-                    required: true,
-                  },
-                ]}
-              >
-                <Space.Compact
-                  style={{
-                    width: "100%",
-                  }}
                 >
-                  <InputNumber
-                    value={markupValue}
+                  <Select
                     size="large"
-                    min={0}
+                    placeholder="Select Type"
+                    options={[
+                      {
+                        label: "Percentage",
+                        value: "percentage",
+                      },
+                      {
+                        label: "Fixed",
+                        value: "fixed",
+                      },
+                    ]}
+                  />
+                </Form.Item>
+              </Col>
+
+              {/* MARKUP VALUE */}
+
+              <Col xs={24} md={8}>
+                <Form.Item label="Markup Value" required>
+                  <Space.Compact
                     style={{
                       width: "100%",
                     }}
-                    placeholder="Enter markup"
-                  />
+                  >
+                    <Form.Item
+                      name="markupValue"
+                      noStyle
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please enter markup value",
+                        },
+                      ]}
+                    >
+                      <InputNumber
+                        size="large"
+                        min={0}
+                        style={{
+                          width: "100%",
+                        }}
+                        placeholder="Enter markup"
+                      />
+                    </Form.Item>
 
-                  <Button size="large" disabled>
-                    {markupType === "percentage" ? "%" : "₹"}
-                  </Button>
-                </Space.Compact>
-              </Form.Item>
-            </Col>
-          </Row>
-        </div>
+                    <Button size="large" disabled>
+                      {markupType === "percentage" ? "%" : "₹"}
+                    </Button>
+                  </Space.Compact>
+                </Form.Item>
+              </Col>
+
+              {/* SERVICE CHARGE */}
+
+              <Col xs={24} md={8}>
+                <Form.Item label="Service Charge Value" required>
+                  <Space.Compact
+                    style={{
+                      width: "100%",
+                    }}
+                  >
+                    <Form.Item
+                      name="serviceChargeValue"
+                      noStyle
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please enter service charge",
+                        },
+                      ]}
+                    >
+                      <InputNumber
+                        size="large"
+                        min={0}
+                        style={{
+                          width: "100%",
+                        }}
+                        placeholder="Enter service charge"
+                      />
+                    </Form.Item>
+
+                    <Button size="large" disabled>
+                      {markupType === "percentage" ? "%" : "₹"}
+                    </Button>
+                  </Space.Compact>
+                </Form.Item>
+              </Col>
+            </Row>
+          </div>
+        )}
 
         {/* ================= ACTIONS ================= */}
 
@@ -354,23 +504,26 @@ export default function MarkupFormModal({ open, setOpen, editData }) {
             gap: 10,
           }}
         >
-          <Button
-            onClick={() => {
-              form.resetFields();
-
-              setOpen(false);
-            }}
-          >
-            Cancel
-          </Button>
+          <Button onClick={handleClose}>Cancel</Button>
 
           <Button
             type="primary"
             htmlType="submit"
             icon={<PercentageOutlined />}
-            loading={createMarkup.isPending || updateMarkup.isPending}
+            loading={
+              createMarkup.isPending ||
+              updateMarkup.isPending ||
+              createTax.isPending ||
+              updateTax.isPending
+            }
           >
-            {editData ? "Update" : "Create"}
+            {level === "serviceTax"
+              ? editData
+                ? "Update Tax"
+                : "Create Tax"
+              : editData
+                ? "Update"
+                : "Create"}
           </Button>
         </div>
       </Form>

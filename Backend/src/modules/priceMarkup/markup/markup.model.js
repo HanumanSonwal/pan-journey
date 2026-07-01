@@ -20,6 +20,11 @@ const markupSchema = new mongoose.Schema(
       required: true,
     },
 
+    serviceChargeValue: {
+      type: Number,
+      required: true,
+    },
+
     countryCode: String,
     stateName: String,
     cityId: String,

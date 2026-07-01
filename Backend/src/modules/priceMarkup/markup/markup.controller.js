@@ -204,6 +204,7 @@ export const updateMarkup = async (req, res) => {
       markupType,
       markupValue,
       isActive,
+      serviceChargeValue,
       startDate,
       endDate,
     } = req.body;
