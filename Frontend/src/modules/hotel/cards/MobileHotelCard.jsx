@@ -273,7 +273,7 @@ function MobileHotelCard({ hotel, wishlistIds }) {
             alt={hotel.name}
             width={600}
             height={350}
-            className="h-[230px] w-full rounded-xl object-cover"
+            className="h-[230px] w-full rounded-[3px] object-cover"
           />
         )}
 
@@ -316,7 +316,7 @@ function MobileHotelCard({ hotel, wishlistIds }) {
             </button>
             <button
               onClick={handleShare}
-              className="!text-[20px] !text-gray-500"
+              className="!text-[22px] !text-gray-900 !-mt-2"
             >
               <ShareAltOutlined />
             </button>
@@ -325,7 +325,7 @@ function MobileHotelCard({ hotel, wishlistIds }) {
 
         {/* Hotel Name */}
 
-        <h2 className="mt-4 text-[24px] font-bold leading-7 text-[#222]">
+        <h2 className="mt-4 text-[18px] font-bold leading-7 text-[#222] font-roboto!">
           {hotel.name}
         </h2>
 
@@ -389,7 +389,7 @@ function MobileHotelCard({ hotel, wishlistIds }) {
                     <CheckOutlined className="mt-[2px] !text-[14px] !text-[#22C55E] shrink-0" />
                   )}
 
-                  <span className=" !mt-0 text-[13px] leading-[18px] text-[#3D3D3D]">
+                  <span className=" !mt-0 text-[13px] leading-[18px]  font-semibold!">
                     {item}
                   </span>
                 </div>
@@ -414,13 +414,13 @@ function MobileHotelCard({ hotel, wishlistIds }) {
           {/* Right Side Price */}
           <div className="shrink-0 text-right">
 
-            <p className="text-[13px] text-gray-400 line-through">
+            <p className="text-[13px] text-gray-400 line-through !mb-0">
               <span>{hotel.currencySymbol || "₹"}</span>
               {oldPrice.toLocaleString("en-IN")}
             </p>
 
-            <h2 className="mt-1 text-[28px] font-bold leading-none text-[#111]">
-              <span className="mr-1 text-[18px]">
+            <h2 className="mt-1 font-jost! mb-0! truncate text-[18px]! font-bold!">
+              <span className="mr-1 text-[12px]">
                 {hotel.currencySymbol || "₹"}
               </span>
               {price.toLocaleString("en-IN")}
@@ -431,7 +431,7 @@ function MobileHotelCard({ hotel, wishlistIds }) {
               {tax.toLocaleString("en-IN")} taxes & fees
             </p>
 
-            <p className="text-[11px] text-gray-500">
+            <p className="text-[14px] text-[#72C0F0]">
               Per Night
             </p>
 

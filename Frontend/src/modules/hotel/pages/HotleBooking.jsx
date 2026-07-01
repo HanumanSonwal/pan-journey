@@ -24,8 +24,8 @@ export default function HotleBooking() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[#eaf4fb] px-4 py-6 md:px-6 md:py-8">
-      <HotelBookingContent hotelBookingData ={bookingData} />
+    <div className="min-h-screen w-full bg-[#eaf4fb] px-2 py-6 md:px-2 md:py-8">
+      <HotelBookingContent hotelBookingData={bookingData} />
     </div>
   );
 }

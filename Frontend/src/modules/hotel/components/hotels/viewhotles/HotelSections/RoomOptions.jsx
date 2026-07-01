@@ -77,11 +77,10 @@ const RoomOptions = ({ ratePlans = [], supplierData = {} }) => {
                 {/* Top Badges */}
                 <div className="flex flex-wrap gap-2">
                   <span
-                    className={`font-roboto rounded-full px-3 py-1 text-xs font-semibold ${
-                      refundable
+                    className={`font-roboto rounded-full px-3 py-1 text-xs font-semibold ${refundable
                         ? "bg-green-100 text-green-700"
                         : "bg-red-100 text-red-600"
-                    }`}
+                      }`}
                   >
                     {refundable ? "Free Cancellation" : "Non Refundable"}
                   </span>
@@ -213,7 +212,7 @@ const RoomOptions = ({ ratePlans = [], supplierData = {} }) => {
                         </p>
                       </div>
 
-                      <span className="text-2xl leading-none font-bold text-[#0f172a]">
+                      <span className="text-base sm:text-lg lg:text-2xl leading-none font-bold text-[#0f172a]">
                         ₹ {Number(totalAmount || 0).toLocaleString("en-IN")}
                       </span>
                     </div>
