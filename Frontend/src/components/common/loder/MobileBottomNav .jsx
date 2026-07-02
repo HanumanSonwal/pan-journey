@@ -27,7 +27,7 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-20 w-full border-t border-gray-200 bg-white shadow-lg lg:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-20 w-full border-t border-gray-200 bg-white shadow-lg md:hidden">
       <div className="grid grid-cols-4">
         {menus.map((item) => {
           const Icon = item.icon;
