@@ -12,25 +12,7 @@ const OccupantSchema = new mongoose.Schema(
   { _id: false },
 );
 
-// const HotelTempBookingSchema = new mongoose.Schema(
-//   {
-//     requestPayload: mongoose.Schema.Types.Mixed,
-//     responsePayload: mongoose.Schema.Types.Mixed,
 
-//     status: {
-//       type: String,
-//       enum: ["SUCCESS", "FAILED"],
-//       default: "FAILED",
-//     },
-
-//     hotelKey: String,
-//     recommendationId: String,
-//     customerMobile: String,
-
-//     errorMessage: String,
-//   },
-//   { timestamps: true }
-// );
 const HotelTempBookingSchema = new mongoose.Schema(
   {
     requestPayload: mongoose.Schema.Types.Mixed,

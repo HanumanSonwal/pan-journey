@@ -1,0 +1,398 @@
+
+import { supplierAPI } from "../../../config/supplierApi.js";
+import { getAuthHeader } from "../../../config/supplierAuth.service.js";
+import HotelTempBooking from "./hotelCart.model.js";
+import Coupon from "../../promotionEngine/coupon.model.js";
+
+// ONLY ONE IMPORT
+import { findBestCoupon }
+from "../../promotionEngine/promotion.service.js";
+
+export const hotelTempBookingService =
+  async (payload, pricingData) => {
+
+    console.log("=================================");
+    console.log("SERVICE START");
+
+    if (!pricingData) {
+      throw new Error(
+        "Pricing data missing"
+      );
+    }
+
+    const requestStartTime =
+      Date.now();
+
+    let dbRecord;
+
+    try {
+
+      /*
+        Supplier API payload only
+      */
+
+      const requestBody = {
+        ...getAuthHeader(),
+
+        CustomerName:
+          payload.CustomerName,
+
+        CustomerMobile:
+          payload.CustomerMobile,
+
+        CustomerAddress:
+          payload.CustomerAddress,
+
+        CustomerPostalCode:
+          payload.CustomerPostalCode,
+
+        HotelKey:
+          payload.HotelKey,
+
+        RecommendationID:
+          payload.RecommendationID,
+
+        SearchKey:
+          payload.SearchKey,
+
+        OccupantDetails:
+          payload.OccupantDetails,
+
+        OccupantEmail:
+          payload.OccupantEmail,
+
+        OccupantMobile:
+          payload.OccupantMobile,
+
+        PANNumber:
+          payload.PANNumber || "",
+
+        Remarks:
+          payload.Remarks,
+      };
+
+      console.log(
+        "SUPPLIER REQUEST BODY =>"
+      );
+
+      console.log(
+        JSON.stringify(
+          requestBody,
+          null,
+          2
+        )
+      );
+
+      /*
+        AUTO APPLY BEST COUPON
+      */
+
+      const couponData =
+        await findBestCoupon({
+          module: "hotel",
+
+          bookingAmount:
+            pricingData.finalSellingPrice,
+
+          serviceTax:
+            pricingData.serviceTaxAmount,
+        });
+
+      const appliedDiscount =
+        couponData?.bestDiscount || 0;
+
+      /*
+        CREATE TEMP BOOKING
+      */
+
+      dbRecord =
+        await HotelTempBooking.create({
+
+          userId:
+            payload.UserId,
+
+          supplierData: {
+            hotelKey:
+              payload.HotelKey,
+
+            recommendationId:
+              payload.RecommendationID,
+
+            searchKey:
+              payload.SearchKey,
+
+            customerName:
+              payload.CustomerName,
+
+            customerMobile:
+              payload.CustomerMobile,
+
+            customerAddress:
+              payload.CustomerAddress,
+
+            customerPostalCode:
+              payload.CustomerPostalCode,
+
+            occupantDetails:
+              payload.OccupantDetails,
+          },
+
+          hotelData: {
+            hotelImage:
+              payload.HotelImage,
+          },
+
+          pricing:
+            pricingData,
+
+          /*
+            OFFER SYSTEM
+          */
+
+          offer: {
+            // auto applied by system
+            autoCouponCode:
+              couponData?.bestCoupon?.code
+                || null,
+
+            autoDiscount:
+              appliedDiscount,
+
+            // user manual coupon later
+            couponCode:
+              null,
+
+            couponDiscount:
+              0,
+          },
+
+          payableAmount:
+            pricingData.finalSellingPrice
+            - appliedDiscount,
+
+          tempBookingStatus:
+            "initiated",
+        });
+
+      console.log(
+        "DB RECORD CREATED =>",
+        dbRecord._id
+      );
+
+      /*
+        SUPPLIER API CALL
+      */
+
+      console.log(
+        "CALLING SUPPLIER API..."
+      );
+
+      const response =
+        await supplierAPI.post(
+          "/JSONService/HotelTempBooking",
+          requestBody
+        );
+
+      console.log(
+        "SUPPLIER SUCCESS RESPONSE =>"
+      );
+
+      console.log(
+        JSON.stringify(
+          response.data,
+          null,
+          2
+        )
+      );
+
+      const responseTime =
+        Date.now()
+        - requestStartTime;
+
+      /*
+        SUCCESS UPDATE
+      */
+
+      dbRecord.tempBookingStatus =
+        "success";
+
+      dbRecord.responseTime =
+        responseTime;
+
+      dbRecord.supplierResponse = {
+
+        bookingRefNo:
+          response.data?.BookingRefNo
+          || null,
+
+        statusId:
+          response.data?.ResponseHeader
+            ?.StatusId || null,
+      };
+
+      await dbRecord.save();
+
+      return {
+        tempBookingId:
+          dbRecord._id,
+
+        appliedCoupon:
+          couponData?.bestCoupon?.code
+          || null,
+
+        discount:
+          appliedDiscount,
+
+        finalPayable:
+          dbRecord.payableAmount,
+
+        ...response.data,
+      };
+
+    } catch (error) {
+
+      const responseTime =
+        Date.now()
+        - requestStartTime;
+
+      console.log(
+        "================================="
+      );
+
+      console.log(
+        "SERVICE ERROR"
+      );
+
+      console.log(
+        "ERROR MESSAGE =>",
+        error.message
+      );
+
+      console.log(
+        "ERROR STATUS =>",
+        error?.response?.status
+      );
+
+      console.log(
+        "ERROR RESPONSE =>"
+      );
+
+      console.log(
+        error?.response?.data
+      );
+
+      /*
+        SAVE FAILED STATUS
+      */
+
+      if (dbRecord) {
+
+        dbRecord.tempBookingStatus =
+          "failed";
+
+        dbRecord.responseTime =
+          responseTime;
+
+        dbRecord.errorMessage =
+          JSON.stringify(
+            error?.response?.data
+            || error.message
+          );
+
+        await dbRecord.save();
+
+        console.log(
+          "FAILED STATUS UPDATED"
+        );
+      }
+
+      throw error;
+    }
+};
+
+export const updateCouponService =
+async ({ tempBookingId, couponCode }) => {
+const booking =
+  await HotelTempBooking.findOne({
+    _id: tempBookingId
+  });
+console.log("booking =", booking);
+  if (!booking) {
+    throw new Error(
+      "Booking not found"
+    );
+  }
+
+  const coupon =
+    await Coupon.findOne({
+      code: couponCode,
+      isActive: true
+    });
+
+  if (!coupon) {
+    throw new Error(
+      "Invalid coupon"
+    );
+  }
+
+  // module validation
+  if (
+    !coupon.applicableModules.includes(
+      "hotel"
+    )
+  ) {
+    throw new Error(
+      "Coupon not valid for hotel"
+    );
+  }
+
+  let discount = 0;
+
+  if (
+    coupon.discountType === "flat"
+  ) {
+    discount =
+      coupon.discountValue;
+  }
+
+  if (
+    coupon.discountType === "percent"
+  ) {
+    discount =
+      (booking.pricing
+        .finalSellingPrice *
+        coupon.discountValue) / 100;
+  }
+
+  const maxAllowed =
+    booking.pricing
+      .serviceTaxAmount * 0.7;
+
+  if (discount > maxAllowed) {
+    discount = maxAllowed;
+  }
+
+  booking.offer = {
+    ...booking.offer,
+
+    couponCode:
+      coupon.code,
+
+    couponDiscount:
+      discount,
+
+    autoCouponCode:
+      null,
+
+    autoDiscount: 0
+  };
+
+  booking.payableAmount =
+    booking.pricing
+      .finalSellingPrice -
+    discount;
+
+  await booking.save();
+
+  return booking;
+};

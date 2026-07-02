@@ -1,24 +1,24 @@
 import express from "express";
 
+import { protect } from "../../middleware/auth.middleware.js";
 import {
   createTaxRule,
-  getAllTaxRules,
-  updateTaxRule,
   deleteTaxRule,
+  getAllTaxRules,
   toggleTaxStatus,
+  updateTaxRule,
 } from "./tax.controller.js";
-import { protect } from "../../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/create", createTaxRule);
+router.post("/create", protect, createTaxRule);
 
-router.get("/all", getAllTaxRules);
+router.get("/all", protect, getAllTaxRules);
 
-router.put("/update/:id", updateTaxRule);
+router.put("/update/:id", protect, updateTaxRule);
 
-router.patch("/status/:id", toggleTaxStatus);
+router.patch("/status/:id", protect, toggleTaxStatus);
 
-router.delete("/delete/:id", deleteTaxRule);
+router.delete("/delete/:id", protect, deleteTaxRule);
 
 export default router;

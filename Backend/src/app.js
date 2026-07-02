@@ -24,8 +24,10 @@ import hotelRequery from "./modules/hotel/hotelRequery/requery.route.js";
 import tempbookingRoutes from "./modules/hotel/hotelTempBooking/hoteltempbookingroutes.js";
 import hotelTicketing from "./modules/hotel/hotelTicketing/hotelTicketing.route.js";
 import invoiceRoutes from "./modules/hotel/invoice/invoice.route.js";
-import seoContentRoutes from "./modules/hotel/seo/hotelcityseo/seoContent.routes.js";
+
 import mediaRoutes from "./modules/media/media.routes.js";
+import paymentRoutes from "./modules/payments/routes/payment.routes.js";
+import webhookRoutes from "./modules/payments/routes/webhook.routes.js";
 import countryRoutes from "./modules/priceMarkup/countryData/country.routes.js";
 import markeupRoutes from "./modules/priceMarkup/markup/markup.routes.js";
 import stateRoutes from "./modules/priceMarkup/stateData/state.routes.js";
@@ -36,6 +38,9 @@ import tax from "./modules/tax/tax.route.js";
 import userRoutes from "./modules/user/user.routes.js";
 import wishlistRoutes from "./modules/wishlist/wishlist.routes.js";
 import testRoutes from "./test.routes.js";
+import couponCode from "./modules/promotionEngine/promotion.routes.js";
+import tax from "./modules/tax/tax.route.js";
+ 
 
 const app = express();
 app.set("trust proxy", 1);
@@ -68,14 +73,16 @@ app.use("/api/v1/media", mediaRoutes);
 app.use("/api/v1", contactUs);
 app.use("/api/v1", support);
 app.use("/api/v1", grievanceRedressal);
-app.use("/api/v1/tax", tax);
-app.use("/api/v1/couponCode", couponCode);
-
+app.use("/api/v1/payment", paymentRoutes);
+app.use("/api/v1/newsletter",newsletter);
+app.use("/api/v1/tax",tax);
+app.use("/api/v1/couponCode",couponCode);
 app.use("/api/v1/users", userRoutes);
-app.use("/api/v1/seo-content", seoContentRoutes);
+
 app.use("/api/v1/cms", cmsRoutes);
 app.use("/api/v1/roles", roleRoutes);
 app.use("/api/v1/Seacrhcity", citySearch);
+app.use("/api/webhooks", webhookRoutes);
 app.use("/api/v1/Hotels", hotelSearch);
 app.use("/api/v1", tempbookingRoutes);
 app.use("/api/v1", hotelRequery);

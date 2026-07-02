@@ -6,7 +6,9 @@ import {
   createCouponService,
    getAllCouponsService,
   getSingleCouponService,
-  updateCouponAdminService
+  updateCouponAdminService,
+  updateCouponStatusService,
+  deleteCouponAdminService
 } from "./promotion.service.js";
 
 import {
@@ -94,7 +96,9 @@ export const applyCouponController =
   async (req, res) => {
     try {
       const data =
-        await getAllCouponsService();
+        await getAllCouponsService(
+          req.query
+        );
 
       return sendSuccess(
         res,
@@ -154,6 +158,50 @@ export const updateCouponAdminController =
       return sendSuccess(
         res,
         "Coupon updated successfully",
+        data
+      );
+
+    } catch (error) {
+      return sendError(
+        res,
+        error.message
+      );
+    }
+  };
+  export const updateCouponStatusController =
+  async (req, res) => {
+    try {
+      const data =
+        await updateCouponStatusService(
+          req.params.id,
+          req.body.isActive
+        );
+
+      return sendSuccess(
+        res,
+        "Coupon status updated successfully",
+        data
+      );
+
+    } catch (error) {
+      return sendError(
+        res,
+        error.message
+      );
+    }
+  };
+
+  export const deleteCouponAdminController =
+  async (req, res) => {
+    try {
+      const data =
+        await deleteCouponAdminService(
+          req.params.id
+        );
+
+      return sendSuccess(
+        res,
+        "Coupon deleted successfully",
         data
       );
 

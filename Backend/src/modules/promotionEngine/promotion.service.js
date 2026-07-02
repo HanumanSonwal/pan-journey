@@ -224,15 +224,155 @@ export const applyManualCoupon =
     return booking;
   };
 
-  export const getAllCouponsService =
-  async () => {
+  // export const getAllCouponsService =
+  // async () => {
+  //   const coupons =
+  //     await Coupon.find()
+  //       .sort({ createdAt: -1 });
+
+  //   return coupons;
+  // };
+export const getAllCouponsService =
+  async (queryParams = {}) => {
+
+    const {
+      status,
+      module,
+      startDate,
+      endDate,
+      search,
+      page = 1,
+      limit = 10
+    } = queryParams;
+
+    let filter = {};
+
+    const pageNumber =
+      Number(page);
+
+    const limitNumber =
+      Number(limit);
+
+    const skip =
+      (pageNumber - 1) *
+      limitNumber;
+
+    /* ==========================
+       SEARCH BY CODE / TITLE
+    ========================== */
+
+    if (search) {
+      filter.$or = [
+        {
+          code: {
+            $regex: search,
+            $options: "i"
+          }
+        },
+
+        {
+          title: {
+            $regex: search,
+            $options: "i"
+          }
+        }
+      ];
+    }
+
+    /* ==========================
+       STATUS FILTER
+    ========================== */
+
+    if (
+      status !== undefined
+    ) {
+      filter.isActive =
+        status === "true";
+    }
+
+    /* ==========================
+       MODULE FILTER
+    ========================== */
+
+    if (module) {
+      filter.applicableModules =
+        module;
+    }
+
+    /* ==========================
+       DATE FILTER
+    ========================== */
+
+    if (
+      startDate ||
+      endDate
+    ) {
+
+      if (startDate) {
+        filter[
+          "validity.startDate"
+        ] = {
+          $gte: new Date(
+            startDate
+          )
+        };
+      }
+
+      if (endDate) {
+        filter[
+          "validity.endDate"
+        ] = {
+          $lte: new Date(
+            endDate
+          )
+        };
+      }
+    }
+
+    /* ==========================
+       GET TOTAL COUNT
+    ========================== */
+
+    const totalCoupons =
+      await Coupon.countDocuments(
+        filter
+      );
+
+    /* ==========================
+       FETCH DATA
+    ========================== */
+
     const coupons =
-      await Coupon.find()
-        .sort({ createdAt: -1 });
+      await Coupon.find(
+        filter
+      )
+        .sort({
+          createdAt: -1
+        })
+        .skip(skip)
+        .limit(limitNumber);
 
-    return coupons;
+    return {
+      coupons,
+
+      pagination: {
+        totalRecords:
+          totalCoupons,
+
+        currentPage:
+          pageNumber,
+
+        totalPages:
+          Math.ceil(
+            totalCoupons /
+            limitNumber
+          ),
+
+        limit:
+          limitNumber
+      }
+    };
   };
-
 /*
 ====================================
 GET SINGLE COUPON
@@ -264,6 +404,40 @@ export const updateCouponAdminService =
         couponId,
         payload,
         { new: true }
+      );
+
+    if (!coupon) {
+      throw new Error(
+        "Coupon not found"
+      );
+    }
+
+    return coupon;
+  };
+  export const updateCouponStatusService =
+  async (couponId, isActive) => {
+
+    const coupon =
+      await Coupon.findByIdAndUpdate(
+        couponId,
+        { isActive },
+        { new: true }
+      );
+
+    if (!coupon) {
+      throw new Error(
+        "Coupon not found"
+      );
+    }
+
+    return coupon;
+  };
+  export const deleteCouponAdminService =
+  async (couponId) => {
+
+    const coupon =
+      await Coupon.findByIdAndDelete(
+        couponId
       );
 
     if (!coupon) {

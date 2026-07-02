@@ -5,6 +5,7 @@ const countrySchema = new mongoose.Schema(
     id: Number, // custom incremental id
     countryName: String,
     countryCode: String,
+      phoneCode: String
   },
   { timestamps: true }
 );

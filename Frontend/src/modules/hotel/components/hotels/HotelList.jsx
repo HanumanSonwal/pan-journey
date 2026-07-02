@@ -133,7 +133,7 @@ useEffect(() => {
       address: hotel.address || "",
       rating: Number(hotel.starRating || 0),
       reviews: hotel.reviewCount || 0,
-      price: Number(hotel.price || hotel.minPrice || 0) || 0,
+      price: Number(hotel.basePrice  || hotel.basePrice  || 0) || 0,
       oldPrice:
         hotel.oldPrice || (hotel.price ? Number(hotel.price) + 1500 : 0),
       propertyType: hotel.propertyType || "Hotel",
@@ -160,7 +160,7 @@ useEffect(() => {
       starRating: hotel.starRating || "",
       description: hotel.description || "",
       freeCancellation: hotel.freeCancellation || false,
-      tax: hotel.tax || 0,
+      tax: hotel.platformfeeandtax || 0,
     }));
   }, [hotels, data]);
 

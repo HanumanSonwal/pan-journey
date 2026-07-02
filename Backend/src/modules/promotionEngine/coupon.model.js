@@ -1,3 +1,4 @@
+
 import mongoose from "mongoose";
 
 const couponSchema =
@@ -26,6 +27,7 @@ const couponSchema =
             "wallet",
             "holiday",
           ],
+         
         },
       ],
 
@@ -33,7 +35,8 @@ const couponSchema =
         type: String,
         enum: [
           "flat",
-          "percent",
+          "percent"
+,
         ],
         required: true,
       },
@@ -41,6 +44,11 @@ const couponSchema =
       discountValue: {
         type: Number,
         required: true,
+      },
+      
+      image:{
+        type: String,
+        required:true
       },
 
       minAmount: {
@@ -72,6 +80,17 @@ const couponSchema =
       usedCount: {
         type: Number,
         default: 0
+      },
+        validity: {
+        startDate: {
+          type: Date,
+          required: true
+        },
+
+        endDate: {
+          type: Date,
+          required: true
+        }
       },
 
       expiresAt: Date,
