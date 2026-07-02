@@ -21,10 +21,14 @@ const LoginPage = () => {
 
   const { mutate, isPending } = useApiMutation(loginUser, {
     onSuccess: (res) => {
+       console.log("1. Login Success", res);
       if (res.success) {
         const userData = res.data?.user;
+         console.log("2. Before setUser", userData);
         setUser(userData);
+           console.log("3. After setUser", useAuthStore.getState());
         router.replace("/dashboard");
+        console.log("4. After router.replace");
       }
     },
   });
@@ -63,7 +67,7 @@ const LoginPage = () => {
           style={{
             width: "100%",
             maxWidth: 380,
-            borderRadius: 14,
+            borderRadius: 5,
             background: colorBgContainer,
             boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
           }}

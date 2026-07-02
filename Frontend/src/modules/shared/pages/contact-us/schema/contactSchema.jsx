@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const contactSchema = z.object({
   category: z.string().min(1, "Please select a category"),
+  BookingRefNo: z.string().min(1, "Please enter a booking reference ID"),
   fullName: z
     .string()
     .trim()

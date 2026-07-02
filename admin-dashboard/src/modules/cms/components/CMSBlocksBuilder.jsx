@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Card, Collapse, Form, Input, Select } from "antd";
+import { Button, Card, Collapse, Form, Input, Select, theme } from "antd";
 import CMSImageUpload from "./CMSImageUpload";
 import TextEditor from "./editor/joditEditor/TextEditor";
 
@@ -404,6 +404,15 @@ function BlockFields({ field, form }) {
 }
 
 export default function CMSBlocksBuilder({ form }) {
+  const {
+    token: {
+      colorBgContainer,
+      colorBorderSecondary,
+      colorText,
+      colorPrimary,
+      colorFillAlter,
+    },
+  } = theme.useToken();
   return (
     <Form.List name={["data", "blocks"]}>
       {(fields, { add, remove, move }) => (
@@ -435,17 +444,17 @@ export default function CMSBlocksBuilder({ form }) {
 
                 styles: {
                   header: {
-                    background: "#111827",
-                    border: "1px solid #2a2a2a",
-                    borderRadius: 12,
+                    background: colorBgContainer,
+                    border: `1px solid ${colorBorderSecondary}`,
+                    borderRadius: 5,
                     marginBottom: 10,
                   },
 
                   body: {
-                    border: "1px solid #2a2a2a",
                     borderTop: "none",
-                    borderRadius: "0 0 12px 12px",
-                    background: "#141414",
+                    borderRadius: "0 0 5px 5px",
+                    background: colorFillAlter,
+                    border: `1px solid ${colorBorderSecondary}`,
                     padding: 20,
                   },
                 },
@@ -463,24 +472,46 @@ export default function CMSBlocksBuilder({ form }) {
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        gap: 10,
-                        fontWeight: 600,
-                        textTransform: "capitalize",
+                        gap: 12,
                       }}
                     >
-                      <span>
-                        {field.name + 1}.{" "}
-                        {(
-                          form.getFieldValue([
-                            "data",
-                            "blocks",
-                            field.name,
-                            "type",
-                          ]) || "Block"
-                        )
-                          .replace(/([A-Z])/g, " $1")
-                          .trim()}
-                      </span>
+                      <div
+                        style={{
+                          width: 34,
+                          height: 34,
+                          borderRadius: "50%",
+                          background: colorPrimary,
+                          color: "#fff",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontWeight: 700,
+                          fontSize: 14,
+                        }}
+                      >
+                        {field.name + 1}
+                      </div>
+
+                      <div>
+                        <div
+                          style={{
+                            fontWeight: 600,
+                            color: colorText,
+                          }}
+                        >
+                          {icons[type]}{" "}
+                          {(
+                            form.getFieldValue([
+                              "data",
+                              "blocks",
+                              field.name,
+                              "type",
+                            ]) || "Block"
+                          )
+                            .replace(/([A-Z])/g, " $1")
+                            .trim()}
+                        </div>
+                      </div>
                     </div>
 
                     <div
@@ -535,10 +566,14 @@ export default function CMSBlocksBuilder({ form }) {
           />
 
           <Button
-            type="dashed"
+            type="primary"
+            ghost
             block
+            size="large"
             style={{
-              marginTop: 16,
+              marginTop: 20,
+              height: 46,
+              borderStyle: "dashed",
             }}
             onClick={() =>
               add({
@@ -547,7 +582,7 @@ export default function CMSBlocksBuilder({ form }) {
               })
             }
           >
-            + Add Block
+            + Add New Content Block
           </Button>
         </>
       )}

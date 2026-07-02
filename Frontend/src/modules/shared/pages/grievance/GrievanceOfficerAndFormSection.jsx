@@ -3,17 +3,38 @@
 import RHFInput from "@/components/ui/RHFinputs/RHFInput";
 import RHFSelect from "@/components/ui/RHFinputs/RHFSelect";
 import RHFTextarea from "@/components/ui/RHFinputs/RHFTextarea";
+import { useAuthModalStore } from "@/modules/auth/store/authModal.store";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { message } from "antd";
 import { FormProvider, useForm } from "react-hook-form";
+import { useCreateGrievance } from "./hooks/useGrievance";
 import { grievanceSchema } from "./schema/grievanceSchema";
 
 const grievanceCategories = [
-  { label: "Refund Issue", value: "refund" },
-  { label: "Booking Issue", value: "booking" },
-  { label: "Payment Dispute", value: "payment" },
-  { label: "Hotel Complaint", value: "hotel" },
-  { label: "Customer Service Complaint", value: "service" },
-  { label: "Other", value: "other" },
+  {
+    label: "Refund Issue",
+    value: "refund_request",
+  },
+  {
+    label: "Booking Issue",
+    value: "booking_issue",
+  },
+  {
+    label: "Payment Dispute",
+    value: "payment_issue",
+  },
+  {
+    label: "Hotel Complaint",
+    value: "hotel_complaint",
+  },
+  {
+    label: "General Query",
+    value: "general_query",
+  },
+  {
+    label: "Partnership Business",
+    value: "partnership_business",
+  },
 ];
 
 export default function GrievanceOfficerAndFormSection() {
@@ -33,8 +54,60 @@ export default function GrievanceOfficerAndFormSection() {
     },
   });
 
-  const onSubmit = (data) => {
-    console.log("SUCCESS", data);
+  const { mutateAsync: createGrievance, isPending } = useCreateGrievance();
+
+  const { openLoginModal } = useAuthModalStore();
+
+  const onSubmit = async (data) => {
+    try {
+      const payload = {
+        fullName: data.fullName,
+        email: data.email,
+        subject: data.subject,
+        bookingRefId: data.bookingRefNo,
+        message: data.description,
+        ticketId: data.supportTicketId,
+        supportCategory: data.category,
+      };
+
+      const res = await createGrievance(payload);
+
+      const grievanceId = res?.data?.data?.grievanceId || "PAN-CS-000003";
+
+      message.success({
+        duration: 5,
+        content: (
+          <span>
+            Your grievance has been submitted successfully.
+            <br />
+            Please keep{" "}
+            <strong className="text-[#006c7a]">
+              Reference ID: {grievanceId}
+            </strong>{" "}
+            for future reference.
+          </span>
+        ),
+      });
+
+      methods.reset();
+    } catch (error) {
+      const status = error?.response?.status;
+      const errorMessage = error?.response?.data?.message;
+
+      if (status === 401 && errorMessage === "No token provided") {
+        message.warning({
+          key: "login-required",
+          content: "Please login to continue.",
+        });
+
+        openLoginModal();
+        return;
+      }
+
+      message.error(
+        errorMessage || "Unable to submit your grievance. Please try again.",
+      );
+    }
   };
 
   const onError = (errors) => {
@@ -45,7 +118,7 @@ export default function GrievanceOfficerAndFormSection() {
   return (
     <section className="bg-[#eef5fa] py-12 lg:py-16">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.2fr] lg:gap-8">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_1.2fr] lg:gap-8">
           <div className="rounded bg-white p-6 shadow-[0_8px_30px_rgba(0,0,0,0.06)] lg:p-8">
             <div className="mb-6">
               <span className="rounded-full bg-[#eef5fa] px-3 py-1 text-xs font-medium text-[#0f6b78]">
@@ -63,37 +136,47 @@ export default function GrievanceOfficerAndFormSection() {
               independent review.
             </p>
 
-            <div className="mb-3! grid grid-cols-2 gap-2">
-              <div className="rounded-xl bg-[#eef5fa] p-3">
-                <p className="text-xs text-gray-500">Review Time</p>
-                <p className="mt-1 text-xl font-bold text-[#0f6b78]">
+            <div className="mb-1 grid grid-cols-2 gap-2">
+              <div className="rounded-lg bg-[#eef5fa] px-5 py-2">
+                <p className="text-[11px] text-gray-500">Review Time</p>
+                <p className="mt-0.5 text-[18px] font-bold text-[#0f6b78]">
                   48 Hours
                 </p>
               </div>
 
-              <div className="rounded-xl bg-[#eef5fa] p-3">
-                <p className="text-xs text-gray-500">Resolution</p>
-                <p className="mt-1 text-xl font-bold text-[#0f6b78]">7 Days</p>
+              <div className="rounded-lg bg-[#eef5fa] px-5 py-2">
+                <p className="text-[11px] text-gray-500">Resolution</p>
+                <p className="mt-0.5 text-[18px] font-bold text-[#0f6b78]">
+                  7 Days
+                </p>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 border-t border-gray-100 pt-5 sm:grid-cols-2">
-              <div className="rounded-lg bg-[#eef5fa] p-4">
-                <p className="text-xs font-medium text-[#0f6b78]">
+            <div className="grid grid-cols-1 gap-3 border-t border-gray-100 pt-4 sm:grid-cols-2">
+              <div className="rounded-lg border border-[#dcecf1] bg-[#f8fcfd] px-4 py-3">
+                <p className="text-[11px] font-medium tracking-wide text-gray-500 uppercase">
                   Grievance Email
                 </p>
-                <p className="mt-1 text-sm font-medium text-gray-700">
+
+                <a
+                  href="mailto:grievance@panjourney.com"
+                  className="mt-1 block text-[14px] font-semibold text-[#0f6b78] hover:underline"
+                >
                   grievance@panjourney.com
-                </p>
+                </a>
               </div>
 
-              <div className="rounded-lg bg-[#eef5fa] p-4">
-                <p className="text-xs font-medium text-[#0f6b78]">
+              <div className="rounded-lg border border-[#dcecf1] bg-[#f8fcfd] px-4 py-3">
+                <p className="text-[11px] font-medium tracking-wide text-gray-500 uppercase">
                   Contact Number
                 </p>
-                <p className="mt-1 text-sm font-medium text-gray-700">
-                  +91 XXXXX XXXXX
-                </p>
+
+                <a
+                  href="tel:+919876543210"
+                  className="mt-1 block text-[14px] font-semibold text-[#0f6b78] hover:underline"
+                >
+                  +91 9876543210
+                </a>
               </div>
             </div>
 

@@ -38,8 +38,8 @@ const features = [
 
 export default function WhySection() {
   return (
-    <section className="mt-[-10px] overflow-hidden bg-[#EDF7FF] px-4 py-16 md:py-20">
-      <div className="mx-auto w-[85.87%]">
+    <section className="mt-[-10px] overflow-hidden bg-[#EDF7FF] !px-0 sm:!px-0 md:!px-2 lg:!px-3 xl:!px-4 2xl:!px-0 py-10 sm:py-12 md:py-16 lg:py-20">
+      <div className="mx-auto mt-0 w-full  px-2 sm:mt-2 sm:px-4 md:mt-4 lg:-mt-20 lg:w-[86%] lg:px-0 xl:mt-4">
         {/* Heading */}
         <SectionHeading
           title="Why Choose Our Platform"
@@ -47,9 +47,9 @@ export default function WhySection() {
         />
 
         {/* Main Layout */}
-        <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-[1.1fr_1fr] lg:gap-8">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.15fr_1fr] xl:gap-10">
           {/* Left Image */}
-          <div className="relative min-h-[320px] overflow-hidden rounded-[32px] shadow-xl sm:min-h-[450px] md:min-h-[560px]">
+          <div className="relative min-h-[240px] overflow-hidden rounded-2xl shadow-xl sm:min-h-[320px] md:min-h-[420px] lg:min-h-[520px] lg:rounded-[32px] xl:min-h-[600px]">
             <Image
               src="/images/whySection.png"
               alt="Luxury Resort"
@@ -62,17 +62,19 @@ export default function WhySection() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
 
             {/* Floating Card */}
-            <div className="absolute right-5 bottom-5 left-5 rounded-2xl border border-white/40 bg-white/95 px-5 py-4 shadow-2xl backdrop-blur-md sm:w-fit">
+            <div className="absolute right-3 bottom-3 left-3 w-auto rounded-xl border border-white/40 bg-white/95 px-4 py-3 shadow-2xl backdrop-blur-md sm:right-auto sm:bottom-5 sm:left-5 sm:w-fit sm:px-5 sm:py-4 lg:rounded-2xl">
               <p className="text-sm font-medium text-gray-500">
                 Trusted by thousands of travelers
               </p>
 
               <div className="mt-1 flex items-center gap-3">
-                <h4 className="text-2xl font-bold text-gray-900">4.9★</h4>
+                <h4 className="text-xl font-bold text-gray-900 sm:text-2xl lg:text-3xl">
+                  4.9★
+                </h4>
 
                 <div className="h-10 w-[1px] bg-gray-200" />
 
-                <p className="text-sm leading-5 text-gray-600">
+                <p className="text-xs leading-5 text-gray-600 sm:text-sm lg:text-base">
                   Rated highly for service,
                   <br />
                   pricing & customer support
@@ -82,23 +84,23 @@ export default function WhySection() {
           </div>
 
           {/* Right Features */}
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:gap-6">
             {features.map((item, index) => (
               <div
                 key={index}
-                className="group flex flex-col rounded-[28px] border border-white/60 bg-white p-6 shadow-[0_10px_35px_rgba(59,130,182,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_rgba(59,130,182,0.15)] md:p-7"
+                className="group flex flex-col rounded-2xl border border-white/60 bg-white p-5 shadow-[0_10px_35px_rgba(59,130,182,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_rgba(59,130,182,0.15)] sm:p-6 lg:rounded-[28px] lg:p-7"
               >
                 {/* Icon */}
-                <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border border-[#D9ECF8] bg-[#EDF7FF] text-[24px] text-[#3B82B6] transition-transform group-hover:scale-110">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-[#D9ECF8] bg-[#EDF7FF] text-[20px] text-[#3B82B6] transition-transform group-hover:scale-110 sm:h-14 sm:w-14 sm:text-[24px] lg:h-16 lg:w-16 lg:rounded-2xl lg:text-[28px]">
                   {item.icon}
                 </div>
 
                 {/* Content */}
-                <h3 className="mb-3 text-xl leading-7 font-bold tracking-[-0.01em] text-gray-900">
+                <h3 className="mb-2 text-lg leading-snug font-bold text-gray-900 sm:text-xl lg:text-2xl">
                   {item.title}
                 </h3>
 
-                <p className="text-sm leading-7 text-gray-600 md:text-[15px]">
+                <p className="text-sm leading-6 text-gray-600 sm:text-[15px] lg:text-base">
                   {item.description}
                 </p>
               </div>

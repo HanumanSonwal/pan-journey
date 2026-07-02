@@ -43,7 +43,7 @@ const contactSchema = new mongoose.Schema(
     ticketId: {
       type: String,
       unique: true,
-      //default: () => `PJ${Math.floor(100000 + Math.random() * 900000)}`
+      default: () => `PJ${Math.floor(100000 + Math.random() * 900000)}`,
     },
 
     supportCategory: {

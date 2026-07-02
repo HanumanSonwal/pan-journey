@@ -1,51 +1,43 @@
 "use client";
 
 import {
-  ArrowRightOutlined,
+  CheckCircleOutlined,
+  ClockCircleOutlined,
+  FileTextOutlined,
   MailFilled,
-  MessageFilled,
-  PhoneFilled,
-  TeamOutlined,
 } from "@ant-design/icons";
 import Image from "next/image";
-import Link from "next/link";
-const contactCards = [
+const grievanceCards = [
   {
-    icon: PhoneFilled,
-    title: "Customer Support",
-    value: "+91 9876543210",
-    subText: "Available 24x7",
-    href: "tel:+919876543210",
-    badge: "Online",
-    badgeColor: "bg-green-100 text-green-700",
-  },
-  {
-    icon: MessageFilled,
-    title: "WhatsApp Support",
-    value: "+91 9876543210",
-    subText: "Quick Assistance",
-    href: "https://wa.me/919876543210",
-    target: "_blank",
-    badge: "Fast Reply",
-    badgeColor: "bg-green-100 text-green-700",
-    cardClass: "border border-green-100",
-  },
-  {
-    icon: MailFilled,
-    title: "Booking Support",
-    value: "booking@panjourney.com",
-    subText: "Response within 24 Hours",
-    href: "mailto:booking@panjourney.com",
-    badge: "Email",
+    icon: FileTextOutlined,
+    title: "Raise A Grievance",
+    value: "Submit Complaint Form",
+    subText: "Escalate unresolved issues",
+    badge: "Step 1",
     badgeColor: "bg-blue-100 text-blue-700",
   },
   {
-    icon: TeamOutlined,
-    title: "Business Partnership",
-    value: "business@panjourney.com",
-    subText: "Hotels & Collaborations",
-    href: "mailto:business@panjourney.com",
-    badge: "Business",
+    icon: ClockCircleOutlined,
+    title: "Review Timeline",
+    value: "Within 48 Hours",
+    subText: "Initial review period",
+    badge: "48 Hrs",
+    badgeColor: "bg-yellow-100 text-yellow-700",
+  },
+  {
+    icon: CheckCircleOutlined,
+    title: "Resolution Timeline",
+    value: "Within 7 Working Days",
+    subText: "Expected resolution period",
+    badge: "7 Days",
+    badgeColor: "bg-green-100 text-green-700",
+  },
+  {
+    icon: MailFilled,
+    title: "Grievance Officer",
+    value: "grievance@panjourney.com",
+    subText: "Official escalation support",
+    badge: "Official",
     badgeColor: "bg-orange-100 text-orange-700",
   },
 ];
@@ -86,52 +78,43 @@ export default function GrievanceHero() {
 
       {/* Contact Cards */}
       <div className="absolute top-[280px] left-1/2 z-30 w-full max-w-[1400px] -translate-x-1/2 px-3">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-4">
-          {contactCards.map((card, index) => {
+       <div className="flex gap-4 overflow-x-auto pb-2 lg:grid lg:grid-cols-4 lg:overflow-visible">
+          {grievanceCards.map((card, index) => {
             const Icon = card.icon;
 
             return (
-              <Link
+              <div
                 key={index}
-                href={card.href}
-                target={card.target}
-                className="group block"
+                className="rounded-lg border border-[#e7eef2] bg-white p-3 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
               >
-                <div
-                  className={`rounded-md bg-white px-4 py-3 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl md:px-5 ${card.cardClass || ""} `}
-                >
-                  {/* Header */}
-                  <div className="mb-2 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Icon className="text-[20px] !text-[#2f7d8c] transition-transform duration-300 group-hover:scale-110 md:text-[24px] lg:text-[26px]" />
-
-                      <h3 className="m-0 text-[16px] font-medium text-[#2f7d8c] md:text-[18px]">
-                        {card.title}
-                      </h3>
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#eef5fa]">
+                      <Icon className="text-[18px] text-[#0f6b78]" />
                     </div>
 
-                    <ArrowRightOutlined className="text-[#2f7d8c] opacity-60 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100" />
+                    <div className="min-w-0">
+                      <h3 className="truncate text-[14px] font-semibold text-[#0f6b78]">
+                        {card.title}
+                      </h3>
+
+                      <p className="mt-0.5 text-[12px] text-gray-500">
+                        {card.subText}
+                      </p>
+                    </div>
                   </div>
 
-                  {/* Badge */}
-                  <div className="mb-2 flex items-center justify-between gap-2">
-                    <p className="mb-0! text-[12px] text-[#666] md:text-[13px]">
-                      {" "}
-                      {card.subText}{" "}
-                    </p>
-                    <span
-                      className={`shrink-0 rounded-full px-2 py-1 text-[10px] font-medium ${card.badgeColor}`}
-                    >
-                      {card.badge}
-                    </span>
-                  </div>
-
-                  {/* Value */}
-                  <p className="text-[15px] font-medium break-all text-[#444] md:text-[16px]">
-                    {card.value}
-                  </p>
+                  <span
+                    className={`shrink-0 rounded-full px-2 py-1 text-[10px] font-medium ${card.badgeColor}`}
+                  >
+                    {card.badge}
+                  </span>
                 </div>
-              </Link>
+
+                <p className="mt-3 border-t border-[#edf3f5] pt-2 text-[13px] font-medium text-gray-700">
+                  {card.value}
+                </p>
+              </div>
             );
           })}
         </div>

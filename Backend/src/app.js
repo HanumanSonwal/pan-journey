@@ -12,6 +12,7 @@ import profileRoutes from "./modules/auth/customer-auth/customerProfile/profile.
 import citySearch from "./modules/citysearch/supplierCity.routes.js";
 import cmsRoutes from "./modules/cms/cms.routes.js";
 import contactUs from "./modules/contactUsForm/contact.routes.js";
+import newsletter from "./modules/contactUsForm/newsletter.routes.js";
 import currencyRoutes from "./modules/currencyConverter/currency.route.js";
 import dashboardhotelsearch from "./modules/dashboardHotels/hotel.routes.js";
 import destinationRoutes from "./modules/exploreDesitanation/desitanation.routes.js";
@@ -35,11 +36,9 @@ import support from "./modules/supportContact/support.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
 import wishlistRoutes from "./modules/wishlist/wishlist.routes.js";
 import testRoutes from "./test.routes.js";
-import newsletter from "./modules/contactUsForm/newsletter.routes.js";
-import tax from "./modules/tax/tax.route.js";
-import couponCode from "./modules/promotionEngine/promotion.routes.js";
 
 const app = express();
+app.set("trust proxy", 1);
 app.use((req, res, next) => {
   console.log("📡 REQUEST HIT:", req.method, req.url);
   next();
@@ -52,7 +51,7 @@ app.use(
       "http://localhost:3000",
       "http://localhost:3001",
       "http://main.d1lddnidhuqzni.amplifyapp.com",
-      "https://main.d1lddnidhuqzni.amplifyapp.com",
+      "https://main.d2s4wo3hb5kyyq.amplifyapp.com",
       "https://www.panjourney.com",
       "https://panjourney.com",
     ],
@@ -89,6 +88,7 @@ app.use("/api/v1/customer/profile", profileRoutes);
 app.use("/api/v1/markup", markeupRoutes);
 app.use("/api/v1/currency", currencyRoutes);
 app.use("/api/v1", testRoutes);
+app.use("/api/v1/newsletter", newsletter);
 app.use("/api/v1", invoiceRoutes);
 app.use("/api/v1", destinationRoutes);
 app.use("/api/v1/customer", customerProfileRoutes);

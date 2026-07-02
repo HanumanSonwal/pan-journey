@@ -1,22 +1,12 @@
 "use client";
 
-import {
-  Avatar,
-  Button,
-  Dropdown,
-  Input,
-  Layout,
-  Space,
-  Switch,
-  theme,
-} from "antd";
+import { Avatar, Button, Dropdown, Layout, Space, Switch, theme } from "antd";
 
 import {
   BellOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  SearchOutlined,
   SettingOutlined,
   UserOutlined,
 } from "@ant-design/icons";
@@ -63,10 +53,17 @@ const HeaderBar = ({ collapsed, setCollapsed }) => {
     <Header
       className="px-3 md:px-5 py-2 flex items-center justify-between"
       style={{
-        background: colorBgContainer,
+        height: 70,
+        paddingInline: 24,
+        background: isDark ? "#0F1C20" : "#f8fcfd",
+
+        borderBottom: isDark
+          ? "1px solid rgba(255,255,255,.06)"
+          : "1px solid #d9edf5",
+
         boxShadow: isDark
-          ? "0 2px 6px rgba(0,0,0,0.5)"
-          : "0 2px 6px rgba(0,0,0,0.05)",
+          ? "0 2px 15px rgba(0,0,0,.25)"
+          : "0 2px 15px rgba(15,106,117,.05)",
       }}
     >
       {/* LEFT */}
@@ -86,18 +83,10 @@ const HeaderBar = ({ collapsed, setCollapsed }) => {
         </span>
       </div>
 
-      {/* SEARCH (desktop only) */}
-      <div className="hidden md:block">
-        <Input
-          placeholder="Search..."
-          prefix={<SearchOutlined />}
-          className="w-64 rounded-lg"
-        />
-      </div>
-
       {/* RIGHT */}
-      <div className="flex items-center gap-3 md:gap-6">
+      <div className="flex items-center gap-6! md:gap-6">
         {/* Theme toggle */}
+
         <Switch
           checked={isDark}
           onChange={toggleTheme}
@@ -106,7 +95,22 @@ const HeaderBar = ({ collapsed, setCollapsed }) => {
         />
 
         {/* Notifications */}
-        <BellOutlined className="text-lg cursor-pointer" />
+        <div
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 5,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: isDark ? "rgba(255,255,255,.05)" : "#fff",
+            border: isDark
+              ? "1px solid rgba(255,255,255,.08)"
+              : "1px solid #d9edf5",
+          }}
+        >
+          <BellOutlined />
+        </div>
 
         {/* User Dropdown (Mobile + Desktop) */}
         <Dropdown
@@ -119,8 +123,9 @@ const HeaderBar = ({ collapsed, setCollapsed }) => {
           <Space className="cursor-pointer">
             <Avatar
               style={{
-                background: "linear-gradient(135deg, #FF3B30, #0B5FFF)",
+                background: "linear-gradient(135deg,#72C0F0,#0F6A75)",
               }}
+              size={42}
             >
               {user?.name?.charAt(0)?.toUpperCase() || "U"}
             </Avatar>

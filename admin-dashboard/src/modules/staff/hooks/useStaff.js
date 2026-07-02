@@ -1,9 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import { getStaff } from "@/modules/staff/api/user.service";
+import { getUsers } from "../api/user.service";
 
-export const useStaff = () => {
+export const useStaff = (params) => {
   return useQuery({
-    queryKey: ["staff"],
-    queryFn: getStaff,
+    queryKey: ["staff", params],
+    queryFn: () =>
+      getUsers({
+        type: "staff",
+        ...params,
+      }),
   });
 };

@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuthGuard } from "@/modules/auth/hooks/useAuthGuard";
 import { useHotelBookingStore } from "@/modules/hotel/store/booking.store";
 import { Button } from "antd";
 import { useRouter } from "next/navigation";
@@ -18,7 +19,7 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
   const totalPrice = Number(selectedPlan?.TotalAmount || 0);
   const moreRooms = Math.max(ratePlans?.length - 1, 0);
   const { setBookingData } = useHotelBookingStore();
-
+  const { requireAuth } = useAuthGuard();
   const handleBookNow = () => {
     if (!selectedPlan || !detail) {
       return;
@@ -68,11 +69,10 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
         {/* Badge */}
         <div className="mb-3">
           <span
-            className={`rounded-full px-3 py-[6px] text-[11px] font-medium font-roboto ${
-              refundable
-                ? "bg-green-100 text-green-700"
-                : "bg-red-100 text-red-600"
-            }`}
+            className={`font-roboto rounded-full px-3 py-[6px] text-[11px] font-medium ${refundable
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-600"
+              }`}
           >
             {refundable ? "Free Cancellation" : "Non Refundable"}
           </span>
@@ -80,23 +80,23 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
 
         {/* Room */}
         <div>
-          <h3 className="line-clamp-2 text-[20px] leading-7  text-[#0f172a] font-bold! font-roboto!">
+          <h3 className="font-roboto! line-clamp-2 text-[20px] leading-7 font-bold! text-[#0f172a]">
             {roomName}
           </h3>
 
-          <p className="mb-1! line-clamp-2 text-[14px] font-semibold leading-6 text-gray-500">
+          <p className="mb-1! line-clamp-2 text-[14px] leading-6 font-semibold text-gray-500">
             {roomDesc}
           </p>
         </div>
 
         {/* Inclusion */}
         {!!inclusion && (
-          <div className=" rounded bg-[#f8fafc] px-3">
-            <p className="mb-2 text-[11px] font-bold font-roboto! tracking-wide text-[#0ea5e9] uppercase">
+          <div className="rounded bg-[#f8fafc] px-3">
+            <p className="font-roboto! mb-2 text-[11px] font-bold tracking-wide text-[#0ea5e9] uppercase">
               Included
             </p>
 
-            <ul className=" text-[13px] font-semibold font-roboto! text-green-600">
+            <ul className="font-roboto! text-[13px] font-semibold text-green-600">
               {inclusion
                 ?.split(",")
                 ?.map((i) => i.trim())
@@ -114,11 +114,11 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
 
         {/* Price */}
         <div className="mt-0! rounded border border-gray-100 bg-[#fafafa] px-4">
-          <h4 className=" text-[12px] font-semibold tracking-wide text-gray-500 uppercase font-roboto">
+          <h4 className="font-roboto text-[12px] font-semibold tracking-wide text-gray-500 uppercase">
             Price Details
           </h4>
 
-          <div className="space-y-1 text-sm font-semibold font-roboto">
+          <div className="font-roboto space-y-1 text-sm font-semibold">
             {/* Basic */}
             <div className="flex items-center justify-between">
               <span className="text-gray-500">Basic Price</span>
@@ -138,7 +138,7 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
             </div>
 
             {/* Total */}
-            <div className="border-t border-dashed pt-3! font-roboto">
+            <div className="font-roboto border-t border-dashed pt-3!">
               <div className="flex items-end justify-between">
                 <div>
                   <span className="font-semibold text-[#0f172a]">
@@ -164,7 +164,7 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
         <Button
           type="primary"
           size="large"
-          onClick={handleBookNow}
+          onClick={() => requireAuth(handleBookNow)}
           className="!h-[48px] w-full rounded! bg-[#0f766e]! text-sm font-semibold tracking-wide text-white!"
         >
           Book Now
@@ -173,9 +173,15 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
         <Button
           size="large"
           onClick={handleRoomScroll}
-          className="!h-[48px] flex-1 !rounded"
+          className="flex-1 !h-[50px] sm:!h-[48px] !rounded px-2 sm:px-4 text-[12px] sm:text-[14px] md:text-[16px] whitespace-normal leading-tight"
         >
-          {moreRooms > 0 ? `${moreRooms} More Room Options` : "View Room"}
+          <span className="hidden sm:inline">
+            {moreRooms > 0 ? `${moreRooms} More Room Options` : "View Room"}
+          </span>
+
+          <span className="sm:hidden">
+            {moreRooms > 0 ? `${moreRooms} Rooms` : "View Room"}
+          </span>
         </Button>
       </div>
     </div>

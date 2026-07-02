@@ -1,7 +1,10 @@
 import api from "@/services/api";
 
-export const getStaff = async () => {
-  const res = await api.get("/users");
+export const getUsers = async (params = {}) => {
+  const res = await api.get("/users", {
+    params,
+  });
+
   return res.data;
 };
 
@@ -16,7 +19,7 @@ export const updateStaff = async (id, data) => {
 };
 
 export const updateStaffStatus = async (id, data) => {
-  console.log("DATA api call fucntion:",id, data);
   const res = await api.patch(`/users/${id}/status`, data);
+
   return res.data;
 };

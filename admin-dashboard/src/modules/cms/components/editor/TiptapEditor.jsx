@@ -60,7 +60,7 @@ export default function TiptapEditor({ value, onChange }) {
     <div
       style={{
         border: "1px solid #d9d9d9",
-        borderRadius: 10,
+        borderRadius: 5,
         overflow: "hidden",
         background: colorBgContainer,
         border: `1px solid ${colorBorder}`,

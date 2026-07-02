@@ -12,14 +12,17 @@ export default function VacationSection() {
   const [activeTab, setActiveTab] = useState("beach");
 
   return (
-    <SectionWrapper className="bg-[#edf7ff] mt-[-4px] ">
-      <div className="mt-[-20px] md:mt-[70px] lg:mt-[180px] !xl:mt-[26px] 2xl:mt-[134px] ">
+    <SectionWrapper className="-mt-20 bg-[#edf7ff] md:mt-[-1px] !px-0 sm:!px-0 md:!px-2 lg:!px-3 xl:!px-4 2xl:!px-0">
+      {/* Heading */}
+      <div className="mt-[9px] pt-8 min-[375px]:mt-[40px] min-[425px]:mt-[34px] min-[430px]:mt-[16px] md:mt-[66px] lg:mt-[-39px] xl:mt-[89px] 2xl:mt-[76px]">
         <SectionHeading
           title="Places As Per Your Vibe"
-          description="We're committed to offering more than just products— we provide exceptional experiences."
+          description="We're committed to offering more than just products—we provide exceptional experiences."
         />
       </div>
-      <div className="scrollbar-hide mb-8 flex justify-center overflow-x-auto mt-19">
+
+      {/* Tabs */}
+      <div className="scrollbar-hide mt-2 mb-8 flex justify-center overflow-x-auto px-0 sm:mt-6 md:mt-6 lg:mt-6">
         <ButtonTab
           tabs={tabs}
           activeTab={activeTab}
@@ -27,7 +30,10 @@ export default function VacationSection() {
         />
       </div>
 
-      <HotelType activeTab={activeTab} />
+      {/* Hotels */}
+      <div className="pb-8">
+        <HotelType activeTab={activeTab} />
+      </div>
     </SectionWrapper>
   );
 }

@@ -1,8 +1,8 @@
 "use client";
 
+import { useTheme } from "@/context/ThemeContext";
 import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
 import { Card, Col, Row, Select, Table, theme } from "antd";
-
 import {
   Area,
   AreaChart,
@@ -15,6 +15,7 @@ import {
 } from "recharts";
 
 const DashboardPage = () => {
+  const { isDark, toggleTheme } = useTheme();
   const {
     token: { colorBgContainer, colorText },
   } = theme.useToken();
@@ -105,7 +106,7 @@ const DashboardPage = () => {
             <Card
               variant="borderless"
               style={{
-                borderRadius: 12,
+                borderRadius: 5,
                 background: colorBgContainer,
               }}
             >
@@ -157,18 +158,26 @@ const DashboardPage = () => {
           <Card
             title="User Growth"
             variant="borderless"
-            style={{ borderRadius: 12, background: colorBgContainer }}
+            style={{
+              borderRadius: 5,
+              background: colorBgContainer,
+              boxShadow: isDark
+                ? "0 8px 30px rgba(0,0,0,.25)"
+                : "0 8px 30px rgba(15,106,117,.05)",
+            }}
           >
             <ResponsiveContainer width="100%" height={280}>
               <AreaChart data={growthData}>
                 <XAxis stroke={axisColor} dataKey="name" />
                 <YAxis stroke={axisColor} />
                 <Tooltip />
+
                 <Area
                   type="monotone"
                   dataKey="users"
-                  stroke="#2563eb"
-                  fill="rgba(37,99,235,0.06)"
+                  stroke="#0F6A75"
+                  fill="#72C0F0"
+                  fillOpacity={0.18}
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -179,14 +188,21 @@ const DashboardPage = () => {
           <Card
             title="Bookings"
             variant="borderless"
-            style={{ borderRadius: 12, background: colorBgContainer }}
+            style={{
+              borderRadius: 5,
+              background: colorBgContainer,
+              boxShadow: isDark
+                ? "0 8px 30px rgba(0,0,0,.25)"
+                : "0 8px 30px rgba(15,106,117,.05)",
+            }}
           >
             <ResponsiveContainer width="100%" height={280}>
               <BarChart data={bookingData}>
                 <XAxis stroke={axisColor} dataKey="name" />
                 <YAxis stroke={axisColor} />
                 <Tooltip />
-                <Bar dataKey="bookings" fill="#dc2626" radius={[6, 6, 0, 0]} />
+
+                <Bar dataKey="bookings" fill="#0F6A75" radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </Card>
@@ -199,7 +215,7 @@ const DashboardPage = () => {
           <Card
             title="Top Hotels"
             variant="borderless"
-            style={{ borderRadius: 12, background: colorBgContainer }}
+            style={{ borderRadius: 5, background: colorBgContainer }}
           >
             <Table
               columns={columns}

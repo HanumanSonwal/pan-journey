@@ -2,6 +2,7 @@
 
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
+import { useEffect, useState } from "react";
 const { RangePicker } = DatePicker;
 export default function DateRangeField({
   value,
@@ -13,7 +14,19 @@ export default function DateRangeField({
   const start = value?.[0] || dayjs();
   const end = value?.[1] || dayjs().add(1, "day");
   const nights = start && end ? Math.max(0, end.diff(start, "day")) : 0;
+  const [isMobile, setIsMobile] = useState(false);
 
+  useEffect(() => {
+    const checkScreen = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkScreen();
+
+    window.addEventListener("resize", checkScreen);
+
+    return () => window.removeEventListener("resize", checkScreen);
+  }, []);
   const disabledDate = (current) => {
     return current && current < dayjs().startOf("day");
   };
@@ -35,6 +48,17 @@ export default function DateRangeField({
           root: "premium-hotel-calendar",
         },
       }}
+      renderExtraFooter={() =>
+        isMobile ? (
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-700 text-white! hover:bg-gray-800"
+          >
+            ✕
+          </button>
+        ) : null
+      }
       onChange={(dates) => {
         if (!dates) return;
 

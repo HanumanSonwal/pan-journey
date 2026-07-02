@@ -30,7 +30,7 @@ export const createContact = async (req, res) => {
       "responsePayload.BookingRefNo": payload.BookingRefNo,
 
       // force string compare if stored as string
-      "requestPayload.UserId": req.user._id.toString(),
+      UserId: req.user._id.toString(),
     });
 
     if (!bookingExists) {
@@ -100,7 +100,7 @@ export const updateContactAdmin = async (req, res) => {
     const result = await updateContactServiceAdmin(req.params.id, req.body);
 
     if (result?.email) {
-      await sendMail({
+       sendMail({
         to: result.email,
         subject: "Your Support Request Has Been Received",
         html: contactUsTemplate({

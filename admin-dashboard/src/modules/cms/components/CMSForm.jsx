@@ -1,7 +1,19 @@
 "use client";
 
-import { Button, Card, Col, Form, Input, Row, Select, Switch } from "antd";
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  Input,
+  Row,
+  Select,
+  Space,
+  Switch,
+} from "antd";
 
+import { theme } from "antd";
+import Text from "antd/es/typography/Text";
 import useCMSForm from "../hooks/useCMSForm";
 import CMSBlocksBuilder from "./CMSBlocksBuilder";
 import CMSSeoFields from "./CMSSeoFields";
@@ -16,9 +28,12 @@ export default function CMSForm({ id }) {
     id,
     form,
   });
-  const showCity = entityType === "hotelCity" || entityType === "hotel";
-  const showHotel = entityType === "hotel";
+
   const showEntityId = entityType === "hotelCity" || entityType === "hotel";
+
+  const {
+    token: { colorBgContainer, colorBorderSecondary, colorTextSecondary },
+  } = theme.useToken();
 
   /*
     PREVIEW
@@ -71,87 +86,119 @@ export default function CMSForm({ id }) {
 
         <Col xs={24} lg={16}>
           <Card
+            variant={false}
             style={{
-              borderRadius: 16,
+              borderRadius: 5,
+              background: colorBgContainer,
             }}
           >
-            <Form.Item
-              name="title"
-              label="Page Title"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
+            {/* HEADER */}
+            <div
+              style={{
+                marginBottom: 24,
+                paddingBottom: 16,
+                borderBottom: `1px solid ${colorBorderSecondary}`,
+              }}
             >
-              <Input placeholder="Enter page title" size="large" />
-            </Form.Item>
+              <h2
+                style={{
+                  margin: 0,
+                  fontSize: 20,
+                  fontWeight: 700,
+                }}
+              >
+                Page Information
+              </h2>
 
-            <Form.Item label="Slug">
-              <Input
+              <p
+                style={{
+                  marginTop: 6,
+                  marginBottom: 0,
+                  color: colorTextSecondary,
+                  fontSize: 14,
+                }}
+              >
+                Configure page details and entity mapping for this page.
+              </p>
+            </div>
+
+            <Form.Item
+              name="entityType"
+              label="Entity Type"
+              rules={[{ required: true }]}
+            >
+              <Select
                 size="large"
-                disabled
-                placeholder="Auto generated"
-                value={
-                  form.getFieldValue("slug") ||
-                  title
-                    ?.toLowerCase()
-                    ?.trim()
-                    ?.replace(/[^a-z0-9\s-]/g, "")
-                    ?.replace(/\s+/g, "-") ||
-                  ""
-                }
+                options={[
+                  {
+                    value: "static",
+                    label: "Static Page",
+                  },
+                  {
+                    value: "hotelCity",
+                    label: "City SEO",
+                  },
+                  {
+                    value: "hotel",
+                    label: "Hotel SEO",
+                  },
+                  {
+                    value: "marketing",
+                    label: "Marketing",
+                  },
+                ]}
               />
             </Form.Item>
 
+            <Text type="secondary">
+              Select what kind of page you want to create.
+            </Text>
+
             <Row gutter={16}>
-              <Col xs={24} md={16}>
+              <Col xs={24} md={12}>
                 <Form.Item
-                  name="entityType"
-                  label="Entity Type"
-                  rules={[
-                    {
-                      required: true,
-                    },
-                  ]}
+                  name="title"
+                  label="Page Title"
+                  rules={[{ required: true }]}
                 >
-                  <Select
-                    size="large"
-                    options={[
-                      {
-                        value: "static",
-                        label: "Static Page",
-                      },
-                      {
-                        value: "hotelCity",
-                        label: "City SEO",
-                      },
-                      {
-                        value: "hotel",
-                        label: "Hotel SEO",
-                      },
-                      {
-                        value: "marketing",
-                        label: "Marketing",
-                      },
-                    ]}
-                  />
+                  <Input placeholder="Enter page title" size="large" />
                 </Form.Item>
               </Col>
 
-              <Col xs={24} md={8}>
-                <Form.Item
-                  name="isPublished"
-                  label="Published"
-                  valuePropName="checked"
-                >
-                  <Switch />
+              <Col xs={24} md={12}>
+                <Form.Item label="Slug">
+                  <Input
+                    size="large"
+                    disabled
+                    placeholder="Auto generated"
+                    value={
+                      form.getFieldValue("slug") ||
+                      title
+                        ?.toLowerCase()
+                        ?.trim()
+                        ?.replace(/[^a-z0-9\s-]/g, "")
+                        ?.replace(/\s+/g, "-") ||
+                      ""
+                    }
+                  />
                 </Form.Item>
               </Col>
             </Row>
 
-            {showCity && <CMSCitySelector form={form} />}
-            {showHotel && <CMSHotelSelector form={form} />}
+            {entityType === "hotelCity" && <CMSCitySelector form={form} />}
+
+            {entityType === "hotel" && (
+              <Row gutter={16}>
+                <Col xs={24} md={12}>
+                  <CMSCitySelector form={form} />
+                </Col>
+
+                <Col xs={24} md={12}>
+                  <CMSHotelSelector form={form} />
+                </Col>
+              </Row>
+            )}
+
             {showEntityId && (
               <>
                 <Form.Item name="entityId" hidden>
@@ -185,17 +232,27 @@ export default function CMSForm({ id }) {
           >
             <Card
               title="SEO Settings"
+              variant={false}
               style={{
-                borderRadius: 16,
+                borderRadius: 5,
+                background: colorBgContainer,
+                boxShadow: "0 4px 20px rgba(0,0,0,0.04)",
               }}
             >
               <CMSSeoFields />
 
-              <div
+              <Form.Item
+                name="isPublished"
+                label="Published"
+                valuePropName="checked"
+              >
+                <Switch />
+              </Form.Item>
+
+              <Space
+                orientation="vertical"
                 style={{
-                  display: "flex",
-                  gap: 12,
-                  marginTop: 12,
+                  width: "100%",
                 }}
               >
                 <Button
@@ -214,9 +271,9 @@ export default function CMSForm({ id }) {
                   size="large"
                   loading={isSubmitting}
                 >
-                  {id ? "Update Page" : "Create Page"}
+                  {id ? "Update Page" : "Publish Page"}
                 </Button>
-              </div>
+              </Space>
             </Card>
           </div>
         </Col>

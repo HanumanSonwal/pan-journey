@@ -11,13 +11,9 @@ import { useCMS } from "../hooks/useCMS";
 
 export default function CMSListPage() {
   const [search, setSearch] = useState("");
-
   const [entityType, setEntityType] = useState("all");
-
   const [page, setPage] = useState(1);
-
   const [limit, setLimit] = useState(10);
-
   const [debouncedSearch] = useDebounce(search, 500);
 
   const queryParams = {

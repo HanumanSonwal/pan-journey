@@ -5,19 +5,20 @@ import ContactFormSection from "@/modules/shared/pages/contact-us/contactcontant
 import ContactSection from "@/modules/shared/pages/contact-us/contacthero";
 import ContactMapSection from "@/modules/shared/pages/contact-us/ContactMapSection";
 
-export default async function ContactSectionPages() {
-  const homeCms = await fetchCmsBySlug("home");
 
-  const faqBlock = homeCms?.data?.blocks?.find((block) => block.type === "faq");
+export default async function ContactSectionPages() {
+  const contactUsCms = await fetchCmsBySlug("contact-us");
+
+  const faqBlock = contactUsCms?.data?.blocks?.find((block) => block.type === "faq");
 
   const faqCms = faqBlock
     ? {
-        ...homeCms,
-        data: {
-          ...homeCms.data,
-          blocks: [faqBlock],
-        },
-      }
+      ...contactUsCms,
+      data: {
+        ...contactUsCms.data,
+        blocks: [faqBlock],
+      },
+    }
     : null;
 
   return (
@@ -31,6 +32,8 @@ export default async function ContactSectionPages() {
       <ContactMapSection />
 
       <NewsletterSection />
+
+
     </>
   );
 }
