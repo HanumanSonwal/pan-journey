@@ -136,7 +136,7 @@ export default async function Page() {
         />
       )}
        
-      <div className="pb-20 md:pb-0">
+      
   <Hero />
   <VacationSection />
   <Herobanner />
@@ -149,7 +149,7 @@ export default async function Page() {
   {homeCms && <CMSContentRenderer cms={homeCms} />}
 
   <NewsletterSection />
-</div>
+
       <BottomNav />
     </>
   );
