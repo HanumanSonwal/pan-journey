@@ -150,7 +150,7 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
                   </p>
                 </div>
 
-                <h2 className="text-[30px] leading-none font-bold text-[#0f172a]">
+                <h2 className="text-base sm:text-lg md:text-lg lg:text-xl xl:text-2xl leading-none font-bold text-[#0f172a]">
                   ₹ {Number(totalPrice || 0).toLocaleString("en-IN")}
                 </h2>
               </div>

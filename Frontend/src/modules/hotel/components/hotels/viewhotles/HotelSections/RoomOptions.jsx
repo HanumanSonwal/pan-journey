@@ -212,7 +212,7 @@ const RoomOptions = ({ ratePlans = [], supplierData = {} }) => {
                         </p>
                       </div>
 
-                      <span className="text-base sm:text-lg lg:text-2xl leading-none font-bold text-[#0f172a]">
+                      <span className="text-lg sm:text-lg lg:text-2xl leading-none font-bold text-[#0f172a]">
                         ₹ {Number(totalAmount || 0).toLocaleString("en-IN")}
                       </span>
                     </div>
