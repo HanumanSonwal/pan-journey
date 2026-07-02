@@ -10,7 +10,7 @@ const tabs = [
   "Location",
   "About Hotel",
 ];
-const footer = document.getElementById("site-footer");
+
 const sectionIds = {
   Rooms: "rooms-section",
   Amenities: "amenities-section",
@@ -23,72 +23,70 @@ const sectionIds = {
 const HotelSectionsTabs = ({ activeTab = "Rooms", setActiveTab }) => {
   const [currentTab, setCurrentTab] = useState(activeTab);
 
-  const ref = useRef(null);
-  const [isFixed, setIsFixed] = useState(false);
-  const [height, setHeight] = useState(0);
-  const [offsetTop, setOffsetTop] = useState(0);
+const ref = useRef(null);
+const footerRef = useRef(null);
+const ignoreScroll = useRef(false);
 
-  const ignoreScroll = useRef(false);
+const [isFixed, setIsFixed] = useState(false);
+const [height, setHeight] = useState(0);
+const [offsetTop, setOffsetTop] = useState(0);
 
   // measure position
   useEffect(() => {
-    const update = () => {
-      if (ref.current) {
-        setHeight(ref.current.offsetHeight);
-        setOffsetTop(ref.current.offsetTop);
-      }
-    };
+  const update = () => {
+    if (ref.current) {
+      setHeight(ref.current.offsetHeight);
 
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, []);
+      const rect = ref.current.getBoundingClientRect();
+
+      setOffsetTop(rect.top + window.scrollY);
+    }
+
+    footerRef.current = document.getElementById("site-footer");
+  };
+
+  update();
+
+  window.addEventListener("resize", update);
+
+  return () => window.removeEventListener("resize", update);
+}, []);
 
   // sticky logic
   useEffect(() => {
-    { }
+  const handleScroll = () => {
+    if (!ref.current) return;
 
-    const handleScroll = () => {
-      { }
+    const footer = footerRef.current;
 
-const footer = document.getElementById("site-footer");
+    let shouldStick = window.scrollY >= offsetTop;
 
-      if (!footer) return;
-
+    if (footer) {
       const footerTop = footer.getBoundingClientRect().top;
 
-      const stickyHeight = height || 70;
+      const stickyHeight = ref.current.offsetHeight;
 
-      const stopBeforeFooter = stickyHeight + 20;
+      const headerOffset =
+        window.innerWidth >= 768 ? 100 : 55;
 
-      const shouldStick =
+      if (footerTop <= stickyHeight + headerOffset) {
+        shouldStick = false;
+      }
+    }
 
-        window.scrollY >= offsetTop &&
+    setIsFixed(shouldStick);
+  };
 
-        footerTop > stopBeforeFooter;
+  handleScroll();
 
-      setIsFixed(shouldStick);
+  window.addEventListener("scroll", handleScroll);
+  window.addEventListener("resize", handleScroll);
 
-    };
-
-    handleScroll();
-
-    window.addEventListener("scroll", handleScroll);
-
-    window.addEventListener("resize", handleScroll);
-
-    return () => {
-      { }
-
-      window.removeEventListener("scroll", handleScroll);
-
-      window.removeEventListener("resize", handleScroll);
-
-    };
-
-    { }
-  }, [offsetTop, height]);
-
+  return () => {
+    window.removeEventListener("scroll", handleScroll);
+    window.removeEventListener("resize", handleScroll);
+  };
+}, [offsetTop]);
   // scroll spy
   useEffect(() => {
     const handleScrollSpy = () => {
