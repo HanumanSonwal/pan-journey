@@ -12,7 +12,18 @@ export default function WishlistTab() {
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const { data, isLoading } = useWishlist();
-  const destinations = data?.data || [];
+ const destinations = Array.from(
+  new Map(
+    (data?.data || []).map((item) => [item.cityId, item])
+  ).values()
+);
+  console.table(
+  destinations.map((item) => ({
+    cityId: item.cityId,
+    cityName: item.cityName,
+    hotelCount: item.hotelCount,
+  }))
+);
 
   useEffect(() => {
     setMounted(true);

@@ -10,7 +10,7 @@ const tabs = [
   "Location",
   "About Hotel",
 ];
-
+const footer = document.getElementById("site-footer");
 const sectionIds = {
   Rooms: "rooms-section",
   Amenities: "amenities-section",
@@ -46,17 +46,48 @@ const HotelSectionsTabs = ({ activeTab = "Rooms", setActiveTab }) => {
 
   // sticky logic
   useEffect(() => {
+    { }
+
     const handleScroll = () => {
-      if (window.scrollY >= offsetTop) {
-        setIsFixed(true);
-      } else {
-        setIsFixed(false);
-      }
+      { }
+
+const footer = document.getElementById("site-footer");
+
+      if (!footer) return;
+
+      const footerTop = footer.getBoundingClientRect().top;
+
+      const stickyHeight = height || 70;
+
+      const stopBeforeFooter = stickyHeight + 20;
+
+      const shouldStick =
+
+        window.scrollY >= offsetTop &&
+
+        footerTop > stopBeforeFooter;
+
+      setIsFixed(shouldStick);
+
     };
 
+    handleScroll();
+
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [offsetTop]);
+
+    window.addEventListener("resize", handleScroll);
+
+    return () => {
+      { }
+
+      window.removeEventListener("scroll", handleScroll);
+
+      window.removeEventListener("resize", handleScroll);
+
+    };
+
+    { }
+  }, [offsetTop, height]);
 
   // scroll spy
   useEffect(() => {
