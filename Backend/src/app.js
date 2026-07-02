@@ -38,8 +38,6 @@ import tax from "./modules/tax/tax.route.js";
 import userRoutes from "./modules/user/user.routes.js";
 import wishlistRoutes from "./modules/wishlist/wishlist.routes.js";
 import testRoutes from "./test.routes.js";
-import couponCode from "./modules/promotionEngine/promotion.routes.js";
-import tax from "./modules/tax/tax.route.js";
  
 
 const app = express();

@@ -330,6 +330,9 @@ export default function CouponTable({
     },
   ];
 
+  console.log("Coupons:", coupons);
+  console.log("Is Array:", Array.isArray(coupons));
+
   return (
     <Table
       rowKey="_id"

@@ -83,6 +83,8 @@ export default function CouponCodesPage() {
     deleteCoupon,
   } = useCouponCodes(queryParams);
 
+  console.log("React Query Data in pages =>", coupons);
+
   // ================= EDIT =================
 
   const handleEdit = (record) => {

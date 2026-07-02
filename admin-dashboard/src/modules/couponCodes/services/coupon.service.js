@@ -18,9 +18,11 @@ export const getCouponsApi = async (params = {}) => {
     skipToast: true,
   });
 
+  console.log("API Response =>", res.data);
+
   return {
-    coupons: res?.data?.data || [],
-    meta: res?.data?.meta || {},
+    coupons: res.data.data.coupons,
+    meta: res.data.data.pagination,
   };
 };
 

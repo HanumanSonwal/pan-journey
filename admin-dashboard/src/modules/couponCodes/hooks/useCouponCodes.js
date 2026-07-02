@@ -19,6 +19,8 @@ export const useCouponCodes = (params = {}) => {
     keepPreviousData: true,
   });
 
+  console.log("React Query Data =>", data);
+
   // ================= CREATE =================
 
   const createCoupon = useMutation({
