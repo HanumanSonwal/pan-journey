@@ -16,5 +16,6 @@ router.post("/create-coupon", protect, createCouponController);
 router.get("/get-all-coupons", protect,getAllCouponsController);
 router.get("/get-single-coupon/:id", protect,getSingleCouponController);
 router.put("/update-coupon/:id", protect ,updateCouponAdminController);
-
+// router.patch("/statusUpdate/:id", protect, updateCouponAdminController);
+// router.delete("/delete-coupon/:id", protect);
 export default router;

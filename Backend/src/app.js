@@ -29,12 +29,13 @@ import mediaRoutes from "./modules/media/media.routes.js";
 import countryRoutes from "./modules/priceMarkup/countryData/country.routes.js";
 import markeupRoutes from "./modules/priceMarkup/markup/markup.routes.js";
 import stateRoutes from "./modules/priceMarkup/stateData/state.routes.js";
+import couponCode from "./modules/promotionEngine/promotion.routes.js";
 import roleRoutes from "./modules/role/role.routes.js";
 import support from "./modules/supportContact/support.routes.js";
+import tax from "./modules/tax/tax.route.js";
 import userRoutes from "./modules/user/user.routes.js";
 import wishlistRoutes from "./modules/wishlist/wishlist.routes.js";
 import testRoutes from "./test.routes.js";
-import tax from "./modules/tax/tax.route.js";
 
 const app = express();
 app.set("trust proxy", 1);
@@ -68,6 +69,7 @@ app.use("/api/v1", contactUs);
 app.use("/api/v1", support);
 app.use("/api/v1", grievanceRedressal);
 app.use("/api/v1/tax", tax);
+app.use("/api/v1/couponCode", couponCode);
 
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/seo-content", seoContentRoutes);

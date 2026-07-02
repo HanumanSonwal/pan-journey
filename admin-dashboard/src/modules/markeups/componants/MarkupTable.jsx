@@ -2,12 +2,15 @@
 
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import {
+  Avatar,
   Button,
   Empty,
+  Flex,
   Popconfirm,
   Switch,
   Table,
   Tag,
+  theme,
   Tooltip,
   Typography,
 } from "antd";
@@ -160,6 +163,7 @@ export default function MarkupTable({
       </div>
     );
   };
+  const { token } = theme.useToken();
 
   // ================= COLUMNS =================
 
@@ -169,75 +173,109 @@ export default function MarkupTable({
     {
       title: "Country",
       dataIndex: "countryName",
-      width: 220,
+      width: 240,
 
       render: (_, record) => (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-          }}
-        >
-          <Text strong>{record?.countryName}</Text>
-
-          <Text
-            type="secondary"
+        <Flex align="center" gap={12}>
+          <Avatar
+            shape="square"
+            size={42}
             style={{
-              fontSize: 12,
+              background: token.colorPrimaryBg,
+              color: token.colorPrimary,
+              fontWeight: 600,
             }}
           >
-            {record?.countryCode}
-          </Text>
-        </div>
+            🌍
+          </Avatar>
+
+          <div>
+            <Typography.Text strong>{record.countryName}</Typography.Text>
+
+            <br />
+
+            <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+              {record.countryCode}
+            </Typography.Text>
+          </div>
+        </Flex>
       ),
     },
 
     // ================= RULE TYPE =================
 
     {
-      title: "Rule Type",
+      title: "Rule",
       dataIndex: "ruleType",
-      width: 120,
+      width: 140,
       align: "center",
 
       render: (value) => (
-        <Tag color={value === "slab" ? "blue" : "green"}>
-          {value === "slab" ? "Slab" : "Flat"}
+        <Tag
+          variant={false}
+          color={value === "slab" ? "processing" : "success"}
+          style={{
+            borderRadius: 999,
+            paddingInline: 12,
+            fontWeight: 600,
+          }}
+        >
+          {value === "slab" ? "SLAB" : "FLAT"}
         </Tag>
       ),
     },
     {
       title: "Tax Details",
-      width: 320,
+      width: 380,
 
       render: (_, record) => {
+        const value =
+          record.taxType === "percentage"
+            ? `${record.taxValue}%`
+            : `₹${record.taxValue}`;
+
         // ================= FLAT =================
 
-        if (record?.ruleType === "flat") {
+        if (record.ruleType === "flat") {
           return (
             <div
               style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 2,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 12,
+                padding: "10px 14px",
+                borderRadius: 12,
+                background: token.colorFillAlter,
+                border: `1px solid ${token.colorBorderSecondary}`,
               }}
             >
-              <Text strong>
-                {record?.taxType === "percentage"
-                  ? `${record?.taxValue}%`
-                  : `₹${record?.taxValue}`}
-              </Text>
-
-              <Text
-                type="secondary"
+              <div
                 style={{
-                  fontSize: 12,
-                  textTransform: "capitalize",
+                  width: 38,
+                  height: 38,
+                  borderRadius: "50%",
+                  background: token.colorPrimaryBg,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontWeight: 700,
+                  color: token.colorPrimary,
                 }}
               >
-                {record?.taxType}
-              </Text>
+                ₹
+              </div>
+
+              <div>
+                <Typography.Text strong style={{ fontSize: 16 }}>
+                  {value}
+                </Typography.Text>
+
+                <br />
+
+                <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+                  Flat {record.taxType}
+                </Typography.Text>
+              </div>
             </div>
           );
         }
@@ -249,23 +287,49 @@ export default function MarkupTable({
             style={{
               display: "flex",
               flexDirection: "column",
-              gap: 6,
+              gap: 8,
+              width: "100%",
             }}
           >
-            {record?.slabs?.map((slab, index) => (
-              <Tag
+            {record.slabs?.map((slab, index) => (
+              <div
                 key={index}
-                color="processing"
                 style={{
-                  width: "fit-content",
-                  margin: 0,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  padding: "10px 14px",
+                  borderRadius: 10,
+                  background: token.colorFillAlter,
+                  border: `1px solid ${token.colorBorderSecondary}`,
                 }}
               >
-                ₹{slab?.minAmount} →{" "}
-                {record?.taxType === "percentage"
-                  ? `${slab?.taxValue}%`
-                  : `₹${slab?.taxValue}`}
-              </Tag>
+                <div>
+                  <Typography.Text strong>
+                    From ₹{slab.minAmount}
+                  </Typography.Text>
+
+                  <br />
+
+                  <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+                    Booking Amount
+                  </Typography.Text>
+                </div>
+
+                <Tag
+                  color="processing"
+                  variant={false}
+                  style={{
+                    fontWeight: 600,
+                    paddingInline: 12,
+                    borderRadius: 999,
+                  }}
+                >
+                  {record.taxType === "percentage"
+                    ? `${slab.taxValue}%`
+                    : `₹${slab.taxValue}`}
+                </Tag>
+              </div>
             ))}
           </div>
         );
@@ -274,55 +338,44 @@ export default function MarkupTable({
     {
       title: "Actions",
       width: 180,
-
       render: (_, record) => (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          {/* EDIT */}
-
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          {" "}
+          {/* EDIT */}{" "}
           <Tooltip title="Edit">
+            {" "}
             <Button
               icon={<EditOutlined />}
               onClick={() => {
                 console.log(record, "record edit");
                 handleEdit(record, true);
               }}
-            />
-          </Tooltip>
-
-          {/* DELETE */}
-
+            />{" "}
+          </Tooltip>{" "}
+          {/* DELETE */}{" "}
           <Popconfirm
             title="Delete Tax Rule?"
             description="This action cannot be undone."
             onConfirm={() => deleteTax.mutate(record._id)}
           >
+            {" "}
             <Button
               danger
               icon={<DeleteOutlined />}
               loading={deleteTax.isPending}
-            />
-          </Popconfirm>
-
-          {/* STATUS */}
-
+            />{" "}
+          </Popconfirm>{" "}
+          {/* STATUS */}{" "}
           <Switch
             checked={record?.isActive}
             loading={updateTaxStatus.isPending}
             onChange={(checked) =>
               updateTaxStatus.mutate({
                 id: record._id,
-                data: {
-                  isActive: checked,
-                },
+                data: { isActive: checked },
               })
             }
-          />
+          />{" "}
         </div>
       ),
     },
