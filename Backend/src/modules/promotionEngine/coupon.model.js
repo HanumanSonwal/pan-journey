@@ -26,6 +26,7 @@ const couponSchema =
             "wallet",
             "holiday",
           ],
+         
         },
       ],
 
@@ -33,7 +34,8 @@ const couponSchema =
         type: String,
         enum: [
           "flat",
-          "percent",
+          "percent"
+,
         ],
         required: true,
       },

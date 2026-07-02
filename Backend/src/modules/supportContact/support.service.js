@@ -1,6 +1,5 @@
 import Support from "./support.model.js";
 
-
 // CREATE
 export const createSupportService = async (payload) => {
   const existingSupport = await Support.findOne({
@@ -55,18 +54,6 @@ export const getAllSupportService = async () => {
   return await Support.find().sort({ createdAt: -1 });
 };
 
-
-// GET SINGLE
-// export const getSingleSupportService = async (id) => {
-//   const support = await Support.findById(id);
-
-//   if (!support) {
-//     throw new Error("Support not found");
-//   }
-
-//   return support;
-// };
-
 export const getSingleSupportService = async (supportType) => {
   const support = await Support.findOne({
     supportType: supportType,
@@ -78,25 +65,6 @@ export const getSingleSupportService = async (supportType) => {
 
   return support;
 };
-
-// UPDATE
-// export const updateSupportService = async (id, payload) => {
-//   const support = await Support.findByIdAndUpdate(
-//     id,
-//     payload,
-//     {
-//       new: true,
-//       runValidators: true,
-//     }
-//   );
-
-//   if (!support) {
-//     throw new Error("Support not found");
-//   }
-
-//   return support;
-// };
-
 
 // DELETE
 export const deleteSupportService = async (id) => {

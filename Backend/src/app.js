@@ -2,6 +2,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
 //import "./cron/hotelCache.cron.js";
+import { currencyMiddleware } from "./middleware/currency.middleware.js";
 import { errorHandler } from "./middleware/error.middleware.js";
 import addBalanceRoute from "./modules/addPayment/addPaymentRoutes.js";
 import authRoutes from "./modules/auth/admin-auth/auth.routes.js";
@@ -10,9 +11,11 @@ import customerProfileRoutes from "./modules/auth/customer-auth/customer-documen
 import profileRoutes from "./modules/auth/customer-auth/customerProfile/profile.routes.js";
 import citySearch from "./modules/citysearch/supplierCity.routes.js";
 import cmsRoutes from "./modules/cms/cms.routes.js";
+import contactUs from "./modules/contactUsForm/contact.routes.js";
 import currencyRoutes from "./modules/currencyConverter/currency.route.js";
 import dashboardhotelsearch from "./modules/dashboardHotels/hotel.routes.js";
 import destinationRoutes from "./modules/exploreDesitanation/desitanation.routes.js";
+import grievanceRedressal from "./modules/grievanceRedressal/grievanceRedressal.routes.js";
 import hotelSearch from "./modules/hotel/hotel.route.js";
 import hotelCancellation from "./modules/hotel/hotelCancellation/cancellation.route.js";
 import hotelDetails from "./modules/hotel/hotelDetails/hotel.routes.js";
@@ -20,20 +23,21 @@ import hotelRequery from "./modules/hotel/hotelRequery/requery.route.js";
 import tempbookingRoutes from "./modules/hotel/hotelTempBooking/hoteltempbookingroutes.js";
 import hotelTicketing from "./modules/hotel/hotelTicketing/hotelTicketing.route.js";
 import invoiceRoutes from "./modules/hotel/invoice/invoice.route.js";
-import seoContentRoutes from "./modules/hotel/seo/hotelcityseo/seoContent.routes.js";
+
 import mediaRoutes from "./modules/media/media.routes.js";
+import paymentRoutes from "./modules/payments/routes/payment.routes.js";
+import webhookRoutes from "./modules/payments/routes/webhook.routes.js";
 import countryRoutes from "./modules/priceMarkup/countryData/country.routes.js";
 import markeupRoutes from "./modules/priceMarkup/markup/markup.routes.js";
 import stateRoutes from "./modules/priceMarkup/stateData/state.routes.js";
 import roleRoutes from "./modules/role/role.routes.js";
+import support from "./modules/supportContact/support.routes.js";
 import userRoutes from "./modules/user/user.routes.js";
 import wishlistRoutes from "./modules/wishlist/wishlist.routes.js";
 import testRoutes from "./test.routes.js";
-import {currencyMiddleware} from "./middleware/currency.middleware.js"
-import contactUs from "./modules/contactUsForm/contact.routes.js"
-import support from "./modules/supportContact/support.routes.js"
-
-import grievanceRedressal from "./modules/grievanceRedressal/grievanceRedressal.routes.js"
+import newsletter from "./modules/contactUsForm/newsletter.routes.js";
+import tax from "./modules/tax/tax.route.js";
+import couponCode from "./modules/promotionEngine/promotion.routes.js";
 
 const app = express();
 app.use((req, res, next) => {
@@ -65,12 +69,16 @@ app.use("/api/v1/media", mediaRoutes);
 app.use("/api/v1", contactUs);
 app.use("/api/v1", support);
 app.use("/api/v1", grievanceRedressal);
-
+app.use("/api/v1/payment", paymentRoutes);
+app.use("/api/v1/newsletter",newsletter);
+app.use("/api/v1/tax",tax);
+app.use("/api/v1/couponCode",couponCode);
 app.use("/api/v1/users", userRoutes);
-app.use("/api/v1/seo-content", seoContentRoutes);
+
 app.use("/api/v1/cms", cmsRoutes);
 app.use("/api/v1/roles", roleRoutes);
 app.use("/api/v1/Seacrhcity", citySearch);
+app.use("/api/webhooks", webhookRoutes);
 app.use("/api/v1/Hotels", hotelSearch);
 app.use("/api/v1", tempbookingRoutes);
 app.use("/api/v1", hotelRequery);

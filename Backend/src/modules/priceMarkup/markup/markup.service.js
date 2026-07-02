@@ -1,98 +1,55 @@
 import Markup from "./markup.model.js";
 
-// export const getMarkup = async ({
-//   hotelId,
-//   cityName,
-//   stateName,
-//   countryCode,
-// }) => {
-//   // 1️⃣ HOTEL LEVEL
-//   let markup = await Markup.findOne({
-//     level: "hotel",
-//     hotelId,
-//     isActive: true,
-//   });
-//   if (markup) return markup;
+ export const extractNormalizedCity = (input) => {
+  if (!input) return null;
 
-//   // 2️⃣ CITY LEVEL
-//   markup = await Markup.findOne({
-//     level: "city",
-//     cityName,
-//     stateName,
-//     countryCode,
-//     isActive: true,
-//   });
-//   if (markup) return markup;
+  const parts = input.split(",").map((item) => item.trim());
 
-//   // 3️⃣ STATE LEVEL
-//   markup = await Markup.findOne({
-//     level: "state",
-//     stateName,
-//     countryCode,
-//     isActive: true,
-//   });
-//   if (markup) return markup;
+  if (parts.length >= 3) {
+    return parts.slice(-3).join(", ");
+  }
 
-//   // 4️⃣ COUNTRY LEVEL
-//   markup = await Markup.findOne({
-//     level: "country",
-//     countryCode,
-//     isActive: true,
-//   });
-//   if (markup) return markup;
-
-//   // 5️⃣ WORLDWIDE
-//   markup = await Markup.findOne({
-//     level: "worldwide",
-//     isActive: true,
-//   });
-//   const serviceTax = await getServiceTax();
-
-//   return {
-//     markup,
-//     serviceTax,
-//   };
-// };
-
-export const getServiceTax = async () => {
-  return await Markup.findOne({
-    level: "serviceTax",
-    isActive: true,
-  });
+  return input.trim();
 };
 
+
+
 export const getMarkup = async ({
-  
   hotelId,
   cityName,
   stateName,
   countryCode,
 }) => {
+
+  // 1 hotel
   let markup = await Markup.findOne({
     level: "hotel",
     hotelId,
     isActive: true,
   });
+console.log("incoming hotel =", hotelId);
+  // 2 city
+  const normalizedCity = extractNormalizedCity(cityName);
 
   if (!markup) {
     markup = await Markup.findOne({
       level: "city",
-      cityName,
-      stateName,
-      countryCode,
+      cityName: normalizedCity,
       isActive: true,
     });
   }
 
+console.log("incoming cityName =", cityName);
+  // 3 state
   if (!markup) {
     markup = await Markup.findOne({
       level: "state",
       stateName,
-      countryCode,
       isActive: true,
     });
   }
 
+  // 4 country
   if (!markup) {
     markup = await Markup.findOne({
       level: "country",
@@ -100,7 +57,9 @@ export const getMarkup = async ({
       isActive: true,
     });
   }
+  console.log("incoming countryName =", countryCode);
 
+  // 5 worldwide
   if (!markup) {
     markup = await Markup.findOne({
       level: "worldwide",
@@ -108,10 +67,10 @@ export const getMarkup = async ({
     });
   }
 
-  const serviceTax = await getServiceTax();
+  const serviceTax = await Markup.findOne({
+    level: "serviceTax",
+    isActive: true,
+  });
 
-  return {
-    markup,
-    serviceTax,
-  };
+  return  markup ;
 };

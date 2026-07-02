@@ -1,98 +1,154 @@
+// hotelPricing.service.js
 
+import { getCurrencyRate } from "../../currencyConverter/currency.service.js";
+import Markup from "../../priceMarkup/markup/markup.model.js";
+import { extractNormalizedCity } from "../../priceMarkup/markup/markup.service.js";
+import { applyHotelPricing } from "../../priceMarkup/markup/pricing.service.js";
+import getCountryTaxRule from "../../tax/countryTax.service.js";
 
-// // hotelPricing.service.js
+const resolveMarkup = ({
+  hotelId,
+  cityName,
+  stateName,
+  countryCode,
+  allMarkups,
+}) => {
+  const hotelMarkups = allMarkups.filter((m) => m.level === "hotel");
+  const cityMarkups = allMarkups.filter((m) => m.level === "city");
+  const stateMarkups = allMarkups.filter((m) => m.level === "state");
+  const countryMarkups = allMarkups.filter((m) => m.level === "country");
+  const worldwideMarkup = allMarkups.find((m) => m.level === "worldwide");
 
-import { getMarkup, getServiceTax } from "../../priceMarkup/markup/markup.service.js";
+  // hotel
+  const hotelMarkup = hotelMarkups.find(
+    (m) => String(m.hotelId) === String(hotelId),
+  );
+  if (hotelMarkup) return hotelMarkup;
+  console.log("hotelmarkup =", hotelMarkup);
+  // city
+  const normalizedCity = extractNormalizedCity(cityName);
 
-export const applyPricing = async (supplierData, hotelMeta) => {
+  const cityMarkup = cityMarkups.find(
+    (m) =>
+      m.cityName?.trim().toLowerCase() === normalizedCity?.trim().toLowerCase(),
+  );
+
+  if (cityMarkup) return cityMarkup;
+
+  console.log("incoming city =", normalizedCity);
+  console.log(
+    "db cities =",
+    cityMarkups.map((m) => m.cityName),
+  );
+  console.log("matched cityMarkup =", cityMarkup);
+ 
+  // state
+  const stateMarkup = stateMarkups.find(
+    (m) =>
+      m.stateName?.trim().toLowerCase() === stateName?.trim().toLowerCase(),
+  );
+  if (stateMarkup) return stateMarkup;
+
+  // country
+  const countryMarkup = countryMarkups.find(
+    (m) => m.countryCode?.toUpperCase() === countryCode?.toUpperCase(),
+  );
+  if (countryMarkup) return countryMarkup;
+
+  if (worldwideMarkup) return worldwideMarkup;
+
+  return null;
+};
+
+export const applyPricing = async (
+  supplierData,
+  hotelMeta,
+  currency = "INR",
+) => {
   try {
+    const hotelId = supplierData.hotelId;
+    const { cityName, stateName, countryCode } = hotelMeta;
+    console.log("hotelMeta =>", hotelMeta);
+    console.log("hotelId after destructure =>", hotelId);
+    console.log("supplierData.hotelId =>", supplierData.hotelId);
 
-    const { hotelId, cityName, stateName, countryCode } = hotelMeta;
+    const allMarkups = await Markup.find({
+      isActive: true,
+    }).lean();
 
-    const markupDoc = await getMarkup({
+  
+
+    const additionalTax = allMarkups.find((m) => m.level === "additional_tax");
+    const conversionRate = await getCurrencyRate({
+      from: "INR",
+      to: currency || "INR",
+    });
+    const matchedMarkup = resolveMarkup({
       hotelId,
       cityName,
       stateName,
       countryCode,
+      allMarkups,
     });
 
-    const serviceTaxDoc = await getServiceTax();
+    const countryTax = await getCountryTaxRule({
+      countryCode,
+    });
 
-    const markupValue = markupDoc?.markupValue || 0;
-    const markupType = markupDoc?.markupType || "flat";
+    const rate = await getCurrencyRate({
+      from: "INR",
+      to: currency,
+    });
 
-    const serviceTax = serviceTaxDoc?.markupValue || 0;
-
-    const applyAmountMarkup = (amount) => {
-
-      amount = Number(amount || 0);
-
-      let updated = amount;
-
-      // ✅ Markup
-      if (markupType === "percentage") {
-
-        updated += (amount * markupValue) / 100;
-
-      } else {
-
-        updated += markupValue;
-      }
-
-      // ✅ Service Tax
-      updated += (updated * serviceTax) / 100;
-
-      return Number(updated.toFixed(2));
-    };
-
-    // ✅ MAIN FIX
+    console.log("Currency Rate =", rate);
     supplierData?.supplierResponse?.RatePlanRecommendations?.forEach(
       (recommendation) => {
+        // STEP 1 → currency conversion main amount
+        const convertedMainAmount = Number(
+          (recommendation.TotalAmount * conversionRate).toFixed(2),
+        );
 
-        // Original store
-        recommendation.OriginalBasicAmount =
-          recommendation.BasicAmount;
-
-        recommendation.OriginalTotalAmount =
-          recommendation.TotalAmount;
-
-        // Updated prices
-        recommendation.BasicAmount =
-          applyAmountMarkup(recommendation.BasicAmount);
-
-        recommendation.TotalAmount =
-          applyAmountMarkup(recommendation.TotalAmount);
-
-        // Nested Rate Plans
-        recommendation?.RatePlanDetails?.forEach((rate) => {
-
-          rate.OriginalBasicAmount = rate.BasicAmount;
-
-          rate.OriginalTotalAmount = rate.TotalAmount;
-
-          rate.BasicAmount =
-            applyAmountMarkup(rate.BasicAmount);
-
-          rate.TotalAmount =
-            applyAmountMarkup(rate.TotalAmount);
+        // STEP 2 → pricing after conversion
+        const pricedMain = applyHotelPricing({
+          hotel: {
+            price: convertedMainAmount,
+          },
+          markup: matchedMarkup,
+         
+          additionalTax,
+          countryTax,
         });
-      }
+
+        recommendation.OriginalTotalAmount = recommendation.TotalAmount;
+
+        recommendation.TotalAmount = pricedMain.price;
+
+        // STEP 3 → nested rate plans
+        recommendation?.RatePlanDetails?.forEach((plan) => {
+          const convertedPlanAmount = Number(
+            (plan.TotalAmount * conversionRate).toFixed(2),
+          );
+
+          const pricedRate = applyHotelPricing({
+            hotel: {
+              price: convertedPlanAmount,
+            },
+            markup: matchedMarkup,
+            additionalTax,
+            countryTax,
+          });
+
+          plan.OriginalTotalAmount = plan.TotalAmount;
+
+          plan.TotalAmount = pricedRate.price;
+          
+        });
+      },
     );
 
-    return {
-      ...supplierData,
-
-      pricingSummary: {
-        markupApplied: markupValue,
-        markupType,
-        serviceTaxApplied: serviceTax,
-      },
-    };
-
+    return supplierData;
   } catch (err) {
-
     console.log(err);
-
-    return null;
+    throw err;
   }
 };

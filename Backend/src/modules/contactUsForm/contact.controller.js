@@ -1,24 +1,17 @@
 import {
   createContactService,
+  deleteContactService,
+  getAllContactsAdminService,
   getAllContactsService,
   getSingleContactService,
   updateContactService,
-  deleteContactService,getAllContactsAdminService,updateContactServiceAdmin
+  updateContactServiceAdmin,
 } from "./contact.service.js";
 
-import {
-  sendSuccess,
-  sendError,
-} from "../../utils/response/ApiResponse.js";
-import User from "../user/user.model.js";
+import { sendError, sendSuccess } from "../../utils/response/ApiResponse.js";
 import { sendMail } from "../contactUsForm/mail.service.js";
-import { contactUsTemplate } from "./contactUsTemplate.js";
 import HotelBooking from "../hotel/hotelTempBooking/hotelTempBooking.model.js";
-import Contact from "./contact.model.js";
-
-
-
-
+import { contactUsTemplate } from "./contactUsTemplate.js";
 
 export const createContact = async (req, res) => {
   try {
@@ -27,13 +20,10 @@ export const createContact = async (req, res) => {
       UserId: req.user._id,
     };
 
-
     // first check only booking ref
     const bookingByRef = await HotelBooking.findOne({
       "responsePayload.BookingRefNo": payload.BookingRefNo,
     });
-
-   
 
     // then strict check with user
     const bookingExists = await HotelBooking.findOne({
@@ -43,25 +33,13 @@ export const createContact = async (req, res) => {
       "requestPayload.UserId": req.user._id.toString(),
     });
 
-   
     if (!bookingExists) {
-     
-
-      return sendError(
-        res,
-        "Invalid Booking Reference Number",
-        400
-      );
+      return sendError(res, "Invalid Booking Reference Number", 400);
     }
-
 
     const result = await createContactService(payload);
 
-  
-
     if (result?.email) {
-   
-
       await sendMail({
         to: result.email,
         subject: "Your Support Request Has Been Received",
@@ -71,23 +49,13 @@ export const createContact = async (req, res) => {
           subject: result.subject,
           supportCategory: result.supportCategory,
           status: result.status,
-          BookingRefNo:result.BookingRefNo
+          BookingRefNo: result.BookingRefNo,
         }),
       });
-
-    
     }
 
-    return sendSuccess(
-      res,
-      "Contact created successfully",
-      result,
-      null,
-      201
-    );
-
+    return sendSuccess(res, "Contact created successfully", result, null, 201);
   } catch (error) {
-
     return sendError(res, error.message, 500);
   }
 };
@@ -100,26 +68,17 @@ export const getAllContacts = async (req, res) => {
       UserId: req.user._id,
     });
 
-    return sendSuccess(
-      res,
-      "Contacts fetched successfully",
-      result
-    );
+    return sendSuccess(res, "Contacts fetched successfully", result);
   } catch (error) {
     return sendError(res, error.message, 500);
   }
 };
 
-
 export const getAllContactsAdmin = async (req, res) => {
   try {
     const result = await getAllContactsAdminService(req.query);
 
-    return sendSuccess(
-      res,
-      "Contacts fetched successfully",
-      result
-    );
+    return sendSuccess(res, "Contacts fetched successfully", result);
   } catch (error) {
     return sendError(res, error.message, 500);
   }
@@ -128,16 +87,9 @@ export const getAllContactsAdmin = async (req, res) => {
 // GET SINGLE CONTACT
 export const getSingleContact = async (req, res) => {
   try {
-    const result = await getSingleContactService(
-      req.params.id,
-      req.user._id
-    );
+    const result = await getSingleContactService(req.params.id, req.user._id);
 
-    return sendSuccess(
-      res,
-      "Contact fetched successfully",
-      result
-    );
+    return sendSuccess(res, "Contact fetched successfully", result);
   } catch (error) {
     return sendError(res, error.message, 404);
   }
@@ -145,14 +97,9 @@ export const getSingleContact = async (req, res) => {
 
 export const updateContactAdmin = async (req, res) => {
   try {
-    const result = await updateContactServiceAdmin(
-      req.params.id,
-      req.body
-    );
+    const result = await updateContactServiceAdmin(req.params.id, req.body);
 
     if (result?.email) {
-   
-
       await sendMail({
         to: result.email,
         subject: "Your Support Request Has Been Received",
@@ -162,17 +109,11 @@ export const updateContactAdmin = async (req, res) => {
           subject: result.subject,
           supportCategory: result.supportCategory,
           status: result.status,
-          BookingRefNo:result.BookingRefNo
+          BookingRefNo: result.BookingRefNo,
         }),
       });
-
-    
     }
-    return sendSuccess(
-      res,
-      "Contact updated successfully",
-      result
-    );
+    return sendSuccess(res, "Contact updated successfully", result);
   } catch (error) {
     return sendError(res, error.message, 404);
   }
@@ -184,33 +125,21 @@ export const updateContact = async (req, res) => {
     const result = await updateContactService(
       req.params.id,
       req.user._id,
-      req.body
+      req.body,
     );
 
-    return sendSuccess(
-      res,
-      "Contact updated successfully",
-      result
-    );
+    return sendSuccess(res, "Contact updated successfully", result);
   } catch (error) {
     return sendError(res, error.message, 404);
   }
 };
 
-
-
 // DELETE CONTACT
 export const deleteContact = async (req, res) => {
   try {
-    await deleteContactService(
-      req.params.id,
-      req.user._id
-    );
+    await deleteContactService(req.params.id, req.user._id);
 
-    return sendSuccess(
-      res,
-      "Contact deleted successfully"
-    );
+    return sendSuccess(res, "Contact deleted successfully");
   } catch (error) {
     return sendError(res, error.message, 404);
   }
