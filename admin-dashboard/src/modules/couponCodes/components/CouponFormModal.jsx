@@ -37,20 +37,25 @@ export default function CouponFormModal({
   useEffect(() => {
     if (open && editData) {
       form.setFieldsValue({
-        code: editData?.code,
-        title: editData?.title,
-        applicableModules: editData?.applicableModules,
-        discountType: editData?.discountType,
-        discountValue: editData?.discountValue,
-        minAmount: editData?.minAmount,
+        code: editData.code,
+        title: editData.title,
+        image: editData?.image,
+        applicableModules: editData.applicableModules,
+        discountType: editData.discountType,
+        discountValue: editData.discountValue,
+        minAmount: editData.minAmount,
 
         validity:
-          editData?.startDate && editData?.endDate
-            ? [dayjs(editData.startDate), dayjs(editData.endDate)]
+          editData?.validity?.startDate && editData?.validity?.endDate
+            ? [
+                dayjs(editData.validity.startDate),
+                dayjs(editData.validity.endDate),
+              ]
             : undefined,
 
-        isAutoApply: editData?.isAutoApply,
-        isActive: editData?.isActive,
+        isAutoApply: editData.isAutoApply,
+        isActive: editData.isActive,
+        image: editData.image,
       });
     } else {
       form.resetFields();
@@ -63,6 +68,7 @@ export default function CouponFormModal({
 
       code: values.code?.trim().toUpperCase(),
       title: values.title?.trim(),
+      image: values.image || null,
 
       validity: {
         startDate: values.validity?.[0]?.startOf("day")?.toISOString(),
@@ -243,7 +249,7 @@ export default function CouponFormModal({
                 </Form.Item>
 
                 <Button size="large" disabled>
-                  {discountType === "percentage" ? "%" : "₹"}
+                  {discountType === "percent" ? "%" : "₹"}
                 </Button>
               </Space.Compact>
             </Form.Item>

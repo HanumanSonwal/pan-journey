@@ -24,6 +24,11 @@ export const moduleConfig = {
     actions: ["read", "write", "update", "delete"],
   },
 
+  couponCodes: {
+    label: "coupon-codes",
+    actions: ["read", "write", "update", "delete"],
+  },
+
   cmsPages: {
     label: "CMS Pages",
     actions: ["read", "write", "update", "delete"],

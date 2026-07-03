@@ -2,6 +2,7 @@
 
 import { CopyOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import {
+  Avatar,
   Button,
   Empty,
   message,
@@ -27,6 +28,7 @@ export default function CouponTable({
   deleteCoupon,
   handleEdit,
 }) {
+  console.log("COUPONS =>", coupons);
   // ================= COLUMNS =================
   const handleCopy = async (code) => {
     await navigator.clipboard.writeText(code);
@@ -43,9 +45,16 @@ export default function CouponTable({
       year: "numeric",
     });
   };
-  const getCouponStatus = (startDate, endDate) => {
-    const today = new Date();
 
+  const getCouponStatus = (startDate, endDate) => {
+    if (!startDate || !endDate) {
+      return {
+        label: "-",
+        color: "default",
+      };
+    }
+
+    const today = new Date();
     const start = new Date(startDate);
     const end = new Date(endDate);
 
@@ -68,88 +77,67 @@ export default function CouponTable({
       color: "green",
     };
   };
+
   const columns = [
     {
       title: "Coupon",
-      width: 240,
+      width: 300,
 
-      render: (_, record) => (
-        <div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
-            <Tag
-              color="blue"
-              style={{
-                margin: 0,
-                fontWeight: 700,
-                fontSize: 13,
-              }}
-            >
-              {record?.code}
-            </Tag>
-
-            <Tooltip title="Copy Coupon">
-              <Button
-                type="text"
-                size="small"
-                icon={<CopyOutlined />}
-                onClick={() => handleCopy(record?.code)}
-              />
-            </Tooltip>
-          </div>
-
-          <Text
-            type="secondary"
-            style={{
-              fontSize: 12,
-            }}
-          >
-            {record?.title}
-          </Text>
-        </div>
-      ),
-    },
-
-    // ================= MODULES =================
-
-    {
-      title: "Modules",
-      width: 180,
       render: (_, record) => (
         <div
           style={{
             display: "flex",
-            flexWrap: "wrap",
-            gap: 4,
+            gap: 12,
+            alignItems: "center",
           }}
         >
-          {record?.applicableModules?.map((item) => (
-            <Tag
-              key={item}
-              color="blue"
+          <Avatar
+            shape="square"
+            size={56}
+            src={record?.image || undefined}
+            style={{
+              flexShrink: 0,
+              borderRadius: 8,
+            }}
+          />
+
+          <div style={{ flex: 1 }}>
+            <div
               style={{
-                textTransform: "capitalize",
-                margin: 0,
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                marginBottom: 4,
               }}
             >
-              {item}
-            </Tag>
-          ))}
+              <Tag color="blue">{record.code}</Tag>
+
+              <Tooltip title="Copy Coupon">
+                <Button
+                  type="text"
+                  size="small"
+                  icon={<CopyOutlined />}
+                  onClick={() => handleCopy(record.code)}
+                />
+              </Tooltip>
+            </div>
+
+            <Text type="secondary" ellipsis={{ tooltip: record.title }}>
+              {record.title}
+            </Text>
+          </div>
         </div>
       ),
     },
-
     {
       title: "Validity",
-      width: 250,
+      width: 240,
 
       render: (_, record) => {
-        const status = getCouponStatus(record?.startDate, record?.endDate);
+        const startDate = record?.validity?.startDate;
+        const endDate = record?.validity?.endDate;
+
+        const status = getCouponStatus(startDate, endDate);
 
         return (
           <div
@@ -160,127 +148,73 @@ export default function CouponTable({
             }}
           >
             <Text strong>
-              {formatDate(record?.startDate)} → {formatDate(record?.endDate)}
+              {formatDate(startDate)} - {formatDate(endDate)}
             </Text>
 
-            <Tag
-              color={status.color}
+            <div
               style={{
-                width: "fit-content",
-                margin: 0,
-                borderRadius: 999,
-                fontWeight: 500,
+                display: "flex",
+                gap: 6,
+                flexWrap: "wrap",
               }}
             >
-              {status.label}
-            </Tag>
+              <Tag color={status.color}>{status.label}</Tag>
+
+              <Tag color={record.isAutoApply ? "blue" : "default"}>
+                {record.isAutoApply ? "Auto Apply" : "Manual"}
+              </Tag>
+            </div>
           </div>
         );
       },
     },
 
-    // ================= DISCOUNT =================
-
     {
       title: "Discount",
-      width: 130,
-      align: "center",
-
-      render: (_, record) => (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-          }}
-        >
-          <Text strong>
-            {record?.discountType === "percentage"
-              ? `${record?.discountValue}%`
-              : `₹${record?.discountValue}`}
-          </Text>
-
-          <Text
-            type="secondary"
-            style={{
-              fontSize: 12,
-              textTransform: "capitalize",
-            }}
-          >
-            {record?.discountType}
-          </Text>
-        </div>
-      ),
-    },
-
-    // ================= MINIMUM =================
-
-    {
-      title: "Min Amount",
-      width: 130,
-      align: "center",
-
-      render: (_, record) => <Text strong>₹{record?.minAmount}</Text>,
-    },
-
-    // ================= AUTO APPLY =================
-
-    {
-      title: "Auto Apply",
       width: 120,
       align: "center",
 
-      render: (_, record) =>
-        record?.isAutoApply ? (
-          <Tag
-            color="green"
-            style={{
-              margin: 0,
-            }}
-          >
-            Yes
-          </Tag>
-        ) : (
-          <Tag
-            style={{
-              margin: 0,
-            }}
-          >
-            No
-          </Tag>
-        ),
+      render: (_, record) => {
+        const isPercent =
+          record.discountType === "percent" ||
+          record.discountType === "percentage";
+
+        return (
+          <Text strong style={{ fontSize: 15 }}>
+            {isPercent
+              ? `${record.discountValue}%`
+              : `₹${record.discountValue}`}
+          </Text>
+        );
+      },
     },
-
-    // ================= STATUS =================
-
     {
-      title: "Status",
-      width: 170,
+      title: "Min Amount",
+      width: 120,
       align: "center",
 
       render: (_, record) => (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <Switch
-            checked={record?.isActive}
-            loading={updateStatus.isPending}
-            onChange={(checked) =>
-              updateStatus.mutate({
-                id: record?._id,
-                data: {
-                  isActive: checked,
-                },
-              })
-            }
-          />
-        </div>
+        <Text strong>₹{Number(record.minAmount).toLocaleString("en-IN")}</Text>
       ),
     },
+    {
+      title: "Status",
+      width: 120,
+      align: "center",
 
+      render: (_, record) => (
+        <Switch
+          checked={record.isActive}
+          loading={updateStatus.isPending}
+          onChange={(checked) =>
+            updateStatus.mutate({
+              id: record._id,
+              data: { isActive: checked },
+            })
+          }
+        />
+      ),
+    },
     // ================= CREATED =================
 
     {

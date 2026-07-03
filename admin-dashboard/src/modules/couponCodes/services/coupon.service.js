@@ -47,7 +47,7 @@ export const updateCouponApi = async ({ id, data }) => {
 // ================= STATUS UPDATE =================
 
 export const updateCouponStatusApi = async ({ id, data }) => {
-  const res = await api.patch(`/couponCode/statusUpdate/${id}`, data, {
+  const res = await api.patch(`/couponCode/coupon-status/${id}`, data, {
     // skipToast: true,
   });
 

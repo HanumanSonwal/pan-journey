@@ -236,7 +236,7 @@ export const getAllCouponsService =
   async (queryParams = {}) => {
 
     const {
-      status,
+      isActive,
       module,
       startDate,
       endDate,
@@ -284,10 +284,10 @@ export const getAllCouponsService =
     ========================== */
 
     if (
-      status !== undefined
+      isActive !== undefined
     ) {
       filter.isActive =
-        status === "true";
+        isActive === "true";
     }
 
     /* ==========================

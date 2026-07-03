@@ -3,7 +3,7 @@
 import { ClearOutlined } from "@ant-design/icons";
 import { Button, Col, DatePicker, Input, Row, Select } from "antd";
 
-import { moduleOptions, statusOptions } from "../data/CouponData";
+import { statusOptions } from "../data/CouponData";
 
 export default function CouponFilters({
   search,
@@ -11,9 +11,6 @@ export default function CouponFilters({
 
   statusFilter,
   setStatusFilter,
-
-  moduleFilter,
-  setModuleFilter,
 
   validityFilter,
   setValidityFilter,
@@ -50,25 +47,6 @@ export default function CouponFilters({
             width: "100%",
           }}
           options={statusOptions}
-        />
-      </Col>
-
-      {/* MODULE */}
-
-      <Col xs={24} md={4}>
-        <Select
-          value={moduleFilter}
-          onChange={setModuleFilter}
-          style={{
-            width: "100%",
-          }}
-          options={[
-            {
-              label: "All Modules",
-              value: "all",
-            },
-            ...moduleOptions,
-          ]}
         />
       </Col>
 

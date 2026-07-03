@@ -5,7 +5,6 @@ import { Upload, message } from "antd";
 import { useEffect, useState } from "react";
 import { useMediaUpload } from "./hooks/useMediaUpload";
 
-
 export default function ImageUpload({
   value,
   onChange,
@@ -37,7 +36,10 @@ export default function ImageUpload({
           url,
         })),
       );
-    } else if (typeof value === "string") {
+      return;
+    }
+
+    if (typeof value === "string" && value.trim()) {
       setFileList([
         {
           uid: "-1",
@@ -46,6 +48,8 @@ export default function ImageUpload({
           url: value,
         },
       ]);
+    } else {
+      setFileList([]);
     }
   }, [value, multiple]);
 
@@ -109,11 +113,11 @@ export default function ImageUpload({
 
   const handleRemove = (file) => {
     if (multiple) {
-      const urls = value.filter((item) => item !== file.url);
+      const urls = (value || []).filter((item) => item !== file.url);
 
       onChange?.(urls);
     } else {
-      onChange?.("");
+      onChange?.(null);
     }
   };
 
