@@ -41,7 +41,6 @@ const defaultFilters = {
 };
 
 export default function HotelContent({ initialSearchData = null, cms = null }) {
-
   const HotelMap = dynamic(() => import("../components/map/HotelMap"), {
     ssr: false,
   });
@@ -59,6 +58,8 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
     setAppliedSearchData,
   } = useHotelSearchStore();
 
+  console.log("appliedSearchData in hotels", appliedSearchData);
+
   const searchParams = useSearchParams();
   const [mounted, setMounted] = useState(false);
   const [filters, setFilters] = useState(defaultFilters);
@@ -68,7 +69,7 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
   const [mapOpen, setMapOpen] = useState(false);
   const [hotelsForMap, setHotelsForMap] = useState([]);
   const [sidebarZ0, setSidebarZ0] = useState(false);
-  
+
   useEffect(() => {
     setMounted(true);
   }, []);

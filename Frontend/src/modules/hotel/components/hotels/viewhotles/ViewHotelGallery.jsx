@@ -12,26 +12,20 @@ const ViewHotelGallery = ({ images = [], onOpen }) => {
 
   const mainImage = getHDImage(galleryImages?.[0]?.ImageURL);
   const topRightImage = getHDImage(
-    galleryImages?.[1]?.ImageURL || galleryImages?.[0]?.ImageURL
+    galleryImages?.[1]?.ImageURL || galleryImages?.[0]?.ImageURL,
   );
   const bottomRightImage = getHDImage(
-    galleryImages?.[2]?.ImageURL || galleryImages?.[0]?.ImageURL
+    galleryImages?.[2]?.ImageURL || galleryImages?.[0]?.ImageURL,
   );
 
   const totalPhotos = galleryImages?.length || 0;
 
   return (
     <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-
       {/* MAIN IMAGE */}
       <div
         onClick={onOpen}
-        className="relative cursor-pointer overflow-hidden rounded
-        h-[200px]
-        sm:h-[280px]
-        md:h-[300px]
-        lg:h-[340px]
-        xl:h-[380px]"
+        className="relative h-[200px] cursor-pointer overflow-hidden rounded sm:h-[280px] md:h-[300px] lg:h-[340px] xl:h-[380px]"
       >
         <Image
           src={mainImage}
@@ -47,19 +41,14 @@ const ViewHotelGallery = ({ images = [], onOpen }) => {
           onClick={onOpen}
           className="absolute inset-0 flex items-end justify-end p-3 md:hidden"
         >
-          <div className="rounded bg-black/60 px-3 py-2 text-white text-sm">
+          <div className="rounded bg-black/60 px-3 py-2 text-sm text-white">
             View All Photos ({totalPhotos})
           </div>
         </div>
       </div>
 
       {/* Desktop Right Side */}
-      <div
-        className="hidden md:flex flex-col gap-3
-        md:h-[300px]
-        lg:h-[340px]
-        xl:h-[380px]"
-      >
+      <div className="hidden flex-col gap-3 md:flex md:h-[300px] lg:h-[340px] xl:h-[380px]">
         {/* Top */}
         <div
           onClick={onOpen}

@@ -38,7 +38,6 @@ import tax from "./modules/tax/tax.route.js";
 import userRoutes from "./modules/user/user.routes.js";
 import wishlistRoutes from "./modules/wishlist/wishlist.routes.js";
 import testRoutes from "./test.routes.js";
- 
 
 const app = express();
 app.set("trust proxy", 1);
@@ -46,7 +45,6 @@ app.use((req, res, next) => {
   console.log("📡 REQUEST HIT:", req.method, req.url);
   next();
 });
-app.use(currencyMiddleware);
 
 app.use(
   cors({
@@ -59,9 +57,10 @@ app.use(
       "https://panjourney.com",
     ],
     credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization", "currency"],
   }),
 );
-
+app.use(currencyMiddleware);
 app.use(cookieParser());
 
 app.use(express.json());
@@ -72,9 +71,9 @@ app.use("/api/v1", contactUs);
 app.use("/api/v1", support);
 app.use("/api/v1", grievanceRedressal);
 app.use("/api/v1/payment", paymentRoutes);
-app.use("/api/v1/newsletter",newsletter);
-app.use("/api/v1/tax",tax);
-app.use("/api/v1/couponCode",couponCode);
+app.use("/api/v1/newsletter", newsletter);
+app.use("/api/v1/tax", tax);
+app.use("/api/v1/couponCode", couponCode);
 app.use("/api/v1/users", userRoutes);
 
 app.use("/api/v1/cms", cmsRoutes);
