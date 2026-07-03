@@ -5,6 +5,10 @@ import Markup from "../../priceMarkup/markup/markup.model.js";
 import { extractNormalizedCity } from "../../priceMarkup/markup/markup.service.js";
 import { applyHotelPricing } from "../../priceMarkup/markup/pricing.service.js";
 import getCountryTaxRule from "../../tax/countryTax.service.js";
+import {
+
+  getCurrencySymbol,
+} from "../../currencyConverter/currency.helper.js";
 
 const resolveMarkup = ({
   hotelId,
@@ -41,7 +45,7 @@ const resolveMarkup = ({
     cityMarkups.map((m) => m.cityName),
   );
   console.log("matched cityMarkup =", cityMarkup);
- 
+
   // state
   const stateMarkup = stateMarkups.find(
     (m) =>
@@ -75,8 +79,6 @@ export const applyPricing = async (
     const allMarkups = await Markup.find({
       isActive: true,
     }).lean();
-
-  
 
     const additionalTax = allMarkups.find((m) => m.level === "additional_tax");
     const conversionRate = await getCurrencyRate({
@@ -114,13 +116,22 @@ export const applyPricing = async (
             price: convertedMainAmount,
           },
           markup: matchedMarkup,
-         
+
           additionalTax,
           countryTax,
         });
 
-        recommendation.OriginalTotalAmount = recommendation.TotalAmount;
-
+        recommendation.PricingBreakdown = {
+          supplierPrice: pricedMain.supplierPrice,
+          subtotalAfterMarkup: pricedMain.subtotal1,
+          ServiceCharge: pricedMain.panjourneyServiceCharge,
+          subtotalAfterServiceCharge: pricedMain.subtotal2,
+          basePrice: pricedMain.basePrice,
+          platformFeeAndTax: pricedMain.platformfeeandtax,
+          finalPrice: pricedMain.price,
+          currencySymbol: getCurrencySymbol(currency),
+        };
+ 
         recommendation.TotalAmount = pricedMain.price;
 
         // STEP 3 → nested rate plans
@@ -140,8 +151,18 @@ export const applyPricing = async (
 
           plan.OriginalTotalAmount = plan.TotalAmount;
 
+          plan.PricingBreakdown = {
+            supplierPrice: pricedRate.supplierPrice,
+            subtotalAfterMarkup: pricedRate.subtotal1,
+            ServiceCharge: pricedRate.panjourneyServiceCharge,
+            subtotalAfterServiceCharge: pricedRate.subtotal2,
+            basePrice: pricedRate.basePrice,
+            platformFeeAndTax: pricedRate.platformfeeandtax,
+            finalPrice: pricedRate.price,
+            currencySymbol: getCurrencySymbol(currency),
+          };
+
           plan.TotalAmount = pricedRate.price;
-          
         });
       },
     );

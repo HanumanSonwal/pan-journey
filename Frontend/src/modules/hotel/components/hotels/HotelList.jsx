@@ -37,7 +37,7 @@ function HotelList({
       CheckOutDate: searchData?.checkOut
         ? dayjs(searchData.checkOut).format("MM/DD/YYYY")
         : "",
-      currency: selectedCurrency?.code || "INR",
+      //currency: selectedCurrency?.code || "INR",
       HotelRoomDetail: [
         {
           AdultCount: searchData?.adults || 1,

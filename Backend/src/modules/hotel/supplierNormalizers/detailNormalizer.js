@@ -17,7 +17,7 @@ export const normalizeHotelDetails = (
 const plans =
   normalizeHotelDetails(response);
 
-const pricedPlans = plans.map((plan) => ({
+export const pricedPlans = plans.map((plan) => ({
   ...plan,
   pricing: calculateFinalPrice({
     supplierAmount:

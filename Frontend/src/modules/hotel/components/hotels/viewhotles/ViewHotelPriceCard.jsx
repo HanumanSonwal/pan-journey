@@ -14,9 +14,17 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
   const roomDesc = room?.HotelRoomTypeDesc || "";
   const inclusion = detail?.Inclusion || "";
   const refundable = detail?.Refundable === "True";
-  const basicPrice = Number(detail?.BasicAmount || 0);
-  const tax = Number(detail?.Tax || 0);
-  const totalPrice = Number(selectedPlan?.TotalAmount || 0);
+//  const basicPrice = Number(detail?.BasicAmount || 0);
+// const tax = Number(detail?.Tax || 0);
+  //const totalPrice = Number(selectedPlan?.TotalAmount || 0);
+    const basicPrice = Number(
+  selectedPlan?.PricingBreakdown?.basePrice || 0);
+   const tax = Number(
+  selectedPlan?.PricingBreakdown?.platformFeeAndTax || 0);
+ 
+  const totalPrice = Number(
+  selectedPlan?.PricingBreakdown?.finalPrice || 0
+);
   const moreRooms = Math.max(ratePlans?.length - 1, 0);
   const { setBookingData } = useHotelBookingStore();
   const { requireAuth } = useAuthGuard();

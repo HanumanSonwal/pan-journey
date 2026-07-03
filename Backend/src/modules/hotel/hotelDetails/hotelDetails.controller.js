@@ -3,6 +3,7 @@ import { fetchHotelDetailsFromSupplier } from "../hotelDetails/hotelDetails.serv
 import { applyPricing } from "../hotelDetails/hotelPricing.service.js";
 import { sendSuccess, sendError } from "../../../utils/response/ApiResponse.js";
 
+
 export const getHotelDetails = async (req, res) => {
   try {
     req.body.currency = req.currency;
@@ -27,6 +28,7 @@ export const getHotelDetails = async (req, res) => {
 
    const pricingData = await applyPricing(
   supplierData,
+   
   {
     ...hotelMeta,
     hotelId

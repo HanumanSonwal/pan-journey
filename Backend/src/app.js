@@ -46,7 +46,7 @@ app.use((req, res, next) => {
   console.log("📡 REQUEST HIT:", req.method, req.url);
   next();
 });
-app.use(currencyMiddleware);
+
 
 app.use(
   cors({
@@ -57,11 +57,18 @@ app.use(
       "https://main.d2s4wo3hb5kyyq.amplifyapp.com",
       "https://www.panjourney.com",
       "https://panjourney.com",
+
     ],
     credentials: true,
+   allowedHeaders: [
+  "Content-Type",
+  "Authorization",
+  "Accept",
+  "currency"
+]
   }),
 );
-
+app.use(currencyMiddleware);
 app.use(cookieParser());
 
 app.use(express.json());
