@@ -1,7 +1,9 @@
 "use client";
 
+import { invalidateCurrencyQueries } from "@/utils/queryInvalidation";
+import { useQueryClient } from "@tanstack/react-query";
 import { Input } from "antd";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 export default function CurrencyDropdown({
   currencies,
@@ -9,6 +11,7 @@ export default function CurrencyDropdown({
   closeDropdown,
 }) {
   const [search, setSearch] = useState("");
+  const queryClient = useQueryClient();
 
   const filteredCurrencies = useMemo(() => {
     return currencies.filter(
@@ -17,43 +20,35 @@ export default function CurrencyDropdown({
         currency.code.toLowerCase().includes(search.toLowerCase()),
     );
   }, [currencies, search]);
+
+  const handleCurrencyChange = async (currency) => {
+    setCurrency(currency);
+
+    await invalidateCurrencyQueries(queryClient);
+
+    closeDropdown();
+    setSearch("");
+  };
+
   return (
-    <div
-      className="w-[320px] max-w-[calc(100vw-32px)] rounded bg-white p-3 shadow-xl sm:w-[350px]"
-      onClick={(e) => e.stopPropagation()}
-      onMouseDown={(e) => e.stopPropagation()}
-      onPointerDown={(e) => e.stopPropagation()}
-    >
-      {/* Search */}
+    <div className="w-[350px] rounded bg-white p-3 shadow-xl">
       <Input
         allowClear
         placeholder="Search Currency"
         value={search}
-        className="[&_.ant-input]:!border-0 [&_.ant-input]:!shadow-none [&_.ant-input]:focus:!shadow-none"
-        onClick={(e) => e.stopPropagation()}
-        onMouseDown={(e) => e.stopPropagation()}
-        onPointerDown={(e) => e.stopPropagation()}
-        onFocus={(e) => e.stopPropagation()}
         onChange={(e) => setSearch(e.target.value)}
       />
 
-      {/* Currency List */}
-      <div className="mt-3 max-h-[60vh] sm:max-h-80 overflow-y-auto">
+      <div className="mt-3 max-h-80 overflow-y-auto">
         {filteredCurrencies.map((currency) => (
           <div
             key={currency.code}
-            onClick={() => {
-              setCurrency(currency);
-              closeDropdown();
-              setSearch("");
-            }}
-            className="flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 transition-colors hover:bg-[#F5FBFE]"
+            onClick={() => handleCurrencyChange(currency)}
+            className="flex cursor-pointer justify-between rounded-lg px-3 py-2 hover:bg-[#F5FBFE]"
           >
             <span>{currency.name}</span>
 
-            <span className="font-semibold text-[#0F6A75]">
-              {currency.code}
-            </span>
+            <span>{currency.code}</span>
           </div>
         ))}
       </div>

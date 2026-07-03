@@ -127,13 +127,15 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   const hotelImages = supplierData?.HotelGallery || [];
   const amenities = supplierData?.Amenities
     ? supplierData.Amenities.split(",")
-      .map((i) => i.trim())
-      .filter(Boolean)
+        .map((i) => i.trim())
+        .filter(Boolean)
     : [];
   const hotelDetails = supplierData || [];
   const handleReloadHotels = async () => {
     await refetch();
   };
+
+  console.log("hotelData in hotel-detail in  ratePlans", ratePlans);
 
   useEffect(() => {
     if (!supplierData?.HotelKey) return;
@@ -195,8 +197,8 @@ function HotelDetails({ initialPayload = null, cms = null }) {
           starRating: Number(supplierData?.StarRating || 0),
           facilities: supplierData?.Amenities
             ? supplierData.Amenities.split(",")
-              .map((item) => item.trim())
-              .filter(Boolean)
+                .map((item) => item.trim())
+                .filter(Boolean)
             : [],
           freeCancellation: false,
           savedPrice: Number(FirstRoomPrice?.TotalAmount || 0),
@@ -212,18 +214,16 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     });
   };
 
-  const handleSearch = useCallback(() => { }, []);
+  const handleSearch = useCallback(() => {}, []);
 
   return (
     <div className="min-h-screen w-full bg-[#eaf3f9]">
-      <SearchBar
-  searchData={supplierData}
-  onSearch={handleSearch}
-/>
+      <SearchBar searchData={supplierData} onSearch={handleSearch} />
 
       <div
-        className={`relative mx-auto w-full max-w-7xl px-2 !pt-5 transition-all duration-300 sm:px-4 sm:!pt-0 md:px-6 md:!pt-0 lg:!pt-0 xl:!pt-0 2xl:!pb-0 ${isScrolled ? "z-0" : "!z-[820]"
-          }`}
+        className={`relative mx-auto w-full max-w-7xl px-2 !pt-5 transition-all duration-300 sm:px-4 sm:!pt-0 md:px-6 md:!pt-0 lg:!pt-0 xl:!pt-0 2xl:!pb-0 ${
+          isScrolled ? "z-0" : "!z-[820]"
+        }`}
       >
         <div className="-mt-3">
           {showSkeleton ? (
@@ -239,7 +239,7 @@ function HotelDetails({ initialPayload = null, cms = null }) {
                     </h1>
 
                     {(supplierData?.City || supplierData?.Country) && (
-                      <span className="w-fit rounded-full bg-[#eef8fd] px-2 py-1 !mb-4 sm:!mb-3 md:!mb-4 lg:!mb-0m xl:!mb-0  text-[11px] font-medium text-[#5bb7ec] sm:px-3 sm:text-sm">
+                      <span className="lg:!mb-0m !mb-4 w-fit rounded-full bg-[#eef8fd] px-2 py-1 text-[11px] font-medium text-[#5bb7ec] sm:!mb-3 sm:px-3 sm:text-sm md:!mb-4 xl:!mb-0">
                         {[supplierData?.City, supplierData?.Country]
                           .filter(Boolean)
                           .join(", ")}
@@ -254,10 +254,11 @@ function HotelDetails({ initialPayload = null, cms = null }) {
                     className="group flex h-9 w-9 items-center justify-center rounded-full border bg-white transition-all duration-200 hover:shadow-md active:scale-95 sm:h-11 sm:w-11"
                   >
                     <span
-                      className={`inline-flex items-center justify-center transition-all duration-300 ${isWishlisted
-                        ? "scale-110 text-red-500"
-                        : "text-gray-700 group-hover:scale-110"
-                        }`}
+                      className={`inline-flex items-center justify-center transition-all duration-300 ${
+                        isWishlisted
+                          ? "scale-110 text-red-500"
+                          : "text-gray-700 group-hover:scale-110"
+                      }`}
                     >
                       {isWishlisted ? (
                         <HeartFilled className="text-[16px] sm:text-[20px]" />
@@ -275,13 +276,11 @@ function HotelDetails({ initialPayload = null, cms = null }) {
 
               {/* GALLERY + PRICE */}
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:items-start">
-               <div className="lg:col-span-2 self-start">
+                <div className="self-start lg:col-span-2">
                   <ViewHotelGallery
                     images={hotelImages}
                     onOpen={() => setIsGalleryOpen(true)}
                   />
-
-
 
                   <div className="mt-6">
                     <ViewHotelTabs supplierData={supplierData} />

@@ -2,46 +2,34 @@
 
 import { useCurrencyStore } from "@/modules/shared/store/currency.store";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
 import { searchHotels } from "../services/hotel.service";
+
+const PAGE_SIZE = 10;
 
 export const useInfiniteHotels = (params) => {
   const currency = useCurrencyStore((state) => state.selectedCurrency.code);
 
-  const queryKey = useMemo(() => {
-    return [
-      "hotels",
-      JSON.stringify(params || {}),
-      currency, // ✅ Add currency here
-    ];
-  }, [params, currency]);
-
   return useInfiniteQuery({
-    queryKey,
+    queryKey: ["hotels", params, currency],
 
-    queryFn: async ({ pageParam = 1 }) => {
-      if (!params?.id) {
-        return null;
-      }
-
-      return searchHotels({
+    queryFn: ({ pageParam = 1 }) =>
+      searchHotels({
         ...params,
         pagination: {
           page: pageParam,
-          limit: 10,
+          limit: PAGE_SIZE,
         },
-      });
-    },
+      }),
 
     initialPageParam: 1,
 
     getNextPageParam: (lastPage) => {
       if (!lastPage?.data) return undefined;
 
-      const currentPage = lastPage.data.page || 1;
-      const totalPages = lastPage.data.totalPage || 1;
+      const currentPage = lastPage.data.page ?? 1;
+      const totalPages = lastPage.data.totalPage ?? 1;
 
-      return currentPage >= totalPages ? undefined : currentPage + 1;
+      return currentPage < totalPages ? currentPage + 1 : undefined;
     },
 
     enabled: !!params?.id,
