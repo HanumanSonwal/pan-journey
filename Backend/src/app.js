@@ -57,7 +57,7 @@ app.use(
       "https://panjourney.com",
     ],
     credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization", "currency"],
+    allowedHeaders: ["Content-Type", "Authorization", "Accept", "currency"],
   }),
 );
 app.use(currencyMiddleware);

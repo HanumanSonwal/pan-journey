@@ -232,6 +232,7 @@ export const applyManualCoupon =
 
   //   return coupons;
   // };
+
 export const getAllCouponsService =
   async (queryParams = {}) => {
 
@@ -352,8 +353,8 @@ export const getAllCouponsService =
         .skip(skip)
         .limit(limitNumber);
 
-    return {
-      coupons,
+   return {
+    coupons,
 
       pagination: {
         totalRecords:
@@ -370,14 +371,14 @@ export const getAllCouponsService =
 
         limit:
           limitNumber
-      }
-    };
+      }}
+    
   };
-/*
-====================================
-GET SINGLE COUPON
-====================================
-*/
+// /*
+// ====================================
+// GET SINGLE COUPON
+// ====================================
+// */
 export const getSingleCouponService =
   async (couponId) => {
     const coupon =
