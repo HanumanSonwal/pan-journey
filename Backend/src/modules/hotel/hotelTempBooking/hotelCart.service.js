@@ -1,372 +1,243 @@
-
 import { supplierAPI } from "../../../config/supplierApi.js";
 import { getAuthHeader } from "../../../config/supplierAuth.service.js";
-import HotelTempBooking from "./hotelCart.model.js";
 import Coupon from "../../promotionEngine/coupon.model.js";
+import HotelTempBooking from "./hotelCart.model.js";
 
 // ONLY ONE IMPORT
-import { findBestCoupon }
-from "../../promotionEngine/promotion.service.js";
+import { findBestCoupon } from "../../promotionEngine/promotion.service.js";
 
-export const hotelTempBookingService =
-  async (payload, pricingData) => {
+export const hotelTempBookingService = async (payload, pricingData) => {
+  console.log("=================================");
+  console.log("SERVICE START");
 
-    console.log("=================================");
-    console.log("SERVICE START");
+  if (!pricingData) {
+    throw new Error("Pricing data missing");
+  }
 
-    if (!pricingData) {
-      throw new Error(
-        "Pricing data missing"
-      );
-    }
+  const requestStartTime = Date.now();
 
-    const requestStartTime =
-      Date.now();
+  let dbRecord;
 
-    let dbRecord;
-
-    try {
-
-      /*
+  try {
+    /*
         Supplier API payload only
       */
 
-      const requestBody = {
-        ...getAuthHeader(),
+    const requestBody = {
+      ...getAuthHeader(),
 
-        CustomerName:
-          payload.CustomerName,
+      CustomerName: payload.CustomerName,
 
-        CustomerMobile:
-          payload.CustomerMobile,
+      CustomerMobile: payload.CustomerMobile,
 
-        CustomerAddress:
-          payload.CustomerAddress,
+      CustomerAddress: payload.CustomerAddress,
 
-        CustomerPostalCode:
-          payload.CustomerPostalCode,
+      CustomerPostalCode: payload.CustomerPostalCode,
 
-        HotelKey:
-          payload.HotelKey,
+      HotelKey: payload.HotelKey,
 
-        RecommendationID:
-          payload.RecommendationID,
+      RecommendationID: payload.RecommendationID,
 
-        SearchKey:
-          payload.SearchKey,
+      SearchKey: payload.SearchKey,
 
-        OccupantDetails:
-          payload.OccupantDetails,
+      OccupantDetails: payload.OccupantDetails,
 
-        OccupantEmail:
-          payload.OccupantEmail,
+      OccupantEmail: payload.OccupantEmail,
 
-        OccupantMobile:
-          payload.OccupantMobile,
+      OccupantMobile: payload.OccupantMobile,
 
-        PANNumber:
-          payload.PANNumber || "",
+      PANNumber: payload.PANNumber || "",
 
-        Remarks:
-          payload.Remarks,
-      };
+      Remarks: payload.Remarks,
+    };
 
-      console.log(
-        "SUPPLIER REQUEST BODY =>"
-      );
+    console.log("SUPPLIER REQUEST BODY =>");
 
-      console.log(
-        JSON.stringify(
-          requestBody,
-          null,
-          2
-        )
-      );
+    console.log(JSON.stringify(requestBody, null, 2));
 
-      /*
+    /*
         AUTO APPLY BEST COUPON
       */
 
-      const couponData =
-        await findBestCoupon({
-          module: "hotel",
+    const couponData = await findBestCoupon({
+      module: "hotel",
 
-          bookingAmount:
-            pricingData.finalSellingPrice,
+      bookingAmount: pricingData.finalSellingPrice,
 
-          serviceTax:
-            pricingData.serviceTaxAmount,
-        });
+      serviceTax: pricingData.serviceTaxAmount,
+    });
 
-      const appliedDiscount =
-        couponData?.bestDiscount || 0;
+    const appliedDiscount = couponData?.bestDiscount || 0;
 
-      /*
+    /*
         CREATE TEMP BOOKING
       */
 
-      dbRecord =
-        await HotelTempBooking.create({
+    dbRecord = await HotelTempBooking.create({
+      userId: payload.UserId,
 
-          userId:
-            payload.UserId,
+      supplierData: {
+        hotelKey: payload.HotelKey,
 
-          supplierData: {
-            hotelKey:
-              payload.HotelKey,
+        recommendationId: payload.RecommendationID,
 
-            recommendationId:
-              payload.RecommendationID,
+        searchKey: payload.SearchKey,
 
-            searchKey:
-              payload.SearchKey,
+        customerName: payload.CustomerName,
 
-            customerName:
-              payload.CustomerName,
+        customerMobile: payload.CustomerMobile,
 
-            customerMobile:
-              payload.CustomerMobile,
+        customerAddress: payload.CustomerAddress,
 
-            customerAddress:
-              payload.CustomerAddress,
+        customerPostalCode: payload.CustomerPostalCode,
 
-            customerPostalCode:
-              payload.CustomerPostalCode,
+        occupantDetails: payload.OccupantDetails,
+      },
 
-            occupantDetails:
-              payload.OccupantDetails,
-          },
+      hotelData: {
+        hotelImage: payload.HotelImage,
+      },
 
-          hotelData: {
-            hotelImage:
-              payload.HotelImage,
-          },
+      pricing: pricingData,
 
-          pricing:
-            pricingData,
-
-          /*
+      /*
             OFFER SYSTEM
           */
 
-          offer: {
-            // auto applied by system
-            autoCouponCode:
-              couponData?.bestCoupon?.code
-                || null,
+      offer: {
+        // auto applied by system
+        autoCouponCode: couponData?.bestCoupon?.code || null,
 
-            autoDiscount:
-              appliedDiscount,
+        autoDiscount: appliedDiscount,
 
-            // user manual coupon later
-            couponCode:
-              null,
+        // user manual coupon later
+        couponCode: null,
 
-            couponDiscount:
-              0,
-          },
+        couponDiscount: 0,
+      },
 
-          payableAmount:
-            pricingData.finalSellingPrice
-            - appliedDiscount,
+      payableAmount: pricingData.finalPrice - appliedDiscount,
 
-          tempBookingStatus:
-            "initiated",
-        });
+      tempBookingStatus: "initiated",
+    });
 
-      console.log(
-        "DB RECORD CREATED =>",
-        dbRecord._id
-      );
+    console.log("DB RECORD CREATED =>", dbRecord._id);
 
-      /*
+    /*
         SUPPLIER API CALL
       */
 
-      console.log(
-        "CALLING SUPPLIER API..."
-      );
+    console.log("CALLING SUPPLIER API...");
 
-      const response =
-        await supplierAPI.post(
-          "/JSONService/HotelTempBooking",
-          requestBody
-        );
+    const response = await supplierAPI.post(
+      "/JSONService/HotelTempBooking",
+      requestBody,
+    );
 
-      console.log(
-        "SUPPLIER SUCCESS RESPONSE =>"
-      );
+    console.log("SUPPLIER SUCCESS RESPONSE =>");
 
-      console.log(
-        JSON.stringify(
-          response.data,
-          null,
-          2
-        )
-      );
+    console.log(JSON.stringify(response.data, null, 2));
 
-      const responseTime =
-        Date.now()
-        - requestStartTime;
+    const responseTime = Date.now() - requestStartTime;
 
-      /*
+    /*
         SUCCESS UPDATE
       */
 
-      dbRecord.tempBookingStatus =
-        "success";
+    dbRecord.tempBookingStatus = "success";
 
-      dbRecord.responseTime =
-        responseTime;
+    dbRecord.responseTime = responseTime;
 
-      dbRecord.supplierResponse = {
+    dbRecord.supplierResponse = {
+      bookingRefNo: response.data?.BookingRefNo || null,
 
-        bookingRefNo:
-          response.data?.BookingRefNo
-          || null,
+      statusId: response.data?.ResponseHeader?.StatusId || null,
+    };
 
-        statusId:
-          response.data?.ResponseHeader
-            ?.StatusId || null,
-      };
+    await dbRecord.save();
 
-      await dbRecord.save();
+    return {
+      tempBookingId: dbRecord._id,
 
-      return {
-        tempBookingId:
-          dbRecord._id,
+      appliedCoupon: couponData?.bestCoupon?.code || null,
 
-        appliedCoupon:
-          couponData?.bestCoupon?.code
-          || null,
+      discount: appliedDiscount,
 
-        discount:
-          appliedDiscount,
+      finalPayable: dbRecord.payableAmount,
 
-        finalPayable:
-          dbRecord.payableAmount,
+      ...response.data,
+    };
+  } catch (error) {
+    const responseTime = Date.now() - requestStartTime;
 
-        ...response.data,
-      };
+    console.log("=================================");
 
-    } catch (error) {
+    console.log("SERVICE ERROR");
 
-      const responseTime =
-        Date.now()
-        - requestStartTime;
+    console.log("ERROR MESSAGE =>", error.message);
 
-      console.log(
-        "================================="
-      );
+    console.log("ERROR STATUS =>", error?.response?.status);
 
-      console.log(
-        "SERVICE ERROR"
-      );
+    console.log("ERROR RESPONSE =>");
 
-      console.log(
-        "ERROR MESSAGE =>",
-        error.message
-      );
+    console.log(error?.response?.data);
 
-      console.log(
-        "ERROR STATUS =>",
-        error?.response?.status
-      );
-
-      console.log(
-        "ERROR RESPONSE =>"
-      );
-
-      console.log(
-        error?.response?.data
-      );
-
-      /*
+    /*
         SAVE FAILED STATUS
       */
 
-      if (dbRecord) {
+    if (dbRecord) {
+      dbRecord.tempBookingStatus = "failed";
 
-        dbRecord.tempBookingStatus =
-          "failed";
+      dbRecord.responseTime = responseTime;
 
-        dbRecord.responseTime =
-          responseTime;
+      dbRecord.errorMessage = JSON.stringify(
+        error?.response?.data || error.message,
+      );
 
-        dbRecord.errorMessage =
-          JSON.stringify(
-            error?.response?.data
-            || error.message
-          );
+      await dbRecord.save();
 
-        await dbRecord.save();
-
-        console.log(
-          "FAILED STATUS UPDATED"
-        );
-      }
-
-      throw error;
+      console.log("FAILED STATUS UPDATED");
     }
+
+    throw error;
+  }
 };
 
-export const updateCouponService =
-async ({ tempBookingId, couponCode }) => {
-const booking =
-  await HotelTempBooking.findOne({
-    _id: tempBookingId
+export const updateCouponService = async ({ tempBookingId, couponCode }) => {
+  const booking = await HotelTempBooking.findOne({
+    _id: tempBookingId,
   });
-console.log("booking =", booking);
+  console.log("booking =", booking);
   if (!booking) {
-    throw new Error(
-      "Booking not found"
-    );
+    throw new Error("Booking not found");
   }
 
-  const coupon =
-    await Coupon.findOne({
-      code: couponCode,
-      isActive: true
-    });
+  const coupon = await Coupon.findOne({
+    code: couponCode,
+    isActive: true,
+  });
 
   if (!coupon) {
-    throw new Error(
-      "Invalid coupon"
-    );
+    throw new Error("Invalid coupon");
   }
 
   // module validation
-  if (
-    !coupon.applicableModules.includes(
-      "hotel"
-    )
-  ) {
-    throw new Error(
-      "Coupon not valid for hotel"
-    );
+  if (!coupon.applicableModules.includes("hotel")) {
+    throw new Error("Coupon not valid for hotel");
   }
 
   let discount = 0;
 
-  if (
-    coupon.discountType === "flat"
-  ) {
-    discount =
-      coupon.discountValue;
+  if (coupon.discountType === "flat") {
+    discount = coupon.discountValue;
   }
 
-  if (
-    coupon.discountType === "percent"
-  ) {
-    discount =
-      (booking.pricing
-        .finalSellingPrice *
-        coupon.discountValue) / 100;
+  if (coupon.discountType === "percent") {
+    discount = (booking.pricing.finalSellingPrice * coupon.discountValue) / 100;
   }
 
-  const maxAllowed =
-    booking.pricing
-      .serviceTaxAmount * 0.7;
+  const maxAllowed = booking.pricing.serviceTaxAmount * 0.7;
 
   if (discount > maxAllowed) {
     discount = maxAllowed;
@@ -375,24 +246,104 @@ console.log("booking =", booking);
   booking.offer = {
     ...booking.offer,
 
-    couponCode:
-      coupon.code,
+    couponCode: coupon.code,
 
-    couponDiscount:
-      discount,
+    couponDiscount: discount,
 
-    autoCouponCode:
-      null,
+    autoCouponCode: null,
 
-    autoDiscount: 0
+    autoDiscount: 0,
   };
 
-  booking.payableAmount =
-    booking.pricing
-      .finalSellingPrice -
-    discount;
+  booking.payableAmount = booking.pricing.finalPrice - discount;
 
   await booking.save();
 
   return booking;
+};
+const now = new Date();
+
+export const getTempBookingByBookingRefService = async (
+  userId,
+  bookingRefNo,
+) => {
+  const booking = await HotelTempBooking.findOne({
+    userId,
+    paymentStatus: "pending",
+    tempBookingStatus: "success",
+    "supplierResponse.bookingRefNo": bookingRefNo,
+  });
+
+  if (!booking) {
+    throw new Error("Booking not found");
+  }
+
+  const baseAmount =
+    booking.pricing.finalPrice -
+    booking.pricing.serviceCharge -
+    booking.pricing.platformFeeAndTax;
+  const totalAmount =
+    baseAmount +
+    booking.pricing.serviceCharge +
+    booking.pricing.platformFeeAndTax;
+  const availableCoupons = await Coupon.find({
+    isActive: true,
+    applicableModules: "hotel",
+    minAmount: { $lte: totalAmount },
+    "validity.startDate": { $lte: now },
+    "validity.endDate": { $gte: now },
+    $or: [
+      { usageLimit: null },
+      {
+        $expr: {
+          $lt: ["$usedCount", "$usageLimit"],
+        },
+      },
+    ],
+  }).select(
+    "code title image discountType discountValue minAmount  isAutoApply",
+  );
+  console.log("Coupen", availableCoupons);
+  return {
+    bookingId: booking._id,
+
+    bookingReference: booking?.supplierResponse?.bookingRefNo || null,
+
+    supplier: booking.supplier,
+
+    hotel: {
+      image: booking?.hotelData?.hotelImage || null,
+    },
+
+    customer: {
+      name: booking?.supplierData?.customerName || "",
+      mobile: booking?.supplierData?.customerMobile || "",
+    },
+
+    guestDetails:
+      booking?.supplierData?.occupantDetails?.map((guest) => ({
+        firstName: guest.FirstName,
+        lastName: guest.LastName,
+        title: guest.Title,
+        occupantType: guest.OccupantType,
+        roomNumber: guest.RoomNo,
+      })) || [],
+
+    priceSummary: {
+      totalAmount,
+      baseAmount,
+      serviceCharge: booking?.pricing?.serviceCharge || 0,
+      platformChargeandTax: booking?.pricing?.platformFeeAndTax || 0,
+      couponCode: booking?.offer?.couponCode || null,
+      couponDiscount: booking?.offer?.couponDiscount || 0,
+      totalPayableAmountAfterDiscount: booking?.payableAmount || 0,
+    },
+    availableCoupons: availableCoupons,
+    bookingStatus: {
+      reservationStatus: booking?.tempBookingStatus,
+      paymentStatus: booking?.paymentStatus,
+    },
+
+    createdAt: booking.createdAt,
+  };
 };
