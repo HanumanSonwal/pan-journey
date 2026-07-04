@@ -9,17 +9,29 @@ const { Text } = Typography;
 export default function StaySummaryCard({ bookingData }) {
   const data = bookingData?.searchData;
 
-  const nights = dayjs(data?.checkOut).diff(dayjs(data?.checkIn), "day");
+  const checkIn = dayjs(data?.checkIn);
+  const checkOut = dayjs(data?.checkOut);
+
+  const checkInDate = checkIn.isValid() ? checkIn.format("DD MMM YYYY") : "--";
+
+  const checkOutDate = checkOut.isValid()
+    ? checkOut.format("DD MMM YYYY")
+    : "--";
+
+  const nights =
+    checkIn.isValid() && checkOut.isValid()
+      ? Math.max(checkOut.diff(checkIn, "day"), 1)
+      : 1;
 
   return (
-    <Card className="!mb-2 rounded border-0 !shadow-[0_4px_12px_rgba(0,0,0,0.25)] shadow-sm font-roboto!">
+    <Card className="font-roboto! !mb-2 rounded border-0 !shadow-[0_4px_12px_rgba(0,0,0,0.25)] shadow-sm">
       <Row gutter={[8, 12]} align="middle">
         <Col xs={24} md={8}>
           <div className="text-center md:text-left">
             <Text className="text-xs text-[#666]">Check-in</Text>
 
             <h3 className="mt-1 text-[14px] font-semibold md:text-[16px]">
-              {dayjs(data?.checkIn).format("DD MMM YYYY")}
+              {checkInDate}
             </h3>
           </div>
         </Col>
@@ -44,7 +56,7 @@ export default function StaySummaryCard({ bookingData }) {
             <Text className="text-xs text-[#666]">Check-out</Text>
 
             <h3 className="mt-1 text-[14px] font-semibold md:text-[16px]">
-              {dayjs(data?.checkOut).format("DD MMM YYYY")}
+              {checkOutDate}
             </h3>
           </div>
         </Col>

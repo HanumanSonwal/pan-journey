@@ -24,6 +24,8 @@ export default function HotelBookingContent({ hotelBookingData }) {
   const { bookingData: storeBookingData, setBookingData } =
     useHotelBookingStore();
 
+  console.log("storeBookingData in hotelBooking", storeBookingData);
+
   const [agreement, setAgreement] = useState(false);
   const guestFormRef = useRef(null);
 
@@ -49,7 +51,6 @@ export default function HotelBookingContent({ hotelBookingData }) {
       bookingData: storeBookingData,
       guestData: storeBookingData?.guestData,
       requestData: storeBookingData?.requestData,
-      userId: session?.user?.id,
     });
 
     bookHotel(payload, {
@@ -86,7 +87,7 @@ export default function HotelBookingContent({ hotelBookingData }) {
 
               <BookingAgreement checked={agreement} onChange={setAgreement} />
 
-              <div className="pt-2 mb-[36px] md:mb-[49px] xl:mb-0">
+              <div className="mb-[36px] pt-2 md:mb-[49px] xl:mb-0">
                 <Button
                   type="primary"
                   size="large"

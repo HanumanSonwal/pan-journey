@@ -48,7 +48,6 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   const stateNameParam = searchParams.get("stateName");
   const countryCodeParam = searchParams.get("countryCode");
   const hotelSlugParam = searchParams.get("hotelSlug");
-  console.log("appliedSearchData in hotel-detail", appliedSearchData);
 
   const payload = useMemo(() => {
     if (selectedHotel?.fromWishlist) {
@@ -109,33 +108,50 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     () => new Set(wishlistData || []),
     [wishlistData],
   );
-  const isWishlisted = wishlistIds.has(payload?.hotelId?.toString());
-
-  console.log("selectedHotel", selectedHotel);
-  console.log("payload in hotel-detail", payload);
+  const hotelId = payload?.hotelId?.toString();
+  const isWishlisted = hotelId ? wishlistIds.has(hotelId) : false;
 
   const isValidPayload = payload?.hotelId && payload?.hotelMeta?.cityId;
-
   const { data, isLoading, isFetching, refetch } = useHotelDetails(
     isValidPayload ? payload : null,
   );
+
   const showSkeleton = isLoading || isFetching;
-  const hotelData = data || {};
-  const supplierData = hotelData?.supplierResponse || {};
-  const ratePlans = supplierData?.RatePlanRecommendations || [];
-  const FirstRoomPrice = ratePlans?.[0];
-  const hotelImages = supplierData?.HotelGallery || [];
-  const amenities = supplierData?.Amenities
-    ? supplierData.Amenities.split(",")
-        .map((i) => i.trim())
+  const hotelData = data ?? {};
+  const supplierData = hotelData?.supplierResponse ?? {};
+
+  const {
+    HotelGallery = [],
+    Amenities = "",
+    RatePlanRecommendations = [],
+  } = supplierData;
+
+  const ratePlans = RatePlanRecommendations;
+  const firstRatePlan = ratePlans[0] ?? null;
+  const pricing = firstRatePlan?.PricingBreakdown ?? {};
+  const {
+    basePrice = 0,
+    platformFeeAndTax = 0,
+    finalPrice = 0,
+    currencySymbol = "₹",
+  } = pricing;
+
+  const amenities = Amenities
+    ? Amenities.split(",")
+        .map((item) => item.trim())
         .filter(Boolean)
     : [];
-  const hotelDetails = supplierData || [];
+
+  const hotelImages = HotelGallery;
+
+  const hotelDetails = supplierData;
+
   const handleReloadHotels = async () => {
     await refetch();
   };
 
-  console.log("hotelData in hotel-detail in  ratePlans", ratePlans);
+  console.log("Rate Plans", ratePlans);
+  console.log("Pricing", pricing);
 
   useEffect(() => {
     if (!supplierData?.HotelKey) return;
@@ -201,8 +217,8 @@ function HotelDetails({ initialPayload = null, cms = null }) {
                 .filter(Boolean)
             : [],
           freeCancellation: false,
-          savedPrice: Number(FirstRoomPrice?.TotalAmount || 0),
-          savedTax: Number(FirstRoomPrice?.Tax || 0),
+          savedPrice: basePrice,
+          savedTax: platformFeeAndTax,
         });
 
         message.success(
@@ -288,7 +304,12 @@ function HotelDetails({ initialPayload = null, cms = null }) {
                 </div>
 
                 <div className="lg:col-span-1">
+                  {/* <ViewHotelPriceCard
+                    ratePlans={ratePlans}
+                    supplierData={supplierData}
+                  /> */}
                   <ViewHotelPriceCard
+                    pricing={pricing}
                     ratePlans={ratePlans}
                     supplierData={supplierData}
                   />
