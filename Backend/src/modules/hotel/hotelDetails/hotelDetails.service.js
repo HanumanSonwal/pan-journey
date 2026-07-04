@@ -22,10 +22,19 @@ export const fetchHotelDetailsFromSupplier = async ({
 
     // STEP 1 → direct hotelId lookup
     console.log("🔍 Looking hotel in cache by hotelId...");
-    activeCache = await HotelCache.findOne({
-      "hotels.hotelId": String(hotelId),
-    });
+    // activeCache = await HotelCache.findOne({
+    //   "hotels.hotelId": String(hotelId),
+    // });
+    const cacheLookup = {
+  "hotels.hotelId": String(hotelId),
+  checkInDate: searchContext.CheckInDate,
+  checkOutDate: searchContext.CheckOutDate,
+  roomCount: Number(searchContext.RoomCount || 1),
+};
 
+console.log("🔍 Looking hotel in cache:", cacheLookup);
+
+activeCache = await HotelCache.findOne(cacheLookup);
     console.log("📦 CACHE FOUND:", !!activeCache);
 
     // STEP 2 → if cache found, find hotel

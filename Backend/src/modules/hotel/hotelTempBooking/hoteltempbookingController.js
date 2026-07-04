@@ -1,5 +1,5 @@
 
-import { hotelTempBookingService ,updateCouponService } from "../hotelTempBooking/hotelCart.service.js";
+import { hotelTempBookingService ,updateCouponService,getTempBookingByBookingRefService } from "../hotelTempBooking/hotelCart.service.js";
 import {
   sendSuccess,
   sendError,
@@ -123,5 +123,26 @@ async (req, res) => {
       success: false,
       message: error.message
     });
+  }
+};
+
+
+
+export const getTempBookingByBookingRefController = async (req, res) => {
+  try {
+    const { bookingRefNo } = req.params;
+
+    const data = await getTempBookingByBookingRefService(
+      req.user.id,
+      bookingRefNo
+    );
+
+    return sendSuccess(
+      res,
+      "Booking fetched successfully",
+      data
+    );
+  } catch (error) {
+    return sendError(res, error.message);
   }
 };

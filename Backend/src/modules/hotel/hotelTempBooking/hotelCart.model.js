@@ -44,23 +44,10 @@ const hotelCartSchema = new mongoose.Schema(
 
     // IMPORTANT pricing breakdown
     pricing: {
-      supplierAmount: Number,
-
-      markupAmount: Number,
-
-      subtotal1: Number,
-
-      serviceTaxAmount: Number,
-
-      subtotal2: Number,
-
-      additionalTaxAmount: Number,
-
-      subtotal3: Number,
-
-      countryTaxAmount: Number,
-
-      finalSellingPrice: Number,
+    
+      serviceCharge: Number,
+      platformFeeAndTax: Number,
+      finalPrice: Number,
     },
 
     // offer engine
