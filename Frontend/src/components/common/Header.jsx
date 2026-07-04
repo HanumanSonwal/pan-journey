@@ -199,7 +199,7 @@ export default function Header() {
       <header
         className={`flex justify-between bg-white shadow-sm ${isMobile
           ? "h-12 px-6 py-1 pt-0"
-          : "h-18 px-6 py-1 pt-0 md:px-10 lg:px-30"
+          : "h-18 px-6 py-1 pt-0 md:px-10  lg:px-8 xl:px-30 2xl:px-30"
           }`}
       >
         {/* Logo */}
@@ -220,7 +220,7 @@ export default function Header() {
           </Link>
         </div>
 
-        <nav className="hidden min-[901px]:flex items-center justify-center gap-7 font-roboto text-gray-900">
+        <nav className="hidden min-[901px]:flex items-center justify-center gap-7 lg:gap-4 xl:gap-7 2xl:gap-7 font-roboto text-gray-900">
           {desktopNavigationItems.map((item) =>
             item.type === "comingSoon" ? (
               <Tooltip key={item.id} title="Coming Soon" color="#0f766e">
