@@ -10,7 +10,13 @@ export default function FAQSection({ data }) {
   if (!faqItems.length) return null;
   console.log("FAQ DATA:", data);
   return (
-    <section className="bg-[#EDF7FF] px-4 py-7 md:py-12">
+    <section className="bg-[#EDF7FF] px-4 py-7  mt-2
+  sm:mt-0
+  md:mt-0
+  lg:-mt-15
+  !xl:-mt-44
+  2xl:-mt-4
+ md:py-12">
       <div className="mx-auto max-w-5xl">
         <SectionHeading
           title={data?.title || "Questions & Answer"}
