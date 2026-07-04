@@ -234,17 +234,17 @@ body {
   margin: 0 !important;
 }
 .scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
 }
 
 .scrollbar-hide::-webkit-scrollbar {
-  display: none;
+  display: none !important;
 }
 
 .scrollbar-hide {
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior-x: contain !important;
 }
 
 
