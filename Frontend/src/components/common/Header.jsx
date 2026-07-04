@@ -198,27 +198,29 @@ export default function Header() {
       {/* Navbar */}
       <header
         className={`flex justify-between bg-white shadow-sm ${isMobile
-          ? "h-12 px-3 py-1 pt-0"
-          : "h-18 px-4 py-1 pt-0 md:px-10 lg:px-20"
+          ? "h-12 px-6 py-1 pt-0"
+          : "h-18 px-6 py-1 pt-0 md:px-10 lg:px-30"
           }`}
       >
         {/* Logo */}
-        <Link href="/" className="flex items-center">
-          <Image
-            src="/images/PJ_LOGO-removebg-preview.png"
-            alt="PAN Journey"
-            width={120}
-            height={110}
-            priority
-            unoptimized
-            className={`absolute left-2 object-contain transition-all duration-300 ${isMobile
-              ? " top-9 h-[50px] w-[50px]"
-              : "top-8 h-[100px] w-[100px]"
-              }`}
-          />
-        </Link>
+        <div className={isMobile ? "" : "flex items-center justify-start"}>
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/images/PJ_LOGO-removebg-preview.png"
+              alt="PAN Journey"
+              width={120}
+              height={110}
+              priority
+              unoptimized
+              className={`object-contain transition-all duration-300 ${isMobile
+                ? "absolute left-2 top-9 h-[50px] w-[50px]"
+                : "h-[100px] w-[100px]"
+                }`}
+            />
+          </Link>
+        </div>
 
-        <nav className="font-roboto hidden items-center gap-3 text-gray-900 min-[901px]:flex min-[1024px]:gap-4 min-[1200px]:gap-6 min-[1400px]:gap-8">
+        <nav className="hidden min-[901px]:flex items-center justify-center gap-7 font-roboto text-gray-900">
           {desktopNavigationItems.map((item) =>
             item.type === "comingSoon" ? (
               <Tooltip key={item.id} title="Coming Soon" color="#0f766e">

@@ -1,3 +1,4 @@
+import BottomNav from "@/components/common/loder/MobileBottomNav ";
 import Image from "next/image";
 
 export default function GiftCard({ card }) {
@@ -40,6 +41,7 @@ export default function GiftCard({ card }) {
       <button className="w-full h-[36px] md:h-[34px] lg:h-[42px] mt-2 rounded-md !text-white text-[13px] md:text-[12px] lg:text-[16px] font-medium bg-gradient-to-b from-[#6bbbe6] to-[#006d7d] hover:opacity-90 transition">
         Get Offer
       </button>
+     <BottomNav />
     </div>
   );
 }

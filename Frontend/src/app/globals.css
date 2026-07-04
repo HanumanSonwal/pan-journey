@@ -233,6 +233,18 @@ body {
 .premium-hotel-calendar .ant-picker-footer-extra {
   margin: 0 !important;
 }
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
 
 
