@@ -1,4 +1,4 @@
-    import mongoose from "mongoose";
+import mongoose from "mongoose";
 
 const hotelCartSchema = new mongoose.Schema(
   {
@@ -44,7 +44,6 @@ const hotelCartSchema = new mongoose.Schema(
 
     // IMPORTANT pricing breakdown
     pricing: {
-    
       serviceCharge: Number,
       platformFeeAndTax: Number,
       finalPrice: Number,
@@ -52,6 +51,11 @@ const hotelCartSchema = new mongoose.Schema(
 
     // offer engine
     offer: {
+      autoCouponCode: {
+        type: String,
+        default: null,
+      },
+
       autoDiscount: {
         type: Number,
         default: 0,
@@ -67,18 +71,11 @@ const hotelCartSchema = new mongoose.Schema(
         default: 0,
       },
 
-      // 70% of service tax max
       maxAllowedDiscount: {
         type: Number,
         default: 0,
       },
     },
-offer: {
-  autoCouponCode: String,
-  autoDiscount: Number,
-  couponCode: String,
-  couponDiscount: Number
-},
     payableAmount: Number,
 
     paymentStatus: {
@@ -89,7 +86,14 @@ offer: {
 
     tempBookingStatus: {
       type: String,
-      enum: ["initiated", "success", "failed"],
+      enum: [
+        "initiated",
+        "success",
+        "failed",
+        "payment_pending",
+        "payment_success",
+        "payment_failed",
+      ],
       default: "initiated",
     },
 
@@ -101,10 +105,56 @@ offer: {
     responseTime: Number,
 
     errorMessage: String,
+    payment: {
+      gateway: {
+        type: String,
+        default: "razorpay",
+      },
 
-   
+      orderId: {
+        type: String,
+        default: null,
+      },
+
+      paymentId: {
+        type: String,
+        default: null,
+      },
+
+      signature: {
+        type: String,
+        default: null,
+      },
+
+      amount: {
+        type: Number,
+        default: 0,
+      },
+
+      currency: {
+        type: String,
+        default: "INR",
+      },
+
+      status: {
+        type: String,
+        enum: ["created", "success", "failed"],
+        default: "created",
+      },
+
+      paidAt: {
+        type: Date,
+        default: null,
+      },
+
+      gatewayResponse: {
+        type: mongoose.Schema.Types.Mixed,
+        default: {},
+      },
+    },
   },
-  { timestamps: true }
+
+  { timestamps: true },
 );
 hotelCartSchema.index({
   userId: 1,
@@ -112,8 +162,4 @@ hotelCartSchema.index({
   tempBookingStatus: 1,
   "supplierResponse.bookingRefNo": 1,
 });
-export default mongoose.model(
-  "Hotelcart",
-  hotelCartSchema
-);
-
+export default mongoose.model("Hotelcart", hotelCartSchema);

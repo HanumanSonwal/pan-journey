@@ -1,19 +1,9 @@
-import PaymentFactory from "../src/modules/payments/adapters/payment.factory.js";
+import PaymentFactory from "../src/modules/gateways/adapters/payment.factory.js";
 
-const razorpay =
- PaymentFactory.create(
-   "razorpay"
- );
+const razorpay = PaymentFactory.create("razorpay");
 
-console.log(
- razorpay.constructor.name
-);
+console.log(razorpay.constructor.name);
 
-const stripe =
- PaymentFactory.create(
-   "stripe"
- );
+const stripe = PaymentFactory.create("stripe");
 
-console.log(
- stripe.constructor.name
-);
+console.log(stripe.constructor.name);

@@ -1,14 +1,11 @@
-import StripeAdapter from "../src/modules/payments/adapters/stripe.adapter.js"
+import StripeAdapter from "../src/modules/gateways/adapters/stripe.adapter.js";
 
-const gateway =
- new StripeAdapter();
+const gateway = new StripeAdapter();
 
-const result =
- await gateway.createOrder({
+const result = await gateway.createOrder({
+  amount: 10,
 
-   amount:10,
-
-   currency:"usd"
- });
+  currency: "usd",
+});
 
 console.log(result);
