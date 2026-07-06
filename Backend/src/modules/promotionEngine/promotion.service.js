@@ -6,14 +6,11 @@ CREATE COUPON (ADMIN)
 =========================================
 */
 
-export const createCouponService =
-  async (payload) => {
-    const coupon =
-      await Coupon.create(payload);
+export const createCouponService = async (payload) => {
+  const coupon = await Coupon.create(payload);
 
-    return coupon;
-  };
-
+  return coupon;
+};
 
 /*
 =========================================
@@ -21,109 +18,75 @@ AUTO FIND BEST COUPON
 =========================================
 */
 
-export const findBestCoupon =
-  async ({
-    module,
-    bookingAmount,
-    serviceTax,
-  }) => {
-const now = new Date();
-    const coupons =
-      await Coupon.find({
-        applicableModules: {
-          $in: [module],
-        },
-        isAutoApply: true,
-        isActive: true,
-         minAmount: { $lte: totalAmount },
+export const findBestCoupon = async ({ module, bookingAmount, serviceTax }) => {
+  const now = new Date();
+  const coupons = await Coupon.find({
+    applicableModules: {
+      $in: [module],
+    },
+    isAutoApply: true,
+    isActive: true,
+
     "validity.startDate": { $lte: now },
     "validity.endDate": { $gte: now },
-      });
+  });
 
-    let bestCoupon = null;
-    let bestDiscount = 0;
+  let bestCoupon = null;
+  let bestDiscount = 0;
 
-    let availableCoupons = [];
+  let availableCoupons = [];
 
-    const maxAllowedDiscount =
-      serviceTax * 0.7;
+  const maxAllowedDiscount = serviceTax * 0.7;
 
-    for (const coupon of coupons) {
-
-      // minimum amount validation
-      if (
-        bookingAmount <
-        coupon.minAmount
-      ) {
-        continue;
-      }
-
-      // expiry check
-      if (
-        coupon.expiresAt &&
-        coupon.expiresAt <
-          new Date()
-      ) {
-        continue;
-      }
-
-      let discount = 0;
-
-      // flat discount
-      if (
-        coupon.discountType ===
-        "flat"
-      ) {
-        discount =
-          coupon.discountValue;
-      }
-
-      // percentage discount
-      if (
-        coupon.discountType ===
-        "percent"
-      ) {
-        discount =
-          (bookingAmount *
-            coupon.discountValue) /
-          100;
-      }
-
-      // max cap = 70% of service tax
-      if (
-        discount >
-        maxAllowedDiscount
-      ) {
-        discount =
-          maxAllowedDiscount;
-      }
-
-      // push all available coupons
-      availableCoupons.push({
-        code: coupon.code,
-        title: coupon.title,
-        discount,
-      });
-
-      // choose best coupon
-      if (
-        discount >
-        bestDiscount
-      ) {
-        bestDiscount =
-          discount;
-
-        bestCoupon = coupon;
-      }
+  for (const coupon of coupons) {
+    // minimum amount validation
+    if (bookingAmount < coupon.minAmount) {
+      continue;
     }
 
-    return {
-      bestCoupon,
-      bestDiscount,
-      availableCoupons,
-    };
-  };
+    // expiry check
+    if (coupon.expiresAt && coupon.expiresAt < new Date()) {
+      continue;
+    }
 
+    let discount = 0;
+
+    // flat discount
+    if (coupon.discountType === "flat") {
+      discount = coupon.discountValue;
+    }
+
+    // percentage discount
+    if (coupon.discountType === "percent") {
+      discount = (bookingAmount * coupon.discountValue) / 100;
+    }
+
+    // max cap = 70% of service tax
+    if (discount > maxAllowedDiscount) {
+      discount = maxAllowedDiscount;
+    }
+
+    // push all available coupons
+    availableCoupons.push({
+      code: coupon.code,
+      title: coupon.title,
+      discount,
+    });
+
+    // choose best coupon
+    if (discount > bestDiscount) {
+      bestDiscount = discount;
+
+      bestCoupon = coupon;
+    }
+  }
+
+  return {
+    bestCoupon,
+    bestDiscount,
+    availableCoupons,
+  };
+};
 
 /*
 =========================================
@@ -131,324 +94,222 @@ MANUAL APPLY COUPON
 =========================================
 */
 
-export const applyManualCoupon =
-  async ({
-    booking,
-    couponCode,
-    module,
-  }) => {
+export const applyManualCoupon = async ({ booking, couponCode, module }) => {
+  const coupon = await Coupon.findOne({
+    code: couponCode,
+    isActive: true,
+  });
 
-    const coupon =
-      await Coupon.findOne({
-        code: couponCode,
-        isActive: true,
-      });
+  if (!coupon) {
+    throw new Error("Invalid coupon");
+  }
 
-    if (!coupon) {
-      throw new Error(
-        "Invalid coupon"
-      );
-    }
+  // module check
+  if (!coupon.applicableModules.includes(module)) {
+    throw new Error("Coupon not valid for this module");
+  }
 
-    // module check
-    if (
-      !coupon.applicableModules.includes(
-        module
-      )
-    ) {
-      throw new Error(
-        "Coupon not valid for this module"
-      );
-    }
+  // expiry check
+  if (coupon.expiresAt && coupon.expiresAt < new Date()) {
+    throw new Error("Coupon expired");
+  }
 
-    // expiry check
-    if (
-      coupon.expiresAt &&
-      coupon.expiresAt <
-        new Date()
-    ) {
-      throw new Error(
-        "Coupon expired"
-      );
-    }
+  let discount = 0;
 
-    let discount = 0;
+  if (coupon.discountType === "flat") {
+    discount = coupon.discountValue;
+  }
 
-    if (
-      coupon.discountType ===
-      "flat"
-    ) {
-      discount =
-        coupon.discountValue;
-    }
+  if (coupon.discountType === "percent") {
+    discount = (booking.pricing.finalSellingPrice * coupon.discountValue) / 100;
+  }
 
-    if (
-      coupon.discountType ===
-      "percent"
-    ) {
-      discount =
-        (booking.pricing
-          .finalSellingPrice *
-          coupon.discountValue) /
-        100;
-    }
+  const maxAllowedDiscount = booking.pricing.serviceTaxAmount * 0.7;
 
-    const maxAllowedDiscount =
-      booking.pricing
-        .serviceTaxAmount *
-      0.7;
+  if (discount > maxAllowedDiscount) {
+    discount = maxAllowedDiscount;
+  }
 
-    if (
-      discount >
-      maxAllowedDiscount
-    ) {
-      discount =
-        maxAllowedDiscount;
-    }
+  booking.offer = {
+    couponCode: coupon.code,
 
-    booking.offer = {
-      couponCode:
-        coupon.code,
+    couponDiscount: discount,
 
-      couponDiscount:
-        discount,
-
-      autoDiscount:
-        discount,
-    };
-
-    booking.payableAmount =
-      booking.pricing
-        .finalSellingPrice -
-      discount;
-
-    await booking.save();
-
-    return booking;
+    autoDiscount: discount,
   };
 
-  // export const getAllCouponsService =
-  // async () => {
-  //   const coupons =
-  //     await Coupon.find()
-  //       .sort({ createdAt: -1 });
+  booking.payableAmount = booking.pricing.finalSellingPrice - discount;
 
-  //   return coupons;
-  // };
+  await booking.save();
 
-export const getAllCouponsService =
-  async (queryParams = {}) => {
+  return booking;
+};
 
-    const {
-      isActive,
-      module,
-      startDate,
-      endDate,
-      search,
-      page = 1,
-      limit = 10
-    } = queryParams;
+// export const getAllCouponsService =
+// async () => {
+//   const coupons =
+//     await Coupon.find()
+//       .sort({ createdAt: -1 });
 
-    let filter = {};
+//   return coupons;
+// };
 
-    const pageNumber =
-      Number(page);
+export const getAllCouponsService = async (queryParams = {}) => {
+  const {
+    isActive,
+    module,
+    startDate,
+    endDate,
+    search,
+    page = 1,
+    limit = 10,
+  } = queryParams;
 
-    const limitNumber =
-      Number(limit);
+  let filter = {};
 
-    const skip =
-      (pageNumber - 1) *
-      limitNumber;
+  const pageNumber = Number(page);
 
-    /* ==========================
+  const limitNumber = Number(limit);
+
+  const skip = (pageNumber - 1) * limitNumber;
+
+  /* ==========================
        SEARCH BY CODE / TITLE
     ========================== */
 
-    if (search) {
-      filter.$or = [
-        {
-          code: {
-            $regex: search,
-            $options: "i"
-          }
+  if (search) {
+    filter.$or = [
+      {
+        code: {
+          $regex: search,
+          $options: "i",
         },
+      },
 
-        {
-          title: {
-            $regex: search,
-            $options: "i"
-          }
-        }
-      ];
-    }
+      {
+        title: {
+          $regex: search,
+          $options: "i",
+        },
+      },
+    ];
+  }
 
-    /* ==========================
+  /* ==========================
        STATUS FILTER
     ========================== */
 
-    if (
-      isActive !== undefined
-    ) {
-      filter.isActive =
-        isActive === "true";
-    }
+  if (isActive !== undefined) {
+    filter.isActive = isActive === "true";
+  }
 
-    /* ==========================
+  /* ==========================
        MODULE FILTER
     ========================== */
 
-    if (module) {
-      filter.applicableModules =
-        module;
-    }
+  if (module) {
+    filter.applicableModules = module;
+  }
 
-    /* ==========================
+  /* ==========================
        DATE FILTER
     ========================== */
 
-    if (
-      startDate ||
-      endDate
-    ) {
-
-      if (startDate) {
-        filter[
-          "validity.startDate"
-        ] = {
-          $gte: new Date(
-            startDate
-          )
-        };
-      }
-
-      if (endDate) {
-        filter[
-          "validity.endDate"
-        ] = {
-          $lte: new Date(
-            endDate
-          )
-        };
-      }
+  if (startDate || endDate) {
+    if (startDate) {
+      filter["validity.startDate"] = {
+        $gte: new Date(startDate),
+      };
     }
 
-    /* ==========================
+    if (endDate) {
+      filter["validity.endDate"] = {
+        $lte: new Date(endDate),
+      };
+    }
+  }
+
+  /* ==========================
        GET TOTAL COUNT
     ========================== */
 
-    const totalCoupons =
-      await Coupon.countDocuments(
-        filter
-      );
+  const totalCoupons = await Coupon.countDocuments(filter);
 
-    /* ==========================
+  /* ==========================
        FETCH DATA
     ========================== */
 
-    const coupons =
-      await Coupon.find(
-        filter
-      )
-        .sort({
-          createdAt: -1
-        })
-        .skip(skip)
-        .limit(limitNumber);
+  const coupons = await Coupon.find(filter)
+    .sort({
+      createdAt: -1,
+    })
+    .skip(skip)
+    .limit(limitNumber);
 
-   return {
+  return {
     coupons,
 
-      pagination: {
-        totalRecords:
-          totalCoupons,
+    pagination: {
+      totalRecords: totalCoupons,
 
-        currentPage:
-          pageNumber,
+      currentPage: pageNumber,
 
-        totalPages:
-          Math.ceil(
-            totalCoupons /
-            limitNumber
-          ),
+      totalPages: Math.ceil(totalCoupons / limitNumber),
 
-        limit:
-          limitNumber
-      }}
-    
+      limit: limitNumber,
+    },
   };
+};
 // /*
 // ====================================
 // GET SINGLE COUPON
 // ====================================
 // */
-export const getSingleCouponService =
-  async (couponId) => {
-    const coupon =
-      await Coupon.findById(couponId);
+export const getSingleCouponService = async (couponId) => {
+  const coupon = await Coupon.findById(couponId);
 
-    if (!coupon) {
-      throw new Error(
-        "Coupon not found"
-      );
-    }
+  if (!coupon) {
+    throw new Error("Coupon not found");
+  }
 
-    return coupon;
-  };
+  return coupon;
+};
 
 /*
 ====================================
 UPDATE COUPON
 ====================================
 */
-export const updateCouponAdminService =
-  async (couponId, payload) => {
-    const coupon =
-      await Coupon.findByIdAndUpdate(
-        couponId,
-        payload,
-        { new: true }
-      );
+export const updateCouponAdminService = async (couponId, payload) => {
+  const coupon = await Coupon.findByIdAndUpdate(couponId, payload, {
+    new: true,
+  });
 
-    if (!coupon) {
-      throw new Error(
-        "Coupon not found"
-      );
-    }
+  if (!coupon) {
+    throw new Error("Coupon not found");
+  }
 
-    return coupon;
-  };
-  export const updateCouponStatusService =
-  async (couponId, isActive) => {
+  return coupon;
+};
+export const updateCouponStatusService = async (couponId, isActive) => {
+  const coupon = await Coupon.findByIdAndUpdate(
+    couponId,
+    { isActive },
+    { new: true },
+  );
 
-    const coupon =
-      await Coupon.findByIdAndUpdate(
-        couponId,
-        { isActive },
-        { new: true }
-      );
+  if (!coupon) {
+    throw new Error("Coupon not found");
+  }
 
-    if (!coupon) {
-      throw new Error(
-        "Coupon not found"
-      );
-    }
+  return coupon;
+};
+export const deleteCouponAdminService = async (couponId) => {
+  const coupon = await Coupon.findByIdAndDelete(couponId);
 
-    return coupon;
-  };
-  export const deleteCouponAdminService =
-  async (couponId) => {
+  if (!coupon) {
+    throw new Error("Coupon not found");
+  }
 
-    const coupon =
-      await Coupon.findByIdAndDelete(
-        couponId
-      );
-
-    if (!coupon) {
-      throw new Error(
-        "Coupon not found"
-      );
-    }
-
-    return coupon;
-  };
+  return coupon;
+};

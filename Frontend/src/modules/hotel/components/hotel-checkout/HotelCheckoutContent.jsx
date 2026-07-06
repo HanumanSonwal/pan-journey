@@ -32,37 +32,47 @@ export default function HotelCheckoutContent({
   const priceSummary = booking?.priceSummary || {};
 
   return (
-    <div className="min-h-screen bg-[#eef6fd] py-6 md:py-8">
+    <div className="min-h-screen bg-[#eef6fd] !py-6 md:!py-8">
       <div className="mx-auto max-w-[1320px] px-3 md:px-5">
         {/* HEADER */}
-        <div className="mb-6 rounded-2xl border border-[#d8edf9] bg-white p-5 shadow-sm">
-          <Title level={2} className="!mb-1 !text-[28px]">
-            Secure Checkout
-          </Title>
+        <div className="mb-3 rounded border border-[#d8edf9] bg-white px-5 py-4 shadow-sm">
+          <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+            <div>
+              <Title
+                level={2}
+                className="font-roboto! !mb-0 !text-[22px] !font-semibold"
+              >
+                Secure Checkout
+              </Title>
 
-          <Text className="block text-[15px] text-gray-500">
-            Complete your payment to confirm your hotel booking.
-          </Text>
+              <Text className="font-roboto! !mt-0 block text-[14px] text-gray-500">
+                Complete your payment to confirm your hotel booking.
+              </Text>
+            </div>
 
-          <Text className="mt-2 block font-medium text-[#0f766e]">
-            Booking Reference : {booking?.bookingReference}
-          </Text>
+            <div className="mt-3 md:mt-0">
+              <div className="rounded-lg bg-[#f0f9ff] px-4 py-2">
+                <Text className="block text-[11px] tracking-wide text-gray-500 uppercase">
+                  Booking Reference
+                </Text>
+
+                <Text className="text-[15px] font-semibold text-[#0f766e]">
+                  {booking?.bookingReference}
+                </Text>
+              </div>
+            </div>
+          </div>
         </div>
 
         <Row gutter={[24, 24]} align="top">
           {/* LEFT SECTION */}
           <Col xs={24} xl={16}>
-            <div className="space-y-5">
+            <div className="flex flex-col gap-3">
               <BookingSummaryCard
                 booking={booking}
                 hotel={hotel}
                 room={room}
                 search={search}
-              />
-
-              <CustomerSummaryCard
-                customer={customer}
-                guestDetails={guestDetails}
               />
 
               {/* Mobile Coupon */}
@@ -94,6 +104,11 @@ export default function HotelCheckoutContent({
           {/* RIGHT SECTION */}
           <Col xs={24} xl={8}>
             <div className="hidden xl:sticky xl:top-24 xl:block">
+              <CustomerSummaryCard
+                customer={customer}
+                guestDetails={guestDetails}
+              />
+
               <CouponCard
                 coupons={coupons}
                 priceSummary={priceSummary}

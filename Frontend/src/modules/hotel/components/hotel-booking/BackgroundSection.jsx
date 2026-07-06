@@ -6,7 +6,7 @@ export default function BackgroundSection() {
   const router = useRouter();
 
   return (
-    <div className="relative left-1/2 -mt-8 min-h-[150px] w-screen -translate-x-1/2 bg-[#76B7E5]">
+    <div className="relative left-1/2  min-h-[150px] w-screen -translate-x-1/2 bg-[#76B7E5]">
       <div className="mx-auto max-w-7xl px-6 pt-10">
         {/* Back Button */}
         <button

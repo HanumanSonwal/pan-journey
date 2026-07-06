@@ -1,11 +1,11 @@
 "use client";
-
 import {
   CheckCircleFilled,
+  CheckOutlined,
   GiftOutlined,
-  TagOutlined,
 } from "@ant-design/icons";
 import { App, Button, Card, Empty, Tag, Typography } from "antd";
+import Image from "next/image";
 
 const { Title, Text } = Typography;
 
@@ -16,6 +16,8 @@ export default function CouponCard({
   loading = false,
 }) {
   const { message } = App.useApp();
+
+  console.log("coupons in check out page", coupons);
 
   const formatPrice = (value) =>
     Number(value || 0).toLocaleString("en-IN", {
@@ -34,7 +36,7 @@ export default function CouponCard({
   return (
     <Card
       variant={false}
-      className="rounded-2xl shadow-[0_6px_18px_rgba(0,0,0,0.08)]"
+      className="rounded shadow-[0_6px_18px_rgba(0,0,0,0.08)]"
       styles={{
         body: {
           padding: 20,
@@ -71,15 +73,23 @@ export default function CouponCard({
             return (
               <div
                 key={coupon._id}
-                className={`rounded-xl border p-4 transition-all duration-200 ${
+                className={`rounded border border-[#E5EEF7] bg-white p-4 shadow-sm transition-all duration-200 hover:shadow-md ${
                   applied
                     ? "border-green-300 bg-green-50"
                     : "border-gray-200 hover:border-[#0f766e]"
                 }`}
               >
-                <div className="flex items-start justify-between gap-4">
+                <div>
+                  <div className="relative mb-4 h-[140px] w-full overflow-hidden rounded">
+                    <Image
+                      src={coupon.image || "/images/no-image.jpg"}
+                      alt={coupon.title}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
                   <div className="flex-1">
-                    <div className="mb-2 flex flex-wrap items-center gap-2">
+                    <div className="mb-3 flex flex-wrap items-center gap-2">
                       <Tag color={applied ? "green" : "blue"}>
                         {coupon.code}
                       </Tag>
@@ -95,26 +105,46 @@ export default function CouponCard({
                       )}
                     </div>
 
-                    <Title level={5} className="!mb-1 !text-[16px]">
-                      {coupon.title}
-                    </Title>
+                    <div className="flex justify-between">
+                      <Title
+                        level={5}
+                        className="font-roboto! !mb-1 !text-[14px] !font-semibold"
+                      >
+                        {coupon.title}
+                      </Title>
 
-                    <Text className="block text-gray-600">
-                      {coupon.discountType === "flat"
-                        ? `Flat ₹${formatPrice(coupon.discountValue)} OFF`
-                        : `${coupon.discountValue}% OFF`}
-                    </Text>
+                      <div className="!m-0! font-roboto! font-bold !text-[#0F766E]">
+                        {coupon.discountType === "flat"
+                          ? `₹${formatPrice(coupon.discountValue)} OFF`
+                          : `${coupon.discountValue}% OFF`}
+                      </div>
+                    </div>
 
-                    <div className="mt-2 flex items-center gap-2 text-gray-500">
-                      <TagOutlined className="text-[#0f766e]" />
+                    <div className="mt-3 space-y-2">
+                      <div className="flex items-center gap-2">
+                        <CheckOutlined className="text-[12px] text-[#0f766e]!" />
 
-                      <Text className="text-xs">
-                        Valid on bookings above ₹{formatPrice(coupon.minAmount)}
-                      </Text>
+                        <Text className="text-[13px] text-gray-600">
+                          Minimum Booking:
+                          <strong> ₹{formatPrice(coupon.minAmount)}</strong>
+                        </Text>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <CheckOutlined className="text-[12px] text-[#0f766e]!" />
+
+                        <Text className="text-[13px] text-gray-600">
+                          Max Service Tax Discount:
+                          <strong>
+                            {" "}
+                            {coupon.maxDiscountPercentOfServiceTax}%
+                          </strong>
+                        </Text>
+                      </div>
                     </div>
 
                     {applied && totalDiscount > 0 && (
-                      <div className="mt-3 rounded-lg border border-green-200 bg-white px-3 py-2">
+                      <div className="my-3 rounded border border-green-200 bg-white px-3 py-2">
                         <Text className="font-medium text-green-700">
                           🎉 You saved ₹{formatPrice(totalDiscount)}
                         </Text>
@@ -124,17 +154,19 @@ export default function CouponCard({
 
                   <div className="shrink-0">
                     {applied ? (
-                      <Button disabled type="default">
+                      <Button block size="large" disabled type="default">
                         Applied
                       </Button>
                     ) : (
                       <Button
+                        block
+                        size="large"
                         type="primary"
                         loading={loading}
-                        className="!bg-[#0f766e]"
+                        className="my-3! !bg-[#0f766e]"
                         onClick={() => handleApply(coupon)}
                       >
-                        Apply
+                        Apply Coupon
                       </Button>
                     )}
                   </div>
@@ -142,18 +174,6 @@ export default function CouponCard({
               </div>
             );
           })}
-        </div>
-      )}
-
-      {totalDiscount > 0 && (
-        <div className="mt-4 rounded-xl border border-green-200 bg-[#F6FFED] px-4 py-3">
-          <div className="flex items-center justify-between">
-            <Text strong>Total Discount</Text>
-
-            <Text strong className="!text-lg !text-green-700">
-              ₹ {formatPrice(totalDiscount)}
-            </Text>
-          </div>
         </div>
       )}
     </Card>
