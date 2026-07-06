@@ -62,7 +62,7 @@ export const hotelTempBookingService = async (payload, pricingData) => {
     const couponData = await findBestCoupon({
       module: "hotel",
 
-      bookingAmount: pricingData.finalSellingPrice,
+      bookingAmount: pricingData.finalPrice-pricingData.platformFeeAndTax,
 
       serviceTax: pricingData.serviceTaxAmount,
     });
@@ -279,13 +279,8 @@ export const getTempBookingByBookingRefService = async (
   }
 
   const baseAmount =
-    booking.pricing.finalPrice -
-    booking.pricing.serviceCharge -
-    booking.pricing.platformFeeAndTax;
-  const totalAmount =
-    baseAmount +
-    booking.pricing.serviceCharge +
-    booking.pricing.platformFeeAndTax;
+    booking.pricing.finalPrice - booking.pricing.platformFeeAndTax;
+  const totalAmount = baseAmount + booking.pricing.platformFeeAndTax;
   const availableCoupons = await Coupon.find({
     isActive: true,
     applicableModules: "hotel",
@@ -334,8 +329,10 @@ export const getTempBookingByBookingRefService = async (
       baseAmount,
       serviceCharge: booking?.pricing?.serviceCharge || 0,
       platformChargeandTax: booking?.pricing?.platformFeeAndTax || 0,
-      couponCode: booking?.offer?.couponCode || null,
-      couponDiscount: booking?.offer?.couponDiscount || 0,
+      couponCode:
+        booking?.offer?.couponCode || booking?.offer?.autoCouponCode || null,
+      couponDiscount:
+        booking?.offer?.couponDiscount || booking?.offer?.autoDiscount || 0,
       totalPayableAmountAfterDiscount: booking?.payableAmount || 0,
     },
     availableCoupons: availableCoupons,
