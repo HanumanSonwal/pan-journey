@@ -39,12 +39,12 @@ const resolveMarkup = ({
 
   if (cityMarkup) return cityMarkup;
 
-  console.log("incoming city =", normalizedCity);
-  console.log(
-    "db cities =",
-    cityMarkups.map((m) => m.cityName),
-  );
-  console.log("matched cityMarkup =", cityMarkup);
+  // console.log("incoming city =", normalizedCity);
+  // console.log(
+  //   "db cities =",
+  //   cityMarkups.map((m) => m.cityName),
+  // );
+  // console.log("matched cityMarkup =", cityMarkup);
 
   // state
   const stateMarkup = stateMarkups.find(
@@ -72,9 +72,9 @@ export const applyPricing = async (
   try {
     const hotelId = supplierData.hotelId;
     const { cityName, stateName, countryCode } = hotelMeta;
-    console.log("hotelMeta =>", hotelMeta);
-    console.log("hotelId after destructure =>", hotelId);
-    console.log("supplierData.hotelId =>", supplierData.hotelId);
+    // console.log("hotelMeta =>", hotelMeta);
+    // console.log("hotelId after destructure =>", hotelId);
+    // console.log("supplierData.hotelId =>", supplierData.hotelId);
 
     const allMarkups = await Markup.find({
       isActive: true,
@@ -102,7 +102,7 @@ export const applyPricing = async (
       to: currency,
     });
 
-    console.log("Currency Rate =", rate);
+    // console.log("Currency Rate =", rate);
     supplierData?.supplierResponse?.RatePlanRecommendations?.forEach(
       (recommendation) => {
         // STEP 1 → currency conversion main amount

@@ -79,11 +79,17 @@ activeCache = await HotelCache.findOne(cacheLookup);
         roomCount: searchContext.RoomCount || 1,
       };
 
-      console.log("🔍 Cache Recheck Query:", cacheLookup);
+       console.log("🔍 Cache Recheck Query:", cacheLookup);
 
-      activeCache = await HotelCache.findOne(cacheLookup);
+      // activeCache = await HotelCache.findOne(cacheLookup);
 
-      console.log("📦 Cache found after search:", !!activeCache);
+      const caches = await HotelCache.find(cacheLookup);
+
+console.log("Total matched:", caches.length);
+
+activeCache = caches[0];
+
+      //console.log("📦 Cache found after search:", !!activeCache);
 
       if (!activeCache) {
         throw new Error("Search ran but cache not created");
@@ -92,7 +98,7 @@ activeCache = await HotelCache.findOne(cacheLookup);
       // STEP 5 → find hotel again
       hotel = activeCache.hotels.find((h) => h.hotelId === String(hotelId));
 
-      console.log("🏨 Hotel found after fallback:", !!hotel);
+      //console.log("🏨 Hotel found after fallback:", !!hotel);
 
       if (!hotel) {
         throw new Error("Hotel not found even after cache refresh");
@@ -105,8 +111,8 @@ activeCache = await HotelCache.findOne(cacheLookup);
     const supplierHotelKey = hotel.hotelkey;
     const searchKey = activeCache.searchKey;
 
-    console.log("Supplier HotelKey:", supplierHotelKey);
-    console.log("Supplier SearchKey:", searchKey);
+    // console.log("Supplier HotelKey:", supplierHotelKey);
+    // console.log("Supplier SearchKey:", searchKey);
 
     // STEP 7 → supplier payload
     const payload = {
@@ -134,9 +140,9 @@ activeCache = await HotelCache.findOne(cacheLookup);
       supplierResponse: data,
     };
   } catch (error) {
-    console.error("❌ Supplier Hotel Detail Error:");
-    console.error("Message:", error.message);
-    console.error("Response:", error?.response?.data);
+    // console.error("❌ Supplier Hotel Detail Error:");
+    // console.error("Message:", error.message);
+    // console.error("Response:", error?.response?.data);
 
     throw new Error(error.message || "Supplier HotelDetails API failed");
   }
