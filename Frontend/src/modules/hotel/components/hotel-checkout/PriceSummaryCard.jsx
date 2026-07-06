@@ -1,10 +1,14 @@
 "use client";
 
-import { Card, Divider, Tag, Typography } from "antd";
+import { Button, Card, Divider, Tag, Typography } from "antd";
 
 const { Title, Text } = Typography;
 
-export default function PriceSummaryCard({ priceSummary = {} }) {
+export default function PriceSummaryCard({
+  priceSummary = {},
+  onRemoveCoupon,
+  loading = false,
+}) {
   const formatPrice = (value) =>
     Number(value || 0).toLocaleString("en-IN", {
       minimumFractionDigits: 2,
@@ -50,6 +54,14 @@ export default function PriceSummaryCard({ priceSummary = {} }) {
         <Text strong>₹ {formatPrice(platformChargeandTax)}</Text>
       </div>
 
+      <Divider className="!my-4" />
+
+      {/* Total Amount */}
+      <div className="flex items-center justify-between">
+        <Text className="text-gray-600">Total Amount</Text>
+        <Text strong>₹ {formatPrice(totalAmount)}</Text>
+      </div>
+
       {/* Coupon */}
       {couponDiscount > 0 && (
         <>
@@ -60,13 +72,22 @@ export default function PriceSummaryCard({ priceSummary = {} }) {
               <Text className="text-gray-600">Coupon Discount</Text>
 
               {couponCode && (
-                <div className="mt-2">
+                <div className="mt-2 flex items-center gap-2">
                   <Tag
                     color="green"
                     className="rounded-full px-3 py-1 font-medium"
                   >
                     {couponCode}
                   </Tag>
+
+                  <Button
+                    danger
+                    size="small"
+                    loading={loading}
+                    onClick={onRemoveCoupon}
+                  >
+                    Remove
+                  </Button>
                 </div>
               )}
             </div>

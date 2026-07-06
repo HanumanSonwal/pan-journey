@@ -27,7 +27,7 @@ export const findBestCoupon =
     bookingAmount,
     serviceTax,
   }) => {
-
+const now = new Date();
     const coupons =
       await Coupon.find({
         applicableModules: {
@@ -35,6 +35,9 @@ export const findBestCoupon =
         },
         isAutoApply: true,
         isActive: true,
+       
+    "validity.startDate": { $lte: now },
+    "validity.endDate": { $gte: now },
       });
 
     let bestCoupon = null;

@@ -1,7 +1,11 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { getBookingDetails } from "../services/hotelCheckout.service";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  applyCoupon,
+  getBookingDetails,
+  removeCoupon,
+} from "../services/hotelCheckout.service";
 
 export const useBookingDetails = (bookingRefNo) => {
   return useQuery({
@@ -16,5 +20,25 @@ export const useBookingDetails = (bookingRefNo) => {
     retry: 1,
 
     refetchOnWindowFocus: false,
+  });
+};
+
+/**
+ * Apply Coupon
+ */
+export const useApplyCoupon = (options = {}) => {
+  return useMutation({
+    mutationFn: applyCoupon,
+    ...options,
+  });
+};
+
+/**
+ * Remove Coupon
+ */
+export const useRemoveCoupon = (options = {}) => {
+  return useMutation({
+    mutationFn: removeCoupon,
+    ...options,
   });
 };

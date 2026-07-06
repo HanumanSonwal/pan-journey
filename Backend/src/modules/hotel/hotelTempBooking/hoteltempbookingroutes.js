@@ -1,12 +1,29 @@
 import express from "express";
 import { protectCustomer } from "./../../../middleware/customerAuth.middleware.js";
-import { hotelTempBookingController, updateCouponController ,getTempBookingByBookingRefController} from "./hoteltempbookingController.js";
+import {
+  getTempBookingByBookingRefController,
+  hotelTempBookingController,
+  removeCouponController,
+  updateCouponController,
+} from "./hoteltempbookingController.js";
 
 const router = express.Router();
 
 router.post("/hotel-temp-booking", protectCustomer, hotelTempBookingController);
-router.put("/hotel-temp-booking/couponApply", protectCustomer, updateCouponController);
-router.get( "/get-booking-details/:bookingRefNo", protectCustomer,getTempBookingByBookingRefController);
-
+router.put(
+  "/hotel-temp-booking/couponApply",
+  protectCustomer,
+  updateCouponController,
+);
+router.put(
+  "/hotel-temp-booking/couponRemove",
+  protectCustomer,
+  removeCouponController,
+);
+router.get(
+  "/get-booking-details/:bookingRefNo",
+  protectCustomer,
+  getTempBookingByBookingRefController,
+);
 
 export default router;

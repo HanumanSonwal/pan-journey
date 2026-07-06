@@ -62,7 +62,7 @@ export const hotelTempBookingService = async (payload, pricingData) => {
     const couponData = await findBestCoupon({
       module: "hotel",
 
-      bookingAmount: pricingData.finalPrice-pricingData.platformFeeAndTax,
+      bookingAmount: pricingData.finalPrice - pricingData.platformFeeAndTax,
 
       serviceTax: pricingData.serviceTaxAmount,
     });
@@ -261,15 +261,55 @@ export const updateCouponService = async ({ tempBookingId, couponCode }) => {
 
   return booking;
 };
+
+export const removeCouponService = async ({ tempBookingId }) => {
+  const booking = await HotelTempBooking.findById(tempBookingId);
+
+  if (!booking) {
+    throw new Error("Booking not found");
+  }
+
+  // agar manual coupon laga hi nahi hai
+  if (!booking.offer?.couponCode) {
+    throw new Error("No coupon applied");
+  }
+
+  // Auto coupon restore karna
+  const couponData = await findBestCoupon({
+    module: "hotel",
+    bookingAmount:
+      booking.pricing.finalPrice - booking.pricing.platformFeeAndTax,
+    serviceTax: booking.pricing.serviceTaxAmount,
+  });
+
+  const autoDiscount = couponData?.bestDiscount || 0;
+
+  booking.offer = {
+    couponCode: null,
+    couponDiscount: 0,
+
+    autoCouponCode: null,
+    autoDiscount: 0,
+  };
+
+  booking.payableAmount = booking.pricing.finalPrice;
+
+  console.log("AFTER REMOVE =>", booking.offer);
+  console.log("PAYABLE =>", booking.payableAmount);
+
+  await booking.save();
+
+  return booking;
+};
 const now = new Date();
 export const getTempBookingByBookingRefService = async (
   userId,
   bookingRefNo,
 ) => {
   const now = new Date();
-console.time("Total Service");
+  console.time("Total Service");
 
-console.time("Booking Query");
+  console.time("Booking Query");
 
   const booking = await HotelTempBooking.findOne({
     userId,
@@ -283,15 +323,12 @@ console.time("Booking Query");
   }
 
   const baseAmount =
-    booking.pricing.finalPrice -
-    booking.pricing.platformFeeAndTax;
+    booking.pricing.finalPrice - booking.pricing.platformFeeAndTax;
 
-  const totalAmount =
-    baseAmount +
-    booking.pricing.platformFeeAndTax;
-console.timeEnd("Booking Query");
+  const totalAmount = baseAmount + booking.pricing.platformFeeAndTax;
+  console.timeEnd("Booking Query");
 
-console.time("Coupon Query");
+  console.time("Coupon Query");
   const coupons = await Coupon.find({
     isActive: true,
     applicableModules: "hotel",
@@ -300,24 +337,22 @@ console.time("Coupon Query");
     "validity.endDate": { $gte: now },
   })
     .select(
-      "code title image discountType discountValue minAmount maxDiscountPercentOfServiceTax isAutoApply usageLimit usedCount"
+      "code title image discountType discountValue minAmount maxDiscountPercentOfServiceTax isAutoApply usageLimit usedCount",
     )
     .lean();
-    console.timeEnd("Coupon Query");
+  console.timeEnd("Coupon Query");
 
-console.timeEnd("Total Service");
+  console.timeEnd("Total Service");
 
   const availableCoupons = coupons.filter(
     (coupon) =>
-      coupon.usageLimit === null ||
-      coupon.usedCount < coupon.usageLimit
+      coupon.usageLimit === null || coupon.usedCount < coupon.usageLimit,
   );
 
   return {
     bookingId: booking._id,
 
-    bookingReference:
-      booking?.supplierResponse?.bookingRefNo || null,
+    bookingReference: booking?.supplierResponse?.bookingRefNo || null,
 
     supplier: booking.supplier,
 
@@ -343,18 +378,12 @@ console.timeEnd("Total Service");
       totalAmount,
       baseAmount,
       serviceCharge: booking?.pricing?.serviceCharge || 0,
-      platformChargeandTax:
-        booking?.pricing?.platformFeeAndTax || 0,
+      platformChargeandTax: booking?.pricing?.platformFeeAndTax || 0,
       couponCode:
-        booking?.offer?.couponCode ||
-        booking?.offer?.autoCouponCode ||
-        null,
+        booking?.offer?.couponCode || booking?.offer?.autoCouponCode || null,
       couponDiscount:
-        booking?.offer?.couponDiscount ||
-        booking?.offer?.autoDiscount ||
-        0,
-      totalPayableAmountAfterDiscount:
-        booking?.payableAmount || 0,
+        booking?.offer?.couponDiscount || booking?.offer?.autoDiscount || 0,
+      totalPayableAmountAfterDiscount: booking?.payableAmount || 0,
     },
 
     availableCoupons,
@@ -384,11 +413,11 @@ console.timeEnd("Total Service");
 
 //   const baseAmount =
 //     booking.pricing.finalPrice -
-   
+
 //     booking.pricing.platformFeeAndTax;
 //   const totalAmount =
 //     baseAmount +
-    
+
 //     booking.pricing.platformFeeAndTax;
 //   const availableCoupons = await Coupon.find({
 //     isActive: true,
