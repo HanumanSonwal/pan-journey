@@ -7,8 +7,7 @@ import { createOrder, verifyPayment ,refund} from "../controllers/payment.contro
 
 const router = express.Router();
 
-router.post("/create-order",protectCustomer,idempotencyMiddleware,createOrder,
-);
+router.post("/create-order",protectCustomer,createOrder);
 
 router.post("/verify-payment", protectCustomer, verifyPayment);
 router.post( "/refund", protectCustomer, refund);
