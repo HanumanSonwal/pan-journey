@@ -224,11 +224,11 @@ const fetchSupplierHotelsWithRetry = async (body) => {
 
     data = response.data;
 
-    console.log("🏨 HOTELS RECEIVED:", data?.HotelContents?.length || 0);
+    // console.log("🏨 HOTELS RECEIVED:", data?.HotelContents?.length || 0);
 
-    console.log("📦 MORE HOTELS:", data?.MoreHotels);
+    // console.log("📦 MORE HOTELS:", data?.MoreHotels);
 
-    console.log("🌱 SEED:", data?.HotelSeedValue);
+    // console.log("🌱 SEED:", data?.HotelSeedValue);
 
     if (data?.HotelContents && data.HotelContents.length > 0) {
       return {
@@ -256,10 +256,10 @@ export const searchHotelsFromSupplier = async (reqBody) => {
 
   const { filters, sort, pagination } = body;
 
-  console.log("\n=================================================");
-  console.log("🏨 HOTEL SEARCH STARTED");
-  console.log("🏙 CITY:", body.cityName);
-  console.log("=================================================\n");
+  // console.log("\n=================================================");
+  // console.log("🏨 HOTEL SEARCH STARTED");
+  // console.log("🏙 CITY:", body.cityName);
+  // console.log("=================================================\n");
 
   // let cache = await HotelCache.findOne({
   //   cityId: body.cityId,
@@ -278,26 +278,26 @@ export const searchHotelsFromSupplier = async (reqBody) => {
   if (cache) {
     console.log("⚡ CACHE HIT");
 
-    console.log("🏨 CACHED HOTELS:", cache.hotels?.length || 0);
+    // console.log("🏨 CACHED HOTELS:", cache.hotels?.length || 0);
   }
 
   /* =====================================================
      🌐 CACHE MISS
   ===================================================== */
   if (!cache) {
-    console.log("🌐 CACHE MISS → CALLING SUPPLIER");
+    // console.log("🌐 CACHE MISS → CALLING SUPPLIER");
 
     const { data, auth } = await fetchSupplierHotelsWithRetry(body);
 
-    console.log("\n================ SUPPLIER RESPONSE ================");
+    // console.log("\n================ SUPPLIER RESPONSE ================");
 
-    console.log(JSON.stringify(data, null, 2));
+    // console.log(JSON.stringify(data, null, 2));
 
-    console.log("===================================================\n");
+   // console.log("===================================================\n");
 
     const hotels = mergeHotels(data);
 
-    console.log("📦 FIRST PAGE HOTELS:", hotels.length);
+    // console.log("📦 FIRST PAGE HOTELS:", hotels.length);
 
     if (!hotels || hotels.length === 0) {
       throw new Error("No hotels received from supplier");
@@ -333,7 +333,7 @@ export const searchHotelsFromSupplier = async (reqBody) => {
        🚀 BACKGROUND PAGINATION
     ===================================================== */
     if (data?.MoreHotels || data?.HotelSeedValue) {
-      console.log("🚀 STARTING BACKGROUND PAGINATION");
+      // console.log("🚀 STARTING BACKGROUND PAGINATION");
 
       fetchRemainingHotelsInBackground(body, data, auth);
     }
@@ -348,17 +348,17 @@ export const searchHotelsFromSupplier = async (reqBody) => {
     from: "INR",
     to: body.currency,
   });
-  console.log("\n💰 AFTER CURRENCY CONVERSION");
-  console.log({
-    hotelId: hotelsData?.[0]?.hotelId,
-    hotelName: hotelsData?.[0]?.hotelName,
-    originalPrice: hotelsData?.[0]?.originalPrice,
-    convertedPrice: hotelsData?.[0]?.price,
-    originalTax: hotelsData?.[0]?.originalTax,
-    convertedTax: hotelsData?.[0]?.tax,
-    currency: body.currency,
-    rate,
-  });
+  // console.log("\n💰 AFTER CURRENCY CONVERSION");
+  // console.log({
+  //   hotelId: hotelsData?.[0]?.hotelId,
+  //   hotelName: hotelsData?.[0]?.hotelName,
+  //   originalPrice: hotelsData?.[0]?.originalPrice,
+  //   convertedPrice: hotelsData?.[0]?.price,
+  //   originalTax: hotelsData?.[0]?.originalTax,
+  //   convertedTax: hotelsData?.[0]?.tax,
+  //   currency: body.currency,
+  //   rate,
+  // });
 
   hotelsData = convertHotelPrices({
     hotels: hotelsData,
@@ -377,7 +377,7 @@ const hotelMarkups = allMarkups.filter(
 const cityMarkups = allMarkups.filter(
   (m) => m.level === "city"
 );
-console.log("COUNTRY TAX FETCHED =>", cityMarkups);
+// console.log("COUNTRY TAX FETCHED =>", cityMarkups);
 
 const stateMarkups = allMarkups.filter(
   (m) => m.level === "state"
@@ -401,7 +401,7 @@ const worldwideMarkups = allMarkups.filter(
   (m) => m.level === "worldwide"
 );
 
-console.log("WORLDWIDE =", worldwideMarkups);
+// console.log("WORLDWIDE =", worldwideMarkups);
 const pricedHotels = [];
 
 for (const hotel of hotelsData) {
@@ -438,21 +438,21 @@ for (const hotel of hotelsData) {
 }
 
 hotelsData = pricedHotels;
-  console.log("\n🛏️ AFTER ROOM MULTIPLIER");
-  console.log({
-    roomCount: body.RoomCount,
-    hotelId: hotelsData?.[0]?.hotelId,
-    hotelName: hotelsData?.[0]?.hotelName,
-    finalPrice: hotelsData?.[0]?.price,
-    finalTax: hotelsData?.[0]?.tax,
-  });
-  console.log("\n🔍 PIPELINE START");
+  // console.log("\n🛏️ AFTER ROOM MULTIPLIER");
+  // console.log({
+  //   roomCount: body.RoomCount,
+  //   hotelId: hotelsData?.[0]?.hotelId,
+  //   hotelName: hotelsData?.[0]?.hotelName,
+  //   finalPrice: hotelsData?.[0]?.price,
+  //   finalTax: hotelsData?.[0]?.tax,
+  // });
+  // console.log("\n🔍 PIPELINE START");
 
-  console.log("📦 INPUT HOTELS:", hotelsData.length);
+  // console.log("📦 INPUT HOTELS:", hotelsData.length);
 
   const filtered = filterHotels(hotelsData, filters);
 
-  console.log("🎯 AFTER FILTER:", filtered.length);
+  // console.log("🎯 AFTER FILTER:", filtered.length);
 
   const sorted = sortHotels(filtered, sort);
 
@@ -467,11 +467,11 @@ hotelsData = pricedHotels;
     limit,
   });
 
-  console.log("📄 PAGE:", page, "| LIMIT:", limit);
+  // console.log("📄 PAGE:", page, "| LIMIT:", limit);
 
-  console.log("📦 RETURNED HOTELS:", paginated.hotels.length);
+  // console.log("📦 RETURNED HOTELS:", paginated.hotels.length);
 
-  console.log("=================================================\n");
+  // console.log("=================================================\n");
  
   return {
     currency: body.currency,

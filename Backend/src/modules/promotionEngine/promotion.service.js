@@ -35,7 +35,7 @@ const now = new Date();
         },
         isAutoApply: true,
         isActive: true,
-       
+         minAmount: { $lte: totalAmount },
     "validity.startDate": { $lte: now },
     "validity.endDate": { $gte: now },
       });
