@@ -1,15 +1,11 @@
-import RazorpayAdapter from "../src/modules/payments/adapters/razorpay.adapter.js";
+import RazorpayAdapter from "../src/modules/gateways/adapters/razorpay.adapter.js";
 
-const gateway =
+const gateway = new RazorpayAdapter();
 
- new RazorpayAdapter();
+const result = await gateway.createOrder({
+  amount: 500,
 
-const result =
- await gateway.createOrder({
-
-   amount:500,
-
-   currency:"INR"
- });
+  currency: "INR",
+});
 
 console.log(result);

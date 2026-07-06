@@ -92,6 +92,7 @@ export const hotelTempBookingService = async (payload, pricingData) => {
         customerPostalCode: payload.CustomerPostalCode,
 
         occupantDetails: payload.OccupantDetails,
+        
       },
 
       hotelData: {
@@ -144,9 +145,10 @@ export const hotelTempBookingService = async (payload, pricingData) => {
         SUCCESS UPDATE
       */
 
-    dbRecord.tempBookingStatus = "success";
+    dbRecord.tempBookingStatus = "payment_pending";
 
     dbRecord.responseTime = responseTime;
+    
 
     dbRecord.supplierResponse = {
       bookingRefNo: response.data?.BookingRefNo || null,
@@ -164,6 +166,10 @@ export const hotelTempBookingService = async (payload, pricingData) => {
       discount: appliedDiscount,
 
       finalPayable: dbRecord.payableAmount,
+          paymentRequired: true,
+
+       nextAction: "PAYMENT",
+
 
       ...response.data,
     };

@@ -25,9 +25,9 @@ import tempbookingRoutes from "./modules/hotel/hotelTempBooking/hoteltempbooking
 import hotelTicketing from "./modules/hotel/hotelTicketing/hotelTicketing.route.js";
 import invoiceRoutes from "./modules/hotel/invoice/invoice.route.js";
 
+import paymentRoutes from "./modules/payments/payment.routes.js";
+import webhookRoutes from "./modules/gateways/routes/webhook.routes.js";
 import mediaRoutes from "./modules/media/media.routes.js";
-import paymentRoutes from "./modules/payments/routes/payment.routes.js";
-import webhookRoutes from "./modules/payments/routes/webhook.routes.js";
 import countryRoutes from "./modules/priceMarkup/countryData/country.routes.js";
 import markeupRoutes from "./modules/priceMarkup/markup/markup.routes.js";
 import stateRoutes from "./modules/priceMarkup/stateData/state.routes.js";
@@ -38,6 +38,8 @@ import tax from "./modules/tax/tax.route.js";
 import userRoutes from "./modules/user/user.routes.js";
 import wishlistRoutes from "./modules/wishlist/wishlist.routes.js";
 import testRoutes from "./test.routes.js";
+import path from "path";
+
 
 const app = express();
 app.set("trust proxy", 1);
@@ -64,6 +66,7 @@ app.use(currencyMiddleware);
 app.use(cookieParser());
 
 app.use(express.json());
+app.use(express.static("public"));
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/media", mediaRoutes);

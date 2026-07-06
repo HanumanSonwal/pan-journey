@@ -18,15 +18,21 @@ AUTO FIND BEST COUPON
 =========================================
 */
 
-export const findBestCoupon = async ({ module, bookingAmount, serviceTax }) => {
-  const now = new Date();
-  const coupons = await Coupon.find({
-    applicableModules: {
-      $in: [module],
-    },
-    isAutoApply: true,
-    isActive: true,
-
+export const findBestCoupon =
+  async ({
+    module,
+    bookingAmount,
+    serviceTax,
+  }) => {
+const now = new Date();
+    const coupons =
+      await Coupon.find({
+        applicableModules: {
+          $in: [module],
+        },
+        isAutoApply: true,
+        isActive: true,
+       
     "validity.startDate": { $lte: now },
     "validity.endDate": { $gte: now },
   });
