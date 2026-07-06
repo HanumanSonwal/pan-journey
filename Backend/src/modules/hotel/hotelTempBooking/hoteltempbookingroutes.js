@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post("/hotel-temp-booking", protectCustomer, hotelTempBookingController);
 router.put("/hotel-temp-booking/couponApply", protectCustomer, updateCouponController);
-router.get( "/latest-payment-booking/:bookingRefNo", protectCustomer,getTempBookingByBookingRefController);
+router.get( "/get-booking-details/:bookingRefNo", protectCustomer,getTempBookingByBookingRefController);
 
 
 export default router;

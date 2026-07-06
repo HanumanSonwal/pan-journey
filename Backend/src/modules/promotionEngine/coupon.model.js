@@ -103,3 +103,11 @@ export default mongoose.model(
   "Coupon",
   couponSchema
 );
+
+couponSchema.index({
+  isActive: 1,
+  applicableModules: 1,
+  minAmount: 1,
+  "validity.startDate": 1,
+  "validity.endDate": 1,
+});

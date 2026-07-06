@@ -106,7 +106,12 @@ offer: {
   },
   { timestamps: true }
 );
-
+hotelCartSchema.index({
+  userId: 1,
+  paymentStatus: 1,
+  tempBookingStatus: 1,
+  "supplierResponse.bookingRefNo": 1,
+});
 export default mongoose.model(
   "Hotelcart",
   hotelCartSchema

@@ -62,7 +62,7 @@ export const hotelTempBookingService = async (payload, pricingData) => {
     const couponData = await findBestCoupon({
       module: "hotel",
 
-      bookingAmount: pricingData.finalSellingPrice,
+      bookingAmount: pricingData.finalPrice-pricingData.platformFeeAndTax,
 
       serviceTax: pricingData.serviceTaxAmount,
     });
@@ -262,17 +262,21 @@ export const updateCouponService = async ({ tempBookingId, couponCode }) => {
   return booking;
 };
 const now = new Date();
-
 export const getTempBookingByBookingRefService = async (
   userId,
   bookingRefNo,
 ) => {
+  const now = new Date();
+console.time("Total Service");
+
+console.time("Booking Query");
+
   const booking = await HotelTempBooking.findOne({
     userId,
     paymentStatus: "pending",
     tempBookingStatus: "success",
     "supplierResponse.bookingRefNo": bookingRefNo,
-  });
+  }).lean();
 
   if (!booking) {
     throw new Error("Booking not found");
@@ -280,34 +284,40 @@ export const getTempBookingByBookingRefService = async (
 
   const baseAmount =
     booking.pricing.finalPrice -
-    booking.pricing.serviceCharge -
     booking.pricing.platformFeeAndTax;
+
   const totalAmount =
     baseAmount +
-    booking.pricing.serviceCharge +
     booking.pricing.platformFeeAndTax;
-  const availableCoupons = await Coupon.find({
+console.timeEnd("Booking Query");
+
+console.time("Coupon Query");
+  const coupons = await Coupon.find({
     isActive: true,
     applicableModules: "hotel",
     minAmount: { $lte: totalAmount },
     "validity.startDate": { $lte: now },
     "validity.endDate": { $gte: now },
-    $or: [
-      { usageLimit: null },
-      {
-        $expr: {
-          $lt: ["$usedCount", "$usageLimit"],
-        },
-      },
-    ],
-  }).select(
-    "code title image discountType discountValue minAmount  isAutoApply",
+  })
+    .select(
+      "code title image discountType discountValue minAmount maxDiscountPercentOfServiceTax isAutoApply usageLimit usedCount"
+    )
+    .lean();
+    console.timeEnd("Coupon Query");
+
+console.timeEnd("Total Service");
+
+  const availableCoupons = coupons.filter(
+    (coupon) =>
+      coupon.usageLimit === null ||
+      coupon.usedCount < coupon.usageLimit
   );
-  console.log("Coupen", availableCoupons);
+
   return {
     bookingId: booking._id,
 
-    bookingReference: booking?.supplierResponse?.bookingRefNo || null,
+    bookingReference:
+      booking?.supplierResponse?.bookingRefNo || null,
 
     supplier: booking.supplier,
 
@@ -333,12 +343,22 @@ export const getTempBookingByBookingRefService = async (
       totalAmount,
       baseAmount,
       serviceCharge: booking?.pricing?.serviceCharge || 0,
-      platformChargeandTax: booking?.pricing?.platformFeeAndTax || 0,
-      couponCode: booking?.offer?.couponCode || null,
-      couponDiscount: booking?.offer?.couponDiscount || 0,
-      totalPayableAmountAfterDiscount: booking?.payableAmount || 0,
+      platformChargeandTax:
+        booking?.pricing?.platformFeeAndTax || 0,
+      couponCode:
+        booking?.offer?.couponCode ||
+        booking?.offer?.autoCouponCode ||
+        null,
+      couponDiscount:
+        booking?.offer?.couponDiscount ||
+        booking?.offer?.autoDiscount ||
+        0,
+      totalPayableAmountAfterDiscount:
+        booking?.payableAmount || 0,
     },
-    availableCoupons: availableCoupons,
+
+    availableCoupons,
+
     bookingStatus: {
       reservationStatus: booking?.tempBookingStatus,
       paymentStatus: booking?.paymentStatus,
@@ -347,3 +367,87 @@ export const getTempBookingByBookingRefService = async (
     createdAt: booking.createdAt,
   };
 };
+// export const getTempBookingByBookingRefService = async (
+//   userId,
+//   bookingRefNo,
+// ) => {
+//   const booking = await HotelTempBooking.findOne({
+//     userId,
+//     paymentStatus: "pending",
+//     tempBookingStatus: "success",
+//     "supplierResponse.bookingRefNo": bookingRefNo,
+//   });
+
+//   if (!booking) {
+//     throw new Error("Booking not found");
+//   }
+
+//   const baseAmount =
+//     booking.pricing.finalPrice -
+   
+//     booking.pricing.platformFeeAndTax;
+//   const totalAmount =
+//     baseAmount +
+    
+//     booking.pricing.platformFeeAndTax;
+//   const availableCoupons = await Coupon.find({
+//     isActive: true,
+//     applicableModules: "hotel",
+//     minAmount: { $lte: totalAmount },
+//     "validity.startDate": { $lte: now },
+//     "validity.endDate": { $gte: now },
+//     $or: [
+//       { usageLimit: null },
+//       {
+//         $expr: {
+//           $lt: ["$usedCount", "$usageLimit"],
+//         },
+//       },
+//     ],
+//   }).select(
+//     "code title image discountType discountValue minAmount  isAutoApply",
+//   );
+//   console.log("Coupen", availableCoupons);
+//   return {
+//     bookingId: booking._id,
+
+//     bookingReference: booking?.supplierResponse?.bookingRefNo || null,
+
+//     supplier: booking.supplier,
+
+//     hotel: {
+//       image: booking?.hotelData?.hotelImage || null,
+//     },
+
+//     customer: {
+//       name: booking?.supplierData?.customerName || "",
+//       mobile: booking?.supplierData?.customerMobile || "",
+//     },
+
+//     guestDetails:
+//       booking?.supplierData?.occupantDetails?.map((guest) => ({
+//         firstName: guest.FirstName,
+//         lastName: guest.LastName,
+//         title: guest.Title,
+//         occupantType: guest.OccupantType,
+//         roomNumber: guest.RoomNo,
+//       })) || [],
+
+//     priceSummary: {
+//       totalAmount,
+//       baseAmount,
+//       serviceCharge: booking?.pricing?.serviceCharge || 0,
+//       platformChargeandTax: booking?.pricing?.platformFeeAndTax || 0,
+//       couponCode: booking?.offer?.couponCode ||booking?.offer?.autoCouponCode|| null,
+//       couponDiscount: booking?.offer?.couponDiscount ||booking?.offer?.autoDiscount|| 0,
+//       totalPayableAmountAfterDiscount: booking?.payableAmount || 0,
+//     },
+//     availableCoupons: availableCoupons,
+//     bookingStatus: {
+//       reservationStatus: booking?.tempBookingStatus,
+//       paymentStatus: booking?.paymentStatus,
+//     },
+
+//     createdAt: booking.createdAt,
+//   };
+// };
