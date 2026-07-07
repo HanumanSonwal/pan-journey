@@ -8,7 +8,8 @@ import razorpay,{
   RAZORPAY_KEY_SECRET,
 }  from "../../config/razorpay.config.js";
 
-export const createOrderService = async ({ tempBookingId }) => {
+export const createOrderService = async ({  tempBookingId,
+  userId }) => {
   // ===========================
   // Validate Mongo ObjectId
   // ===========================
@@ -21,7 +22,10 @@ export const createOrderService = async ({ tempBookingId }) => {
   // Find Booking
   // ===========================
 
-  const booking = await HotelTempBooking.findById(tempBookingId);
+  const booking = await HotelTempBooking.findOne({
+  _id: tempBookingId,
+  userId,
+});
 
   if (!booking) {
     throw new Error("Temp booking not found");
@@ -135,6 +139,8 @@ export const verifyPaymentService = async ({
     razorpay_payment_id,
 
     razorpay_signature,
+    
+    userId
 
 }) => {
 
@@ -158,10 +164,10 @@ export const verifyPaymentService = async ({
     // Find Booking
     // ============================
 
-    const booking =
-    await HotelTempBooking.findById(
-        tempBookingId
-    );
+  const booking = await HotelTempBooking.findOne({
+  _id: tempBookingId,
+  userId,
+});
 
     if (!booking) {
 

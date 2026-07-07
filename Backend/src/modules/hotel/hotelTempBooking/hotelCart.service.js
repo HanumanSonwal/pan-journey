@@ -320,10 +320,10 @@ export const getTempBookingByBookingRefService = async (
   const booking = await HotelTempBooking.findOne({
     userId,
     paymentStatus: "pending",
-    tempBookingStatus: "success",
+    tempBookingStatus: "payment_pending",
     "supplierResponse.bookingRefNo": bookingRefNo,
   }).lean();
-
+console.log("Booking =", booking)
   if (!booking) {
     throw new Error("Booking not found");
   }
@@ -356,7 +356,7 @@ export const getTempBookingByBookingRefService = async (
   );
 
   return {
-    bookingId: booking._id,
+    tempBookingId: booking._id,
 
     bookingReference: booking?.supplierResponse?.bookingRefNo || null,
 
