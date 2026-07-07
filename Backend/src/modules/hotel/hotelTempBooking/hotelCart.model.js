@@ -97,10 +97,36 @@ const hotelCartSchema = new mongoose.Schema(
       default: "initiated",
     },
 
-    supplierResponse: {
-      bookingRefNo: String,
-      statusId: String,
-    },
+   supplierResponse: {
+  bookingRefNo: String,
+  statusId: String,
+
+  hotelTicketResponse: {
+    type: mongoose.Schema.Types.Mixed,
+    default: {},
+  },
+
+  hotelRequeryResponse: {
+    type: mongoose.Schema.Types.Mixed,
+    default: {},
+  },
+
+  hotelVoucherNumber: String,
+
+  voucherNumber: String,
+
+  invoiceNumber: String,
+
+  ticketStatusId: String,
+
+  ticketStatusDesc: String,
+
+  checkInDate: String,
+
+  checkOutDate: String,
+
+  confirmedAt: Date,
+},
 
     responseTime: Number,
 
