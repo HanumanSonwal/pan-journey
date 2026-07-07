@@ -1,7 +1,8 @@
-import { createOrderService ,verifyPaymentService} from "./payment.service.js";
+import { createOrderService, verifyPaymentService } from "./payment.service.js";
 
 export const createOrderController = async (req, res, next) => {
   try {
+    console.log("REQ BODY =>", req.body);
     const result = await createOrderService(req.body);
 
     return res.status(200).json({
@@ -14,33 +15,18 @@ export const createOrderController = async (req, res, next) => {
   }
 };
 
+export const verifyPaymentController = async (req, res, next) => {
+  try {
+    const result = await verifyPaymentService(req.body);
 
+    return res.status(200).json({
+      success: true,
 
-export const verifyPaymentController =
-async (req, res, next) => {
+      message: "Payment verified successfully",
 
-    try {
-
-        const result =
-        await verifyPaymentService(req.body);
-
-        return res.status(200).json({
-
-            success: true,
-
-            message:
-            "Payment verified successfully",
-
-            data: result
-
-        });
-
-    }
-
-    catch (error) {
-
-        next(error);
-
-    }
-
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
 };

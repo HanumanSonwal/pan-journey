@@ -94,6 +94,7 @@ export default function HotelCheckoutContent({
               />
 
               <PaymentFooter
+                booking={booking}
                 priceSummary={priceSummary}
                 loading={loading}
                 onPay={onPay}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useRazorpayPayment } from "@/modules/payments/hooks/useRazorpayPayment";
 import { LockOutlined, SafetyCertificateFilled } from "@ant-design/icons";
 import { Button, Card, Typography } from "antd";
 
@@ -8,6 +9,7 @@ const { Text } = Typography;
 export default function PaymentFooter({
   priceSummary = {},
   loading = false,
+  booking = {},
   onPay,
 }) {
   const payableAmount = Number(
@@ -16,6 +18,7 @@ export default function PaymentFooter({
       0,
   );
 
+  const { payNow, loading: paymentLoading } = useRazorpayPayment();
   const formatPrice = (value) =>
     Number(value).toLocaleString("en-IN", {
       minimumFractionDigits: 2,
@@ -46,8 +49,18 @@ export default function PaymentFooter({
       <Button
         type="primary"
         size="large"
-        loading={loading}
-        onClick={onPay}
+        loading={loading || paymentLoading}
+        onClick={() => {
+          console.log("Sending To payNow", {
+            tempBookingId: booking.tempBookingId,
+            customer: booking.customer,
+          });
+
+          payNow({
+            tempBookingId: booking.tempBookingId,
+            customer: booking.customer,
+          });
+        }}
         icon={<LockOutlined />}
         className="!h-[54px] w-full !rounded !bg-[#0F766E] !text-[16px] !font-semibold hover:!bg-[#0c645d]"
       >
