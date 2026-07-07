@@ -2,13 +2,16 @@ import crypto from "crypto";
 import mongoose from "mongoose";
 
 import HotelTempBooking from "../hotel/hotelTempBooking/hotelCart.model.js"; // path adjust karna
+import { addPaymentService } from "../addPayment/addPayment.service.js";
+import { hotelTicketingService } from "../hotel/hotelTicketing/hotelTicketing.service.js";
 
 import razorpay,{
   RAZORPAY_KEY_ID,
   RAZORPAY_KEY_SECRET,
 }  from "../../config/razorpay.config.js";
 
-export const createOrderService = async ({ tempBookingId }) => {
+export const createOrderService = async ({  tempBookingId,
+  userId }) => {
   // ===========================
   // Validate Mongo ObjectId
   // ===========================
@@ -21,7 +24,10 @@ export const createOrderService = async ({ tempBookingId }) => {
   // Find Booking
   // ===========================
 
-  const booking = await HotelTempBooking.findById(tempBookingId);
+  const booking = await HotelTempBooking.findOne({
+  _id: tempBookingId,
+  userId,
+});
 
   if (!booking) {
     throw new Error("Temp booking not found");
@@ -136,6 +142,8 @@ export const verifyPaymentService = async ({
 
     razorpay_signature,
 
+    userId
+
 }) => {
 
     // ============================
@@ -158,10 +166,10 @@ export const verifyPaymentService = async ({
     // Find Booking
     // ============================
 
-    const booking =
-    await HotelTempBooking.findById(
-        tempBookingId
-    );
+  const booking = await HotelTempBooking.findOne({
+  _id: tempBookingId,
+  userId,
+});
 
     if (!booking) {
 
@@ -320,22 +328,100 @@ export const verifyPaymentService = async ({
 
     await booking.save();
 
-    return {
+    // ============================
+// Supplier Add Payment
+// ============================
+// ============================================
+// SUPPLIER ADD PAYMENT
+// ============================================
 
-        paymentVerified: true,
+const addPaymentResponse = await addPaymentService({
+  BookingRefNo: booking.supplierResponse.bookingRefNo,
+});
 
-        tempBookingId:
-        booking._id,
+const responseHeader = addPaymentResponse?.Response_Header;
 
-        paymentId:
-        razorpay_payment_id,
+if (
+  responseHeader?.Error_Code !== "0000" ||
+  responseHeader?.Status_Id !== "11"
+) {
+  throw new Error(
+    responseHeader?.Error_Desc || "Supplier Add Payment Failed"
+  );
+}
 
-        orderId:
-        razorpay_order_id,
+// ============================================
+// HOTEL TICKETING + REQUERY
+// ============================================
 
-        amount:
-        booking.payableAmount
+const ticketResult = await hotelTicketingService({
+  BookingRefNo: booking.supplierResponse.bookingRefNo,
+  SearchKey: booking.supplierData.searchKey,
+});
 
-    };
+// ============================================
+// UPDATE HOTEL CART
+// ============================================
 
+booking.supplierResponse = {
+  ...booking.supplierResponse,
+
+  hotelTicketResponse: ticketResult.ticketingData,
+
+  hotelRequeryResponse: ticketResult.requeryData,
+
+  hotelVoucherNumber:
+    ticketResult.hotelVoucherNumber,
+
+  voucherNumber:
+    ticketResult.requeryData?.VoucherNumber,
+
+  invoiceNumber:
+    ticketResult.requeryData?.InvoiceNumber,
+
+  ticketStatusId:
+    ticketResult.requeryData?.TicketStatusId,
+
+  ticketStatusDesc:
+    ticketResult.requeryData?.TicketStatusDesc,
+
+  checkInDate:
+    ticketResult.requeryData?.CheckInDate,
+
+  checkOutDate:
+    ticketResult.requeryData?.CheckOutDate,
+
+  confirmedAt: new Date(),
 };
+
+await booking.save();
+
+// ============================================
+// FINAL RESPONSE
+// ============================================
+
+return {
+  success: true,
+
+  paymentVerified: true,
+
+  tempBookingId: booking._id,
+
+  bookingRefNo: booking.supplierResponse.bookingRefNo,
+
+  paymentId: razorpay_payment_id,
+
+  orderId: razorpay_order_id,
+
+  amount: booking.payableAmount,
+
+  supplier: {
+    addPayment: addPaymentResponse,
+
+   ticketing: ticketResult.ticketingData,
+
+    requery: ticketResult.requeryData,
+  },
+
+  booking,
+};}

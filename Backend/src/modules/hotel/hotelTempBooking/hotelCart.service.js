@@ -306,7 +306,7 @@ export const getTempBookingByBookingRefService = async (
     tempBookingStatus: "payment_pending",
     "supplierResponse.bookingRefNo": bookingRefNo,
   }).lean();
-
+console.log("Booking =", booking)
   if (!booking) {
     throw new Error("Booking not found");
   }
