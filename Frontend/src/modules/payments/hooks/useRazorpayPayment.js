@@ -7,9 +7,11 @@ import { loadRazorpay } from "../utils/loadRazorpay";
 import { useCreateBookingOrder } from "./usePayment";
 import { useVerifyBookingPayment } from "./useVerifyPayment";
 
+import { useRouter } from "next/navigation";
+
 export const useRazorpayPayment = () => {
   const { message } = App.useApp();
-
+  const router = useRouter();
   const [processing, setProcessing] = useState(false);
   const createOrderMutation = useCreateBookingOrder();
   const verifyMutation = useVerifyBookingPayment();
@@ -33,6 +35,8 @@ export const useRazorpayPayment = () => {
 
       handler: async function (response) {
         try {
+          setProcessing(true);
+
           message.loading({
             key: "payment",
             content: "Verifying payment...",
@@ -46,13 +50,16 @@ export const useRazorpayPayment = () => {
             razorpay_signature: response.razorpay_signature,
           });
 
-          console.log("Verify Response :", verifyResponse);
+          console.log("Verify Response:", verifyResponse);
 
-          if (!verifyResponse?.paymentVerified) {
+          // Verify response
+          if (!verifyResponse?.success || !verifyResponse?.paymentVerified) {
             message.error({
               key: "payment",
-              content: "Payment verification failed.",
+              content:
+                verifyResponse?.message || "Payment verification failed.",
             });
+
             setProcessing(false);
             return;
           }
@@ -62,22 +69,23 @@ export const useRazorpayPayment = () => {
             content: "Payment verified successfully.",
           });
 
-          // ===================================================
-          // NEXT STEP
-          // Backend supplier booking complete hone ke baad
-          // yaha redirect karenge.
-          // ===================================================
+          const bookingRefNo = verifyResponse.bookingRefNo;
 
-          // router.replace("/hotel-booking-success");
+          console.log("Booking Ref:", bookingRefNo);
 
-          setProcessing(false);
+          // Redirect to success page
+          router.replace(`/hotel-booking-success?bookingRefNo=${bookingRefNo}`);
         } catch (error) {
-          console.error(error);
+          console.error("Payment Verification Error:", error);
+          console.error("Error Message:", error?.message);
+          console.error("Response:", error?.response);
 
           message.error({
             key: "payment",
             content:
-              error?.response?.data?.message || "Payment verification failed.",
+              error?.response?.data?.message ||
+              error?.message ||
+              "Payment verification failed.",
           });
 
           setProcessing(false);

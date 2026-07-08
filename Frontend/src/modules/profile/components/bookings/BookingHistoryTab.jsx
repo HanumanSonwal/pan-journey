@@ -16,7 +16,6 @@ export default function BookingHistoryTab({ setSelectedBooking }) {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const { data: bookings = [], isLoading, isError } = useMyBookings();
-
   const mappedBookings = useMemo(() => {
     return bookings.map((item, index) => {
       const hotel = item.supplierResponse?.HotelDetails;
@@ -47,9 +46,9 @@ export default function BookingHistoryTab({ setSelectedBooking }) {
         activeFilter === "All" ? true : item.status === activeFilter;
 
       const matchesSearch =
-        // item.hotelName.toLowerCase().includes(search.toLowerCase()) ||
-        // item.bookingId.toLowerCase().includes(search.toLowerCase());
-         item?.hotelName || item?.bookingId
+        item.hotelName?.toLowerCase().includes(search.toLowerCase()) ||
+        item.bookingId?.toLowerCase().includes(search.toLowerCase()) ||
+        item.voucherNumber?.toLowerCase().includes(search.toLowerCase());
 
       return matchesFilter && matchesSearch;
     });

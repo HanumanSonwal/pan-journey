@@ -3,11 +3,16 @@
 import {
   ArrowLeftOutlined,
   ArrowRightOutlined,
+  CarOutlined,
   CheckCircleFilled,
+  CoffeeOutlined,
   DownloadOutlined,
   EnvironmentOutlined,
+  HomeOutlined,
+  SafetyOutlined,
   ShareAltOutlined,
-  StarFilled,
+  ShopOutlined,
+  WifiOutlined,
 } from "@ant-design/icons";
 
 import { useQueryClient } from "@tanstack/react-query";
@@ -16,7 +21,7 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-  import { useBookingDetails } from "../../hooks/useBookingDetails";
+import { useBookingDetails } from "../../hooks/useBookingDetails";
 import { useCancelBooking } from "../../hooks/useCancelBooking";
 import { useDownloadInvoice } from "../../hooks/useDownloadInvoice";
 import CancelBookingModal from "./CancelBookingModal";
@@ -46,23 +51,55 @@ export default function BookingDetailsTab({ bookingRefNo }) {
   const supplier = bookingData?.supplierResponse || {};
   const hotel = supplier?.HotelDetails || {};
   const room = supplier?.HotelRoomDetail?.[0] || {};
-  const payment = bookingData?.paymentDetails || {}; // agar backend future me bheje
-
   const ratePlan = hotel?.HotelRatePlanDetails || {};
-
   const pricing = bookingData?.pricing || {};
   const offer = bookingData?.offer || {};
-
   const roomCharges = Number(pricing?.baseAmount || 0);
-  const serviceCharge = Number(pricing?.serviceCharge || 0);
   const platformFee = Number(pricing?.platformFeeAndTax || 0);
-
+  const finalPrice = Number(pricing?.finalPrice || 0);
   const autoDiscount = Number(offer?.autoDiscount || 0);
   const couponDiscount = Number(offer?.couponDiscount || 0);
-
   const totalDiscount = autoDiscount + couponDiscount;
-
   const payableAmount = Number(bookingData?.payableAmount || 0);
+
+  const facilities = hotel?.HotelFacilities || [];
+
+  const topFacilities = facilities.slice(0, 6);
+
+  const roomType = ratePlan?.HotelRoomTypeDesc?.replace(/,\s*$/, "")
+    ?.replace("TwinXLBed", "")
+    ?.replace("BunkBed", "")
+    ?.trim();
+
+  const inclusions = ratePlan?.Inclusion?.split(",")
+    ?.map((i) => i.trim())
+    ?.filter(Boolean)
+    ?.map((i) => (i === "RoomOnly" ? "Room Only" : i));
+
+  const roomSummary = [];
+  const amenities =
+    hotel?.HotelFacilities?.map((item) => item.FacilityName) || [];
+
+  const getAmenityIcon = (name) => {
+    const value = name.toLowerCase();
+
+    if (value.includes("wifi")) return <WifiOutlined />;
+    if (value.includes("parking")) return <CarOutlined />;
+    if (value.includes("breakfast")) return <CoffeeOutlined />;
+    if (value.includes("garden")) return <EnvironmentOutlined />;
+    if (value.includes("laundry")) return <ShopOutlined />;
+    if (value.includes("safe")) return <SafetyOutlined />;
+
+    return <HomeOutlined />;
+  };
+
+  if (room?.Adult_Count) {
+    roomSummary.push(`${room.Adult_Count} Adult`);
+  }
+
+  if (Number(room?.Child_Count) > 0) {
+    roomSummary.push(`${room.Child_Count} Child`);
+  }
 
   // Cancellation Policy
   const cancellationPolicies =
@@ -206,44 +243,26 @@ export default function BookingDetailsTab({ bookingRefNo }) {
                   <h3 className="font-roboto! truncate text-[20px] leading-tight font-semibold! text-gray-900">
                     {hotel?.HotelName}
                   </h3>
-                  <div className="mt-3 flex flex-wrap items-center gap-2">
-                    {/* Stars */}
-                    <div className="flex items-center gap-1">
-                      {[
-                        ...Array(
-                          Number(hotel?.StarCategoryId) ||
-                            (hotel?.HotelId
-                              ? Number(hotel.HotelId) % 2 === 0
-                                ? 4
-                                : 5
-                              : 4),
-                        ),
-                      ].map((_, i) => (
-                        <StarFilled
-                          key={i}
-                          className="text-[14px] !text-[#ffb400]"
-                        />
+                  <p className="mt-2 text-[15px] font-medium text-gray-700">
+                    {roomType}
+                  </p>
+
+                  <div className="mt-4">
+                    <p className="mb-2 text-[13px] font-semibold text-gray-500 uppercase">
+                      Included
+                    </p>
+
+                    <div className="flex flex-wrap gap-2">
+                      {inclusions?.map((item, index) => (
+                        <span
+                          key={index}
+                          className="rounded-full border border-green-200 bg-green-50 px-3 py-1 text-[12px] text-green-700"
+                        >
+                          ✓ {item}
+                        </span>
                       ))}
                     </div>
-
-                    {/* Badges */}
-                    <div className="rounded-full border border-[#d9ecf8] bg-[#edf7ff] px-3 py-1 text-[12px] font-medium text-[#3b82b6]">
-                      {ratePlan?.PayatHotel ? "Pay At Hotel" : "Prepaid"}
-                    </div>
-
-                    <div className="rounded-full border border-[#d9ecf8] bg-[#edf7ff] px-3 py-1 text-[12px] font-medium text-[#3b82b6]">
-                      Instant Confirmation
-                    </div>
-
-                    <div className="rounded-full border border-[#d9ecf8] bg-[#edf7ff] px-3 py-1 text-[12px] font-medium text-[#3b82b6]">
-                      Free WiFi
-                    </div>
                   </div>
-
-                  <p className="font-roboto! my-2! flex items-center gap-2 text-[16px] font-semibold text-gray-700">
-                    <EnvironmentOutlined />
-                    {hotel?.Address}
-                  </p>
                   <p className="font-roboto ml-5 text-[13px] text-gray-500">
                     {bookingData?.Origin}
                   </p>
@@ -519,6 +538,11 @@ export default function BookingDetailsTab({ bookingRefNo }) {
                 valueClass="text-orange-600"
               />
 
+              <PriceRow
+                label="final Price"
+                value={`₹${finalPrice.toFixed(2)}`}
+              />
+
               {autoDiscount > 0 && (
                 <PriceRow
                   label={`Auto Discount (${offer?.autoCouponCode})`}
@@ -740,6 +764,35 @@ export default function BookingDetailsTab({ bookingRefNo }) {
                 carefully before cancelling your booking.
               </p>
             </div>
+          </div>
+
+          <div className="mt-6 rounded border border-gray-200 bg-white p-6 shadow-sm">
+            <h2 className="mb-5 text-xl font-semibold text-gray-800">
+              Hotel Facilities
+            </h2>
+
+            {amenities.length ? (
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {amenities.map((item, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-3 rounded-lg border border-gray-100 bg-gray-50 p-3 transition-all hover:border-[#72C0F0] hover:bg-[#f8fcff]"
+                  >
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#edf7ff] text-[18px] text-[#0ea5e9]">
+                      {getAmenityIcon(item)}
+                    </div>
+
+                    <span className="text-sm font-medium text-gray-700">
+                      {item}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-gray-500">
+                No hotel facilities available.
+              </div>
+            )}
           </div>
         </div>
 
