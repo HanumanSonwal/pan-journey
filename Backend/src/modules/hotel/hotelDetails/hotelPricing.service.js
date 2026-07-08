@@ -92,11 +92,25 @@ export const applyPricing = async (
       countryCode,
       allMarkups,
     });
+console.log("matchedMarkup",matchedMarkup)
+    // const countryTax = await getCountryTaxRule({
+    //   countryCode,
+    // });
+let countryTax = await getCountryTaxRule({
+  countryCode,
+});
 
-    const countryTax = await getCountryTaxRule({
-      countryCode,
-    });
+if (!countryTax) {
+  countryTax = {
+    ruleType: "flat",      // ✅ Missing tha
+    taxType: "percentage",
+    taxValue: 18,
+  };
 
+  console.log(
+    `⚠️ No country tax found for ${countryCode}. Applying default 18% tax.`
+  );
+}
     const rate = await getCurrencyRate({
       from: "INR",
       to: currency,
@@ -109,7 +123,7 @@ export const applyPricing = async (
         const convertedMainAmount = Number(
           (recommendation.TotalAmount * conversionRate).toFixed(2),
         );
-
+console.log("countryTax =>", countryTax);
         // STEP 2 → pricing after conversion
         const pricedMain = applyHotelPricing({
           hotel: {
@@ -120,6 +134,7 @@ export const applyPricing = async (
           additionalTax,
           countryTax,
         });
+        console.log("pricedmain",pricedMain)
 
         recommendation.PricingBreakdown = {
           supplierPrice: pricedMain.supplierPrice,
@@ -148,6 +163,7 @@ export const applyPricing = async (
             additionalTax,
             countryTax,
           });
+     
 
           plan.OriginalTotalAmount = plan.TotalAmount;
 
@@ -173,3 +189,4 @@ export const applyPricing = async (
     throw err;
   }
 };
+console.log("applyPricing",applyPricing)

@@ -49,7 +49,6 @@ export default function BookingHistoryTab({ setSelectedBooking }) {
         item.hotelName?.toLowerCase().includes(search.toLowerCase()) ||
         item.bookingId?.toLowerCase().includes(search.toLowerCase()) ||
         item.voucherNumber?.toLowerCase().includes(search.toLowerCase());
-
       return matchesFilter && matchesSearch;
     });
   }, [mappedBookings, activeFilter, search]);

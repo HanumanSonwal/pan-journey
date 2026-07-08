@@ -8,7 +8,8 @@ import {
   getSingleCouponService,
   updateCouponAdminService,
   updateCouponStatusService,
-  deleteCouponAdminService
+  deleteCouponAdminService,
+  giftcard
 } from "./promotion.service.js";
 
 import {
@@ -113,6 +114,28 @@ export const applyCouponController =
       );
     }
   };
+  export const giftcardcontoroller =
+  async (req, res) => {
+    try {
+      const data =
+        await giftcard(
+          req.query
+        );
+
+      return sendSuccess(
+        res,
+        "Coupons fetched successfully",
+        data
+      );
+
+    } catch (error) {
+      return sendError(
+        res,
+        error.message
+      );
+    }
+  };
+
 
 /*
 ====================================

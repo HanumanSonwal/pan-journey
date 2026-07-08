@@ -415,13 +415,7 @@ return {
 
   amount: booking.payableAmount,
 
-  supplier: {
-    addPayment: addPaymentResponse,
+  
 
-   ticketing: ticketResult.ticketingData,
-
-    requery: ticketResult.requeryData,
-  },
-
-  booking,
+ 
 };}

@@ -1,135 +1,4 @@
-// import HotelTempBooking from "../hotelTempBooking/hotelCart.model.js";
 
-// export const getHotelRequeryByUserService = async (
-//   userId,
-//   bookingRefNo,
-//   status,
-// ) => {
-//   // Single booking details
-//   if (bookingRefNo) {
-//     const booking = await HotelTempBooking.findOne({
-//       UserId: userId,
-//       "hotelRequeryResponse.BookingRefNo": bookingRefNo,
-//     }).select("hotelRequeryResponse");
-
-//     if (!booking) {
-//       throw new Error("Booking not found");
-//     }
-
-//     return booking.supplierResponse?.hotelRequeryResponse;
-//   }
-
-//   // Booking listing
-//   const query = {
-//     UserId: userId,
-//     hotelRequeryResponse: { $exists: true },
-//   };
-
-//   if (status) {
-//     query["hotelRequeryResponse.TicketStatusDesc"] = status;
-//   }
-
-//   const bookings = await HotelTempBooking.find(query)
-//     .sort({ createdAt: -1 })
-//     .select("hotelRequeryResponse");
-
-//   if (!bookings.length) {
-//     throw new Error("No bookings found");
-//   }
-
-//   return bookings.map((item) => ({
-//     hotelName: item.supplierResponse?.hotelRequeryResponse?.HotelDetails?.HotelName,
-//     Address: item.supplierResponse?.hotelRequeryResponse?.HotelDetails?.Address,
-//     checkInDate: item.supplierResponse?.hotelRequeryResponse?.CheckInDate,
-//     checkOutDate: item.supplierResponse?.hotelRequeryResponse?.CheckOutDate,
-//     voucherNumber: item.supplierResponse?.hotelRequeryResponse?.VoucherNumber,
-//     TicketStatusDesc: item.supplierResponse?.hotelRequeryResponse?.TicketStatusDesc,
-//     bookingRefNo: item.supplierResponse?.hotelRequeryResponse?.BookingRefNo,
-//   }));
-// };
-
-// import HotelCart from "../hotelTempBooking/hotelCart.model.js";
-
-// export const getHotelRequeryByUserService = async (
-//   userId,
-//   bookingRefNo,
-//   status
-// ) => {
-
-//   // ===================================
-//   // Single Booking
-//   // ===================================
-
-//   if (bookingRefNo) {
-
-//     const booking = await HotelCart.findOne({
-//       userId,
-//       "supplierResponse.hotelRequeryResponse.BookingRefNo":
-//         bookingRefNo,
-//     }).select("supplierResponse.hotelRequeryResponse");
-
-//     if (!booking) {
-//       throw new Error("Booking not found");
-//     }
-
-//     return booking.supplierResponse.hotelRequeryResponse;
-//   }
-
-//   // ===================================
-//   // Booking List
-//   // ===================================
-
-//   const query = {
-//     userId,
-//     "supplierResponse.hotelRequeryResponse": {
-//       $exists: true,
-//     },
-//   };
-
-//   if (status) {
-//     query[
-//       "supplierResponse.hotelRequeryResponse.TicketStatusDesc"
-//     ] = status;
-//   }
-
-//   const bookings = await HotelCart.find(query)
-//     .sort({ createdAt: -1 })
-//     .select("supplierResponse.hotelRequeryResponse");
-
-//   if (!bookings.length) {
-//     throw new Error("No bookings found");
-//   }
-
-//   return bookings.map((item) => {
-
-//     const data =
-//       item.supplierResponse.hotelRequeryResponse;
-
-//     return {
-//       hotelName:
-//         data?.HotelDetails?.HotelName,
-
-//       address:
-//         data?.HotelDetails?.Address,
-
-//       checkInDate:
-//         data?.CheckInDate,
-
-//       checkOutDate:
-//         data?.CheckOutDate,
-
-//       voucherNumber:
-//         data?.VoucherNumber,
-
-//       ticketStatus:
-//         data?.TicketStatusDesc,
-
-//       bookingRefNo:
-//         data?.BookingRefNo,
-//     };
-//   });
-
-// };
 import HotelCart from "../hotelTempBooking/hotelCart.model.js";
 
 export const getHotelRequeryByUserService = async (
@@ -179,12 +48,27 @@ console.log("Booking =",bookings)
 
         finalPrice: booking.pricing?.finalPrice,
       },
+   guestDetails:{
+    customerName:booking.supplierData?.customerName,
+       customerMobile:booking.supplierData?.customerMobile,
+          customerAddress:booking.supplierData?.customerAddress,
+           customerPostalCode:booking.supplierData?.customerPostalCode,
+        occupants:
+    booking.supplierData?.occupantDetails?.map((guest) => ({
+      title: guest.Title,
+      firstName: guest.FirstName,
+      lastName: guest.LastName,
+      occupantType: guest.OccupantType,
+      OccupantID: guest.OccupantID,
+      RoomNo: guest.RoomNo,
+    })) || [],
 
+
+   },
       offer: booking.offer,
 
       payableAmount: booking.payableAmount,
-          bookingRefNo: booking.supplierResponse?.bookingRefNo,
-    
+      bookingRefNo: booking.supplierResponse?.bookingRefNo,
 
       paymentStatus: booking.paymentStatus,
 
