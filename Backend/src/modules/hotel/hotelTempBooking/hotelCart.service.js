@@ -1,10 +1,8 @@
 import { supplierAPI } from "../../../config/supplierApi.js";
 import { getAuthHeader } from "../../../config/supplierAuth.service.js";
 import Coupon from "../../promotionEngine/coupon.model.js";
-import HotelTempBooking from "./hotelCart.model.js";
-
-// ONLY ONE IMPORT
 import { findBestCoupon } from "../../promotionEngine/promotion.service.js";
+import HotelTempBooking from "./hotelCart.model.js";
 
 export const hotelTempBookingService = async (payload, pricingData) => {
   console.log("=================================");
@@ -92,7 +90,6 @@ export const hotelTempBookingService = async (payload, pricingData) => {
         customerPostalCode: payload.CustomerPostalCode,
 
         occupantDetails: payload.OccupantDetails,
-        
       },
 
       hotelData: {
@@ -148,7 +145,6 @@ export const hotelTempBookingService = async (payload, pricingData) => {
     dbRecord.tempBookingStatus = "payment_pending";
 
     dbRecord.responseTime = responseTime;
-    
 
     dbRecord.supplierResponse = {
       bookingRefNo: response.data?.BookingRefNo || null,
@@ -166,10 +162,9 @@ export const hotelTempBookingService = async (payload, pricingData) => {
       discount: appliedDiscount,
 
       finalPayable: dbRecord.payableAmount,
-          paymentRequired: true,
+      paymentRequired: true,
 
-       nextAction: "PAYMENT",
-
+      nextAction: "PAYMENT",
 
       ...response.data,
     };
@@ -275,38 +270,26 @@ export const removeCouponService = async ({ tempBookingId }) => {
     throw new Error("Booking not found");
   }
 
-  // agar manual coupon laga hi nahi hai
-  if (!booking.offer?.couponCode) {
+  if (!booking.offer?.couponCode && !booking.offer?.autoCouponCode) {
     throw new Error("No coupon applied");
   }
-
-  // Auto coupon restore karna
-  const couponData = await findBestCoupon({
-    module: "hotel",
-    bookingAmount:
-      booking.pricing.finalPrice - booking.pricing.platformFeeAndTax,
-    serviceTax: booking.pricing.serviceTaxAmount,
-  });
-
-  const autoDiscount = couponData?.bestDiscount || 0;
 
   booking.offer = {
     couponCode: null,
     couponDiscount: 0,
-
     autoCouponCode: null,
     autoDiscount: 0,
   };
 
   booking.payableAmount = booking.pricing.finalPrice;
 
-  console.log("AFTER REMOVE =>", booking.offer);
-  console.log("PAYABLE =>", booking.payableAmount);
+  booking.markModified("offer"); // important
 
   await booking.save();
 
   return booking;
 };
+
 const now = new Date();
 export const getTempBookingByBookingRefService = async (
   userId,

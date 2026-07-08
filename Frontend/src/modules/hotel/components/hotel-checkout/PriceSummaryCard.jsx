@@ -28,94 +28,76 @@ export default function PriceSummaryCard({
 
   return (
     <Card
-      variant={false}
-      className="rounded-2xl shadow-lg"
+      className="rounded-xl border-0 shadow-[0_4px_16px_rgba(0,0,0,0.12)]"
       styles={{
         body: {
-          padding: 22,
+          padding: 18,
         },
       }}
     >
-      <Title level={4} className="!mb-6">
+      <Title level={4} className="!mb-4 !text-[20px]">
         Price Summary
       </Title>
 
-      {/* Base Amount */}
-      <div className="flex items-center justify-between">
-        <Text className="text-gray-600">Base Amount</Text>
-        <Text strong>₹ {formatPrice(baseAmount)}</Text>
-      </div>
+      <div className="space-y-3">
+        <div className="flex justify-between">
+          <Text className="text-gray-500">Base Amount</Text>
 
-      <Divider className="!my-4" />
+          <Text strong>₹ {formatPrice(baseAmount)}</Text>
+        </div>
 
-      {/* Platform Fee */}
-      <div className="flex items-center justify-between">
-        <Text className="text-gray-600">Platform Fee & Tax</Text>
-        <Text strong>₹ {formatPrice(platformChargeandTax)}</Text>
-      </div>
+        <div className="flex justify-between">
+          <Text className="text-gray-500">Platform Fee & Tax</Text>
 
-      <Divider className="!my-4" />
+          <Text strong>₹ {formatPrice(platformChargeandTax)}</Text>
+        </div>
 
-      {/* Total Amount */}
-      <div className="flex items-center justify-between">
-        <Text className="text-gray-600">Total Amount</Text>
-        <Text strong>₹ {formatPrice(totalAmount)}</Text>
-      </div>
+        <div className="flex justify-between">
+          <Text className="text-gray-500">Total Amount</Text>
 
-      {/* Coupon */}
-      {couponDiscount > 0 && (
-        <>
-          <Divider className="!my-4" />
+          <Text strong>₹ {formatPrice(totalAmount)}</Text>
+        </div>
 
-          <div className="flex items-start justify-between">
+        {couponDiscount > 0 && (
+          <div className="flex justify-between">
             <div>
-              <Text className="text-gray-600">Coupon Discount</Text>
+              <Text className="text-gray-500">Coupon</Text>
 
-              {couponCode && (
-                <div className="mt-2 flex items-center gap-2">
-                  <Tag
-                    color="green"
-                    className="rounded-full px-3 py-1 font-medium"
-                  >
-                    {couponCode}
-                  </Tag>
+              <div className="mt-1 flex gap-2">
+                <Tag color="green">{couponCode}</Tag>
 
-                  <Button
-                    danger
-                    size="small"
-                    loading={loading}
-                    onClick={onRemoveCoupon}
-                  >
-                    Remove
-                  </Button>
-                </div>
-              )}
+                <Button
+                  size="small"
+                  danger
+                  type="link"
+                  loading={loading}
+                  onClick={onRemoveCoupon}
+                >
+                  Remove
+                </Button>
+              </div>
             </div>
 
-            <Text className="text-lg font-semibold !text-green-600">
-              - ₹ {formatPrice(couponDiscount)}
+            <Text className="font-semibold text-green-600">
+              -₹ {formatPrice(couponDiscount)}
             </Text>
           </div>
-        </>
-      )}
+        )}
+      </div>
 
-      <Divider className="!my-5" />
+      <Divider className="!my-4" />
 
       {/* Total */}
-      <div className="rounded-xl border border-green-200 bg-[#F6FFED] p-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <Text className="block text-sm text-gray-500">Total Payable</Text>
+      <div className="flex items-center justify-between rounded-lg bg-[#F6FFED] px-4 py-3">
+        <div>
+          <Text className="block text-gray-500">Total Payable</Text>
 
-            <Text className="text-xs text-gray-400">
-              Inclusive of all taxes
-            </Text>
-          </div>
-
-          <Title level={2} className="!mb-0 !text-[#15803d]">
-            ₹ {formatPrice(payableAmount)}
-          </Title>
+          <Text className="text-xs text-gray-400">Inclusive of taxes</Text>
         </div>
+
+        <Title level={3} className="!mb-0 !text-[#15803D]">
+          ₹ {formatPrice(payableAmount)}
+        </Title>
       </div>
     </Card>
   );

@@ -1,4 +1,4 @@
-import { createOrderService ,verifyPaymentService} from "./payment.service.js";
+import { createOrderService, verifyPaymentService } from "./payment.service.js";
 
 // export const createOrderController = async (req, res, next) => {
 //   try {
@@ -29,7 +29,6 @@ export const createOrderController = async (req, res, next) => {
     next(error);
   }
 };
-
 
 
 export const verifyPaymentController = async (req, res, next) => {

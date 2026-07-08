@@ -49,6 +49,13 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   const countryCodeParam = searchParams.get("countryCode");
   const hotelSlugParam = searchParams.get("hotelSlug");
 
+  const formatSupplierDate = (date) => {
+    if (!date) return "";
+
+    const [year, month, day] = date.split("-");
+    return `${month}/${day}/${year}`;
+  };
+
   const payload = useMemo(() => {
     if (selectedHotel?.fromWishlist) {
       return {
@@ -61,8 +68,8 @@ function HotelDetails({ initialPayload = null, cms = null }) {
         },
         searchContext: {
           fullName: selectedHotel?.hotelMeta?.hotelSlug || hotelSlugParam || "",
-          CheckInDate: appliedSearchData?.checkIn,
-          CheckOutDate: appliedSearchData?.checkOut,
+          CheckInDate: formatSupplierDate(appliedSearchData?.checkIn),
+          CheckOutDate: formatSupplierDate(appliedSearchData?.checkOut),
           RoomCount: appliedSearchData?.rooms || 1,
         },
       };
@@ -77,8 +84,8 @@ function HotelDetails({ initialPayload = null, cms = null }) {
         },
         searchContext: {
           fullName: initialPayload?.searchContext?.fullName || "",
-          CheckInDate: appliedSearchData?.checkIn,
-          CheckOutDate: appliedSearchData?.checkOut,
+          CheckInDate: formatSupplierDate(appliedSearchData?.checkIn),
+          CheckOutDate: formatSupplierDate(appliedSearchData?.checkOut),
           RoomCount: appliedSearchData?.rooms,
         },
       };
@@ -103,6 +110,8 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     countryCodeParam,
     hotelSlugParam,
   ]);
+
+  console.log("payload in hotel detail", payload);
 
   const wishlistIds = useMemo(
     () => new Set(wishlistData || []),

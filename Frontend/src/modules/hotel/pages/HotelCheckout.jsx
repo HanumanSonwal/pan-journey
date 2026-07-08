@@ -81,7 +81,7 @@ export default function HotelCheckout() {
    */
   const handleApplyCoupon = (coupon) => {
     applyCoupon({
-      tempBookingId: booking.bookingId,
+      tempBookingId: booking.tempBookingId || booking.bookingId,
       couponCode: coupon.code,
     });
   };
@@ -91,7 +91,7 @@ export default function HotelCheckout() {
    */
   const handleRemoveCoupon = () => {
     removeCoupon({
-      tempBookingId: booking.bookingId,
+      tempBookingId: booking.tempBookingId || booking.bookingId,
     });
   };
 

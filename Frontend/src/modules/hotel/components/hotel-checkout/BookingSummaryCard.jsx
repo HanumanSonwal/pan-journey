@@ -1,11 +1,9 @@
 "use client";
 
 import {
-  CalendarOutlined,
   CheckCircleFilled,
   ClockCircleOutlined,
   EnvironmentOutlined,
-  NumberOutlined,
 } from "@ant-design/icons";
 import { Card, Tag, Typography } from "antd";
 import dayjs from "dayjs";
@@ -56,7 +54,7 @@ export default function BookingSummaryCard({
 
   return (
     <Card
-      className="rounded-xl border-0 shadow-[0_4px_16px_rgba(0,0,0,0.12)]"
+      className="rounded border-0 shadow-[0_4px_16px_rgba(0,0,0,0.12)]"
       styles={{
         body: {
           padding: 18,
@@ -64,40 +62,53 @@ export default function BookingSummaryCard({
       }}
     >
       {/* Image */}
+      <div className="flex flex-col gap-4 sm:flex-row">
+        {/* Hotel Image */}
+        <div className="relative h-[200px] w-full overflow-hidden rounded-lg sm:h-[130px] sm:w-[170px] sm:flex-shrink-0">
+          <Image
+            src={hotelImage}
+            alt={hotelName}
+            fill
+            priority
+            className="object-cover transition-transform duration-300 hover:scale-105"
+          />
+        </div>
 
-      <div className="relative h-[220px] overflow-hidden rounded-xl">
-        <Image
-          src={hotelImage}
-          alt={hotelName}
-          fill
-          priority
-          className="object-cover"
-        />
-      </div>
+        {/* Hotel Details */}
+        <div className="flex min-w-0 flex-1 flex-col justify-between">
+          <div>
+            <Title
+              level={4}
+              className="font-roboto! !mb-1 !text-[18px] leading-tight !font-semibold sm:!text-[20px] lg:!text-[22px]"
+            >
+              {hotelName}
+            </Title>
 
-      {/* Hotel */}
+            <Text className="mt-1 flex items-start gap-2 text-[13px] text-gray-500 sm:text-[14px]">
+              <EnvironmentOutlined className="mt-1 flex-shrink-0 text-[#76B7E5]" />
+              <span className="line-clamp-2">{address}</span>
+            </Text>
+          </div>
 
-      <div className="mt-5">
-        <Title level={4} className="font-roboto! !mb-2 !text-[22px] font-bold!">
-          {hotelName}
-        </Title>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Tag className="rounded-full" color="blue">
+              {roomName}
+            </Tag>
 
-        <Text className="flex items-start gap-2 text-[14px] text-gray-500">
-          <EnvironmentOutlined className="mt-1" />
+            <Tag
+              className="rounded-full"
+              color={reservationStatus === "success" ? "green" : "orange"}
+            >
+              {reservationStatus.toUpperCase()}
+            </Tag>
 
-          <span>{address}</span>
-        </Text>
-
-        <div className="mt-4 flex flex-wrap gap-2">
-          <Tag color="blue">{roomName}</Tag>
-
-          <Tag color={reservationStatus === "success" ? "green" : "orange"}>
-            {reservationStatus.toUpperCase()}
-          </Tag>
-
-          <Tag color={paymentStatus === "success" ? "green" : "gold"}>
-            Payment {paymentStatus}
-          </Tag>
+            <Tag
+              className="rounded-full"
+              color={paymentStatus === "success" ? "green" : "gold"}
+            >
+              Payment {paymentStatus}
+            </Tag>
+          </div>
         </div>
       </div>
 
@@ -107,63 +118,75 @@ export default function BookingSummaryCard({
 
       {/* Booking Details */}
 
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <Text className="flex items-center gap-2">
-            <NumberOutlined />
-            Booking Ref
+      <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="rounded-lg border border-gray-200 bg-white p-3">
+          <Text className="block text-[12px] tracking-wide text-gray-500 uppercase">
+            Booking Reference
           </Text>
 
-          <Text strong>{booking?.bookingReference}</Text>
+          <Text strong className="text-[15px]">
+            {booking?.bookingReference}
+          </Text>
         </div>
 
-        <div className="flex items-center justify-between">
-          <Text className="flex items-center gap-2">
-            <CalendarOutlined />
+        <div className="rounded-lg border border-gray-200 bg-white p-3">
+          <Text className="block text-[12px] tracking-wide text-gray-500 uppercase">
             Booking Date
           </Text>
 
-          <Text>{bookingDate}</Text>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <Text>Check-in</Text>
-
-          <Text strong>{checkIn}</Text>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <Text>Check-out</Text>
-
-          <Text strong>{checkOut}</Text>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <Text className="flex items-center gap-2">
-            <ClockCircleOutlined />
-            Stay
+          <Text strong className="text-[15px]">
+            {bookingDate}
           </Text>
+        </div>
+      </div>
 
-          <Text strong>
-            {nights} Night{nights > 1 ? "s" : ""}
-          </Text>
+      <div className="mt-5 rounded-xl border border-[#E5EEF7] bg-[#FAFCFF] p-4">
+        {/* Stay Timeline */}
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="text-center sm:flex-1">
+            <Text className="block text-[13px] text-gray-500">Check-in</Text>
+
+            <Text strong className="block text-[22px] leading-none">
+              {dayjs(search?.checkIn).format("DD MMM YYYY")}
+            </Text>
+          </div>
+
+          <div className="flex flex-col items-center sm:px-4">
+            <div className="rounded-full border border-[#76B7E5] px-4 py-1 text-[13px] font-medium text-[#2D8BC8]">
+              <ClockCircleOutlined className="mr-1" />
+              {nights} Night{nights > 1 ? "s" : ""}
+            </div>
+
+            <Text className="mt-2 text-[13px] text-gray-500">
+              {search?.rooms?.length || 1} Room • {search?.adults || 2} Adult
+              {search?.adults > 1 ? "s" : ""}
+            </Text>
+          </div>
+
+          <div className="text-center sm:flex-1">
+            <Text className="block text-[13px] text-gray-500">Check-out</Text>
+
+            <Text strong className="block text-[22px] leading-none">
+              {dayjs(search?.checkOut).format("DD MMM YYYY")}
+            </Text>
+          </div>
         </div>
       </div>
 
       {/* Footer */}
 
-      <div className="mt-6 rounded-lg bg-[#eef8fd] p-3">
-        <div className="flex items-center gap-2">
-          <CheckCircleFilled className="text-[#0f766e]" />
+      <div className="mt-4 flex gap-3 rounded-xl border border-[#d8edf9] bg-[#f8fcff] px-4 py-3">
+        <CheckCircleFilled className="mt-0.5 flex-shrink-0 text-[18px] text-[#0f766e]" />
 
-          <Text strong className="text-[#0f766e]">
+        <div>
+          <Text strong className="block text-[#0f766e]">
             Reservation Created Successfully
           </Text>
-        </div>
 
-        <p className="mt-2 mb-0 text-[13px] text-gray-600">
-          Please complete your payment to confirm your hotel booking.
-        </p>
+          <Text className="text-[13px] text-gray-500">
+            Complete your payment to confirm your booking.
+          </Text>
+        </div>
       </div>
     </Card>
   );

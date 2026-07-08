@@ -21,13 +21,13 @@ export default function CustomerSummaryCard({
       {/* Header */}
       <div className="mb-5 flex items-center gap-3">
         <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#eef8fd]">
-          <UserOutlined className="text-[18px] text-[#0f766e]" />
+          <UserOutlined className="text-[14px] text-[#0f766e]" />
         </div>
 
         <div>
           <Title
             level={5}
-            className="font-roboto! !mb-0 !text-[18px] font-bold!"
+            className="font-roboto! !mb-0 !text-[16px] font-bold!"
           >
             Customer Details
           </Title>
@@ -63,7 +63,7 @@ export default function CustomerSummaryCard({
 
       {/* Guests */}
 
-      <div className="mb-4 flex items-center gap-2">
+      <div className="mb-0! flex items-center gap-2">
         <TeamOutlined className="text-[#0f766e]" />
 
         <Title level={5} className="font-roboto! !mb-0 !text-[17px]">

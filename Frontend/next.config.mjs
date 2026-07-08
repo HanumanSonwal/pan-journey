@@ -10,6 +10,10 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "panjourney-media-dev.s3.ap-south-1.amazonaws.com",
+      },
+      {
+        protocol: "https",
         hostname: "images.unsplash.com",
       },
 
