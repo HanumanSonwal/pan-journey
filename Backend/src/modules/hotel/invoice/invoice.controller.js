@@ -1,26 +1,25 @@
 import { generateHotelInvoiceService } from "./invoice.service.js";
 
-export const downloadHotelInvoiceController = async (req, res) => {
+export const generateHotelInvoiceController = async (
+  req,
+  res,
+  next
+) => {
   try {
-    const { bookingRefNo } = req.params;
-
-    const pdfBuffer = await generateHotelInvoiceService(
-      req.user._id,
-      bookingRefNo,
+    const pdf = await generateHotelInvoiceService(
+      req.user.id,
+      req.params.bookingRefNo
     );
 
     res.setHeader("Content-Type", "application/pdf");
 
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename=invoice-${bookingRefNo}.pdf`,
+      `inline; filename=Hotel-Invoice-${req.params.bookingRefNo}.pdf`
     );
 
-    return res.send(pdfBuffer);
-  } catch (error) {
-    return res.status(400).json({
-      success: false,
-      message: error.message,
-    });
+    res.send(pdf);
+  } catch (err) {
+    next(err);
   }
 };

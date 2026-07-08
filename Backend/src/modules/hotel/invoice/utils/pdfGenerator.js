@@ -1,26 +1,73 @@
-import PDFDocument from "pdfkit";
+import path from "path";
+import ejs from "ejs";
+import puppeteer from "puppeteer";
 
-export const createPdfBuffer = async (callback) => {
-  const doc = new PDFDocument({
-    margin: 40,
-    size: "A4",
+export const generateInvoicePdf = async (booking) => {
+  const templatePath = path.join(
+    process.cwd(),
+    "src/modules/hotel/invoice/templates/hotelInvoice.ejs"
+  );
+
+  // const cssPath = "file://" +
+  //   path.join(
+  //     process.cwd(),
+  //     "src/modules/hotel/invoice/assets/invoice.css"
+  //   );
+const cssPath =
+  "file://" +
+  path.join(
+    process.cwd(),
+    "src/modules/hotel/invoice/assets/invoice.css"
+  );
+
+  const logoPath = "file://" +
+    path.join(
+      process.cwd(),
+      "src/modules/hotel/invoice/assets/logo.png"
+    );
+
+  const html = await ejs.renderFile(templatePath, {
+    booking,
+    cssPath,
+    logoPath,
   });
 
-  const buffers = [];
+  const browser = await puppeteer.launch({
+    headless: true,
 
-  doc.on("data", (chunk) => {
-    buffers.push(chunk);
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+    ],
   });
 
-  const pdfPromise = new Promise((resolve) => {
-    doc.on("end", () => {
-      resolve(Buffer.concat(buffers));
+  try {
+    const page = await browser.newPage();
+
+    await page.setContent(html, {
+      waitUntil: "networkidle0",
     });
-  });
+ await page.addStyleTag({
+      path: path.join(
+        process.cwd(),
+        "src/modules/hotel/invoice/assets/invoice.css"
+      ),
+    });
+    
 
-  callback(doc);
+    const pdf = await page.pdf({
+      format: "A4",
+      printBackground: true,
+      margin: {
+        top: "15mm",
+        bottom: "15mm",
+        left: "10mm",
+        right: "10mm",
+      },
+    });
 
-  doc.end();
-
-  return await pdfPromise;
+    return pdf;
+  } finally {
+    await browser.close();
+  }
 };

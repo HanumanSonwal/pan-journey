@@ -160,7 +160,7 @@ export const getHotelRequeryByUserService = async (
   const bookings = await HotelCart.find(query).sort({
     createdAt: -1,
   });
-
+console.log("Booking =",bookings)
   if (!bookings.length) {
     throw new Error("Booking not found");
   }
@@ -186,6 +186,7 @@ export const getHotelRequeryByUserService = async (
       offer: booking.offer,
 
       payableAmount: booking.payableAmount,
+          bookingRefNo: booking.supplierResponse?.bookingRefNo,
     
 
       paymentStatus: booking.paymentStatus,
