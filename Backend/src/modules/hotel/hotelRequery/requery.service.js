@@ -135,9 +135,8 @@ import HotelCart from "../hotelTempBooking/hotelCart.model.js";
 export const getHotelRequeryByUserService = async (
   userId,
   bookingRefNo,
-  status
+  status,
 ) => {
-
   // ===================================
   // Base Query
   // ===================================
@@ -148,13 +147,11 @@ export const getHotelRequeryByUserService = async (
   };
 
   if (bookingRefNo) {
-    query["supplierResponse.hotelRequeryResponse.BookingRefNo"] =
-      bookingRefNo;
+    query["supplierResponse.hotelRequeryResponse.BookingRefNo"] = bookingRefNo;
   }
 
   if (status) {
-    query["supplierResponse.hotelRequeryResponse.TicketStatusDesc"] =
-      status;
+    query["supplierResponse.hotelRequeryResponse.TicketStatusDesc"] = status;
   }
 
   const bookings = await HotelCart.find(query).sort({
@@ -171,22 +168,22 @@ export const getHotelRequeryByUserService = async (
     return {
       _id: booking._id,
 
-     pricing: {
-  baseAmount:
-    (booking.pricing?.finalPrice || 0) -
-    (booking.pricing?.platformFeeAndTax || 0),
+      pricing: {
+        baseAmount:
+          (booking.pricing?.finalPrice || 0) -
+          (booking.pricing?.platformFeeAndTax || 0),
 
-  serviceCharge: booking.pricing?.serviceCharge,
+        serviceCharge: booking.pricing?.serviceCharge,
 
-  platformFeeAndTax: booking.pricing?.platformFeeAndTax,
+        platformFeeAndTax: booking.pricing?.platformFeeAndTax,
 
-  finalPrice: booking.pricing?.finalPrice,
-},
+        finalPrice: booking.pricing?.finalPrice,
+      },
 
       offer: booking.offer,
 
       payableAmount: booking.payableAmount,
-    
+      bookingRefNo: booking.supplierResponse?.bookingRefNo,
 
       paymentStatus: booking.paymentStatus,
 
