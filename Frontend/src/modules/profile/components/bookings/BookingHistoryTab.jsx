@@ -47,9 +47,10 @@ export default function BookingHistoryTab({ setSelectedBooking }) {
         activeFilter === "All" ? true : item.status === activeFilter;
 
       const matchesSearch =
-        item.hotelName?.toLowerCase().includes(search.toLowerCase()) ||
-        item.bookingId?.toLowerCase().includes(search.toLowerCase()) ||
-        item.voucherNumber?.toLowerCase().includes(search.toLowerCase());
+        // item.hotelName.toLowerCase().includes(search.toLowerCase()) ||
+        // item.bookingId.toLowerCase().includes(search.toLowerCase());
+         item?.hotelName || item?.bookingId
+
       return matchesFilter && matchesSearch;
     });
   }, [mappedBookings, activeFilter, search]);
