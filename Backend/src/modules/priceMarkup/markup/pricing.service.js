@@ -94,7 +94,7 @@ if (countryTax) {
     }
   }
 }
-  console.log ("conutnry tax =", countryTax)
+
 const platformfeeandtax= amount -basePrice
   return {
     ...hotel,

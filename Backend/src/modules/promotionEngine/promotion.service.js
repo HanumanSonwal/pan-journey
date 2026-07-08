@@ -151,14 +151,37 @@ export const applyManualCoupon = async ({ booking, couponCode, module }) => {
   return booking;
 };
 
-// export const getAllCouponsService =
-// async () => {
-//   const coupons =
-//     await Coupon.find()
-//       .sort({ createdAt: -1 });
+export const giftcard = async () => {
+  const now = new Date();
 
-//   return coupons;
-// };
+  const coupons = await Coupon.find({
+    isActive: true,
+    $or: [
+      // validity nahi hai to bhi show karo
+      { validity: { $exists: false } },
+
+      // validity object hai lekin endDate nahi hai
+      { "validity.endDate": { $exists: false } },
+
+      // sirf non-expired coupons
+      {
+        "validity.endDate": {
+          $gte: now,
+        },
+      },
+    ],
+  }).sort({ createdAt: -1 });
+
+  return coupons.map((coupon) => {
+    const obj = coupon.toObject();
+
+    obj.comingSoon =
+      obj.validity?.startDate &&
+      new Date(obj.validity.startDate) > now;
+
+    return obj;
+  });
+};
 
 export const getAllCouponsService = async (queryParams = {}) => {
   const {
