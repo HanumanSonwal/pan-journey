@@ -115,7 +115,7 @@ export default function CouponCard({
 
                       <div className="!m-0! font-roboto! font-bold !text-[#0F766E]">
                         {coupon.discountType === "flat"
-                          ? `₹${formatPrice(coupon.discountValue)} OFF`
+                          ? `₹ ${formatPrice(coupon.discountValue)} OFF`
                           : `${coupon.discountValue}% OFF`}
                       </div>
                     </div>
@@ -126,7 +126,7 @@ export default function CouponCard({
 
                         <Text className="text-[13px] text-gray-600">
                           Minimum Booking:
-                          <strong> ₹{formatPrice(coupon.minAmount)}</strong>
+                          <strong> ₹ {formatPrice(coupon.minAmount)}</strong>
                         </Text>
                       </div>
 
@@ -146,7 +146,7 @@ export default function CouponCard({
                     {applied && totalDiscount > 0 && (
                       <div className="my-3 rounded border border-green-200 bg-white px-3 py-2">
                         <Text className="font-medium text-green-700">
-                          🎉 You saved ₹{formatPrice(totalDiscount)}
+                          🎉 You saved ₹ {formatPrice(totalDiscount)}
                         </Text>
                       </div>
                     )}

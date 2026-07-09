@@ -15,12 +15,15 @@ export default function PriceSummaryCard({
       maximumFractionDigits: 2,
     });
 
+  console.log("priceSummary", priceSummary);
+
   const {
     baseAmount = 0,
     platformChargeandTax = 0,
     couponCode,
     couponDiscount = 0,
     totalAmount = 0,
+    currencySymbol = "₹",
     totalPayableAmountAfterDiscount,
   } = priceSummary;
 
@@ -43,19 +46,19 @@ export default function PriceSummaryCard({
         <div className="flex justify-between">
           <Text className="text-gray-500">Base Amount</Text>
 
-          <Text strong>₹ {formatPrice(baseAmount)}</Text>
+          <Text strong>{currencySymbol} {formatPrice(baseAmount)}</Text>
         </div>
 
         <div className="flex justify-between">
           <Text className="text-gray-500">Platform Fee & Tax</Text>
 
-          <Text strong>₹ {formatPrice(platformChargeandTax)}</Text>
+          <Text strong>{currencySymbol} {formatPrice(platformChargeandTax)}</Text>
         </div>
 
         <div className="flex justify-between">
           <Text className="text-gray-500">Total Amount</Text>
 
-          <Text strong>₹ {formatPrice(totalAmount)}</Text>
+          <Text strong>{currencySymbol} {formatPrice(totalAmount)}</Text>
         </div>
 
         {couponDiscount > 0 && (
@@ -79,7 +82,7 @@ export default function PriceSummaryCard({
             </div>
 
             <Text className="font-semibold text-green-600">
-              -₹ {formatPrice(couponDiscount)}
+              -{currencySymbol} {formatPrice(couponDiscount)}
             </Text>
           </div>
         )}
@@ -96,7 +99,7 @@ export default function PriceSummaryCard({
         </div>
 
         <Title level={3} className="!mb-0 !text-[#15803D]">
-          ₹ {formatPrice(payableAmount)}
+          {currencySymbol} {formatPrice(payableAmount)}
         </Title>
       </div>
     </Card>
