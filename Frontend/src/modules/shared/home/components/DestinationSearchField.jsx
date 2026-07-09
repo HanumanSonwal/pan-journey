@@ -163,12 +163,12 @@ function DestinationSearchField({
       return [
         ...(recentSearches.length > 0
           ? [
-              {
-                label: "Recent Searches",
+            {
+              label: "Recent Searches",
 
-                options: buildOptions(recentSearches),
-              },
-            ]
+              options: buildOptions(recentSearches),
+            },
+          ]
           : []),
 
         {
@@ -254,25 +254,23 @@ function DestinationSearchField({
   return (
     <div
       title={value?.city || ""}
-      className={`relative w-full min-w-0 overflow-visible rounded border px-3 py-3 transition-all hover:border-[#0077b6] ${
-        error ? "border-red-500" : "border-gray-300"
-      } ${wrapperClassName}`}
+      className={`relative w-full min-w-0 overflow-visible rounded border px-3 py-3 transition-all hover:border-[#0077b6] ${error ? "border-red-500" : "border-gray-300"
+        } ${wrapperClassName}`}
       style={{ height }}
     >
       {/* LABEL */}
       {!compact && (
-        <span className="absolute -top-2.5 left-4 rounded bg-white px-2 text-[14px] font-semibold tracking-wide text-[#0F6A75]">
+        <span className="absolute -top-2.5 left-4 rounded bg-white px-2 text-[14px] font-bold  tracking-wide text-[#0F6A75] font-bold min-[700px]:text-[16px]! min-[700px]:font-bold!">
           City, Property name or Location
         </span>
       )}
 
       {/* CONTENT */}
       <div
-        className={`flex w-full min-w-0 overflow-hidden ${
-          compact
-            ? "h-full items-center px-0"
-            : "min-h-[56px] flex-col justify-center px-1 md:px-2"
-        }`}
+        className={`flex w-full min-w-0 overflow-hidden ${compact
+          ? "h-full items-center px-0"
+          : "min-h-[56px] flex-col justify-center px-1 md:px-2"
+          }`}
       >
         {/* SELECT */}
         <div className="w-full min-w-0 overflow-hidden">
@@ -309,9 +307,9 @@ function DestinationSearchField({
               popupMatchSelectWidth={compact ? false : true}
               filterOption={false}
               loading={isLoading}
-              className={`font-jost! w-full min-w-0 overflow-hidden font-semibold! ${styles.destinationSelect}`}
+              className={`font-jost! w-full min-w-0 overflow-hidden font-medium  text-gray-600 min-[700px]:font-bold! min-[700px]:text-gray-800! ${styles.destinationSelect}`}
               style={{
-                fontWeight: 700,
+                fontWeight: 300,
                 fontSize,
                 lineHeight: 1,
                 width: "100%",

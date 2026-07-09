@@ -32,53 +32,149 @@ export default function BookingHeaderCard({ bookingData }) {
         },
       }}
     >
-      {/* Hotel Image */}
-      <div className="relative h-[250px] w-full">
-        <Image
-          src={hotelImage}
-          alt={hotel?.HotelName || "Hotel"}
-          fill
-          className="rounded"
-          priority
-        />
-      </div>
 
-      {/* Content */}
-      <div className="p-4">
-        <Title level={4} className="font-roboto !mb-0 !text-[22px] !font-bold">
-          {HotelName}
-        </Title>
+      {/* MOBILE VIEW */}
+      <div className="flex gap-3 md:hidden">
 
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex gap-1 text-[#f4b400]">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <StarFilled key={i} />
-            ))}
+        {/* Image */}
+        <div className="relative h-[90px] w-[90px] shrink-0 overflow-hidden rounded">
+          <Image
+            src={hotel?.HotelImage || "/no-room.jpg"}
+            alt={hotel?.HotelName || "Hotel"}
+            fill
+            className="object-cover"
+          />
+        </div>
+
+
+        {/* Details */}
+        <div className="min-w-0 flex-1">
+
+          <Title
+            level={5}
+            className="!mb-2 truncate font-roboto! !text-[16px] font-bold!"
+          >
+            {hotel?.HotelName}
+          </Title>
+
+
+          <div className="mb-2 flex flex-wrap items-center gap-1">
+
+            <div className="flex gap-[2px] text-[#f4b400]">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <StarFilled
+                  key={i}
+                  className="!text-[11px]"
+                />
+              ))}
+            </div>
+
+
+            <Tag className="!m-0 rounded-full !px-2 !text-[11px]">
+              Selected
+            </Tag>
+
+
+            <Tag className="!m-0 !border-0 !bg-green-50 !px-2 !text-[11px] !text-green-600">
+              Confirming
+            </Tag>
+
           </div>
 
-          <Tag className="rounded-full">Selected</Tag>
 
-          <Tag className="!border-0 !bg-green-50 !text-green-600">
-            Confirming
-          </Tag>
-        </div>
-
-        <div className="rounded-lg bg-gray-50 p-3">
-          <Text className="block text-[14px] font-medium text-gray-700">
-            {Address || "Address not available"}
+          <Text className="block truncate text-[12px] text-[#666]">
+            {hotel?.Address}
           </Text>
 
-          <Text className="mt-1 block text-[13px] text-gray-500">
-            {fullLocation}
+
+          <Text className="block text-[12px] text-[#666]">
+            {hotel?.City}, {hotel?.Country}
           </Text>
+
+
+          <div className="mt-1">
+            <Tag color="blue" className="!text-[11px]">
+              {room?.GroupName}
+            </Tag>
+          </div>
+
+
         </div>
 
-        <div className="mt-4">
-          <Tag color="blue" className="!rounded-full !px-3 !py-1">
-            {roomName}
-          </Tag>
-        </div>
       </div>
+
+
+
+
+      {/* DESKTOP VIEW */}
+      <div className="hidden md:block">
+
+        {/* Hotel Image */}
+        <div className="relative h-[250px] w-full overflow-hidden rounded">
+          <Image
+            src={hotel?.HotelImage || "/no-room.jpg"}
+            alt={hotel?.HotelName || "Hotel"}
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
+
+
+        {/* Content */}
+        <div className="p-4">
+
+          <Title
+            level={4}
+            className="font-roboto! !mb-5 !text-[20px] font-bold!"
+          >
+            {hotel?.HotelName}
+          </Title>
+
+
+          <div className="mb-3 flex flex-wrap items-center gap-3">
+
+            <div className="flex gap-1 text-[#f4b400]">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <StarFilled key={i} />
+              ))}
+            </div>
+
+
+            <Tag className="rounded-full">
+              Selected
+            </Tag>
+
+
+            <Tag className="!border-0 !bg-green-50 !text-green-600">
+              Confirming
+            </Tag>
+
+          </div>
+
+
+          <Text className="block text-[14px] text-[#666]">
+            {hotel?.Address}
+          </Text>
+
+
+          <Text className="block text-[14px] text-[#666]">
+            {hotel?.City}, {hotel?.Country}
+          </Text>
+
+
+          <div className="mt-4">
+            <Tag color="blue">
+              {room?.GroupName}
+            </Tag>
+          </div>
+
+
+        </div>
+
+      </div>
+
+
     </Card>
   );
 }

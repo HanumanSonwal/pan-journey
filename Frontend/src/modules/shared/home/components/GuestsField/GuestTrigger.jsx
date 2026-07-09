@@ -23,7 +23,7 @@ export default function GuestTrigger({ variant = "default", value }) {
 
   return (
     <div className="relative min-w-0 rounded border border-gray-300 px-5 py-3 transition-all hover:border-[#0077b6]">
-      <span className="absolute -top-2.5 left-4 rounded bg-white px-2 text-[14px] font-semibold tracking-wide text-[#0F6A75]">
+      <span className="absolute -top-2.5 left-4 rounded bg-white px-2 text-[14px] font-bold  tracking-wide text-[#0F6A75] font-bold min-[700px]:text-[16px]! min-[700px]:font-bold!">
         Rooms & Guests
       </span>
 
