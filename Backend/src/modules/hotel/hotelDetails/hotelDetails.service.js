@@ -22,19 +22,17 @@ export const fetchHotelDetailsFromSupplier = async ({
 
     // STEP 1 → direct hotelId lookup
     console.log("🔍 Looking hotel in cache by hotelId...");
-    // activeCache = await HotelCache.findOne({
-    //   "hotels.hotelId": String(hotelId),
-    // });
+
     const cacheLookup = {
-  "hotels.hotelId": String(hotelId),
-  checkInDate: searchContext.CheckInDate,
-  checkOutDate: searchContext.CheckOutDate,
-  roomCount: Number(searchContext.RoomCount || 1),
-};
+      "hotels.hotelId": String(hotelId),
+      checkInDate: searchContext.CheckInDate,
+      checkOutDate: searchContext.CheckOutDate,
+      roomCount: Number(searchContext.RoomCount || 1),
+    };
 
-console.log("🔍 Looking hotel in cache:", cacheLookup);
+    console.log("🔍 Looking hotel in cache:", cacheLookup);
 
-activeCache = await HotelCache.findOne(cacheLookup);
+    activeCache = await HotelCache.findOne(cacheLookup);
     console.log("📦 CACHE FOUND:", !!activeCache);
 
     // STEP 2 → if cache found, find hotel
@@ -79,40 +77,28 @@ activeCache = await HotelCache.findOne(cacheLookup);
         roomCount: searchContext.RoomCount || 1,
       };
 
-       console.log("🔍 Cache Recheck Query:", cacheLookup);
-
-      // activeCache = await HotelCache.findOne(cacheLookup);
+      console.log("🔍 Cache Recheck Query:", cacheLookup);
 
       const caches = await HotelCache.find(cacheLookup);
 
-console.log("Total matched:", caches.length);
+      console.log("Total matched:", caches.length);
 
-activeCache = caches[0];
-
-      //console.log("📦 Cache found after search:", !!activeCache);
+      activeCache = caches[0];
 
       if (!activeCache) {
         throw new Error("Search ran but cache not created");
       }
-
       // STEP 5 → find hotel again
       hotel = activeCache.hotels.find((h) => h.hotelId === String(hotelId));
-
-      //console.log("🏨 Hotel found after fallback:", !!hotel);
 
       if (!hotel) {
         throw new Error("Hotel not found even after cache refresh");
       }
-
       console.log("✅ Hotel found after fallback search");
     }
-
     // STEP 6 → supplier keys
     const supplierHotelKey = hotel.hotelkey;
     const searchKey = activeCache.searchKey;
-
-    // console.log("Supplier HotelKey:", supplierHotelKey);
-    // console.log("Supplier SearchKey:", searchKey);
 
     // STEP 7 → supplier payload
     const payload = {
@@ -122,13 +108,11 @@ activeCache = caches[0];
     };
 
     console.log("📤 Supplier Details Payload:", payload);
-
     // STEP 8 → call supplier details API
     const { data } = await supplierAPI.post(
       "/JSONService/HotelDetails",
       payload,
     );
-
     console.log("✅ Supplier Details API Success");
     console.log("========== HOTEL DETAILS DEBUG END ==========");
 
@@ -140,10 +124,6 @@ activeCache = caches[0];
       supplierResponse: data,
     };
   } catch (error) {
-    // console.error("❌ Supplier Hotel Detail Error:");
-    // console.error("Message:", error.message);
-    // console.error("Response:", error?.response?.data);
-
     throw new Error(error.message || "Supplier HotelDetails API failed");
   }
 };

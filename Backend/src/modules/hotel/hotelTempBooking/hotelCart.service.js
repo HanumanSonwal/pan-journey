@@ -63,6 +63,7 @@ export const hotelTempBookingService = async (payload, pricingData) => {
       bookingAmount: pricingData.finalPrice - pricingData.platformFeeAndTax,
 
       serviceTax: pricingData.serviceTaxAmount,
+      currencySymbol:pricingData.pricingData,
     });
 
     const appliedDiscount = couponData?.bestDiscount || 0;
@@ -318,6 +319,7 @@ console.log("Booking =", booking)
   console.timeEnd("Booking Query");
 
   console.time("Coupon Query");
+
   const coupons = await Coupon.find({
     isActive: true,
     applicableModules: "hotel",
@@ -373,6 +375,8 @@ console.log("Booking =", booking)
       couponDiscount:
         booking?.offer?.couponDiscount || booking?.offer?.autoDiscount || 0,
       totalPayableAmountAfterDiscount: booking?.payableAmount || 0,
+      currencySymbol:booking?.pricing?.currencySymbol||"₹"
+      
     },
 
     availableCoupons,
@@ -385,87 +389,3 @@ console.log("Booking =", booking)
     createdAt: booking.createdAt,
   };
 };
-// export const getTempBookingByBookingRefService = async (
-//   userId,
-//   bookingRefNo,
-// ) => {
-//   const booking = await HotelTempBooking.findOne({
-//     userId,
-//     paymentStatus: "pending",
-//     tempBookingStatus: "success",
-//     "supplierResponse.bookingRefNo": bookingRefNo,
-//   });
-
-//   if (!booking) {
-//     throw new Error("Booking not found");
-//   }
-
-//   const baseAmount =
-//     booking.pricing.finalPrice -
-
-//     booking.pricing.platformFeeAndTax;
-//   const totalAmount =
-//     baseAmount +
-
-//     booking.pricing.platformFeeAndTax;
-//   const availableCoupons = await Coupon.find({
-//     isActive: true,
-//     applicableModules: "hotel",
-//     minAmount: { $lte: totalAmount },
-//     "validity.startDate": { $lte: now },
-//     "validity.endDate": { $gte: now },
-//     $or: [
-//       { usageLimit: null },
-//       {
-//         $expr: {
-//           $lt: ["$usedCount", "$usageLimit"],
-//         },
-//       },
-//     ],
-//   }).select(
-//     "code title image discountType discountValue minAmount  isAutoApply",
-//   );
-//   console.log("Coupen", availableCoupons);
-//   return {
-//     bookingId: booking._id,
-
-//     bookingReference: booking?.supplierResponse?.bookingRefNo || null,
-
-//     supplier: booking.supplier,
-
-//     hotel: {
-//       image: booking?.hotelData?.hotelImage || null,
-//     },
-
-//     customer: {
-//       name: booking?.supplierData?.customerName || "",
-//       mobile: booking?.supplierData?.customerMobile || "",
-//     },
-
-//     guestDetails:
-//       booking?.supplierData?.occupantDetails?.map((guest) => ({
-//         firstName: guest.FirstName,
-//         lastName: guest.LastName,
-//         title: guest.Title,
-//         occupantType: guest.OccupantType,
-//         roomNumber: guest.RoomNo,
-//       })) || [],
-
-//     priceSummary: {
-//       totalAmount,
-//       baseAmount,
-//       serviceCharge: booking?.pricing?.serviceCharge || 0,
-//       platformChargeandTax: booking?.pricing?.platformFeeAndTax || 0,
-//       couponCode: booking?.offer?.couponCode ||booking?.offer?.autoCouponCode|| null,
-//       couponDiscount: booking?.offer?.couponDiscount ||booking?.offer?.autoDiscount|| 0,
-//       totalPayableAmountAfterDiscount: booking?.payableAmount || 0,
-//     },
-//     availableCoupons: availableCoupons,
-//     bookingStatus: {
-//       reservationStatus: booking?.tempBookingStatus,
-//       paymentStatus: booking?.paymentStatus,
-//     },
-
-//     createdAt: booking.createdAt,
-//   };
-// };

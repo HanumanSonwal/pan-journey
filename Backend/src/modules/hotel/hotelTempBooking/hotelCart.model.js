@@ -47,6 +47,10 @@ const hotelCartSchema = new mongoose.Schema(
       serviceCharge: Number,
       platformFeeAndTax: Number,
       finalPrice: Number,
+      currencySymbol: {
+        type: String,
+        default: "₹",
+      },
     },
 
     // offer engine
@@ -97,36 +101,36 @@ const hotelCartSchema = new mongoose.Schema(
       default: "initiated",
     },
 
-   supplierResponse: {
-  bookingRefNo: String,
-  statusId: String,
+    supplierResponse: {
+      bookingRefNo: String,
+      statusId: String,
 
-  hotelTicketResponse: {
-    type: mongoose.Schema.Types.Mixed,
-    default: {},
-  },
+      hotelTicketResponse: {
+        type: mongoose.Schema.Types.Mixed,
+        default: {},
+      },
 
-  hotelRequeryResponse: {
-    type: mongoose.Schema.Types.Mixed,
-    default: {},
-  },
+      hotelRequeryResponse: {
+        type: mongoose.Schema.Types.Mixed,
+        default: {},
+      },
 
-  hotelVoucherNumber: String,
+      hotelVoucherNumber: String,
 
-  voucherNumber: String,
+      voucherNumber: String,
 
-  invoiceNumber: String,
+      invoiceNumber: String,
 
-  ticketStatusId: String,
+      ticketStatusId: String,
 
-  ticketStatusDesc: String,
+      ticketStatusDesc: String,
 
-  checkInDate: String,
+      checkInDate: String,
 
-  checkOutDate: String,
+      checkOutDate: String,
 
-  confirmedAt: Date,
-},
+      confirmedAt: Date,
+    },
 
     responseTime: Number,
 
