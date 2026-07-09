@@ -39,14 +39,6 @@ const resolveMarkup = ({
 
   if (cityMarkup) return cityMarkup;
 
-  // console.log("incoming city =", normalizedCity);
-  // console.log(
-  //   "db cities =",
-  //   cityMarkups.map((m) => m.cityName),
-  // );
-  // console.log("matched cityMarkup =", cityMarkup);
-
-  // state
   const stateMarkup = stateMarkups.find(
     (m) =>
       m.stateName?.trim().toLowerCase() === stateName?.trim().toLowerCase(),
@@ -72,9 +64,6 @@ export const applyPricing = async (
   try {
     const hotelId = supplierData.hotelId;
     const { cityName, stateName, countryCode } = hotelMeta;
-    // console.log("hotelMeta =>", hotelMeta);
-    // console.log("hotelId after destructure =>", hotelId);
-    // console.log("supplierData.hotelId =>", supplierData.hotelId);
 
     const allMarkups = await Markup.find({
       isActive: true,
@@ -93,9 +82,7 @@ export const applyPricing = async (
       allMarkups,
     });
 console.log("matchedMarkup",matchedMarkup)
-    // const countryTax = await getCountryTaxRule({
-    //   countryCode,
-    // });
+    
 let countryTax = await getCountryTaxRule({
   countryCode,
 });
