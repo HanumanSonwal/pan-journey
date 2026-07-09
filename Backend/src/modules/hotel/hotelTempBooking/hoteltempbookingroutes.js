@@ -10,7 +10,7 @@ import {
 const router = express.Router();
 
 router.post("/hotel-temp-booking", protectCustomer, hotelTempBookingController);
-router.put(
+router.patch(
   "/hotel-temp-booking/couponApply",
   protectCustomer,
   updateCouponController,
