@@ -8,6 +8,7 @@ export const useHotelDetails = (payload) => {
   const currency = useCurrencyStore((state) => state.selectedCurrency.code);
 
   return useQuery({
+    
     queryKey: ["hotel-details", payload, currency],
     queryFn: () => HotelDetailApi(payload),
     enabled: !!payload?.hotelId && !!payload?.hotelMeta?.cityId,

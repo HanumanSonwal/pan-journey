@@ -18,6 +18,10 @@ export default function PaymentFooter({
       0,
   );
 
+  const currencySymbol = priceSummary?.currencySymbol || "₹";
+
+  console.log("priceSummary in payment page", currencySymbol);
+
   const { payNow, loading: paymentLoading } = useRazorpayPayment();
   const formatPrice = (value) =>
     Number(value).toLocaleString("en-IN", {
@@ -64,7 +68,7 @@ export default function PaymentFooter({
         icon={<LockOutlined />}
         className="!h-[54px] w-full !rounded !bg-[#0F766E] !text-[16px] !font-semibold hover:!bg-[#0c645d]"
       >
-        Pay ₹ {formatPrice(payableAmount)}
+        Pay {currencySymbol} {formatPrice(payableAmount)}
       </Button>
 
       {/* Terms */}

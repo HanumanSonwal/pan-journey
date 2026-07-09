@@ -5,6 +5,7 @@ import { Card } from "antd";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import HotelDetailsSkeleton from "@/components/common/loder/HotelDetailsSkeleton";
+import useIsMobile from "@/hooks/useIsMobile";
 import { useAuthGuard } from "@/modules/auth/hooks/useAuthGuard";
 import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
 import { useHotelDetails } from "@/modules/hotel/hooks/useHotelDetails";
@@ -43,7 +44,7 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   const { mutateAsync } = useToggleWishlist();
   const { data: wishlistData } = useWishlistIds();
   const searchParams = useSearchParams();
-
+  const isMobile = useIsMobile();
   const hid = searchParams.get("hid");
   const cityIdParam = searchParams.get("cityId");
   const stateNameParam = searchParams.get("stateName");
@@ -56,6 +57,8 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     const [year, month, day] = date.split("-");
     return `${month}/${day}/${year}`;
   };
+
+  console.log("appliedSearchData iiii details", appliedSearchData);
 
   const payload = useMemo(() => {
     if (selectedHotel?.fromWishlist) {
@@ -242,165 +245,168 @@ function HotelDetails({ initialPayload = null, cms = null }) {
 
   const handleSearch = useCallback(() => {}, []);
 
+  if (isMobile === null) {
+    return <HotelDetailsSkeleton />;
+  }
+
+  if (isMobile) {
+    return (
+      <HotelDetailsMobile
+        cms={cms}
+        hotelData={hotelData}
+        supplierData={supplierData}
+        isLoading={isLoading}
+        isFetching={isFetching}
+        refetch={refetch}
+        payload={payload}
+      />
+    );
+  }
+
   return (
     <>
-      {/* Mobile */}
-      <div className="block md:hidden">
-        <HotelDetailsMobile
-          initialPayload={initialPayload}
-          cms={cms}
-        />
-      </div>
+      <div className="min-h-screen w-full bg-[#eaf3f9]">
+        <SearchBar searchData={supplierData} onSearch={handleSearch} />
 
-      {/* Desktop */}
-      <div className="hidden md:block">
+        <div
+          className={`relative mx-auto w-full max-w-7xl px-2 !pt-5 transition-all duration-300 sm:px-4 sm:!pt-0 md:px-6 md:!pt-0 lg:!pt-0 xl:!pt-0 2xl:!pb-0 ${
+            isScrolled ? "z-0" : "!z-[820]"
+          }`}
+        >
+          <div className="-mt-3">
+            {showSkeleton ? (
+              <HotelDetailsSkeleton />
+            ) : (
+              <Card className="overflow-hidden rounded-md border-0 p-3 shadow-lg sm:p-6">
+                {/* HEADER */}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+                      <h1 className="text-[18px] leading-tight font-semibold text-[#303030] sm:text-[26px]">
+                        {supplierData?.HotelName || "Hotel Name"}
+                      </h1>
 
-        <div className="min-h-screen w-full bg-[#eaf3f9]">
-          <SearchBar
-            searchData={supplierData}
-            onSearch={handleSearch}
-          />
-
-          <div
-            className={`relative mx-auto w-full max-w-7xl px-2 !pt-5 transition-all duration-300 sm:px-4 sm:!pt-0 md:px-6 md:!pt-0 lg:!pt-0 xl:!pt-0 2xl:!pb-0 ${isScrolled ? "z-0" : "!z-[820]"
-              }`}
-          >
-            <div className="-mt-3">
-              {showSkeleton ? (
-                <HotelDetailsSkeleton />
-              ) : (
-                <Card className="overflow-hidden rounded-md border-0 p-3 shadow-lg sm:p-6">
-                  {/* HEADER */}
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-                        <h1 className="text-[18px] leading-tight font-semibold text-[#303030] sm:text-[26px]">
-                          {supplierData?.HotelName || "Hotel Name"}
-                        </h1>
-
-                        {(supplierData?.City || supplierData?.Country) && (
-                          <span className="w-fit rounded-full bg-[#eef8fd] px-2 py-1 !mb-4 sm:!mb-3 md:!mb-4 lg:!mb-0m xl:!mb-0  text-[11px] font-medium text-[#5bb7ec] sm:px-3 sm:text-sm">
-                            {[supplierData?.City, supplierData?.Country]
-                              .filter(Boolean)
-                              .join(", ")}
-                          </span>
-                        )}
-                      </div>
+                      {(supplierData?.City || supplierData?.Country) && (
+                        <span className="lg:!mb-0m !mb-4 w-fit rounded-full bg-[#eef8fd] px-2 py-1 text-[11px] font-medium text-[#5bb7ec] sm:!mb-3 sm:px-3 sm:text-sm md:!mb-4 xl:!mb-0">
+                          {[supplierData?.City, supplierData?.Country]
+                            .filter(Boolean)
+                            .join(", ")}
+                        </span>
+                      )}
                     </div>
+                  </div>
 
-                    <div className="flex items-center gap-2 sm:gap-3">
-                      <button
-                        onClick={handleWishlist}
-                        className="group flex h-9 w-9 items-center justify-center rounded-full border bg-white transition-all duration-200 hover:shadow-md active:scale-95 sm:h-11 sm:w-11"
-                      >
-                        <span
-                          className={`inline-flex items-center justify-center transition-all duration-300 ${isWishlisted
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <button
+                      onClick={handleWishlist}
+                      className="group flex h-9 w-9 items-center justify-center rounded-full border bg-white transition-all duration-200 hover:shadow-md active:scale-95 sm:h-11 sm:w-11"
+                    >
+                      <span
+                        className={`inline-flex items-center justify-center transition-all duration-300 ${
+                          isWishlisted
                             ? "scale-110 text-red-500"
                             : "text-gray-700 group-hover:scale-110"
-                            }`}
-                        >
-                          {isWishlisted ? (
-                            <HeartFilled className="text-[16px] sm:text-[20px]" />
-                          ) : (
-                            <HeartOutlined className="text-[16px] sm:text-[20px]" />
-                          )}
-                        </span>
-                      </button>
+                        }`}
+                      >
+                        {isWishlisted ? (
+                          <HeartFilled className="text-[16px] sm:text-[20px]" />
+                        ) : (
+                          <HeartOutlined className="text-[16px] sm:text-[20px]" />
+                        )}
+                      </span>
+                    </button>
 
-                      <button className="flex h-9 w-9 items-center justify-center rounded-full border bg-white sm:h-11 sm:w-11">
-                        <ShareAltOutlined className="text-[16px] sm:text-[19px]" />
-                      </button>
-                    </div>
+                    <button className="flex h-9 w-9 items-center justify-center rounded-full border bg-white sm:h-11 sm:w-11">
+                      <ShareAltOutlined className="text-[16px] sm:text-[19px]" />
+                    </button>
                   </div>
-
-                  {/* GALLERY + PRICE */}
-                  <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:items-start">
-                    <div className="lg:col-span-2 self-start">
-                      <ViewHotelGallery
-                        images={hotelImages}
-                        onOpen={() => setIsGalleryOpen(true)}
-                      />
-
-
-
-                      <div className="mt-6">
-                        <ViewHotelTabs supplierData={supplierData} />
-                      </div>
-                    </div>
-
-                    <div className="lg:col-span-1">
-                      <ViewHotelPriceCard
-                        ratePlans={ratePlans}
-                        supplierData={supplierData}
-                      />
-                    </div>
-                  </div>
-
-                  {/* INFO */}
-                  <div className="mt-6">
-                    <ViewHotelInfo supplierData={supplierData} />
-                  </div>
-                </Card>
-              )}
-            </div>
-
-            {/* TABS */}
-            {!showSkeleton && (
-              <>
-                <div className="mt-6">
-                  <HotelSectionsTabs
-                    activeTab={activeTab}
-                    setActiveTab={setActiveTab}
-                  />
                 </div>
 
-                {/* CONTENT */}
-                <div className="mt-4">
-                  <HotelSectionsContent
-                    activeTab={activeTab}
-                    supplierData={supplierData}
-                    ratePlans={ratePlans}
-                    amenities={amenities}
-                    hotelDetails={hotelDetails}
-                  />
-                </div>
-
-                {/* CMS */}
-                <HotelCmsSection>
-                  {cms ? (
-                    <CMSContentRenderer cms={cms} />
-                  ) : (
-                    <DynamicHotelSeoFallback
-                      hotelName={supplierData?.HotelName}
-                      cityName={supplierData?.City}
+                {/* GALLERY + PRICE */}
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:items-start">
+                  <div className="self-start lg:col-span-2">
+                    <ViewHotelGallery
+                      images={hotelImages}
+                      onOpen={() => setIsGalleryOpen(true)}
                     />
-                  )}
-                </HotelCmsSection>
 
-                {/* RELATED */}
-                <RelatedHotels
-                  cityId={appliedSearchData?.cityData?.id}
-                  cityName={appliedSearchData?.city}
-                  searchData={appliedSearchData}
-                  currentHotelId={payload?.hotelId}
-                />
-              </>
+                    <div className="mt-6">
+                      <ViewHotelTabs supplierData={supplierData} />
+                    </div>
+                  </div>
+
+                  <div className="lg:col-span-1">
+                    <ViewHotelPriceCard
+                      ratePlans={ratePlans}
+                      supplierData={supplierData}
+                    />
+                  </div>
+                </div>
+
+                {/* INFO */}
+                <div className="mt-6">
+                  <ViewHotelInfo supplierData={supplierData} />
+                </div>
+              </Card>
             )}
           </div>
 
-          {/* MODALS (always outside) */}
-          <ViewHotelModal
-            open={isGalleryOpen}
-            images={hotelImages}
-            onClose={() => setIsGalleryOpen(false)}
-          />
+          {/* TABS */}
+          {!showSkeleton && (
+            <>
+              <div className="mt-6">
+                <HotelSectionsTabs
+                  activeTab={activeTab}
+                  setActiveTab={setActiveTab}
+                />
+              </div>
 
-          <SessionExpiredModal
-            open={sessionExpired}
-            loading={reloadingHotels}
-            onReload={handleReloadHotels}
-          />
+              {/* CONTENT */}
+              <div className="mt-4">
+                <HotelSectionsContent
+                  activeTab={activeTab}
+                  supplierData={supplierData}
+                  ratePlans={ratePlans}
+                  amenities={amenities}
+                  hotelDetails={hotelDetails}
+                />
+              </div>
+
+              {/* CMS */}
+              <HotelCmsSection>
+                {cms ? (
+                  <CMSContentRenderer cms={cms} />
+                ) : (
+                  <DynamicHotelSeoFallback
+                    hotelName={supplierData?.HotelName}
+                    cityName={supplierData?.City}
+                  />
+                )}
+              </HotelCmsSection>
+
+              {/* RELATED */}
+              <RelatedHotels
+                cityId={appliedSearchData?.cityData?.id}
+                cityName={appliedSearchData?.city}
+                searchData={appliedSearchData}
+                currentHotelId={payload?.hotelId}
+              />
+            </>
+          )}
         </div>
+
+        {/* MODALS (always outside) */}
+        <ViewHotelModal
+          open={isGalleryOpen}
+          images={hotelImages}
+          onClose={() => setIsGalleryOpen(false)}
+        />
+
+        <SessionExpiredModal
+          open={sessionExpired}
+          loading={reloadingHotels}
+          onReload={handleReloadHotels}
+        />
       </div>
     </>
   );
