@@ -23,41 +23,70 @@ const sectionIds = {
 const HotelSectionsTabs = ({ activeTab = "Rooms", setActiveTab }) => {
   const [currentTab, setCurrentTab] = useState(activeTab);
 
-  const ref = useRef(null);
-  const [isFixed, setIsFixed] = useState(false);
-  const [height, setHeight] = useState(0);
-  const [offsetTop, setOffsetTop] = useState(0);
+const ref = useRef(null);
+const footerRef = useRef(null);
+const ignoreScroll = useRef(false);
 
-  const ignoreScroll = useRef(false);
+const [isFixed, setIsFixed] = useState(false);
+const [height, setHeight] = useState(0);
+const [offsetTop, setOffsetTop] = useState(0);
 
   // measure position
   useEffect(() => {
-    const update = () => {
-      if (ref.current) {
-        setHeight(ref.current.offsetHeight);
-        setOffsetTop(ref.current.offsetTop);
-      }
-    };
+  const update = () => {
+    if (ref.current) {
+      setHeight(ref.current.offsetHeight);
 
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, []);
+      const rect = ref.current.getBoundingClientRect();
+
+      setOffsetTop(rect.top + window.scrollY);
+    }
+
+    footerRef.current = document.getElementById("site-footer");
+  };
+
+  update();
+
+  window.addEventListener("resize", update);
+
+  return () => window.removeEventListener("resize", update);
+}, []);
 
   // sticky logic
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY >= offsetTop) {
-        setIsFixed(true);
-      } else {
-        setIsFixed(false);
+  const handleScroll = () => {
+    if (!ref.current) return;
+
+    const footer = footerRef.current;
+
+    let shouldStick = window.scrollY >= offsetTop;
+
+    if (footer) {
+      const footerTop = footer.getBoundingClientRect().top;
+
+      const stickyHeight = ref.current.offsetHeight;
+
+      const headerOffset =
+        window.innerWidth >= 768 ? 100 : 55;
+
+      if (footerTop <= stickyHeight + headerOffset) {
+        shouldStick = false;
       }
-    };
+    }
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [offsetTop]);
+    setIsFixed(shouldStick);
+  };
 
+  handleScroll();
+
+  window.addEventListener("scroll", handleScroll);
+  window.addEventListener("resize", handleScroll);
+
+  return () => {
+    window.removeEventListener("scroll", handleScroll);
+    window.removeEventListener("resize", handleScroll);
+  };
+}, [offsetTop]);
   // scroll spy
   useEffect(() => {
     const handleScrollSpy = () => {

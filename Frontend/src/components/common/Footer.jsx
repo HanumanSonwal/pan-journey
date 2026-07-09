@@ -127,12 +127,12 @@ import FooterLinks from "./footer/FooterLinks";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-100 px-10 pt-10 text-gray-700">
-      {/* <div className="mx-auto max-w-[1400px] px-6 pt-10"> */}
-        <FooterLinks />
-
-        <FooterBottom />
-      {/* </div> */}
+    <footer
+      id="site-footer"
+      className="bg-gray-100 px-10 pt-10 text-gray-700"
+    >
+      <FooterLinks />
+      <FooterBottom />
     </footer>
   );
 }

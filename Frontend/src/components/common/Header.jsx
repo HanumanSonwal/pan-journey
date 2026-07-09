@@ -197,30 +197,30 @@ export default function Header() {
 
       {/* Navbar */}
       <header
-        className={`flex justify-between bg-white shadow-sm ${
-          isMobile
-            ? "h-12 px-3 py-1 pt-0"
-            : "h-18 px-4 py-1 pt-0 md:px-10 lg:px-20"
-        }`}
+        className={`flex justify-between bg-white shadow-sm ${isMobile
+          ? "h-12 px-6 py-1 pt-0"
+          : "h-18 px-6 py-1 pt-0 md:px-10  lg:px-8 xl:px-30 2xl:px-30"
+          }`}
       >
         {/* Logo */}
-        <Link href="/" className="flex items-center">
-          <Image
-            src="/images/PJ_LOGO-removebg-preview.png"
-            alt="PAN Journey"
-            width={120}
-            height={110}
-            priority
-            unoptimized
-            className={`absolute left-2 object-contain transition-all duration-300 ${
-              isMobile
-                ? " top-9 h-[50px] w-[50px]"
-                : "top-8 h-[100px] w-[100px]"
-            }`}
-          />
-        </Link>
+        <div className={isMobile ? "" : "flex items-center justify-start"}>
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/images/PJ_LOGO-removebg-preview.png"
+              alt="PAN Journey"
+              width={120}
+              height={110}
+              priority
+              unoptimized
+              className={`object-contain transition-all duration-300 ${isMobile
+                ? "absolute left-2 top-9 h-[50px] w-[50px]"
+                : "h-[100px] w-[100px]"
+                }`}
+            />
+          </Link>
+        </div>
 
-        <nav className="font-roboto hidden items-center gap-3 text-gray-900 min-[901px]:flex min-[1024px]:gap-4 min-[1200px]:gap-6 min-[1400px]:gap-8">
+        <nav className="hidden min-[901px]:flex items-center justify-center gap-7 lg:gap-4 xl:gap-7 2xl:gap-7 font-roboto text-gray-900">
           {desktopNavigationItems.map((item) =>
             item.type === "comingSoon" ? (
               <Tooltip key={item.id} title="Coming Soon" color="#0f766e">
@@ -273,11 +273,10 @@ export default function Header() {
           {!session ? (
             <button
               onClick={() => setOpen(true)}
-              className={`bg-offer-gradient flex items-center rounded-lg text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg ${
-                isMobile
-                  ? "gap-1 px-2 py-2 text-[13px]"
-                  : "gap-2 px-3 py-2 text-sm"
-              }`}
+              className={`bg-offer-gradient flex items-center rounded-lg text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg ${isMobile
+                ? "gap-1 px-2 py-2 text-[13px]"
+                : "gap-2 px-3 py-2 text-sm"
+                }`}
             >
               <UserOutlined
                 className={isMobile ? "text-[12px]" : "text-[18px]"}
@@ -290,9 +289,8 @@ export default function Header() {
               <div className="flex cursor-pointer items-center gap-2 transition-all duration-300 hover:scale-105">
                 {/* ✅ PERFECT ROUND AVATAR */}
                 <div
-                  className={`flex items-center justify-center overflow-hidden rounded-full border-2 border-[#4A9BB5] bg-gray-100 transition-all duration-300 ${
-                    isMobile ? "h-2! w-2!" : "h-9 w-9"
-                  }`}
+                  className={`flex items-center justify-center overflow-hidden rounded-full border-2 border-[#4A9BB5] bg-gray-100 transition-all duration-300 ${isMobile ? "h-7! w-7!" : "h-9 w-9"
+                    }`}
                 >
                   {user?.image ? (
                     <Image
@@ -304,9 +302,8 @@ export default function Header() {
                     />
                   ) : (
                     <span
-                      className={`font-semibold text-[#4A9BB5] ${
-                        isMobile ? "text-xs" : "text-sm"
-                      }`}
+                      className={`font-semibold text-[#4A9BB5] ${isMobile ? "text-xs" : "text-sm"
+                        }`}
                     >
                       {getInitials(user?.name)}
                     </span>
@@ -432,9 +429,8 @@ export default function Header() {
 
                 <ChevronRight
                   size={20}
-                  className={`text-[#0F6A75] transition-transform duration-300 ${
-                    mobileCurrencyOpen ? "rotate-90" : ""
-                  }`}
+                  className={`text-[#0F6A75] transition-transform duration-300 ${mobileCurrencyOpen ? "rotate-90" : ""
+                    }`}
                 />
               </div>
             </Dropdown>

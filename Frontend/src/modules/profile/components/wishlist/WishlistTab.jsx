@@ -1,5 +1,6 @@
 "use client";
 
+import BottomNav from "@/components/common/loder/MobileBottomNav ";
 import { useWishlist } from "@/modules/wishlist/hooks/useWishlist";
 import { CheckOutlined } from "@ant-design/icons";
 import { Card, Empty } from "antd";
@@ -12,7 +13,18 @@ export default function WishlistTab() {
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const { data, isLoading } = useWishlist();
-  const destinations = data?.data || [];
+  const destinations = Array.from(
+    new Map(
+      (data?.data || []).map((item) => [item.cityId, item])
+    ).values()
+  );
+  console.table(
+    destinations.map((item) => ({
+      cityId: item.cityId,
+      cityName: item.cityName,
+      hotelCount: item.hotelCount,
+    }))
+  );
 
   useEffect(() => {
     setMounted(true);
@@ -161,7 +173,7 @@ export default function WishlistTab() {
                   </div>
 
                   {/* PRICE */}
-                  <div className="flex flex-col items-end gap-3">
+                  <div className="flex flex-col items-end !py-3 sm:!py-3 md:!py-0 lg:!py-0 gap-3">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -180,6 +192,7 @@ export default function WishlistTab() {
           </Card>
         ))}
       </div>
+      <BottomNav />
     </div>
   );
 }

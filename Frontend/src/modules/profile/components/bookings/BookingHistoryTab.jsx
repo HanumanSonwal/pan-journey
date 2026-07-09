@@ -1,5 +1,6 @@
 "use client";
 
+import BottomNav from "@/components/common/loder/MobileBottomNav ";
 import {
   CalendarOutlined,
   CheckCircleFilled,
@@ -88,11 +89,10 @@ export default function BookingHistoryTab({ setSelectedBooking }) {
                 <button
                   key={tab.label}
                   onClick={() => setActiveFilter(tab.label)}
-                  className={`flex items-center gap-2 text-[16px] font-medium transition-all ${
-                    active
+                  className={`flex items-center gap-2 text-[16px] font-medium transition-all ${active
                       ? "text-[#4A9BB5]"
                       : "text-gray-700 hover:text-[#4A9BB5]"
-                  }`}
+                    }`}
                 >
                   <span className="text-[15px]">{tab.icon}</span>
 
@@ -239,6 +239,7 @@ export default function BookingHistoryTab({ setSelectedBooking }) {
           ))
         )}
       </div>
+      <BottomNav />
     </>
   );
 }

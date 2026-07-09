@@ -11,6 +11,7 @@ import WhySection from "@/modules/shared/home/components/why_sections/WhySection
 import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
 import { fetchCmsBySlug } from "@/modules/cms/services/cmsFetch";
 import Hero from "@/modules/shared/home/components/hero_section/Hero";
+import BottomNav from "@/components/common/loder/MobileBottomNav ";
 
 const SITE_URL = process.env.NEXTAUTH_URL || "https://panjourney.com";
 
@@ -135,18 +136,21 @@ export default async function Page() {
         />
       )}
        
-      <Hero />
-      <VacationSection />
-      <Herobanner />
-      <WhySection />
-      <TopRatedHotels />
-      <ComingSoonSection />
-      <TestimonialsSection />
-      <DestinationsSection />
+      
+  <Hero />
+  <VacationSection />
+  <Herobanner />
+  <WhySection />
+  <TopRatedHotels />
+  <ComingSoonSection />
+  <TestimonialsSection />
+  <DestinationsSection />
 
-      {homeCms && <CMSContentRenderer cms={homeCms} />}
-      {/* <MegaLinkSection /> */}
-      <NewsletterSection />
+  {homeCms && <CMSContentRenderer cms={homeCms} />}
+
+  <NewsletterSection />
+
+      <BottomNav />
     </>
   );
 }

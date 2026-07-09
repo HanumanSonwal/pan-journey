@@ -64,16 +64,16 @@ export default function Sidebar({ activeTab, setActiveTab, horizontal }) {
   return (
     <>
       <div
-        className={
-          horizontal
-            ? "flex w-full items-center gap-4 overflow-x-auto bg-white p-3 shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
-            : "w-[320px] bg-white p-6 shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
-        }
-      >
+  className={
+    horizontal
+      ? "w-full overflow-x-auto bg-white p-3 shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
+      : "w-full max-w-[320px] lg:w-[320px] bg-white p-4 sm:p-5 lg:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
+  }
+>
         {/* 🔹 DESKTOP PROFILE HEADER */}
         {!horizontal && (
-          <div className="flex items-center gap-4 border-b border-gray-100 pb-6">
-            <div className="!text-xxl flex h-18 w-18 items-center justify-center overflow-hidden rounded-full bg-[#4A9BB5] font-bold text-white">
+          <div className="flex flex-col items-center gap-3 border-b border-gray-100 pb-5 sm:flex-row sm:items-center sm:gap-4 lg:pb-6">
+            <div className="flex h-16 w-16 sm:h-18 sm:w-18 items-center justify-center overflow-hidden rounded-full bg-[#4A9BB5] text-xl font-bold text-white">
               {user?.image && !avatarError ? (
                 <Image
                   src={user.image}
@@ -91,10 +91,10 @@ export default function Sidebar({ activeTab, setActiveTab, horizontal }) {
             </div>
 
             <div className="min-w-0 flex-1">
-              <p className="font-roboto! mb-0! truncate text-[18px] font-bold text-gray-700">
+              <p className="font-roboto! mb-0 truncate text-center text-[16px] font-bold text-gray-700 sm:text-left sm:text-[18px]">
                 {user?.name || "User"}
               </p>
-              <p className="font-roboto! text-[14px] font-semibold text-gray-500">
+              <p className="font-roboto! text-center text-[13px] font-semibold text-gray-500 sm:text-left sm:text-[14px]">
                 My Account
               </p>
             </div>
@@ -104,7 +104,9 @@ export default function Sidebar({ activeTab, setActiveTab, horizontal }) {
         {/* 🔹 MENU */}
         <div
           className={
-            horizontal ? "flex min-w-max gap-3" : "flex flex-col gap-3"
+            horizontal
+              ? "flex min-w-max gap-2"
+              : "mt-4 flex flex-col gap-2"
           }
         >
           {topMenu.map((item) => {
@@ -120,17 +122,18 @@ export default function Sidebar({ activeTab, setActiveTab, horizontal }) {
                   }
                   setActiveTab(item.key);
                 }}
-                className={`font-roboto flex cursor-pointer items-center justify-between rounded border !text-[18px] font-bold ${horizontal ? "px-2 py-0 whitespace-nowrap" : "px-2 py-2.5"} transition-all duration-200 ${
-                  isActive
+                className={`font-roboto flex cursor-pointer items-center justify-between rounded border transition-all duration-200 ${horizontal
+                    ? "whitespace-nowrap px-2 py-1"
+                    : "px-3 py-3 sm:px-3 sm:py-3"
+                  } ${isActive
                     ? "border-[#4A9BB5] bg-[#4A9BB5]/10"
                     : "border-gray-200 hover:bg-gray-50"
-                } `}
+                  }`}
               >
                 {/* LEFT */}
                 <div
-                  className={`flex items-center gap-3 ${
-                    isActive ? "text-[#4A9BB5]" : "text-black"
-                  }`}
+                  className={`flex items-center gap-3 ${isActive ? "text-[#4A9BB5]" : "text-black"
+                    }`}
                 >
                   {/* 🔥 PROFILE ICON → DP (ONLY in tablet) */}
                   {horizontal && item.key === "profile" ? (
@@ -150,18 +153,19 @@ export default function Sidebar({ activeTab, setActiveTab, horizontal }) {
                       )}
                     </div>
                   ) : (
-                    <span className="!text-[18px]">{item.icon}</span>
+                    <span className="text-[18px] sm:text-[20px]">
+                      {item.icon}
+                    </span>
                   )}
 
-                  <span className="text-[16px] font-medium">{item.label}</span>
+                  <span className="text-[14px] font-medium sm:text-[15px] lg:text-[16px]">{item.label}</span>
                 </div>
 
                 {/* RIGHT ARROW (only desktop) */}
                 {!horizontal && (
                   <span
-                    className={`${
-                      isActive ? "text-[#4A9BB5]" : "text-gray-400"
-                    }`}
+                    className={`${isActive ? "text-[#4A9BB5]" : "text-gray-400"
+                      }`}
                   >
                     →
                   </span>

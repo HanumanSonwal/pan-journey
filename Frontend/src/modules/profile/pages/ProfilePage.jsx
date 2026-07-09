@@ -1,22 +1,27 @@
 "use client";
 
+import { MenuOutlined } from "@ant-design/icons";
+import { Button, Drawer } from "antd";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+
 import ProfileOverview from "../components/ ProfileOverview";
-import DocumentsTab from "../components/DocumentsTab";
-import HelpSupportPage from "../components/HelpSupportPage";
-import Sidebar from "./Sidebar";
 import BookingDetailsTab from "../components/bookings/BookingDetailsTab";
 import BookingHistoryTab from "../components/bookings/BookingHistoryTab";
-import WishlistTab from "../components/wishlist/WishlistTab";
-import WishlistDetailTab from "../components/wishlist/WishlistDetailTab";
+import DocumentsTab from "../components/DocumentsTab";
+import HelpSupportPage from "../components/HelpSupportPage";
 import SupportTicketsTab from "../components/support-tickets/pages/SupportTicketsTab";
+import WishlistDetailTab from "../components/wishlist/WishlistDetailTab";
+import WishlistTab from "../components/wishlist/WishlistTab";
+import Sidebar from "./Sidebar";
 
 export default function ProfilePage() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const activeTab = searchParams.get("tab") || "profile";
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
+  const activeTab = searchParams.get("tab") || "profile";
   const bookingRefNo = searchParams.get("bookingRefNo");
 
   const handleTabChange = (tab) => {
@@ -25,6 +30,8 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#edf7ff]">
+
+      {/* Banner */}
       <div className="relative h-[180px] w-full overflow-hidden sm:h-[200px] md:h-[220px]">
         <img
           src="/images/profile-bg.png"
@@ -34,35 +41,87 @@ export default function ProfilePage() {
         <div className="absolute inset-0 bg-black/20" />
       </div>
 
-      {/* 🔷 MAIN SECTION */}
-      <div className="relative mx-auto mt-8 max-w-[1300px] px-3 pb-10 sm:-mt-6! sm:px-4 md:-mt-12 md:px-5 md:pb-12 lg:px-6">
-        {/* 🔥 TABLET HORIZONTAL SIDEBAR */}
+      {/* Mobile Header */}
+      <div className="sticky top-0 z-40 flex items-center justify-between bg-white px-4 py-3 shadow md:hidden">
+        <h2 className="text-lg font-semibold text-[#4A9BB5]">
+          My Account
+        </h2>
+
+        <Button
+          type="text"
+          icon={<MenuOutlined className="text-xl" />}
+          onClick={() => setDrawerOpen(true)}
+        />
+      </div>
+
+      {/* Mobile Drawer */}
+      <Drawer
+  placement="left"
+  open={drawerOpen}
+  onClose={() => setDrawerOpen(false)}
+  styles={{
+    body: {
+      padding: 0,
+    },
+    wrapper: {
+      width: 320,
+    },
+  }}
+>
+        <Sidebar
+          activeTab={activeTab}
+          setActiveTab={(tab) => {
+            handleTabChange(tab);
+            setDrawerOpen(false);
+          }}
+        />
+      </Drawer>
+
+      {/* Main Section */}
+      <div className="relative mx-auto mt-8 max-w-[1300px] px-1 pb-10 sm:-mt-6 sm:px-4 md:-mt-12 md:px-1 md:pb-12 lg:px-6">
+
+        {/* Tablet Sidebar */}
         <div className="mb-5 hidden overflow-x-auto md:block lg:hidden">
           <div className="flex min-w-max gap-3">
             <Sidebar
               activeTab={activeTab}
               setActiveTab={handleTabChange}
-              horizontal // 👈 tablet mode
+              horizontal
             />
           </div>
         </div>
 
-        {/* 🔷 GRID */}
         <div className="grid grid-cols-1 gap-2 md:gap-2 lg:grid-cols-[340px_minmax(0,1fr)] lg:gap-2">
-          {/* 🔷 SIDEBAR (desktop only) */}
-          <div className="sticky top-5 hidden w-full self-start lg:block">
-            <Sidebar activeTab={activeTab} setActiveTab={handleTabChange} />
+
+          {/* Desktop Sidebar */}
+          <div className="sticky top-5 hidden self-start lg:block">
+            <Sidebar
+              activeTab={activeTab}
+              setActiveTab={handleTabChange}
+            />
           </div>
 
-          {/* 🔷 CONTENT */}
+          {/* Content */}
           <div className="min-w-0">
+
             {activeTab === "profile" && <ProfileOverview />}
+
             {activeTab === "documents" && <DocumentsTab />}
+
             {activeTab === "wishlist" && <WishlistTab />}
-            {activeTab === "wishlist-detail" && <WishlistDetailTab />}
-            {activeTab === "BookingHistory" && <BookingHistoryTab />}
+
+            {activeTab === "wishlist-detail" && (
+              <WishlistDetailTab />
+            )}
+
+            {activeTab === "BookingHistory" && (
+              <BookingHistoryTab />
+            )}
+
             {activeTab === "booking-details" && (
-              <BookingDetailsTab bookingRefNo={bookingRefNo} />
+              <BookingDetailsTab
+                bookingRefNo={bookingRefNo}
+              />
             )}
 
             {activeTab === "settings" && (
@@ -73,8 +132,14 @@ export default function ProfilePage() {
               </div>
             )}
 
-            {activeTab === "support" && <HelpSupportPage />}
-            {activeTab === "support-tickets" && <SupportTicketsTab />}
+            {activeTab === "support" && (
+              <HelpSupportPage />
+            )}
+
+            {activeTab === "support-tickets" && (
+              <SupportTicketsTab />
+            )}
+
           </div>
         </div>
       </div>
