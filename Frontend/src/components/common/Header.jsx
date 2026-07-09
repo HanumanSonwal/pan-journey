@@ -198,7 +198,7 @@ export default function Header() {
       {/* Navbar */}
       <header
         className={`flex justify-between bg-white shadow-sm ${isMobile
-          ? "h-12 px-6 py-1 pt-0"
+          ? "h-14 px-5 py-1 pt-0"
           : "h-18 px-6 py-1 pt-0 md:px-10  lg:px-8 xl:px-30 2xl:px-30"
           }`}
       >
@@ -274,7 +274,7 @@ export default function Header() {
             <button
               onClick={() => setOpen(true)}
               className={`bg-offer-gradient flex items-center rounded-lg text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg ${isMobile
-                ? "gap-1 px-2 py-2 text-[13px]"
+                ? "gap-3 px-4 py-2 text-[13px]"
                 : "gap-2 px-3 py-2 text-sm"
                 }`}
             >
@@ -315,7 +315,7 @@ export default function Header() {
 
           {/* Mobile Menu */}
           <button
-            className="text-xl !text-[#4A9BB5] transition-all duration-300 hover:scale-110 hover:text-gray-800! min-[901px]:hidden"
+            className="!text-[22px] !text-[#4A9BB5] transition-all duration-300 hover:scale-110 hover:text-gray-800! min-[901px]:hidden"
             onClick={() => setMobileMenu(true)}
           >
             <MenuOutlined />

@@ -18,45 +18,73 @@ export default function CurrencyDropdown({
     );
   }, [currencies, search]);
   return (
-    <div
-      className="w-[320px] max-w-[calc(100vw-32px)] rounded bg-white p-3 shadow-xl sm:w-[350px]"
+  <div
+    className="
+      w-[calc(100vw-24px)]
+      max-w-[350px]
+      rounded-xl
+      bg-white
+      p-3
+      shadow-[0_10px_30px_rgba(0,0,0,0.12)]
+      sm:w-[350px]
+    "
+    onClick={(e) => e.stopPropagation()}
+    onMouseDown={(e) => e.stopPropagation()}
+    onPointerDown={(e) => e.stopPropagation()}
+  >
+    {/* Search */}
+    <Input
+      allowClear
+      placeholder="Search Currency"
+      value={search}
+      className="
+        h-10
+        rounded-lg
+        [&_.ant-input]:!border-0
+        [&_.ant-input]:!shadow-none
+        [&_.ant-input]:focus:!shadow-none
+      "
       onClick={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
       onPointerDown={(e) => e.stopPropagation()}
-    >
-      {/* Search */}
-      <Input
-        allowClear
-        placeholder="Search Currency"
-        value={search}
-        className="[&_.ant-input]:!border-0 [&_.ant-input]:!shadow-none [&_.ant-input]:focus:!shadow-none"
-        onClick={(e) => e.stopPropagation()}
-        onMouseDown={(e) => e.stopPropagation()}
-        onPointerDown={(e) => e.stopPropagation()}
-        onFocus={(e) => e.stopPropagation()}
-        onChange={(e) => setSearch(e.target.value)}
-      />
+      onFocus={(e) => e.stopPropagation()}
+      onChange={(e) => setSearch(e.target.value)}
+    />
 
-      {/* Currency List */}
-      <div className="mt-3 max-h-[60vh] sm:max-h-80 overflow-y-auto">
-        {filteredCurrencies.map((currency) => (
-          <div
-            key={currency.code}
-            onClick={() => {
-              setCurrency(currency);
-              closeDropdown();
-              setSearch("");
-            }}
-            className="flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 transition-colors hover:bg-[#F5FBFE]"
-          >
-            <span>{currency.name}</span>
+    {/* Currency List */}
+    <div className="mt-3 max-h-[55vh] overflow-y-auto sm:max-h-80">
+      {filteredCurrencies.map((currency) => (
+        <div
+          key={currency.code}
+          onClick={() => {
+            setCurrency(currency);
+            closeDropdown();
+            setSearch("");
+          }}
+          className="
+            flex
+            items-center
+            justify-between
+            rounded-lg
+            height-100%
+            px-3
+            py-3
+            cursor-pointer
+            transition
+            hover:bg-[#F5FBFE]
+            active:bg-[#EAF7F9]
+          "
+        >
+          <span className="text-sm sm:text-base truncate pr-3">
+            {currency.name}
+          </span>
 
-            <span className="font-semibold text-[#0F6A75]">
-              {currency.code}
-            </span>
-          </div>
-        ))}
-      </div>
+          <span className="shrink-0 font-semibold text-[#0F6A75] text-sm sm:text-base">
+            {currency.code}
+          </span>
+        </div>
+      ))}
     </div>
-  );
+  </div>
+);
 }

@@ -86,9 +86,9 @@ export default function Hero() {
             activeTab={activeTab}
             setActiveTab={setActiveTab}
           />
-          <h2 className="mb-3 text-center text-[16px] font-bold text-[#72C0F0] min-[480px]:text-[18px] min-[700px]:text-[22px] lg:text-[28px] xl:text-[32px]">
-            Find What You Are Looking For
-          </h2>
+          <h2 className="hidden min-[700px]:block mb-3 text-center text-[22px] font-bold text-[#72C0F0] lg:text-[28px] xl:text-[32px]">
+  Find What You Are Looking For
+</h2>
           {ActiveForm && (
             <ActiveForm
               destinationError={destinationError}

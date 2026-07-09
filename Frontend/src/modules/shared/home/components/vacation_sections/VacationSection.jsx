@@ -14,7 +14,7 @@ export default function VacationSection() {
   return (
     <SectionWrapper className="-mt-10 bg-[#edf7ff] md:mt-[-1px]  !px-0 sm:!px-0 md:!px-2 lg:!px-3 xl:!px-4 2xl:!px-0">
       {/* Heading */}
-      <div className="mt-[-12px] pt-8 min-[375px]:mt-[40px] min-[425px]:mt-[34px] min-[430px]:mt-[16px]  !xl:!px-9 md:mt-[66px] lg:mt-[-39px] xl:mt-[109px] !2xl:mt-[76px]">
+      <div className="mt-[-18px] pt-8 min-[375px]:mt-[-30px] min-[425px]:mt-[24px] min-[430px]:mt-[16px]  !xl:!px-9 md:mt-[66px] lg:mt-[-39px] xl:mt-[119px] !2xl:mt-[106px]">
         <SectionHeading
           title="Places As Per Your Vibe"
           description="We're committed to offering more than just products—we provide exceptional experiences."
