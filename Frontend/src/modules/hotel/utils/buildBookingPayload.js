@@ -11,6 +11,8 @@ export const buildBookingPayload = ({
   const additionalGuests = guestData?.additionalGuests || [];
   const occupants = [primaryGuest, ...additionalGuests];
 
+  console.log("pricing in payload", pricing);
+
   return {
     CustomerName: `${primaryGuest?.firstName || ""} ${
       primaryGuest?.lastName || ""
@@ -48,6 +50,7 @@ export const buildBookingPayload = ({
       serviceCharge: Number(pricing.ServiceCharge || 0),
       platformFeeAndTax: Number(pricing.platformFeeAndTax || 0),
       finalPrice: Number(pricing.finalPrice || 0),
+      currencySymbol: pricing.currencySymbol || "₹",
     },
   };
 };
