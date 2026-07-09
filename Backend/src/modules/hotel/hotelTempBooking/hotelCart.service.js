@@ -65,8 +65,13 @@ export const hotelTempBookingService = async (payload, pricingData) => {
       serviceTax: pricingData.serviceTaxAmount,
       currencySymbol:pricingData.pricingData,
     });
+console.log("cooupendata ", couponData)
+    let appliedDiscount = couponData?.bestDiscount || 0;
+    const maxAllowed = Number(pricingData.serviceCharge || 0) * 0.7;
 
-    const appliedDiscount = couponData?.bestDiscount || 0;
+if (appliedDiscount > maxAllowed) {
+  appliedDiscount = maxAllowed;
+}
 
     /*
         CREATE TEMP BOOKING
@@ -236,10 +241,10 @@ export const updateCouponService = async ({ tempBookingId, couponCode }) => {
   }
 
   if (coupon.discountType === "percent") {
-    discount = (booking.pricing.finalSellingPrice * coupon.discountValue) / 100;
+    discount = (booking.pricing.finalPrice * coupon.discountValue) / 100;
   }
 
-  const maxAllowed = booking.pricing.serviceTaxAmount * 0.7;
+  const maxAllowed = booking.pricing.serviceCharge * 0.7;
 
   if (discount > maxAllowed) {
     discount = maxAllowed;

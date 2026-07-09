@@ -10,7 +10,7 @@ export const getBookingDetails = async (bookingRefNo) => {
  * Apply Coupon
  */
 export const applyCoupon = async (payload) => {
-  const response = await api.put("/hotel-temp-booking/couponApply", payload);
+  const response = await api.patch("/hotel-temp-booking/couponApply", payload);
 
   return response.data;
 };
