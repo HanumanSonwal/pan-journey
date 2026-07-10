@@ -244,20 +244,20 @@ function HotelDetailsMobile({
                     <div className="flex gap-3">
                       {/* Check In / Check Out */}
                       <div className="flex-1">
-                        <p className="mb-0 text-sm font-medium text-gray-700">
+                        <p className="mb-0 text-sm font-medium text-[#4AA3DF]">
                           Check In / Check Out
                         </p>
 
-                        <div className="h-8 gap-2 !rounded-[2px] border border-gray-600 p-1 sm:h-7 md:h-7 lg:h-7">
+                        <div className="!rounded-[3px] border font-normal !border-gray-400 p-1 gap-2 h-8 !-mt-2 sm:h-7 md:h-7 lg:h-7 ">
                           <div className="flex items-center gap-4">
                             <div>
-                              <p className="font-semibold text-[#4AA3DF]">
+                              <p className="font-normal !text-gray-500">
                                 {appliedSearchData?.checkIn || "--"}
                               </p>
                             </div>
 
                             <div>
-                              <p className="font-semibold text-[#4AA3DF]">
+                              <p className="font-normal !text-gray-500 ">
                                 {appliedSearchData?.checkOut || "--"}
                               </p>
                             </div>
@@ -267,12 +267,12 @@ function HotelDetailsMobile({
 
                       {/* Guests */}
                       <div className="w-[110px]">
-                        <p className="text-sm font-medium text-gray-700">
+                        <p className=" text-sm font-medium !text-[#4AA3DF] ">
                           Guests
                         </p>
 
-                        <div className="!sm:h-8 !md:h-7 !h-8 rounded-[2px] border border-gray-500 p-1 lg:h-7">
-                          <p className="font-semibold text-[#4AA3DF]">
+                        <div className="rounded-[4px] border !border-gray-400 p-1 !h-8 !-mt-2 !sm:h-8 !md:h-7 lg:h-7 ">
+                          <p className="font-normal !text-gray-500 ">
                             {appliedSearchData?.rooms || 1} Room
                           </p>
                         </div>

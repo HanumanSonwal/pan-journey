@@ -170,7 +170,7 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
           type="primary"
           size="large"
           onClick={() => requireAuth(handleBookNow)}
-          className="!h-[48px] w-full rounded! !bg-offer-gradient text-xl !font-bold tracking-wide text-white!"
+          className="!h-[42px] w-full rounded! !bg-offer-gradient text-xl !font-bold tracking-wide text-white!"
         >
           Book Now
         </Button>
@@ -178,7 +178,7 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
         <Button
           size="large"
           onClick={handleRoomScroll}
-          className="flex-1 !h-[38px] sm:!h-[48px] !text-[#0ea5e9]  !rounded px-2 sm:px-4 text-[12px] sm:text-[16px] md:text-[16px] whitespace-normal leading-tight"
+          className="flex-1 !h-[40px] sm:!h-[42px] !text-[#0ea5e9]  !rounded px-2 sm:px-4 text-[12px] sm:text-[16px] md:text-[16px] whitespace-normal leading-tight"
         >
           <span className="hidden sm:inline">
             View All
