@@ -24,7 +24,7 @@ export default function BookingHeaderCard({ bookingData }) {
       <div className="flex gap-3 md:hidden">
 
         {/* Image */}
-        <div className="relative h-[90px] w-[90px] shrink-0 overflow-hidden rounded">
+        <div className="relative h-[180px] w-[140px] shrink-0 overflow-hidden rounded">
           <Image
             src={hotel?.HotelImage || "/no-room.jpg"}
             alt={hotel?.HotelName || "Hotel"}
