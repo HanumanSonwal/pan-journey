@@ -8,10 +8,11 @@ import TopRatedHotels from "@/modules/shared/home/components/TopRatedHotels";
 import VacationSection from "@/modules/shared/home/components/vacation_sections/VacationSection";
 import WhySection from "@/modules/shared/home/components/why_sections/WhySection";
 
+import BottomNav from "@/components/common/loder/MobileBottomNav ";
 import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
 import { fetchCmsBySlug } from "@/modules/cms/services/cmsFetch";
+import ScrollToTopButton from "@/modules/hotel/ScrollToTopButton";
 import Hero from "@/modules/shared/home/components/hero_section/Hero";
-import BottomNav from "@/components/common/loder/MobileBottomNav ";
 
 const SITE_URL = process.env.NEXTAUTH_URL || "https://panjourney.com";
 
@@ -76,17 +77,17 @@ export default async function Page() {
 
   const faqSchema = faqBlock?.data?.items?.length
     ? {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        mainEntity: faqBlock.data.items.map((item) => ({
-          "@type": "Question",
-          name: item.question,
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: item.answer,
-          },
-        })),
-      }
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: faqBlock.data.items.map((item) => ({
+        "@type": "Question",
+        name: item.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: item.answer,
+        },
+      })),
+    }
     : null;
 
   const websiteSchema = {
@@ -135,20 +136,21 @@ export default async function Page() {
           }}
         />
       )}
-       
-      
-  <Hero />
-  <VacationSection />
-  <Herobanner />
-  <WhySection />
-  <TopRatedHotels />
-  <ComingSoonSection />
-  <TestimonialsSection />
-  <DestinationsSection />
 
-  {homeCms && <CMSContentRenderer cms={homeCms} />}
 
-  <NewsletterSection />
+      <Hero />
+      <ScrollToTopButton />
+      <VacationSection />
+      <Herobanner />
+      <WhySection />
+      <TopRatedHotels />
+      <ComingSoonSection />
+      <TestimonialsSection />
+      <DestinationsSection />
+
+      {homeCms && <CMSContentRenderer cms={homeCms} />}
+
+      <NewsletterSection />
 
       <BottomNav />
     </>

@@ -2,12 +2,15 @@
 
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import {
+  Avatar,
   Button,
   Empty,
+  Flex,
   Popconfirm,
   Switch,
   Table,
   Tag,
+  theme,
   Tooltip,
   Typography,
 } from "antd";
@@ -15,6 +18,7 @@ import { getLevelConfig } from "../data/MarkupsData";
 const { Text } = Typography;
 
 export default function MarkupTable({
+  levelFilter,
   markups,
   isLoading,
   meta,
@@ -25,6 +29,11 @@ export default function MarkupTable({
   deleteMarkup,
   updateStatus,
   handleEdit,
+  taxes,
+  taxMeta,
+  taxLoading,
+  deleteTax,
+  updateTaxStatus,
 }) {
   const renderTarget = (record) => {
     const formatDate = (date) => {
@@ -154,10 +163,225 @@ export default function MarkupTable({
       </div>
     );
   };
+  const { token } = theme.useToken();
 
   // ================= COLUMNS =================
 
-  const columns = [
+  const taxColumns = [
+    // ================= COUNTRY =================
+
+    {
+      title: "Country",
+      dataIndex: "countryName",
+      width: 240,
+
+      render: (_, record) => (
+        <Flex align="center" gap={12}>
+          <Avatar
+            shape="square"
+            size={42}
+            style={{
+              background: token.colorPrimaryBg,
+              color: token.colorPrimary,
+              fontWeight: 600,
+            }}
+          >
+            🌍
+          </Avatar>
+
+          <div>
+            <Typography.Text strong>{record.countryName}</Typography.Text>
+
+            <br />
+
+            <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+              {record.countryCode}
+            </Typography.Text>
+          </div>
+        </Flex>
+      ),
+    },
+
+    // ================= RULE TYPE =================
+
+    {
+      title: "Rule",
+      dataIndex: "ruleType",
+      width: 140,
+      align: "center",
+
+      render: (value) => (
+        <Tag
+          variant={false}
+          color={value === "slab" ? "processing" : "success"}
+          style={{
+            borderRadius: 999,
+            paddingInline: 12,
+            fontWeight: 600,
+          }}
+        >
+          {value === "slab" ? "SLAB" : "FLAT"}
+        </Tag>
+      ),
+    },
+    {
+      title: "Tax Details",
+      width: 380,
+
+      render: (_, record) => {
+        const value =
+          record.taxType === "percentage"
+            ? `${record.taxValue}%`
+            : `₹${record.taxValue}`;
+
+        // ================= FLAT =================
+
+        if (record.ruleType === "flat") {
+          return (
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 12,
+                padding: "10px 14px",
+                borderRadius: 12,
+                background: token.colorFillAlter,
+                border: `1px solid ${token.colorBorderSecondary}`,
+              }}
+            >
+              <div
+                style={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: "50%",
+                  background: token.colorPrimaryBg,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontWeight: 700,
+                  color: token.colorPrimary,
+                }}
+              >
+                ₹
+              </div>
+
+              <div>
+                <Typography.Text strong style={{ fontSize: 16 }}>
+                  {value}
+                </Typography.Text>
+
+                <br />
+
+                <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+                  Flat {record.taxType}
+                </Typography.Text>
+              </div>
+            </div>
+          );
+        }
+
+        // ================= SLAB =================
+
+        return (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 8,
+              width: "100%",
+            }}
+          >
+            {record.slabs?.map((slab, index) => (
+              <div
+                key={index}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  padding: "10px 14px",
+                  borderRadius: 10,
+                  background: token.colorFillAlter,
+                  border: `1px solid ${token.colorBorderSecondary}`,
+                }}
+              >
+                <div>
+                  <Typography.Text strong>
+                    From ₹{slab.minAmount}
+                  </Typography.Text>
+
+                  <br />
+
+                  <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+                    Booking Amount
+                  </Typography.Text>
+                </div>
+
+                <Tag
+                  color="processing"
+                  variant={false}
+                  style={{
+                    fontWeight: 600,
+                    paddingInline: 12,
+                    borderRadius: 999,
+                  }}
+                >
+                  {record.taxType === "percentage"
+                    ? `${slab.taxValue}%`
+                    : `₹${slab.taxValue}`}
+                </Tag>
+              </div>
+            ))}
+          </div>
+        );
+      },
+    },
+    {
+      title: "Actions",
+      width: 180,
+      render: (_, record) => (
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          {" "}
+          {/* EDIT */}{" "}
+          <Tooltip title="Edit">
+            {" "}
+            <Button
+              icon={<EditOutlined />}
+              onClick={() => {
+                console.log(record, "record edit");
+                handleEdit(record, true);
+              }}
+            />{" "}
+          </Tooltip>{" "}
+          {/* DELETE */}{" "}
+          <Popconfirm
+            title="Delete Tax Rule?"
+            description="This action cannot be undone."
+            onConfirm={() => deleteTax.mutate(record._id)}
+          >
+            {" "}
+            <Button
+              danger
+              icon={<DeleteOutlined />}
+              loading={deleteTax.isPending}
+            />{" "}
+          </Popconfirm>{" "}
+          {/* STATUS */}{" "}
+          <Switch
+            checked={record?.isActive}
+            loading={updateTaxStatus.isPending}
+            onChange={(checked) =>
+              updateTaxStatus.mutate({
+                id: record._id,
+                data: { isActive: checked },
+              })
+            }
+          />{" "}
+        </div>
+      ),
+    },
+  ];
+
+  const markupColumns = [
     {
       title: "Target",
       dataIndex: "level",
@@ -169,19 +393,50 @@ export default function MarkupTable({
       title: "Markup",
       width: 120,
       align: "center",
+
       render: (_, record) => (
         <div
           style={{
             display: "flex",
             flexDirection: "column",
             gap: 2,
-            lineHeight: 1.2,
           }}
         >
           <Text strong>
             {record?.markupType === "percentage"
               ? `${record?.markupValue}%`
               : `₹${record?.markupValue}`}
+          </Text>
+
+          <Text
+            type="secondary"
+            style={{
+              fontSize: 12,
+              textTransform: "capitalize",
+            }}
+          >
+            {record?.markupType}
+          </Text>
+        </div>
+      ),
+    },
+    {
+      title: "Service Charge",
+      width: 140,
+      align: "center",
+
+      render: (_, record) => (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+          }}
+        >
+          <Text strong>
+            {record?.markupType === "percentage"
+              ? `${record?.serviceChargeValue}%`
+              : `₹${record?.serviceChargeValue}`}
           </Text>
 
           <Text
@@ -275,9 +530,9 @@ export default function MarkupTable({
   return (
     <Table
       rowKey="_id"
-      columns={columns}
-      dataSource={markups}
-      loading={isLoading}
+      columns={levelFilter === "serviceTax" ? taxColumns : markupColumns}
+      dataSource={levelFilter === "serviceTax" ? taxes : markups}
+      loading={levelFilter === "serviceTax" ? taxLoading : isLoading}
       bordered
       size="middle"
       scroll={{
@@ -286,7 +541,10 @@ export default function MarkupTable({
       pagination={{
         current: page,
         pageSize: limit,
-        total: meta?.totalRecords || 0,
+        total:
+          levelFilter === "serviceTax"
+            ? taxMeta?.totalRecords || 0
+            : meta?.totalRecords || 0,
         showSizeChanger: true,
         pageSizeOptions: ["10", "20", "50", "100"],
         onChange: (current, pageSize) => {
@@ -297,7 +555,15 @@ export default function MarkupTable({
         responsive: true,
       }}
       locale={{
-        emptyText: <Empty description="No markups found" />,
+        emptyText: (
+          <Empty
+            description={
+              levelFilter === "serviceTax"
+                ? "No tax rules found"
+                : "No markups found"
+            }
+          />
+        ),
       }}
     />
   );

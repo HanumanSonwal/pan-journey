@@ -11,6 +11,9 @@ export const useHotelBookingStore = create(
         selectedRatePlan: null,
         pricingSummary: null,
         searchData: null,
+        pricing: null,
+        selectedCoupon: null,
+        selectedPaymentMethod: "razorpay",
 
         guestData: {
           primaryGuest: null,
@@ -59,7 +62,10 @@ export const useHotelBookingStore = create(
             selectedRoom: null,
             selectedRatePlan: null,
             pricingSummary: null,
+            pricing: null,
             searchData: null,
+            selectedCoupon: null,
+            selectedPaymentMethod: "razorpay",
 
             guestData: {
               primaryGuest: null,

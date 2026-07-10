@@ -5,9 +5,12 @@ import {
   getSingleGrievance,
   updateGrievance,
   deleteGrievance,
+  getAllGrievanceAdmin,
+  updateGrievanceStatusAdmin
 } from "./grievanceRedressal.controller.js";
 
 import { protectCustomer } from "../../middleware/customerAuth.middleware.js";
+import { protect } from "../../middleware/auth.middleware.js";
 
 const router = express.Router();
 
@@ -15,6 +18,10 @@ router.post(
   "/createGrievance",
   protectCustomer,
   createGrievance
+);
+router.get(
+  "/admin/all-grievance",protect,
+  getAllGrievanceAdmin
 );
 
 router.get(
@@ -40,5 +47,9 @@ router.delete(
   protectCustomer,
   deleteGrievance
 );
-
+router.patch(
+  "/admin/update-grievance/:id",
+  protect,
+  updateGrievanceStatusAdmin
+);
 export default router;

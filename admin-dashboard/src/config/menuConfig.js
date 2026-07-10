@@ -56,7 +56,12 @@ export const menuItems = [
     label: <Link href="/dashboard/Markups">Markups</Link>,
     module: "Markups", // ✅ FIX
   },
-
+  {
+    key: "/dashboard/coupon-codes",
+    icon: <CalendarOutlined />,
+    label: <Link href="/dashboard/coupon-codes">Coupon-Codes</Link>,
+    module: "couponCodes", // ✅ FIX
+  },
   {
     key: "/dashboard/cms",
     icon: <FileTextOutlined />,

@@ -19,6 +19,8 @@ export default function BookingHistoryTab({ setSelectedBooking }) {
   const { data: bookings = [], isLoading, isError } = useMyBookings();
   const mappedBookings = useMemo(() => {
     return bookings.map((item, index) => {
+      const hotel = item.supplierResponse?.HotelDetails;
+
       const nights = dayjs(item.checkOutDate, "DD/MM/YYYY").diff(
         dayjs(item.checkInDate, "DD/MM/YYYY"),
         "day",
@@ -26,16 +28,16 @@ export default function BookingHistoryTab({ setSelectedBooking }) {
 
       return {
         id: index + 1,
-        hotelName: item.hotelName,
-        status: item.TicketStatusDesc,
-        bookingId: item.bookingRefNo,
-        voucherNumber: item.voucherNumber,
+        hotelName: hotel?.HotelName ?? "",
+        status: item.ticketStatusDesc ?? "",
+        bookingId: item.bookingRefNo ?? "",
+        voucherNumber: item.voucherNumber ?? "",
         checkIn: item.checkInDate,
         checkOut: item.checkOutDate,
-        city: item.Address || "",
-        confirmation: item.voucherNumber,
+        city: hotel?.Address ?? "",
+        confirmation: item.voucherNumber ?? "",
         nights: `${nights} Night${nights > 1 ? "s" : ""}`,
-        rating: 5,
+        rating: Number(hotel?.StarCategoryId) || 5,
       };
     });
   }, [bookings]);
@@ -45,8 +47,9 @@ export default function BookingHistoryTab({ setSelectedBooking }) {
         activeFilter === "All" ? true : item.status === activeFilter;
 
       const matchesSearch =
-        item.hotelName.toLowerCase().includes(search.toLowerCase()) ||
-        item.bookingId.toLowerCase().includes(search.toLowerCase());
+        item.hotelName?.toLowerCase().includes(search.toLowerCase()) ||
+        item.bookingId?.toLowerCase().includes(search.toLowerCase()) ||
+        item.voucherNumber?.toLowerCase().includes(search.toLowerCase());
       return matchesFilter && matchesSearch;
     });
   }, [mappedBookings, activeFilter, search]);

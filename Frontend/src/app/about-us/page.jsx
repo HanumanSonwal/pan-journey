@@ -76,17 +76,17 @@ export default async function AboutUsPage() {
   const faqSchema =
     faqs.length > 0
       ? {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        mainEntity: faqs.map((faq) => ({
-          "@type": "Question",
-          name: faq?.question,
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: faq?.answer,
-          },
-        })),
-      }
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqs.map((faq) => ({
+            "@type": "Question",
+            name: faq?.question,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: faq?.answer,
+            },
+          })),
+        }
       : null;
 
   return (
@@ -112,9 +112,8 @@ export default async function AboutUsPage() {
       <WhySection />
       <Herobanner />
 
-
       <TestimonialsSection />
-        <NewsletterSection />
+      <NewsletterSection />
     </>
   );
 }

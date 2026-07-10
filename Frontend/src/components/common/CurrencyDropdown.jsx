@@ -1,7 +1,9 @@
 "use client";
 
+import { invalidateCurrencyQueries } from "@/utils/queryInvalidation";
+import { useQueryClient } from "@tanstack/react-query";
 import { Input } from "antd";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 export default function CurrencyDropdown({
   currencies,
@@ -9,6 +11,7 @@ export default function CurrencyDropdown({
   closeDropdown,
 }) {
   const [search, setSearch] = useState("");
+  const queryClient = useQueryClient();
 
   const filteredCurrencies = useMemo(() => {
     return currencies.filter(
@@ -17,9 +20,19 @@ export default function CurrencyDropdown({
         currency.code.toLowerCase().includes(search.toLowerCase()),
     );
   }, [currencies, search]);
+
+  const handleCurrencyChange = async (currency) => {
+    setCurrency(currency);
+
+    await invalidateCurrencyQueries(queryClient);
+
+    closeDropdown();
+    setSearch("");
+  };
+
   return (
     <div
-      className="w-[320px] max-w-[calc(100vw-32px)] rounded bg-white p-3 shadow-xl sm:w-[350px]"
+      className="w-[calc(100vw-24px)] max-w-[350px] rounded-xl bg-white p-3 shadow-[0_10px_30px_rgba(0,0,0,0.12)] sm:w-[350px]"
       onClick={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
       onPointerDown={(e) => e.stopPropagation()}
@@ -29,7 +42,7 @@ export default function CurrencyDropdown({
         allowClear
         placeholder="Search Currency"
         value={search}
-        className="[&_.ant-input]:!border-0 [&_.ant-input]:!shadow-none [&_.ant-input]:focus:!shadow-none"
+        className="h-10 rounded-lg [&_.ant-input]:!border-0 [&_.ant-input]:!shadow-none [&_.ant-input]:focus:!shadow-none"
         onClick={(e) => e.stopPropagation()}
         onMouseDown={(e) => e.stopPropagation()}
         onPointerDown={(e) => e.stopPropagation()}
@@ -38,7 +51,7 @@ export default function CurrencyDropdown({
       />
 
       {/* Currency List */}
-      <div className="mt-3 max-h-[60vh] sm:max-h-80 overflow-y-auto">
+      <div className="mt-3 max-h-[55vh] overflow-y-auto sm:max-h-80">
         {filteredCurrencies.map((currency) => (
           <div
             key={currency.code}
@@ -47,11 +60,13 @@ export default function CurrencyDropdown({
               closeDropdown();
               setSearch("");
             }}
-            className="flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 transition-colors hover:bg-[#F5FBFE]"
+            className="height-100% flex cursor-pointer items-center justify-between rounded-lg px-3 py-3 transition hover:bg-[#F5FBFE] active:bg-[#EAF7F9]"
           >
-            <span>{currency.name}</span>
+            <span className="truncate pr-3 text-sm sm:text-base">
+              {currency.name}
+            </span>
 
-            <span className="font-semibold text-[#0F6A75]">
+            <span className="shrink-0 text-sm font-semibold text-[#0F6A75] sm:text-base">
               {currency.code}
             </span>
           </div>

@@ -1,98 +1,179 @@
+// hotelPricing.service.js
 
+import { getCurrencyRate } from "../../currencyConverter/currency.service.js";
+import Markup from "../../priceMarkup/markup/markup.model.js";
+import { extractNormalizedCity } from "../../priceMarkup/markup/markup.service.js";
+import { applyHotelPricing } from "../../priceMarkup/markup/pricing.service.js";
+import getCountryTaxRule from "../../tax/countryTax.service.js";
+import {
 
-// // hotelPricing.service.js
+  getCurrencySymbol,
+} from "../../currencyConverter/currency.helper.js";
 
-import { getMarkup, getServiceTax } from "../../priceMarkup/markup/markup.service.js";
+const resolveMarkup = ({
+  hotelId,
+  cityName,
+  stateName,
+  countryCode,
+  allMarkups,
+}) => {
+  const hotelMarkups = allMarkups.filter((m) => m.level === "hotel");
+  const cityMarkups = allMarkups.filter((m) => m.level === "city");
+  const stateMarkups = allMarkups.filter((m) => m.level === "state");
+  const countryMarkups = allMarkups.filter((m) => m.level === "country");
+  const worldwideMarkup = allMarkups.find((m) => m.level === "worldwide");
 
-export const applyPricing = async (supplierData, hotelMeta) => {
+  // hotel
+  const hotelMarkup = hotelMarkups.find(
+    (m) => String(m.hotelId) === String(hotelId),
+  );
+  if (hotelMarkup) return hotelMarkup;
+  console.log("hotelmarkup =", hotelMarkup);
+  // city
+  const normalizedCity = extractNormalizedCity(cityName);
+
+  const cityMarkup = cityMarkups.find(
+    (m) =>
+      m.cityName?.trim().toLowerCase() === normalizedCity?.trim().toLowerCase(),
+  );
+
+  if (cityMarkup) return cityMarkup;
+
+  const stateMarkup = stateMarkups.find(
+    (m) =>
+      m.stateName?.trim().toLowerCase() === stateName?.trim().toLowerCase(),
+  );
+  if (stateMarkup) return stateMarkup;
+
+  // country
+  const countryMarkup = countryMarkups.find(
+    (m) => m.countryCode?.toUpperCase() === countryCode?.toUpperCase(),
+  );
+  if (countryMarkup) return countryMarkup;
+
+  if (worldwideMarkup) return worldwideMarkup;
+
+  return null;
+};
+
+export const applyPricing = async (
+  supplierData,
+  hotelMeta,
+  currency = "INR",
+) => {
   try {
+    const hotelId = supplierData.hotelId;
+    const { cityName, stateName, countryCode } = hotelMeta;
 
-    const { hotelId, cityName, stateName, countryCode } = hotelMeta;
+    const allMarkups = await Markup.find({
+      isActive: true,
+    }).lean();
 
-    const markupDoc = await getMarkup({
+    const additionalTax = allMarkups.find((m) => m.level === "additional_tax");
+    const conversionRate = await getCurrencyRate({
+      from: "INR",
+      to: currency || "INR",
+    });
+    const matchedMarkup = resolveMarkup({
       hotelId,
       cityName,
       stateName,
       countryCode,
+      allMarkups,
+    });
+console.log("matchedMarkup",matchedMarkup)
+    
+let countryTax = await getCountryTaxRule({
+  countryCode,
+});
+
+if (!countryTax) {
+  countryTax = {
+    ruleType: "flat",      // ✅ Missing tha
+    taxType: "percentage",
+    taxValue: 18,
+  };
+
+  console.log(
+    `⚠️ No country tax found for ${countryCode}. Applying default 18% tax.`
+  );
+}
+    const rate = await getCurrencyRate({
+      from: "INR",
+      to: currency,
     });
 
-    const serviceTaxDoc = await getServiceTax();
-
-    const markupValue = markupDoc?.markupValue || 0;
-    const markupType = markupDoc?.markupType || "flat";
-
-    const serviceTax = serviceTaxDoc?.markupValue || 0;
-
-    const applyAmountMarkup = (amount) => {
-
-      amount = Number(amount || 0);
-
-      let updated = amount;
-
-      // ✅ Markup
-      if (markupType === "percentage") {
-
-        updated += (amount * markupValue) / 100;
-
-      } else {
-
-        updated += markupValue;
-      }
-
-      // ✅ Service Tax
-      updated += (updated * serviceTax) / 100;
-
-      return Number(updated.toFixed(2));
-    };
-
-    // ✅ MAIN FIX
+    // console.log("Currency Rate =", rate);
     supplierData?.supplierResponse?.RatePlanRecommendations?.forEach(
       (recommendation) => {
+        // STEP 1 → currency conversion main amount
+        const convertedMainAmount = Number(
+          (recommendation.TotalAmount * conversionRate).toFixed(2),
+        );
+console.log("countryTax =>", countryTax);
+        // STEP 2 → pricing after conversion
+        const pricedMain = applyHotelPricing({
+          hotel: {
+            price: convertedMainAmount,
+          },
+          markup: matchedMarkup,
 
-        // Original store
-        recommendation.OriginalBasicAmount =
-          recommendation.BasicAmount;
-
-        recommendation.OriginalTotalAmount =
-          recommendation.TotalAmount;
-
-        // Updated prices
-        recommendation.BasicAmount =
-          applyAmountMarkup(recommendation.BasicAmount);
-
-        recommendation.TotalAmount =
-          applyAmountMarkup(recommendation.TotalAmount);
-
-        // Nested Rate Plans
-        recommendation?.RatePlanDetails?.forEach((rate) => {
-
-          rate.OriginalBasicAmount = rate.BasicAmount;
-
-          rate.OriginalTotalAmount = rate.TotalAmount;
-
-          rate.BasicAmount =
-            applyAmountMarkup(rate.BasicAmount);
-
-          rate.TotalAmount =
-            applyAmountMarkup(rate.TotalAmount);
+          additionalTax,
+          countryTax,
         });
-      }
+        console.log("pricedmain",pricedMain)
+
+        recommendation.PricingBreakdown = {
+          supplierPrice: pricedMain.supplierPrice,
+          subtotalAfterMarkup: pricedMain.subtotal1,
+          ServiceCharge: pricedMain.panjourneyServiceCharge,
+          subtotalAfterServiceCharge: pricedMain.subtotal2,
+          basePrice: pricedMain.basePrice,
+          platformFeeAndTax: pricedMain.platformfeeandtax,
+          finalPrice: pricedMain.price,
+          currencySymbol: getCurrencySymbol(currency),
+        };
+ 
+        recommendation.TotalAmount = pricedMain.price;
+
+        // STEP 3 → nested rate plans
+        recommendation?.RatePlanDetails?.forEach((plan) => {
+          const convertedPlanAmount = Number(
+            (plan.TotalAmount * conversionRate).toFixed(2),
+          );
+
+          const pricedRate = applyHotelPricing({
+            hotel: {
+              price: convertedPlanAmount,
+            },
+            markup: matchedMarkup,
+            additionalTax,
+            countryTax,
+          });
+     
+
+          plan.OriginalTotalAmount = plan.TotalAmount;
+
+          plan.PricingBreakdown = {
+            supplierPrice: pricedRate.supplierPrice,
+            subtotalAfterMarkup: pricedRate.subtotal1,
+            ServiceCharge: pricedRate.panjourneyServiceCharge,
+            subtotalAfterServiceCharge: pricedRate.subtotal2,
+            basePrice: pricedRate.basePrice,
+            platformFeeAndTax: pricedRate.platformfeeandtax,
+            finalPrice: pricedRate.price,
+            currencySymbol: getCurrencySymbol(currency),
+          };
+
+          plan.TotalAmount = pricedRate.price;
+        });
+      },
     );
 
-    return {
-      ...supplierData,
-
-      pricingSummary: {
-        markupApplied: markupValue,
-        markupType,
-        serviceTaxApplied: serviceTax,
-      },
-    };
-
+    return supplierData;
   } catch (err) {
-
     console.log(err);
-
-    return null;
+    throw err;
   }
 };
+console.log("applyPricing",applyPricing)

@@ -104,7 +104,7 @@ export default function Header() {
   const { data: session } = useSession();
   const { mutate: logout } = useLogout();
   const router = useRouter();
-  const { selectedCurrency, setCurrency } = useCurrencyStore();
+  const { selectedCurrency, setCurrency, hydrated } = useCurrencyStore();
   const { data: wishlistIdsData } = useWishlistIds();
   const wishlistCount = wishlistIdsData?.length || 0;
   const isMobile = useIsMobile();
@@ -198,7 +198,7 @@ export default function Header() {
       {/* Navbar */}
       <header
         className={`flex justify-between bg-white shadow-sm ${isMobile
-          ? "h-12 px-6 py-1 pt-0"
+          ? "h-14 px-5 py-1 pt-0"
           : "h-18 px-6 py-1 pt-0 md:px-10  lg:px-8 xl:px-30 2xl:px-30"
           }`}
       >
@@ -261,9 +261,9 @@ export default function Header() {
             popupRender={() => currencyDropdownContent}
           >
             <button className="hidden items-center gap-2 rounded-lg border border-[#4A9BB5] px-3 py-2 text-sm font-medium text-[#4A9BB5]! transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#4A9BB5] hover:text-white! md:flex">
-              <span>{selectedCurrency?.symbol}</span>
+              <span>{hydrated ? selectedCurrency?.symbol : "₹"}</span>
               <span className="max-w-20 truncate">
-                {selectedCurrency?.code}
+                {hydrated ? selectedCurrency?.code : "INR"}
               </span>
 
               <DownOutlined />
@@ -273,13 +273,13 @@ export default function Header() {
           {!session ? (
             <button
               onClick={() => setOpen(true)}
-              className={`bg-offer-gradient flex items-center rounded-lg text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg ${isMobile
-                ? "gap-1 px-2 py-2 text-[13px]"
+              className={`bg-offer-gradient flex items-center rounded-lg text-white! transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg ${isMobile
+                ? "gap-3 px-4 py-2 text-[13px]"
                 : "gap-2 px-3 py-2 text-sm"
                 }`}
             >
               <UserOutlined
-                className={isMobile ? "text-[12px]" : "text-[18px]"}
+                className={isMobile ? "text-[12px]" : "text-[18px] "}
               />
 
               {!isMobile && <span>Login</span>}
@@ -315,7 +315,7 @@ export default function Header() {
 
           {/* Mobile Menu */}
           <button
-            className="text-xl !text-[#4A9BB5] transition-all duration-300 hover:scale-110 hover:text-gray-800! min-[901px]:hidden"
+            className="!text-[22px] !text-[#4A9BB5] transition-all duration-300 hover:scale-110 hover:text-gray-800! min-[901px]:hidden"
             onClick={() => setMobileMenu(true)}
           >
             <MenuOutlined />

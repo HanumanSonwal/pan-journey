@@ -10,6 +10,10 @@ export const useCurrencyStore = create(
         name: "Indian Rupee",
       },
 
+      hydrated: false,
+
+      setHydrated: () => set({ hydrated: true }),
+
       setCurrency: (currency) =>
         set({
           selectedCurrency: currency,
@@ -17,6 +21,10 @@ export const useCurrencyStore = create(
     }),
     {
       name: "currency-storage",
+
+      onRehydrateStorage: () => (state) => {
+        state?.setHydrated();
+      },
     },
   ),
 );

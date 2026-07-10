@@ -91,3 +91,49 @@ export const getCitiesHotelsApi = async (searchText = "") => {
 
   return response?.data?.data || [];
 };
+
+// ================= CREATE TAX =================
+
+export const createTaxApi = async (data) => {
+  const res = await api.post("/tax/create", data);
+
+  return res?.data;
+};
+
+// ================= TAX LIST =================
+
+export const getTaxesApi = async (params = {}) => {
+  const res = await api.get("/tax/all", {
+    params,
+    skipToast: true,
+  });
+
+  return {
+    taxes: res?.data?.data || [],
+    meta: res?.data?.meta || {},
+  };
+};
+
+// ================= UPDATE TAX =================
+
+export const updateTaxApi = async ({ id, data }) => {
+  const res = await api.put(`/tax/update/${id}`, data);
+
+  return res?.data;
+};
+
+// ================= DELETE TAX =================
+
+export const deleteTaxApi = async (id) => {
+  const res = await api.delete(`/tax/delete/${id}`);
+
+  return res?.data;
+};
+
+// ================= UPDATE TAX STATUS =================
+
+export const updateTaxStatusApi = async ({ id, data }) => {
+  const res = await api.patch(`/tax/status/${id}`, data);
+
+  return res?.data;
+};

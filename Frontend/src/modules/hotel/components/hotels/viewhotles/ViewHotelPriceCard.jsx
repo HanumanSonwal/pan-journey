@@ -7,33 +7,40 @@ import { useRouter } from "next/navigation";
 
 const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
   const router = useRouter();
-  const selectedPlan = ratePlans?.[0];
-  const detail = selectedPlan?.RatePlanDetails?.[0];
-  const room = detail?.RoomDetails?.[0];
-  const roomName = room?.GroupName || "Room not available";
-  const roomDesc = room?.HotelRoomTypeDesc || "";
-  const inclusion = detail?.Inclusion || "";
-  const refundable = detail?.Refundable === "True";
-  const basicPrice = Number(detail?.BasicAmount || 0);
-  const tax = Number(detail?.Tax || 0);
-  const totalPrice = Number(selectedPlan?.TotalAmount || 0);
-  const moreRooms = Math.max(ratePlans?.length - 1, 0);
-  const { setBookingData } = useHotelBookingStore();
+
   const { requireAuth } = useAuthGuard();
+  const { setBookingData } = useHotelBookingStore();
+
+  const selectedPlan = ratePlans[0] ?? null;
+  const detail = selectedPlan?.RatePlanDetails?.[0] ?? null;
+  const room = detail?.RoomDetails?.[0] ?? null;
+
+  const roomName = room?.GroupName || "Room not available";
+  const roomDescription = room?.HotelRoomTypeDesc || "";
+  const inclusion = detail?.Inclusion || "";
+
+  const refundable = detail?.Refundable === "True";
+
+  const pricing = selectedPlan?.PricingBreakdown ?? {};
+  const basicPrice = Number(pricing.basePrice || 0);
+  const tax = Number(pricing.platformFeeAndTax || 0);
+  const totalPrice = Number(pricing.finalPrice || 0);
+  const currencySymbol = pricing.currencySymbol || "₹";
+
+  const formatPrice = (value) => Number(value || 0).toLocaleString("en-IN");
+  const moreRooms = Math.max(ratePlans.length - 1, 0);
+
   const handleBookNow = () => {
     if (!selectedPlan || !detail) {
       return;
     }
-    console.log("BOOK NOW CLICK");
-    console.log("HotelKey in price card", supplierData?.HotelKey);
-    console.log("SearchKey in price card", supplierData?.SearchKey);
-    console.log("RecommendationID", selectedPlan?.RecommendationID);
+    const bookingState = useHotelBookingStore.getState();
 
     setBookingData({
-      ...useHotelBookingStore.getState().bookingData,
+      ...bookingState.bookingData,
 
       selectedHotel: {
-        ...useHotelBookingStore.getState().bookingData?.selectedHotel,
+        ...bookingState.bookingData?.selectedHotel,
 
         recommendationId:
           selectedPlan?.RecommendationID || selectedPlan?.RecommendationId,
@@ -42,25 +49,22 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
       supplierData,
       selectedRatePlan: selectedPlan,
       selectedRoom: room,
+      pricing,
 
-      pricing: {
-        basicAmount: basicPrice,
-        tax,
-        totalAmount: totalPrice,
-      },
     });
-
     router.push("/hotel-booking");
   };
 
   const handleRoomScroll = () => {
     const section = document.getElementById("rooms-section");
-    if (section) {
-      section.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+    if (!section) {
+      return;
     }
+
+    section.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   };
 
   return (
@@ -69,10 +73,11 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
         {/* Badge */}
         <div className="mb-3">
           <span
-            className={`font-roboto rounded-full px-3 py-[6px] text-[11px] font-medium ${refundable
-              ? "bg-green-100 text-green-700"
-              : "bg-red-100 text-red-600"
-              }`}
+            className={`font-roboto rounded-full px-3 py-[6px] text-[11px] font-medium ${
+              refundable
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-600"
+            }`}
           >
             {refundable ? "Free Cancellation" : "Non Refundable"}
           </span>
@@ -85,7 +90,7 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
           </h3>
 
           <p className="mb-1! line-clamp-2 text-[14px] leading-6 font-semibold text-gray-500">
-            {roomDesc}
+            {roomDescription}
           </p>
         </div>
 
@@ -124,7 +129,7 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
               <span className="text-gray-500">Basic Price</span>
 
               <span className="font-medium text-gray-700">
-                ₹ {Number(basicPrice || 0).toLocaleString("en-IN")}
+                {currencySymbol} {formatPrice(basicPrice)}
               </span>
             </div>
 
@@ -133,7 +138,7 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
               <span className="text-gray-500">Taxes & Fees</span>
 
               <span className="font-medium text-gray-700">
-                ₹ {Number(tax || 0).toLocaleString("en-IN")}
+                {currencySymbol} {formatPrice(tax)}
               </span>
             </div>
 
@@ -150,8 +155,8 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
                   </p>
                 </div>
 
-                <h2 className="text-base sm:text-lg md:text-lg lg:text-xl xl:text-2xl leading-none font-bold text-[#0f172a]">
-                  ₹ {Number(totalPrice || 0).toLocaleString("en-IN")}
+                <h2 className="text-[30px] leading-none font-bold text-[#0f172a]">
+                  {currencySymbol} {formatPrice(totalPrice)}
                 </h2>
               </div>
             </div>
@@ -165,7 +170,7 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
           type="primary"
           size="large"
           onClick={() => requireAuth(handleBookNow)}
-          className="!h-[48px] w-full rounded! bg-[#0f766e]! text-sm font-semibold tracking-wide text-white!"
+          className="!h-[42px] w-full rounded! !bg-offer-gradient text-xl !font-bold tracking-wide text-white!"
         >
           Book Now
         </Button>
@@ -173,14 +178,15 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
         <Button
           size="large"
           onClick={handleRoomScroll}
-          className="flex-1 !h-[50px] sm:!h-[48px] !rounded px-2 sm:px-4 text-[12px] sm:text-[14px] md:text-[16px] whitespace-normal leading-tight"
+          className="flex-1 !h-[40px] sm:!h-[42px] !text-[#0ea5e9]  !rounded px-2 sm:px-4 text-[12px] sm:text-[16px] md:text-[16px] whitespace-normal leading-tight"
         >
           <span className="hidden sm:inline">
-            {moreRooms > 0 ? `${moreRooms} More Room Options` : "View Room"}
+            View All
           </span>
 
           <span className="sm:hidden">
-            {moreRooms > 0 ? `${moreRooms} Rooms` : "View Room"}
+            {/* {moreRooms > 0 ? `${moreRooms} Rooms` : "View Room"} */}
+            View All
           </span>
         </Button>
       </div>

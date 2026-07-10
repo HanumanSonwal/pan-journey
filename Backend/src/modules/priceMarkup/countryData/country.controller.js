@@ -11,9 +11,12 @@ export const getCountries = async (req, res) => {
   try {
     const search = req.query.search || "";
 
-    const countries = await Country.find({
-      countryName: { $regex: search, $options: "i" }
-    }).sort({ countryName: 1 });
+   const countries = await Country.find({
+  $or: [
+    { countryName: { $regex: search, $options: "i" } },
+    { phoneCode: { $regex: search, $options: "i" } }
+  ]
+}).sort({ countryName: 1 });
 
     return sendSuccess(
       res,

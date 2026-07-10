@@ -3,7 +3,8 @@
 import { Button, Col, Row } from "antd";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
 import { useHotelBooking } from "../../hooks/useHotelBooking";
 import { useHotelBookingStore } from "../../store/booking.store";
 import { buildBookingPayload } from "../../utils/buildBookingPayload";
@@ -18,51 +19,103 @@ import RoomPackageCard from "./RoomPackageCard";
 import SpecialRequestCard from "./SpecialRequestCard";
 import StaySummaryCard from "./StaySummaryCard";
 
+import HotelBookingContents from "../../mobile-componant/HotelBookingContents";
+
 export default function HotelBookingContent({ hotelBookingData }) {
+  const [isMobile, setIsMobile] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
   const { mutate: bookHotel, isPending } = useHotelBooking();
+
   const router = useRouter();
+
   const { bookingData: storeBookingData, setBookingData } =
     useHotelBookingStore();
 
+  console.log("storeBookingData in hotelBooking", storeBookingData);
+
   const [agreement, setAgreement] = useState(false);
+
   const guestFormRef = useRef(null);
 
   const { data: session } = useSession();
 
+  useEffect(() => {
+    setMounted(true);
+
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+
+    window.addEventListener("resize", checkMobile);
+
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+    };
+  }, []);
+
   const handleRequestChange = (value) => {
-    setBookingData({ requestData: value });
+    setBookingData({
+      requestData: value,
+    });
   };
 
   const handleGuestSubmit = (values) => {
-    setBookingData({ guestData: values });
+    setBookingData({
+      guestData: values,
+    });
   };
 
   const handleBooking = async () => {
+    let latestGuestData;
+
     try {
-      await guestFormRef.current.submitForm();
+      latestGuestData = await guestFormRef.current.submitForm();
     } catch (errors) {
       console.log(errors);
       return;
     }
 
+    // Optional: store update
+    setBookingData({
+      guestData: latestGuestData,
+    });
+
     const payload = buildBookingPayload({
-      bookingData: storeBookingData,
-      guestData: storeBookingData?.guestData,
+      bookingData: {
+        ...storeBookingData,
+        guestData: latestGuestData,
+      },
+      guestData: latestGuestData,
       requestData: storeBookingData?.requestData,
-      userId: session?.user?.id,
     });
 
     bookHotel(payload, {
       onSuccess: (response) => {
         const bookingRefNo = response?.data?.BookingRefNo;
 
-        setBookingData({ bookingRefNo });
+        setBookingData({
+          bookingRefNo,
+        });
 
         router.push(`/hotel-checkout?bookingRefNo=${bookingRefNo}`);
       },
     });
   };
 
+  // Avoid hydration mismatch
+  if (!mounted) {
+    return null;
+  }
+
+  // MOBILE UI
+  if (isMobile) {
+    return <HotelBookingContents hotelBookingData={hotelBookingData} />;
+  }
+
+  // DESKTOP UI
   return (
     <div className="w-full">
       <BackgroundSection />
@@ -70,6 +123,7 @@ export default function HotelBookingContent({ hotelBookingData }) {
       <div className="mx-auto max-w-[1250px] sm:px-4">
         <Row gutter={[14, 23]}>
           {/* LEFT */}
+
           <Col xs={24} lg={15}>
             <div className="-mt-10! space-y-4 px-1 sm:space-y-5 sm:px-0">
               <GuestDetailsForm
@@ -79,20 +133,30 @@ export default function HotelBookingContent({ hotelBookingData }) {
 
               <SpecialRequestCard
                 value={storeBookingData?.requestData}
+
                 onChange={handleRequestChange}
               />
 
               <ImportantInfoCard bookingData={hotelBookingData} />
 
-              <BookingAgreement checked={agreement} onChange={setAgreement} />
+              <BookingAgreement
+                checked={agreement}
 
-              <div className="pt-2 mb-[36px] md:mb-[49px] xl:mb-0">
+                onChange={setAgreement}
+              />
+
+              <div className="mb-[36px] pt-2 md:mb-[49px] xl:mb-0">
                 <Button
                   type="primary"
+
                   size="large"
+
                   loading={isPending}
+
                   disabled={!agreement}
+
                   onClick={handleBooking}
+
                   className="!h-[44px] w-full !rounded-lg !bg-[#0f766e] !text-sm sm:!h-[48px] sm:w-auto sm:!rounded-xl sm:!text-base"
                 >
                   Continue To Booking
@@ -102,10 +166,13 @@ export default function HotelBookingContent({ hotelBookingData }) {
           </Col>
 
           {/* RIGHT */}
+
           <Col xs={24} lg={8}>
             <div className="-mt-10! space-y-4 px-1 sm:space-y-5 sm:px-0">
               <BookingHeaderCard bookingData={hotelBookingData} />
+
               <StaySummaryCard bookingData={hotelBookingData} />
+
               <RoomPackageCard bookingData={hotelBookingData} />
 
               <PriceBreakupCard bookingData={hotelBookingData} />

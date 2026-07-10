@@ -1,14 +1,9 @@
 import express from "express";
 
-import {
-  getCurrencies,
-} from "./currency.controller.js";
+import { getCurrencies } from "./currency.controller.js";
 
 const router = express.Router();
 
-router.get(
-  "/list",
-  getCurrencies
-);
+router.get("/list", getCurrencies);
 
 export default router;

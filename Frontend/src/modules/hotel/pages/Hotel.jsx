@@ -1,5 +1,6 @@
 "use client";
 
+import useIsMobile from "@/hooks/useIsMobile";
 import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
 import { CloseOutlined } from "@ant-design/icons";
 import { Modal } from "antd";
@@ -16,18 +17,6 @@ import HotelsSeoSection from "../seo/HotelsSeoSection";
 import { useHotelSearchStore } from "../store/serchData.store";
 import HotelMobile from "./HotelMobile";
 
-const defaultSearchData = {
-  city: "",
-  cityData: { id: "" },
-  checkIn: "",
-  checkOut: "",
-  rooms: 1,
-  adults: 2,
-  children: 0,
-  childAges: [],
-  pets: false,
-};
-
 const defaultFilters = {
   freeCancellation: false,
   search: "",
@@ -40,24 +29,21 @@ const defaultFilters = {
   locations: [],
 };
 
-export default function HotelContent({ initialSearchData = null, cms = null }) {
+const HotelMap = dynamic(() => import("../components/map/HotelMap"), {
+  ssr: false,
+});
 
-  const HotelMap = dynamic(() => import("../components/map/HotelMap"), {
-    ssr: false,
-  });
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
+export default function HotelContent({ initialSearchData = null, cms = null }) {
+  const isMobile = useIsMobile();
+
   const {
     draftSearchData,
     appliedSearchData,
     setDraftSearchData,
     setAppliedSearchData,
   } = useHotelSearchStore();
+
+  console.log("appliedSearchData in hotels", appliedSearchData);
 
   const searchParams = useSearchParams();
   const [mounted, setMounted] = useState(false);
@@ -68,7 +54,7 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
   const [mapOpen, setMapOpen] = useState(false);
   const [hotelsForMap, setHotelsForMap] = useState([]);
   const [sidebarZ0, setSidebarZ0] = useState(false);
-  
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -78,16 +64,18 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
       const hotelList = document.getElementById("hotel-list-section");
       if (!hotelList) return;
       const rect = hotelList.getBoundingClientRect();
-      setSidebarZ0(rect.bottom <= 150);
+      const shouldBeZ0 = rect.bottom <= 150;
+      setSidebarZ0((prev) => (prev === shouldBeZ0 ? prev : shouldBeZ0));
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
     handleScroll();
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
-  // SEO ROUTE SUPPORT
   useEffect(() => {
     if (!mounted) return;
     if (initialSearchData) {
@@ -143,6 +131,8 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
     setDraftSearchData,
     setAppliedSearchData,
   ]);
+
+  // and useeffct
   const handleSearch = useCallback(() => {}, []);
   const isFilterActive = useCallback((value) => {
     if (
