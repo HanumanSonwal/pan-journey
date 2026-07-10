@@ -136,11 +136,16 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   const {
     HotelGallery = [],
     Amenities = "",
-    RatePlanRecommendations = [],
+    RatePlanRecommendations,
   } = supplierData;
 
-  const ratePlans = RatePlanRecommendations;
-  const firstRatePlan = ratePlans[0] ?? null;
+  console.log("supplierData", supplierData);
+  console.log("RatePlanRecommendations", supplierData?.RatePlanRecommendations);
+
+  const ratePlans = Array.isArray(RatePlanRecommendations)
+    ? RatePlanRecommendations
+    : [];
+  const firstRatePlan = ratePlans[0] || null;
   const pricing = firstRatePlan?.PricingBreakdown ?? {};
   const {
     basePrice = 0,

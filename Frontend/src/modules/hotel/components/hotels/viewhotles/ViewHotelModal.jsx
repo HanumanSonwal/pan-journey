@@ -5,6 +5,7 @@ import { Modal } from "antd";
 import { useEffect, useMemo, useState } from "react";
 
 const ViewHotelModal = ({ open, onClose, images = [] }) => {
+  images = Array.isArray(images) ? images : [];
   const [active, setActive] = useState("All");
   const [previewOpen, setPreviewOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
