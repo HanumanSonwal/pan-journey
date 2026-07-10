@@ -29,11 +29,12 @@ import DynamicHotelSeoFallback from "../seo/DynamicHotelSeoFallback";
 
 
 import ViewHotelGalleryMobile from "../components/hotels/viewhotles/ViewHotelGalleryMobile";
-import HotelSectionsContents from "../mobile-componant/HotelSectionsContents";
 import HotelSectionsTabss from "../mobile-componant/HotelSectionsTabss";
 import SlectRoom from "../mobile-componant/SlectRoom";
 import { useHotelBookingStore } from "../store/booking.store";
 import { useHotelSearchStore } from "../store/serchData.store";
+import HotelSectionsContent from "../components/hotels/viewhotles/HotelSectionsContent";
+import HotelSectionsContents from "../mobile-componant/HotelSectionsContents";
 
 function HotelDetailsMobile({ initialPayload = null, cms = null }) {
   const { selectedHotel } = useSelectedHotelStore();
@@ -368,20 +369,20 @@ function HotelDetailsMobile({ initialPayload = null, cms = null }) {
 
                       {/* Check In / Check Out */}
                       <div className="flex-1">
-                        <p className="mb-0 text-sm font-medium text-[#4AA3DF]">
+                        <p className="mb-0 text-sm font-medium text-gray-700">
                           Check In / Check Out
                         </p>
 
-                        <div className="!rounded-[3px] border font-normal !border-gray-400 p-1 gap-2 h-8 !-mt-2 sm:h-7 md:h-7 lg:h-7 ">
+                        <div className="!rounded-[2px] border border-gray-600 p-1 gap-2 h-8 sm:h-7 md:h-7 lg:h-7 ">
                           <div className="flex items-center gap-4">
                             <div>
-                              <p className="font-normal !text-gray-500">
+                              <p className="font-semibold text-[#4AA3DF]">
                                 {appliedSearchData?.checkIn || "--"}
                               </p>
                             </div>
 
                             <div>
-                              <p className="font-normal !text-gray-500 ">
+                              <p className="font-semibold text-[#4AA3DF]">
                                 {appliedSearchData?.checkOut || "--"}
                               </p>
                             </div>
@@ -391,12 +392,12 @@ function HotelDetailsMobile({ initialPayload = null, cms = null }) {
 
                       {/* Guests */}
                       <div className="w-[110px]">
-                        <p className=" text-sm font-medium !text-[#4AA3DF] ">
+                        <p className=" text-sm font-medium text-gray-700 ">
                           Guests
                         </p>
 
-                        <div className="rounded-[4px] border !border-gray-400 p-1 !h-8 !-mt-2 !sm:h-8 !md:h-7 lg:h-7 ">
-                          <p className="font-normal !text-gray-500 ">
+                        <div className="rounded-[2px] border border-gray-500 p-1 !h-8 !sm:h-8 !md:h-7 lg:h-7 ">
+                          <p className="font-semibold text-[#4AA3DF]">
                             {appliedSearchData?.rooms || 1} Room
                           </p>
                         </div>
