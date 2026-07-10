@@ -105,6 +105,23 @@ export default function HotelBookingContent({ hotelBookingData }) {
     });
   };
 
+  const bookingProps = {
+    hotelBookingData,
+
+    guestFormRef,
+
+    agreement,
+    setAgreement,
+
+    storeBookingData,
+
+    handleGuestSubmit,
+    handleRequestChange,
+    handleBooking,
+
+    isPending,
+  };
+
   // Avoid hydration mismatch
   if (!mounted) {
     return null;
@@ -112,7 +129,7 @@ export default function HotelBookingContent({ hotelBookingData }) {
 
   // MOBILE UI
   if (isMobile) {
-    return <HotelBookingContents hotelBookingData={hotelBookingData} />;
+    return <HotelBookingContents {...bookingProps} />;
   }
 
   // DESKTOP UI
@@ -133,30 +150,20 @@ export default function HotelBookingContent({ hotelBookingData }) {
 
               <SpecialRequestCard
                 value={storeBookingData?.requestData}
-
                 onChange={handleRequestChange}
               />
 
               <ImportantInfoCard bookingData={hotelBookingData} />
 
-              <BookingAgreement
-                checked={agreement}
-
-                onChange={setAgreement}
-              />
+              <BookingAgreement checked={agreement} onChange={setAgreement} />
 
               <div className="mb-[36px] pt-2 md:mb-[49px] xl:mb-0">
                 <Button
                   type="primary"
-
                   size="large"
-
                   loading={isPending}
-
                   disabled={!agreement}
-
                   onClick={handleBooking}
-
                   className="!h-[44px] w-full !rounded-lg !bg-[#0f766e] !text-sm sm:!h-[48px] sm:w-auto sm:!rounded-xl sm:!text-base"
                 >
                   Continue To Booking
