@@ -4,6 +4,8 @@ import mongoose from "mongoose";
 import HotelTempBooking from "../hotel/hotelTempBooking/hotelCart.model.js"; // path adjust karna
 import { addPaymentService } from "../addPayment/addPayment.service.js";
 import { hotelTicketingService } from "../hotel/hotelTicketing/hotelTicketing.service.js";
+import {sendBookingConfirmationEmail}  from "../../modules/mail/services/bookingConfirmation.mail.js"
+import{generateHotelInvoiceService} from "../hotel/invoice/invoice.service.js"
 
 import razorpay,{
   RAZORPAY_KEY_ID,
@@ -83,35 +85,24 @@ export const createOrderService = async ({  tempBookingId,
   // Razorpay Order Create
   // ===========================
 
-  const razorpayOrder =
-    await razorpay.orders.create({
-
-      amount: Math.round(
-        booking.payableAmount * 100
-      ),
-
-      currency: "INR",
-
-      receipt: booking._id.toString(),
-
-      payment_capture: 1,
-    });
+  const razorpayOrder = await razorpay.orders.create({
+  amount: Math.round(booking.payableAmount * 100),
+  currency: booking.pricing.currency,
+  receipt: booking._id.toString(),
+  payment_capture: 1,
+});
 
   // ===========================
   // Save Payment Info
   // ===========================
 
-  booking.payment = {
-    gateway: "razorpay",
-
-    orderId: razorpayOrder.id,
-
-    amount: booking.payableAmount,
-
-    currency: "INR",
-
-    status: "created",
-  };
+ booking.payment = {
+  gateway: "razorpay",
+  orderId: razorpayOrder.id,
+  amount: booking.payableAmount,
+  currency: booking.pricing.currency,
+  status: "created",
+};
 
   await booking.save();
 
@@ -309,6 +300,7 @@ export const verifyPaymentService = async ({
 
     booking.payment.amount =
     booking.payableAmount;
+    booking.payment.currency = payment.currency;
 
     booking.payment.gatewayResponse =
     payment;
@@ -395,6 +387,66 @@ booking.supplierResponse = {
 };
 
 await booking.save();
+// ============================================
+// GENERATE INVOICE + SEND EMAIL
+// ============================================
+
+try {
+
+  const pdfBuffer = await generateHotelInvoiceService(
+    booking.userId,
+    booking.supplierResponse.bookingRefNo
+  );
+
+  await sendBookingConfirmationEmail({
+
+    email:
+    booking.supplierData.OccupantEmail,
+
+    customerName:
+      booking.supplierData.customerName,
+
+    bookingRefNo:
+      booking.supplierResponse.bookingRefNo,
+
+    hotelName:
+      booking.supplierResponse.hotelRequeryResponse?.HotelDetails?.HotelName,
+
+    hotelAddress:
+      booking.supplierResponse.hotelRequeryResponse?.HotelDetails?.Address,
+
+    city:
+      booking.supplierResponse.hotelRequeryResponse?.HotelDetails?.City,
+
+    checkIn:
+      booking.supplierResponse.checkInDate,
+
+    checkOut:
+      booking.supplierResponse.checkOutDate,
+
+    rooms:
+      booking.supplierResponse.hotelRequeryResponse?.RoomDetails?.length || 0,
+
+    guests:
+      booking.supplierResponse.hotelRequeryResponse?.PAXDetails?.length || 0,
+
+    amount:
+      booking.payment.amount,
+
+    currency:
+      booking.payment.currency,
+
+    pdfBuffer,
+  });
+
+  console.log("Booking confirmation email sent successfully.");
+
+} catch (error) {
+
+  console.error("Email sending failed:", error.message);
+
+  // Email fail hone se booking fail nahi honi chahiye.
+}
 
 // ============================================
 // FINAL RESPONSE
@@ -414,6 +466,9 @@ return {
   orderId: razorpay_order_id,
 
   amount: booking.payableAmount,
+   currency: booking.payment.currency,
+
+  currencySymbol: booking.pricing.currencySymbol,
 
   
 

@@ -67,17 +67,18 @@
           // Create Order
           // -----------------------
           const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMGQ2NjFhMmNjMDUwZmE2MmQ2OWEwZSIsInJvbGUiOiI2OWVjYjNkZWY4ZjA5YTYyMTBhMDRkZWQiLCJpYXQiOjE3ODM0MDk0OTEsImV4cCI6MTc4MzQxMzA5MX0.CTEH7mDMmKjBZQDYZLwJwsAiX1_jYAvTnBR5jYikbqM";
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMDU3M2JiNjIwY2U1MTdlMzBiMDc4YyIsImlhdCI6MTc4MzY2OTI0NSwiZXhwIjoxNzgzNjcyODQ1fQ.SVtM3HhxrcW3KG0aJBF33w4enRQBjY7Zq1xEsN5AAvg";
 
           const orderResponse = await fetch(
             "http://localhost:8000/api/v1/payment/create-booking",
             {
               method: "POST",
 
-              headers: {
-                "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
-              },
+             headers: {
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${token}`,
+  currency: "AED", // Test ke liye
+},
 
               body: JSON.stringify({
                 tempBookingId,
@@ -133,7 +134,8 @@
 
                   headers: {
                     "Content-Type": "application/json",
-                      Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${token}`,
+                    currency: "AED", // Test ke liye
                   },
 
                   body: JSON.stringify({

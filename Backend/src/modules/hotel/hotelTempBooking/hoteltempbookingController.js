@@ -5,6 +5,7 @@ import {
   removeCouponService,
   updateCouponService,
 } from "../hotelTempBooking/hotelCart.service.js";
+import { getCurrencySymbol } from "../../currencyConverter/currency.helper.js";
 
 export const hotelTempBookingController = async (req, res) => {
   try {
@@ -12,8 +13,14 @@ export const hotelTempBookingController = async (req, res) => {
     console.log("CONTROLLER START");
 
     // pricing अलग निकालो
-    const pricingData = req.body.pricing;
-
+   
+const pricingData = {
+  ...req.body.pricing,
+  currency: req.currency,
+  currencySymbol: getCurrencySymbol(req.currency),
+};
+console.log("Currency =", req.currency);
+console.log("Pricing =", pricingData);
     // supplier + db payload
     const payload = {
       CustomerName: req.body.CustomerName,

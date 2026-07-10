@@ -14,30 +14,32 @@ const hotelCartSchema = new mongoose.Schema(
     },
 
     // supplier booking required data
-    supplierData: {
-      hotelKey: String,
-      recommendationId: String,
-      searchKey: String,
+   supplierData: {
+  hotelKey: String,
+  recommendationId: String,
+  searchKey: String,
 
-      customerName: String,
-      customerMobile: String,
-      customerAddress: String,
-      customerPostalCode: String,
+  customerName: String,
+  customerMobile: String,
+  customerAddress: String,
+  customerPostalCode: String,
 
-      occupantDetails: [
-        {
-          OccupantID: Number,
-          FirstName: String,
-          LastName: String,
-          OccupantType: String,
-          RoomNo: Number,
-          Title: String,
-          OccupantEmail: String,
-          OccupantMobile: String,
-        },
-      ],
+  OccupantEmail: String,
+  OccupantMobile: String,
+
+  occupantDetails: [
+    {
+      OccupantID: Number,
+      FirstName: String,
+      LastName: String,
+      OccupantType: String,
+      RoomNo: Number,
+      Title: String,
+      OccupantEmail: String,
+      OccupantMobile: String,
     },
-
+  ],
+},
     hotelData: {
       hotelImage: String,
     },
@@ -50,6 +52,11 @@ const hotelCartSchema = new mongoose.Schema(
       currencySymbol: {
         type: String,
         default: "₹",
+      },
+      currency:
+      {
+        type: String,
+        default: "INR",
       },
     },
 

@@ -47,3 +47,22 @@ export const verifyPaymentController = async (req, res, next) => {
     next(error);
   }
 };
+
+import { paymentWebhookService } from "./payment.webhook.service.js";
+
+export const paymentWebhookController = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    await paymentWebhookService(req);
+
+    return res.status(200).json({
+      success: true,
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
