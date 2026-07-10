@@ -16,6 +16,10 @@ const GuestDetailsForm = forwardRef(({ onSubmit }, ref) => {
   const { Title, Text } = Typography;
   const [guests, setGuests] = useState([]);
 
+  
+
+  console.log("guests details", guests);
+
   const methods = useForm({
     resolver: zodResolver(primaryGuestSchema),
     defaultValues: {
@@ -37,10 +41,14 @@ const GuestDetailsForm = forwardRef(({ onSubmit }, ref) => {
       new Promise((resolve, reject) => {
         handleSubmit(
           (data) => {
+            console.log("Latest Form Data", data);
+            console.log("Watch Data", methods.getValues());
             const guestData = {
               primaryGuest: data,
               additionalGuests: guests,
             };
+
+            console.log("Payload", guestData);
 
             onSubmit(guestData);
             resolve(guestData);

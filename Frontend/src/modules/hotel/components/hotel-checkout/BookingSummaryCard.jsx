@@ -54,60 +54,60 @@ export default function BookingSummaryCard({
 
   return (
     <Card
-      className="rounded border-0 shadow-[0_4px_16px_rgba(0,0,0,0.12)]"
+      variant={false}
+      className="overflow-hidden rounded-3xl border border-[#EAF2F8] bg-white shadow-[0_10px_35px_rgba(0,0,0,0.08)]"
       styles={{
         body: {
-          padding: 18,
+          padding: 24,
         },
       }}
     >
       {/* Image */}
       <div className="flex flex-col gap-4 sm:flex-row">
         {/* Hotel Image */}
-        <div className="relative h-[200px] w-full overflow-hidden rounded-lg sm:h-[130px] sm:w-[170px] sm:flex-shrink-0">
+        <div className="relative h-[230px] overflow-hidden rounded-2xl sm:h-[170px] sm:w-[240px]">
           <Image
             src={hotelImage}
-            alt={hotelName}
             fill
-            priority
-            className="object-cover transition-transform duration-300 hover:scale-105"
+            alt={hotelName}
+            className="object-cover duration-500 group-hover:scale-110"
           />
+
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+
+          <div className="absolute bottom-4 left-4">
+            <Tag color="blue" className="rounded-full px-3">
+              {roomName}
+            </Tag>
+          </div>
         </div>
 
         {/* Hotel Details */}
         <div className="flex min-w-0 flex-1 flex-col justify-between">
           <div>
             <Title
-              level={4}
-              className="font-roboto! !mb-1 !text-[18px] leading-tight !font-semibold sm:!text-[20px] lg:!text-[22px]"
+              level={3}
+              className="font-roboto !mb-2 !text-[28px] !font-semibold !text-[#1D2939]"
             >
               {hotelName}
             </Title>
 
-            <Text className="mt-1 flex items-start gap-2 text-[13px] text-gray-500 sm:text-[14px]">
-              <EnvironmentOutlined className="mt-1 flex-shrink-0 text-[#76B7E5]" />
-              <span className="line-clamp-2">{address}</span>
-            </Text>
-          </div>
+            <div className="mt-2 flex items-start gap-2">
+              <EnvironmentOutlined className="mt-1 text-[#76B7E5]" />
 
-          <div className="mt-3 flex flex-wrap gap-2">
-            <Tag className="rounded-full" color="blue">
-              {roomName}
-            </Tag>
+              <Text className="font-roboto text-[15px] text-gray-500">
+                {address}
+              </Text>
+            </div>
+            <div className="mt-2 flex flex-wrap gap-3">
+              <Tag color="green" className="rounded-full px-4 py-1">
+                Reservation Confirmed
+              </Tag>
 
-            <Tag
-              className="rounded-full"
-              color={reservationStatus === "success" ? "green" : "orange"}
-            >
-              {reservationStatus.toUpperCase()}
-            </Tag>
-
-            <Tag
-              className="rounded-full"
-              color={paymentStatus === "success" ? "green" : "gold"}
-            >
-              Payment {paymentStatus}
-            </Tag>
+              <Tag color="processing" className="rounded-full px-4 py-1">
+                Payment Success
+              </Tag>
+            </div>
           </div>
         </div>
       </div>
