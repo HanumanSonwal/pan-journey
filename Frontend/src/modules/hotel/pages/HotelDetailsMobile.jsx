@@ -248,7 +248,7 @@ function HotelDetailsMobile({
                           Check In / Check Out
                         </p>
 
-                        <div className="!rounded-[3px] border font-normal !border-gray-400 p-1 gap-2 h-8 !-mt-2 sm:h-7 md:h-7 lg:h-7 ">
+                        <div className="!-mt-2 h-8 gap-2 !rounded-[3px] border !border-gray-400 p-1 font-normal sm:h-7 md:h-7 lg:h-7">
                           <div className="flex items-center gap-4">
                             <div>
                               <p className="font-normal !text-gray-500">
@@ -257,7 +257,7 @@ function HotelDetailsMobile({
                             </div>
 
                             <div>
-                              <p className="font-normal !text-gray-500 ">
+                              <p className="font-normal !text-gray-500">
                                 {appliedSearchData?.checkOut || "--"}
                               </p>
                             </div>
@@ -267,12 +267,12 @@ function HotelDetailsMobile({
 
                       {/* Guests */}
                       <div className="w-[110px]">
-                        <p className=" text-sm font-medium !text-[#4AA3DF] ">
+                        <p className="text-sm font-medium !text-[#4AA3DF]">
                           Guests
                         </p>
 
-                        <div className="rounded-[4px] border !border-gray-400 p-1 !h-8 !-mt-2 !sm:h-8 !md:h-7 lg:h-7 ">
-                          <p className="font-normal !text-gray-500 ">
+                        <div className="!sm:h-8 !md:h-7 !-mt-2 !h-8 rounded-[4px] border !border-gray-400 p-1 lg:h-7">
+                          <p className="font-normal !text-gray-500">
                             {appliedSearchData?.rooms || 1} Room
                           </p>
                         </div>
@@ -356,16 +356,16 @@ function HotelDetailsMobile({
           />
           {/* Sticky Bottom */}
 
-          <div className="!bg-offer-gradient sticky bottom-0 z-50 p-1 shadow-xl lg:hidden">
+          <div className="!bg-offer-gradient sticky bottom-0 z-50 py-3 px-2 shadow-xl lg:hidden">
             <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-white">
+              <div className="flex flex-col">
+                <h2 className="mb-1! text-2xl leading-none font-bold text-white">
                   ₹{Number(FirstRoomPrice?.TotalAmount || 0).toLocaleString()}
                 </h2>
 
-                <p className="text-xs text-gray-500 text-white">
-                  + Taxes & Fees
-                </p>
+                <span className="text-[10px] leading-none text-white/80">
+                  incl. taxes
+                </span>
               </div>
               <Drawer
                 title="Select Room"
@@ -379,7 +379,7 @@ function HotelDetailsMobile({
 
               <button
                 onClick={() => setOpenDrawer(true)}
-                className="rounded-lg bg-white px-6 py-2 text-sm font-bold text-[#0a6cff]"
+                className="rounded-lg bg-white px-5 py-2 text-sm font-bold text-[#0a6cff]"
               >
                 SELECT ROOM
               </button>
