@@ -114,8 +114,11 @@ export default function BookingDetailsTab({ bookingRefNo }) {
         .filter(Boolean)
     : [];
 
-  // Guest Details (currently response me nahi hai)
-  const guest = bookingData?.guestDetails || [];
+  // Guest Details 
+  const guest = bookingData?.guestDetails?.occupants || [];
+
+
+  console.log("guest in ", guest);
 
   // Nights
   const nights = dayjs(bookingData?.checkOutDate, "DD/MM/YYYY").diff(
@@ -473,39 +476,35 @@ export default function BookingDetailsTab({ bookingRefNo }) {
 
           {/* GUEST LIST */}
           <div>
-            {bookingData?.PAXDetails?.map((guest, index) => (
+            {guest.map((guest, index) => (
               <div
                 key={index}
                 className="flex items-start gap-4 border-b border-gray-200 px-5 py-5 last:border-0 md:px-6"
               >
-                {/* AVATAR */}
-                <div className="h-[52px]md:w-[56px] flex w-[52px] shrink-0 items-center justify-center rounded-full border border-[#d9ecf8] bg-[#edf7ff] text-[15px] font-bold text-[#3b82b6] md:h-[56px] md:text-[16px]">
-                  {`${guest?.FirstName?.[0] || ""}${guest?.LastName?.[0] || ""}`}
+                {/* Avatar */}
+                <div className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full border border-[#d9ecf8] bg-[#edf7ff] text-[15px] font-bold text-[#3b82b6] md:h-[56px] md:w-[56px] md:text-[16px]">
+                  {`${guest?.firstName?.[0] || ""}${guest?.lastName?.[0] || ""}`}
                 </div>
 
-                {/* CONTENT */}
+                {/* Content */}
                 <div className="min-w-0 flex-1">
-                  {/* NAME + ROLE */}
                   <div className="flex flex-col sm:flex-row sm:items-center">
                     <h3 className="text-[17px] font-bold break-words text-gray-900 md:text-[16px]">
-                      {guest?.Title} {guest?.FirstName} {guest?.LastName}
+                      {guest?.title} {guest?.firstName} {guest?.lastName}
                     </h3>
 
-                    {guest.role && (
-                      <span className="ml-[25px] w-fit rounded-full bg-[#edf7ff] px-2.5 py-[3px] !text-[11px] font-medium !text-[#3b82b6]">
-                        {guest?.Passengertyp}
-                      </span>
-                    )}
+                    <span className="ml-[25px] w-fit rounded-full bg-[#edf7ff] px-2.5 py-[3px] text-[11px] font-medium text-[#3b82b6]">
+                      {guest?.occupantType}
+                    </span>
                   </div>
 
-                  {/* CONTACT */}
                   <div className="mt-2 flex flex-wrap items-center gap-4">
                     <p className="text-[13px] text-gray-600 md:text-[14px]">
                       Room No: {guest?.RoomNo}
                     </p>
 
                     <p className="text-[13px] text-gray-600 md:text-[14px]">
-                      Guest Type: {guest?.Passengertyp}
+                      Guest Type: {guest?.occupantType}
                     </p>
                   </div>
                 </div>
