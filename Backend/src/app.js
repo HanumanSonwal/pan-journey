@@ -26,7 +26,7 @@ import hotelTicketing from "./modules/hotel/hotelTicketing/hotelTicketing.route.
 import invoiceRoutes from "./modules/hotel/invoice/invoice.route.js";
 
 import paymentRoutes from "./modules/payments/payment.routes.js";
-import webhookRoutes from "./modules/gateways/routes/webhook.routes.js";
+import gatewayroutewebhook from "./modules/gateways/routes/webhook.routes.js";
 import mediaRoutes from "./modules/media/media.routes.js";
 import countryRoutes from "./modules/priceMarkup/countryData/country.routes.js";
 import markeupRoutes from "./modules/priceMarkup/markup/markup.routes.js";
@@ -64,7 +64,10 @@ app.use(
 );
 app.use(currencyMiddleware);
 app.use(cookieParser());
-
+app.use(
+  "/api/v1/payment/webhook",
+  express.raw({ type: "application/json" })
+);
 app.use(express.json());
 app.use(express.static("public"));
 
@@ -82,7 +85,7 @@ app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/cms", cmsRoutes);
 app.use("/api/v1/roles", roleRoutes);
 app.use("/api/v1/Seacrhcity", citySearch);
-app.use("/api/webhooks", webhookRoutes);
+app.use("/api/webhooks", gatewayroutewebhook);
 app.use("/api/v1/Hotels", hotelSearch);
 app.use("/api/v1", tempbookingRoutes);
 app.use("/api/v1", hotelRequery);

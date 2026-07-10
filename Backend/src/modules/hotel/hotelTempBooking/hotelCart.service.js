@@ -3,7 +3,7 @@ import { getAuthHeader } from "../../../config/supplierAuth.service.js";
 import Coupon from "../../promotionEngine/coupon.model.js";
 import { findBestCoupon } from "../../promotionEngine/promotion.service.js";
 import HotelTempBooking from "./hotelCart.model.js";
-
+import { getCurrencySymbol } from "../../currencyConverter/currency.helper.js";
 export const hotelTempBookingService = async (payload, pricingData) => {
   console.log("=================================");
   console.log("SERVICE START");
@@ -56,15 +56,19 @@ export const hotelTempBookingService = async (payload, pricingData) => {
     /*
         AUTO APPLY BEST COUPON
       */
-
+console.log("Currency =", pricingData.currency);
+console.log("Currency Symbol =", pricingData.currencySymbol);
     const couponData = await findBestCoupon({
       module: "hotel",
 
       bookingAmount: pricingData.finalPrice - pricingData.platformFeeAndTax,
 
       serviceTax: pricingData.serviceTaxAmount,
-      currencySymbol:pricingData.pricingData,
+      currency: pricingData.currency,
+
+  currencySymbol: pricingData.currencySymbol,
     });
+    console.log(pricingData);
 console.log("cooupendata ", couponData)
     let appliedDiscount = couponData?.bestDiscount || 0;
     const maxAllowed = Number(pricingData.serviceCharge || 0) * 0.7;
@@ -96,6 +100,9 @@ if (appliedDiscount > maxAllowed) {
         customerPostalCode: payload.CustomerPostalCode,
 
         occupantDetails: payload.OccupantDetails,
+           OccupantEmail: payload.OccupantEmail,
+
+  OccupantMobile: payload.OccupantMobile,
       },
 
       hotelData: {
