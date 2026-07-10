@@ -49,11 +49,11 @@ const supportSchema = new mongoose.Schema(
     },
 
     supportType: {
-  type: String,
-  enum: ["contact_us", "grievance_redressal"],
-  required: true,
-  unique: true
-},
+      type: String,
+      enum: ["contact_us", "grievance_redressal"],
+      required: true,
+    },
+
     serviceType: {
       type: String,
       enum: ["hotel", "flight", "bus"],

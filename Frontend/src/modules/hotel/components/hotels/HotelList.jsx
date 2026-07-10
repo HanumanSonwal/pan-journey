@@ -1,7 +1,6 @@
 "use client";
 
 import HotelContentLoader from "@/components/common/loder/HotelContentLoader";
-import { useCurrencyStore } from "@/modules/shared/store/currency.store";
 import { useWishlistIds } from "@/modules/wishlist/hooks/useWishlistIds";
 import dayjs from "dayjs";
 import { memo, useEffect, useMemo, useRef } from "react";
@@ -16,7 +15,6 @@ function HotelList({
   onResultChange,
 }) {
   console.log("searchData in paylaod", searchData);
-  const { selectedCurrency } = useCurrencyStore();
   const { data: wishlistIdsData } = useWishlistIds();
   const wishlistIds = useMemo(
     () => new Set(wishlistIdsData || []),
@@ -37,7 +35,6 @@ function HotelList({
       CheckOutDate: searchData?.checkOut
         ? dayjs(searchData.checkOut).format("MM/DD/YYYY")
         : "",
-      currency: selectedCurrency?.code || "INR",
       HotelRoomDetail: [
         {
           AdultCount: searchData?.adults || 1,
@@ -46,7 +43,7 @@ function HotelList({
           Child2Age: searchData?.childAges?.[1] || 0,
         },
       ],
-      fullName: searchData?.city || "",
+      fullName: searchData?.cityData?.name || "",
       id: searchData?.cityData?.id || "",
       stateName: searchData?.cityData?.stateName || "",
       countryCode: searchData?.cityData?.countryCode || "",
@@ -60,7 +57,7 @@ function HotelList({
       },
       sort: sort || "",
     };
-  }, [searchData, filters, sort, selectedCurrency?.code]);
+  }, [searchData, filters, sort]);
 
   const {
     data,
@@ -72,9 +69,9 @@ function HotelList({
     isFetchingNextPage,
   } = useInfiniteHotels(payload);
 
-useEffect(() => {
-  onLoadingChange?.(isLoading);
-}, [isLoading, onLoadingChange]);
+  useEffect(() => {
+    onLoadingChange?.(isLoading);
+  }, [isLoading, onLoadingChange]);
 
   const loadMoreRef = useRef(null);
 
@@ -133,7 +130,7 @@ useEffect(() => {
       address: hotel.address || "",
       rating: Number(hotel.starRating || 0),
       reviews: hotel.reviewCount || 0,
-      price: Number(hotel.price || hotel.minPrice || 0) || 0,
+      price: Number(hotel.basePrice || hotel.basePrice || 0) || 0,
       oldPrice:
         hotel.oldPrice || (hotel.price ? Number(hotel.price) + 1500 : 0),
       propertyType: hotel.propertyType || "Hotel",
@@ -160,7 +157,7 @@ useEffect(() => {
       starRating: hotel.starRating || "",
       description: hotel.description || "",
       freeCancellation: hotel.freeCancellation || false,
-      tax: hotel.tax || 0,
+      tax: hotel.platformfeeandtax || 0,
     }));
   }, [hotels, data]);
 
@@ -169,8 +166,8 @@ useEffect(() => {
   }, [mappedHotels, onHotelsChange]);
 
   useEffect(() => {
-  onResultChange?.(mappedHotels.length > 0);
-}, [mappedHotels, onResultChange]);
+    onResultChange?.(mappedHotels.length > 0);
+  }, [mappedHotels, onResultChange]);
 
   // LOADING
   if (isLoading) {
@@ -192,9 +189,7 @@ useEffect(() => {
   }
 
   return (
-    
     <div className="mt-3 flex flex-col gap-4">
-      
       {/* HOTELS */}
       {mappedHotels.map((hotel, index) => (
         <HotelCard
@@ -217,6 +212,5 @@ useEffect(() => {
     </div>
   );
 }
-
 
 export default memo(HotelList);

@@ -2,6 +2,7 @@ import Contact from "./contact.model.js";
 
 // CREATE CONTACT
 export const createContactService = async (payload) => {
+  data.ticketId = `GR${Math.floor(100000 + Math.random() * 900000)}`;
   const contact = await Contact.create(payload);
 
   return contact;

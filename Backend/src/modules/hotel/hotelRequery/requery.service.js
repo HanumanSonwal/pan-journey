@@ -1,49 +1,102 @@
-import HotelTempBooking from "../hotelTempBooking/hotelTempBooking.model.js";
+
+import HotelCart from "../hotelTempBooking/hotelCart.model.js";
 
 export const getHotelRequeryByUserService = async (
   userId,
   bookingRefNo,
   status,
 ) => {
-  // Single booking details
-  if (bookingRefNo) {
-    const booking = await HotelTempBooking.findOne({
-      UserId: userId,
-      "hotelRequeryResponse.BookingRefNo": bookingRefNo,
-    }).select("hotelRequeryResponse");
+  // ===================================
+  // Base Query
+  // ===================================
 
-    if (!booking) {
-      throw new Error("Booking not found");
-    }
-
-    return booking.hotelRequeryResponse;
-  }
-
-  // Booking listing
   const query = {
-    UserId: userId,
-    hotelRequeryResponse: { $exists: true },
+    userId,
+    "supplierResponse.hotelRequeryResponse": { $exists: true },
   };
 
+  if (bookingRefNo) {
+    query["supplierResponse.hotelRequeryResponse.BookingRefNo"] = bookingRefNo;
+  }
+
   if (status) {
-    query["hotelRequeryResponse.TicketStatusDesc"] = status;
+    query["supplierResponse.hotelRequeryResponse.TicketStatusDesc"] = status;
   }
 
-  const bookings = await HotelTempBooking.find(query)
-    .sort({ createdAt: -1 })
-    .select("hotelRequeryResponse");
-
+  const bookings = await HotelCart.find(query).sort({
+    createdAt: -1,
+  });
+console.log("Booking =",bookings)
   if (!bookings.length) {
-    throw new Error("No bookings found");
+    throw new Error("Booking not found");
   }
 
-  return bookings.map((item) => ({
-    hotelName: item.hotelRequeryResponse?.HotelDetails?.HotelName,
-    Address: item.hotelRequeryResponse?.HotelDetails?.Address,
-    checkInDate: item.hotelRequeryResponse?.CheckInDate,
-    checkOutDate: item.hotelRequeryResponse?.CheckOutDate,
-    voucherNumber: item.hotelRequeryResponse?.VoucherNumber,
-    TicketStatusDesc: item.hotelRequeryResponse?.TicketStatusDesc,
-    bookingRefNo: item.hotelRequeryResponse?.BookingRefNo,
-  }));
+  const response = bookings.map((booking) => {
+    const requery = booking.supplierResponse?.hotelRequeryResponse || {};
+
+    return {
+      _id: booking._id,
+
+      pricing: {
+        baseAmount:
+          (booking.pricing?.finalPrice || 0) -
+          (booking.pricing?.platformFeeAndTax || 0),
+
+        serviceCharge: booking.pricing?.serviceCharge,
+
+        platformFeeAndTax: booking.pricing?.platformFeeAndTax,
+
+        finalPrice: booking.pricing?.finalPrice,
+      },
+   guestDetails:{
+    customerName:booking.supplierData?.customerName,
+       customerMobile:booking.supplierData?.customerMobile,
+          customerAddress:booking.supplierData?.customerAddress,
+           customerPostalCode:booking.supplierData?.customerPostalCode,
+        occupants:
+    booking.supplierData?.occupantDetails?.map((guest) => ({
+      title: guest.Title,
+      firstName: guest.FirstName,
+      lastName: guest.LastName,
+      occupantType: guest.OccupantType,
+      OccupantID: guest.OccupantID,
+      RoomNo: guest.RoomNo,
+    })) || [],
+
+
+   },
+      offer: booking.offer,
+
+      payableAmount: booking.payableAmount,
+      bookingRefNo: booking.supplierResponse?.bookingRefNo,
+
+      paymentStatus: booking.paymentStatus,
+
+      createdAt: booking.createdAt,
+
+      ticketStatusDesc: requery.TicketStatusDesc,
+
+      checkInDate: requery.CheckInDate,
+
+      checkOutDate: requery.CheckOutDate,
+
+      voucherNumber: requery.VoucherNumber,
+
+      supplierResponse: {
+        CancellationPolicy: requery.CancellationPolicy,
+
+        HotelDetails: requery.HotelDetails,
+
+        HotelRoomDetail: requery.HotelRoomDetail,
+      },
+    };
+  });
+
+  // Single Booking
+  if (bookingRefNo) {
+    return response[0];
+  }
+
+  // Booking List
+  return response;
 };

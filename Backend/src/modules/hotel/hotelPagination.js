@@ -5,7 +5,7 @@ export const paginateHotels = (hotels, pagination = {}) => {
   const startIndex = (page - 1) * limit;
   const endIndex = startIndex + limit;
 
-  const paginatedHotels = hotels.slice(startIndex, endIndex);
+   const paginatedHotels = hotels.slice(startIndex, endIndex);
 
   return {
     hotels: paginatedHotels,

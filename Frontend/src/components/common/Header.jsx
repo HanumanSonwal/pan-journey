@@ -104,7 +104,7 @@ export default function Header() {
   const { data: session } = useSession();
   const { mutate: logout } = useLogout();
   const router = useRouter();
-  const { selectedCurrency, setCurrency } = useCurrencyStore();
+  const { selectedCurrency, setCurrency, hydrated } = useCurrencyStore();
   const { data: wishlistIdsData } = useWishlistIds();
   const wishlistCount = wishlistIdsData?.length || 0;
   const isMobile = useIsMobile();
@@ -261,9 +261,9 @@ export default function Header() {
             popupRender={() => currencyDropdownContent}
           >
             <button className="hidden items-center gap-2 rounded-lg border border-[#4A9BB5] px-3 py-2 text-sm font-medium text-[#4A9BB5]! transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#4A9BB5] hover:text-white! md:flex">
-              <span>{selectedCurrency?.symbol}</span>
+              <span>{hydrated ? selectedCurrency?.symbol : "₹"}</span>
               <span className="max-w-20 truncate">
-                {selectedCurrency?.code}
+                {hydrated ? selectedCurrency?.code : "INR"}
               </span>
 
               <DownOutlined />

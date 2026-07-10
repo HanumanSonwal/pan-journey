@@ -7,7 +7,7 @@ export const fetchRemainingHotelsInBackground = async (
   firstResponse,
   auth,
 ) => {
-  console.log("🚀 BACKGROUND PAGINATION STARTED");
+  // console.log("🚀 BACKGROUND PAGINATION STARTED");
   const cacheFilter = {
     cityId: body.cityId,
     checkInDate: body.CheckInDate,
@@ -19,8 +19,8 @@ export const fetchRemainingHotelsInBackground = async (
   let seed = firstResponse?.HotelSeedValue || "";
   let moreHotels = firstResponse?.MoreHotels || false;
 
-  console.log("🌱 INITIAL SEED:", seed);
-  console.log("📦 INITIAL MOREHOTELS:", moreHotels);
+  // console.log("🌱 INITIAL SEED:", seed);
+  // console.log("📦 INITIAL MOREHOTELS:", moreHotels);
 
   const existingCache = await HotelCache.findOne(cacheFilter);
 
@@ -35,9 +35,9 @@ export const fetchRemainingHotelsInBackground = async (
   while (seed && emptyHotelCount < 3) {
     attempts++;
 
-    console.log("\n====================================");
-    console.log(`🌐 CONTINUATION CALL #${attempts}`);
-    console.log("🌱 USING SEED:", seed);
+    // console.log("\n====================================");
+    // console.log(`🌐 CONTINUATION CALL #${attempts}`);
+    // console.log("🌱 USING SEED:", seed);
 
     try {
       const payload = buildPayload(body, seed, auth);
@@ -49,18 +49,18 @@ export const fetchRemainingHotelsInBackground = async (
 
       const data = response.data;
 
-      console.log("📥 RAW RESPONSE:");
-      console.log(JSON.stringify(data, null, 2));
+      // console.log("📥 RAW RESPONSE:");
+      // console.log(JSON.stringify(data, null, 2));
 
       const incomingHotels = mergeHotels(data);
 
-      console.log("🏨 Incoming Hotels:", incomingHotels.length);
+      // console.log("🏨 Incoming Hotels:", incomingHotels.length);
 
       // ✅ EMPTY HOTEL CHECK
       if (incomingHotels.length === 0) {
         emptyHotelCount++;
 
-        console.log(`⚠️ EMPTY HOTEL RESPONSE (${emptyHotelCount}/3)`);
+        // console.log(`⚠️ EMPTY HOTEL RESPONSE (${emptyHotelCount}/3)`);
       } else {
         emptyHotelCount = 0;
       }
@@ -76,7 +76,7 @@ export const fetchRemainingHotelsInBackground = async (
         return true;
       });
 
-      console.log("✨ Unique Hotels:", uniqueHotels.length);
+      // console.log("✨ Unique Hotels:", uniqueHotels.length);
 
       // ✅ SAVE HOTELS
       if (uniqueHotels.length > 0) {
@@ -89,10 +89,10 @@ export const fetchRemainingHotelsInBackground = async (
           },
         });
 
-        console.log({
-          matchedCount: result.matchedCount,
-          modifiedCount: result.modifiedCount,
-        });
+        // console.log({
+        //   matchedCount: result.matchedCount,
+        //   modifiedCount: result.modifiedCount,
+        // });
       }
 
       // ✅ UPDATE SEED
@@ -100,16 +100,16 @@ export const fetchRemainingHotelsInBackground = async (
 
       seed = data?.HotelSeedValue || seed;
 
-      console.log("🌱 OLD SEED:", oldSeed);
-      console.log("🌱 NEW SEED:", seed);
+      // console.log("🌱 OLD SEED:", oldSeed);
+      // console.log("🌱 NEW SEED:", seed);
 
-      console.log("🧮 TOTAL SAVED HOTELS:", existingHotelIds.size);
+      // console.log("🧮 TOTAL SAVED HOTELS:", existingHotelIds.size);
 
       await sleep(3000);
     } catch (error) {
-      console.log("❌ BACKGROUND PAGINATION ERROR");
+      // console.log("❌ BACKGROUND PAGINATION ERROR");
 
-      console.log(error?.response?.data || error.message);
+      // console.log(error?.response?.data || error.message);
 
       emptyHotelCount++;
 
@@ -117,7 +117,7 @@ export const fetchRemainingHotelsInBackground = async (
     }
   }
 
-  console.log("🛑 STOPPED AFTER 3 EMPTY RESPONSES");
+  // console.log("🛑 STOPPED AFTER 3 EMPTY RESPONSES");
   0;
 
   
@@ -126,6 +126,6 @@ export const fetchRemainingHotelsInBackground = async (
       isComplete: true,
     },
   });
-  console.log("🏁 BACKGROUND PAGINATION COMPLETED");
-  console.log("🏁 BACKGROUND PAGINATION COMPLETED");
+  // console.log("🏁 BACKGROUND PAGINATION COMPLETED");
+  // console.log("🏁 BACKGROUND PAGINATION COMPLETED");
 };

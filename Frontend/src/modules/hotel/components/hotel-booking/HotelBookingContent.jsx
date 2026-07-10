@@ -34,6 +34,8 @@ export default function HotelBookingContent({ hotelBookingData }) {
   const { bookingData: storeBookingData, setBookingData } =
     useHotelBookingStore();
 
+  console.log("storeBookingData in hotelBooking", storeBookingData);
+
   const [agreement, setAgreement] = useState(false);
 
   const guestFormRef = useRef(null);
@@ -86,7 +88,6 @@ export default function HotelBookingContent({ hotelBookingData }) {
       bookingData: storeBookingData,
       guestData: storeBookingData?.guestData,
       requestData: storeBookingData?.requestData,
-      userId: session?.user?.id,
     });
 
 

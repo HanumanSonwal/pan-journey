@@ -1,129 +1,116 @@
-// // // export const applyMarkup = (
-// // //   hotel,
-// // //   markup
-// // // ) => {
 
-// // //   if (!markup) return hotel;
-
-// // //   let price = Number(hotel.price || 0);
-// // //   let tax = Number(hotel.tax || 0);
-
-// // //   if (markup.markupType === "percentage") {
-// // //     price += (price * markup.markupValue) / 100;
-// // //     tax += (tax * markup.markupValue) / 100;
-// // //   }
-
-// // //   if (markup.markupType === "fixed") {
-// // //     price += Number(markup.markupValue);
-// // //     tax += Number(markup.markupValue);
-// // //   }
-
-// // //   return {
-// // //     ...hotel,
-// // //     price: Number(price.toFixed(2)),
-// // //     tax: Number(tax.toFixed(2)),
-// // //   };
-// // // };
-// // export const applyMarkup = (
-// //   hotel,
-// //   markup
-// // ) => {
-// //   if (!markup) return hotel;
-
-// //   let price = Number(hotel.price || 0);
-
-// //   if (markup.markupType === "percentage") {
-// //     price += (price * markup.markupValue) / 100;
-// //   }
-
-// //   if (markup.markupType === "fixed") {
-// //     price += Number(markup.markupValue);
-// //   }
-
-// //   const tax = (price * 5) / 100;
-
-// //   return {
-// //     ...hotel,
-// //     originalPrice: hotel.price,
-// //     originalTax: hotel.tax,
-// //     price: Number(price.toFixed(2)),
-// //     tax: Number(tax.toFixed(2)),
-// //   };
-// // };
-
-// export const applyMarkup = (
-//   hotel,
-//   markup,
-//   serviceTax = 0
-// ) => {
-//   if (!markup) return hotel;
-
-//   let price = Number(hotel.price || 0);
-
-//   if (markup.markupType === "percentage") {
-//     price += (price * markup.markupValue) / 100;
-//   }
-
-//   if (
-//     markup.markupType === "fixed" ||
-//     markup.markupType === "flat"
-//   ) {
-//     price += Number(markup.markupValue);
-//   }
-
-//   const tax = (price * Number(serviceTax)) / 100;
-
-//   return {
-//     ...hotel,
-//     originalPrice: hotel.price,
-//     originalTax: hotel.tax,
-//     price: Number(price.toFixed(2)),
-//     tax: Number(tax.toFixed(2)),
-//   };
-// };
-
-export const applyMarkup = (
+export const applyHotelPricing = ({
   hotel,
   markup,
-  serviceTax
-) => {
-  if (!markup) return hotel;
+  additionalTax,
+  countryTax,
+}) => {
+  let amount = Number(hotel.price || 0);
 
-  let price = Number(hotel.price || 0);
+  const originalPrice = amount;
 
-  // Save original values
-  const originalPrice = price;
-  const originalTax = Number(hotel.tax || 0);
+  /*resolveMarkup
+     STEP 1 → MARKUP
+  */
+  if (markup) {
+    if (markup.markupType === "percentage") {
+      amount += (amount * markup.markupValue) / 100;
+    }
 
-  // Markup Apply
+    if (markup.markupType === "fixed") {
+      amount += Number(markup.markupValue);
+    }
+  }
+
+  const subtotal1 = amount;
+
+  /*
+     STEP 2 → SERVICE TAX
+  */
+
+  if (markup?.serviceChargeValue) {
   if (markup.markupType === "percentage") {
-    price += (price * markup.markupValue) / 100;
+    amount +=
+      (amount * markup.serviceChargeValue) / 100;
   }
 
   if (markup.markupType === "fixed") {
-    price += Number(markup.markupValue);
+    amount += Number(markup.serviceChargeValue);
   }
+}
 
-  // Service Tax Apply
-  let tax = 0;
+  const subtotal2 = amount;
+const panjourneyServiceCharge =
+  subtotal2 - subtotal1;
 
-  if (serviceTax) {
-    if (serviceTax.markupType === "percentage") {
-      tax = (price * serviceTax.markupValue) / 100;
+  /*
+     STEP 3 → ADDITIONAL TAX
+  */
+
+
+
+  if (additionalTax) {
+    if (additionalTax.markupType === "percentage") {
+      amount += (amount * additionalTax.markupValue) / 100;
     }
 
-    if (serviceTax.markupType === "fixed") {
-      tax = Number(serviceTax.markupValue);
+    if (additionalTax.markupType === "fixed") {
+      amount += Number(additionalTax.markupValue);
     }
   }
 
+  const basePrice  = amount;
+
+
+if (countryTax) {
+  console.log("Inside country tax block");
+
+  // 1. FLAT TAX
+  if (countryTax.ruleType === "flat") {
+  console.log("Inside FLAT block");
+    if (countryTax.taxType === "percentage") {
+      amount += (amount * countryTax.taxValue) / 100;
+    }
+
+    if (countryTax.taxType === "fixed") {
+      amount += Number(countryTax.taxValue);
+    }
+  }
+
+  // 2. SLAB TAX
+  else if (countryTax.ruleType === "slab") {
+
+    let selectedSlab = null;
+
+    for (const slab of countryTax.slabs) {
+      if (amount >= slab.minAmount) {
+        selectedSlab = slab;
+      }
+    }
+
+    if (selectedSlab) {
+      amount +=
+        (amount * selectedSlab.taxValue) / 100;
+    }
+  }
+}
+
+const platformfeeandtax= amount -basePrice
   return {
     ...hotel,
 
     originalPrice,
-    originalTax,
+    panjourneyServiceCharge,
+    platformfeeandtax,
 
-    price: Number(price.toFixed(2)),
-    tax: Number(tax.toFixed(2)),
+    supplierPrice: originalPrice,
+
+    subtotal1: Number(subtotal1.toFixed(2)),
+
+    subtotal2: Number(subtotal2.toFixed(2)),
+
+    basePrice: Number(basePrice.toFixed(2)),
+
+    price: Number(amount.toFixed(2)),
   };
 };

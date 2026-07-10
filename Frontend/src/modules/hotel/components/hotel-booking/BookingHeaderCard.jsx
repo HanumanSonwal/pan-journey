@@ -7,12 +7,25 @@ import Image from "next/image";
 const { Title, Text } = Typography;
 
 export default function BookingHeaderCard({ bookingData }) {
-  const hotel = bookingData?.supplierData;
-  const room = bookingData?.selectedRoom;
+  const hotel = bookingData?.supplierData ?? {};
+  const room = bookingData?.selectedRoom ?? {};
+
+  const { HotelImage, HotelName, Address, City, State, Country, StarRating } =
+    hotel;
+
+  const fullLocation = [City, State, Country].filter(Boolean).join(", ");
+
+  const roomName = room?.GroupName || "Standard Room";
+
+  const hotelImage = HotelImage
+    ? HotelImage.replace("_b.", "_z.").replace("_t.", "_z.")
+    : "/no-room.jpg";
+
+  const rating = Number(StarRating || 0);
 
   return (
     <Card
-      className="!mb-2 rounded border-0 !shadow-[0_4px_12px_rgba(0,0,0,0.25)] shadow-sm font-roboto!"
+      className="font-roboto! !mb-2 rounded border-0 !shadow-[0_4px_12px_rgba(0,0,0,0.25)] shadow-sm"
       styles={{
         body: {
           padding: 15,

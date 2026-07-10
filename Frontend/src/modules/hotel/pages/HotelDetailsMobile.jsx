@@ -1,22 +1,14 @@
 "use client";
-import {
-  ArrowLeftOutlined,
-  ShareAltOutlined
-} from "@ant-design/icons";
+import { ArrowLeftOutlined, ShareAltOutlined } from "@ant-design/icons";
 import { Drawer, message } from "antd";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import HotelDetailsSkeleton from "@/components/common/loder/HotelDetailsSkeleton";
 import { useAuthGuard } from "@/modules/auth/hooks/useAuthGuard";
 import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
-import { useHotelDetails } from "@/modules/hotel/hooks/useHotelDetails";
-import { useSelectedHotelStore } from "@/modules/hotel/store/selectedHotel.store";
 import { useToggleWishlist } from "@/modules/wishlist/hooks/useToggleWishlist";
 import { useWishlistIds } from "@/modules/wishlist/hooks/useWishlistIds";
 import { slugify } from "@/utils/slug/slugify";
-
-
 
 import SessionExpiredModal from "../components/hotels/viewhotles/SessionExpiredModal";
 import ViewHotelInfo from "../components/hotels/viewhotles/ViewHotelInfo";
@@ -27,7 +19,6 @@ import HotelCmsSection from "../sections/HotelCmsSection";
 import RelatedHotels from "../sections/RelatedHotels";
 import DynamicHotelSeoFallback from "../seo/DynamicHotelSeoFallback";
 
-
 import ViewHotelGalleryMobile from "../components/hotels/viewhotles/ViewHotelGalleryMobile";
 import HotelSectionsContents from "../mobile-componant/HotelSectionsContents";
 import HotelSectionsTabss from "../mobile-componant/HotelSectionsTabss";
@@ -35,8 +26,15 @@ import SlectRoom from "../mobile-componant/SlectRoom";
 import { useHotelBookingStore } from "../store/booking.store";
 import { useHotelSearchStore } from "../store/serchData.store";
 
-function HotelDetailsMobile({ initialPayload = null, cms = null }) {
-  const { selectedHotel } = useSelectedHotelStore();
+function HotelDetailsMobile({
+  cms,
+  hotelData,
+  supplierData,
+  isLoading,
+  isFetching,
+  refetch,
+  payload,
+}) {
   const { appliedSearchData } = useHotelSearchStore();
   const { setBookingData } = useHotelBookingStore();
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -45,75 +43,10 @@ function HotelDetailsMobile({ initialPayload = null, cms = null }) {
   const [sessionExpired] = useState(false);
   const [reloadingHotels] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const router = useRouter();
+
   const { requireAuth } = useAuthGuard();
   const { mutateAsync } = useToggleWishlist();
   const { data: wishlistData } = useWishlistIds();
-
-  const searchParams = useSearchParams();
-
-  const hid = searchParams.get("hid");
-  const cityIdParam = searchParams.get("cityId");
-  const stateNameParam = searchParams.get("stateName");
-  const countryCodeParam = searchParams.get("countryCode");
-  const hotelSlugParam = searchParams.get("hotelSlug");
-
-  const payload = useMemo(() => {
-    if (selectedHotel?.fromWishlist) {
-      return {
-        hotelId: selectedHotel?.hotelMeta?.hotelId || hid,
-        hotelMeta: {
-          cityId: selectedHotel?.hotelMeta?.cityId || cityIdParam,
-          stateName: selectedHotel?.hotelMeta?.stateName || stateNameParam,
-          countryCode:
-            selectedHotel?.hotelMeta?.countryCode || countryCodeParam,
-        },
-        searchContext: {
-          fullName: selectedHotel?.hotelMeta?.hotelSlug || hotelSlugParam || "",
-          CheckInDate: appliedSearchData?.checkIn,
-          CheckOutDate: appliedSearchData?.checkOut,
-          RoomCount: appliedSearchData?.rooms || 1,
-        },
-      };
-    }
-
-    if (initialPayload) {
-      return {
-        ...initialPayload,
-        hotelMeta: {
-          cityId: appliedSearchData?.cityData?.id,
-          stateName: appliedSearchData?.cityData?.stateName,
-          countryCode: appliedSearchData?.cityData?.countryCode,
-        },
-        searchContext: {
-          fullName: initialPayload?.searchContext?.fullName || "",
-          CheckInDate: appliedSearchData?.checkIn,
-          CheckOutDate: appliedSearchData?.checkOut,
-          RoomCount: appliedSearchData?.rooms,
-        },
-      };
-    }
-
-    return {
-      hotelId: selectedHotel?.hotelMeta?.hotelId,
-      hotelMeta: {
-        cityId: selectedHotel?.hotelMeta?.cityId,
-        stateName: selectedHotel?.hotelMeta?.stateName,
-        countryCode: selectedHotel?.hotelMeta?.countryCode,
-      },
-      hotelKey: selectedHotel?.hotelKey,
-      searchKey: selectedHotel?.searchKey,
-    };
-  }, [
-    selectedHotel,
-    initialPayload,
-    appliedSearchData,
-    hid,
-    cityIdParam,
-    stateNameParam,
-    countryCodeParam,
-    hotelSlugParam,
-  ]);
 
   const wishlistIds = useMemo(
     () => new Set(wishlistData || []),
@@ -122,28 +55,18 @@ function HotelDetailsMobile({ initialPayload = null, cms = null }) {
 
   const isWishlisted = wishlistIds.has(payload?.hotelId?.toString());
 
-  const isValidPayload = payload?.hotelId && payload?.hotelMeta?.cityId;
-
-  const { data, isLoading, isFetching, refetch } =
-    useHotelDetails(isValidPayload ? payload : null);
-
   const showSkeleton = isLoading || isFetching;
 
-  const hotelData = data || {};
-  const supplierData = hotelData?.supplierResponse || {};
-
-  const ratePlans =
-    supplierData?.RatePlanRecommendations || [];
+  const ratePlans = supplierData?.RatePlanRecommendations || [];
 
   const FirstRoomPrice = ratePlans?.[0];
 
-  const hotelImages =
-    supplierData?.HotelGallery || [];
+  const hotelImages = supplierData?.HotelGallery || [];
 
   const amenities = supplierData?.Amenities
     ? supplierData.Amenities.split(",")
-      .map((item) => item.trim())
-      .filter(Boolean)
+        .map((item) => item.trim())
+        .filter(Boolean)
     : [];
 
   const hotelDetails = supplierData || [];
@@ -164,9 +87,7 @@ function HotelDetailsMobile({ initialPayload = null, cms = null }) {
         searchKey: hotelData.searchKey,
         hotelName: supplierData?.HotelName,
         hotelImage:
-          supplierData?.HotelImage ||
-          supplierData?.HotelGallery?.[0] ||
-          "",
+          supplierData?.HotelImage || supplierData?.HotelGallery?.[0] || "",
         address: supplierData?.Address,
         city: supplierData?.City,
         country: supplierData?.Country,
@@ -187,8 +108,7 @@ function HotelDetailsMobile({ initialPayload = null, cms = null }) {
 
     window.addEventListener("scroll", handleScroll);
 
-    return () =>
-      window.removeEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleWishlist = () => {
@@ -199,16 +119,9 @@ function HotelDetailsMobile({ initialPayload = null, cms = null }) {
           hotelName: supplierData?.HotelName || "",
           hotelSlug: slugify(supplierData?.HotelName || ""),
           hotelImage:
-            supplierData?.HotelImage ||
-            supplierData?.HotelGallery?.[0] ||
-            "",
-          cityId:
-            payload?.hotelMeta?.cityId ||
-            appliedSearchData?.cityData?.id,
-          cityName:
-            appliedSearchData?.city ||
-            supplierData?.City ||
-            "",
+            supplierData?.HotelImage || supplierData?.HotelGallery?.[0] || "",
+          cityId: payload?.hotelMeta?.cityId || appliedSearchData?.cityData?.id,
+          cityName: appliedSearchData?.city || supplierData?.City || "",
           stateName:
             payload?.hotelMeta?.stateName ||
             appliedSearchData?.cityData?.stateName ||
@@ -219,27 +132,19 @@ function HotelDetailsMobile({ initialPayload = null, cms = null }) {
             "",
           countryName: supplierData?.Country || "",
           address: supplierData?.Address || "",
-          starRating: Number(
-            supplierData?.StarRating || 0,
-          ),
+          starRating: Number(supplierData?.StarRating || 0),
           facilities: supplierData?.Amenities
             ? supplierData.Amenities.split(",")
-              .map((i) => i.trim())
-              .filter(Boolean)
+                .map((i) => i.trim())
+                .filter(Boolean)
             : [],
           freeCancellation: false,
-          savedPrice: Number(
-            FirstRoomPrice?.TotalAmount || 0,
-          ),
-          savedTax: Number(
-            FirstRoomPrice?.Tax || 0,
-          ),
+          savedPrice: Number(FirstRoomPrice?.TotalAmount || 0),
+          savedTax: Number(FirstRoomPrice?.Tax || 0),
         });
 
         message.success(
-          isWishlisted
-            ? "Removed from wishlist"
-            : "Added to wishlist",
+          isWishlisted ? "Removed from wishlist" : "Added to wishlist",
         );
       } catch {
         message.error("Wishlist update failed");
@@ -247,18 +152,13 @@ function HotelDetailsMobile({ initialPayload = null, cms = null }) {
     });
   };
 
-  const handleSearch = useCallback(() => { }, []);
-
   return (
     <div className="min-h-screen !bg-[#eef3f8]">
-
       <div
-        className={`sticky top-0 z-50 flex items-center !justify-between p-2 transition-all duration-300 ${isScrolled
-          ? "bg-white shadow-md"
-          : "bg-transparent"
-          }`}
+        className={`sticky top-0 z-50 flex items-center !justify-between p-2 transition-all duration-300 ${
+          isScrolled ? "bg-white shadow-md" : "bg-transparent"
+        }`}
       >
-
         <button
           onClick={() => window.history.back()}
           className="flex h-10 w-10 items-center justify-center"
@@ -267,29 +167,21 @@ function HotelDetailsMobile({ initialPayload = null, cms = null }) {
         </button>
 
         <div className="flex items-center gap-2">
-
-
-
-          <button
-            className="flex h-10 w-10 items-center justify-center "
-          >
+          <button className="flex h-10 w-10 items-center justify-center">
             <ShareAltOutlined className="text-lg" />
           </button>
-
         </div>
-
       </div>
 
       {showSkeleton ? (
         <HotelDetailsSkeleton />
       ) : (
         <>
-          <div className="mx-auto w-full max-w-md bg-white rounded-b-[24px] shadow-sm">
+          <div className="mx-auto w-full max-w-md rounded-b-[24px] bg-white shadow-sm">
             {/* Top Overlay Icons */}
 
             {/* Gallery */}
             <div className="relative">
-
               <ViewHotelGalleryMobile
                 images={hotelImages}
                 onOpen={() => setIsGalleryOpen(true)}
@@ -300,72 +192,56 @@ function HotelDetailsMobile({ initialPayload = null, cms = null }) {
             </div>
 
             {/* Hotel Card */}
-            <div className="-mt-5 rounded-t-[28px] !bg- px-2 pt-5">
+            <div className="!bg- -mt-5 rounded-t-[28px] px-2 pt-5">
               <div className="rounded-2xl bg-white p-2 shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
-
-                <h1 className="text-[22px] font-bold text-[#222] basicDetailHeadingText">
+                <h1 className="basicDetailHeadingText text-[22px] font-bold text-[#222]">
                   {supplierData?.HotelName}
                 </h1>
 
                 {/* Star */}
                 <div className="!-mt-4 flex items-center gap-1">
-
                   {Array.from({
                     length: Number(supplierData?.StarRating || 5),
                   }).map((_, i) => (
-                    <span
-                      key={i}
-                      className="text-yellow-500 !text-[17px] "
-                    >
+                    <span key={i} className="!text-[17px] text-yellow-500">
                       ★
                     </span>
                   ))}
-
                 </div>
 
                 {/* Rating */}
-                <div className=" flex items-center gap-2">
-
-                  <div className="rounded !bg-offer-gradient px-3 py-1 text-xs font-bold text-white">
+                <div className="flex items-center gap-2">
+                  <div className="!bg-offer-gradient rounded px-3 py-1 text-xs font-bold text-white">
                     {supplierData?.ReviewScore || "4.2"}
                   </div>
 
-                  <span className="font-bold  text-[#4AA3DF] text-[14px]">
+                  <span className="text-[14px] font-bold text-[#4AA3DF]">
                     Very Good
                   </span>
 
                   <span className="text-gray-500">
                     ({supplierData?.ReviewCount || "1200"} Ratings)
                   </span>
-
                 </div>
 
                 {/* Address */}
                 <div className="mt-2">
-
-                  <p className="font-bold !text-gray-500 ">
+                  <p className="font-bold !text-gray-500">
                     📍 {supplierData?.Address}
                   </p>
 
-                  <p className="!-mt-3 text-sm text-[#4AA3DF] ">
-                    {supplierData?.City},
-                    {" "}
-                    {supplierData?.Country}
+                  <p className="!-mt-3 text-sm text-[#4AA3DF]">
+                    {supplierData?.City}, {supplierData?.Country}
                   </p>
-
                 </div>
 
                 {/* Travel Dates & Guests */}
                 <div className="mt-4">
-                  <h3 className="mb-3 !font-bold">
-                    Travel Dates & Guests
-                  </h3>
+                  <h3 className="mb-3 !font-bold">Travel Dates & Guests</h3>
 
                   <div className="flex gap-2">
-
                     {/* Travel Dates */}
                     <div className="flex gap-3">
-
                       {/* Check In / Check Out */}
                       <div className="flex-1">
                         <p className="mb-0 text-sm font-medium text-[#4AA3DF]">
@@ -401,9 +277,7 @@ function HotelDetailsMobile({ initialPayload = null, cms = null }) {
                           </p>
                         </div>
                       </div>
-
                     </div>
-
                   </div>
                 </div>
               </div>
@@ -415,22 +289,15 @@ function HotelDetailsMobile({ initialPayload = null, cms = null }) {
                 />
               </div>
 
-
-
-
               {/* Info */}
               <div className="mt-6">
                 <ViewHotelInfo supplierData={supplierData} />
               </div>
-
             </div>
-
           </div>
-
 
           {/* Hotel Sections */}
           <div className="mx-auto mt-6 w-full max-w-md px-3">
-
             <HotelSectionsTabss
               activeTab={activeTab}
               setActiveTab={setActiveTab}
@@ -445,15 +312,12 @@ function HotelDetailsMobile({ initialPayload = null, cms = null }) {
                 hotelDetails={hotelDetails}
               />
             </div>
-
           </div>
 
           {/* CMS Section */}
 
           <div className="mx-auto mt-8 w-full max-w-md px-3">
-
             <HotelCmsSection>
-
               {cms ? (
                 <CMSContentRenderer cms={cms} />
               ) : (
@@ -462,26 +326,19 @@ function HotelDetailsMobile({ initialPayload = null, cms = null }) {
                   cityName={supplierData?.City}
                 />
               )}
-
             </HotelCmsSection>
-
           </div>
 
           {/* Related Hotels */}
 
           <div className="mx-auto mt-8 w-full max-w-md px-3 pb-28">
-
             <RelatedHotels
               cityId={appliedSearchData?.cityData?.id}
               cityName={appliedSearchData?.city}
               searchData={appliedSearchData}
               currentHotelId={payload?.hotelId}
             />
-
           </div>
-
-
-
 
           {/* Gallery Modal */}
 
@@ -499,25 +356,16 @@ function HotelDetailsMobile({ initialPayload = null, cms = null }) {
           />
           {/* Sticky Bottom */}
 
-          <div className="sticky bottom-0 z-50 !bg-offer-gradient p-1 shadow-xl lg:hidden">
-
+          <div className="!bg-offer-gradient sticky bottom-0 z-50 p-1 shadow-xl lg:hidden">
             <div className="flex items-center justify-between">
-
               <div>
-
                 <h2 className="text-2xl font-bold text-white">
-
-                  ₹
-                  {Number(
-                    FirstRoomPrice?.TotalAmount || 0
-                  ).toLocaleString()}
-
+                  ₹{Number(FirstRoomPrice?.TotalAmount || 0).toLocaleString()}
                 </h2>
 
                 <p className="text-xs text-gray-500 text-white">
                   + Taxes & Fees
                 </p>
-
               </div>
               <Drawer
                 title="Select Room"
@@ -525,12 +373,8 @@ function HotelDetailsMobile({ initialPayload = null, cms = null }) {
                 size="100%"
                 open={openDrawer}
                 onClose={() => setOpenDrawer(false)}
-
               >
-                <SlectRoom
-                  ratePlans={ratePlans}
-                  supplierData={supplierData}
-                />
+                <SlectRoom ratePlans={ratePlans} supplierData={supplierData} />
               </Drawer>
 
               <button
@@ -539,9 +383,7 @@ function HotelDetailsMobile({ initialPayload = null, cms = null }) {
               >
                 SELECT ROOM
               </button>
-
             </div>
-
           </div>
         </>
       )}
@@ -550,4 +392,3 @@ function HotelDetailsMobile({ initialPayload = null, cms = null }) {
 }
 
 export default HotelDetailsMobile;
-

@@ -1,3 +1,5 @@
+
+
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -23,84 +25,90 @@ const sectionIds = {
 const HotelSectionsTabs = ({ activeTab = "Rooms", setActiveTab }) => {
   const [currentTab, setCurrentTab] = useState(activeTab);
 
-const ref = useRef(null);
-const footerRef = useRef(null);
-const ignoreScroll = useRef(false);
+  const ref = useRef(null);
+  const footerRef = useRef(null);
+  const ignoreScroll = useRef(false);
 
-const [isFixed, setIsFixed] = useState(false);
-const [height, setHeight] = useState(0);
-const [offsetTop, setOffsetTop] = useState(0);
+  const [isFixed, setIsFixed] = useState(false);
+  const [height, setHeight] = useState(0);
+  const [offsetTop, setOffsetTop] = useState(0);
 
-  // measure position
+  const getHeaderOffset = () => (window.innerWidth >= 768 ? 170 : 110);
+
+  // Measure initial position
   useEffect(() => {
-  const update = () => {
-    if (ref.current) {
+    const update = () => {
+      if (!ref.current) return;
+
       setHeight(ref.current.offsetHeight);
 
       const rect = ref.current.getBoundingClientRect();
-
       setOffsetTop(rect.top + window.scrollY);
-    }
 
-    footerRef.current = document.getElementById("site-footer");
-  };
+      footerRef.current = document.getElementById("site-footer");
+    };
 
-  update();
+    update();
 
-  window.addEventListener("resize", update);
+    window.addEventListener("resize", update);
+    window.addEventListener("load", update);
 
-  return () => window.removeEventListener("resize", update);
-}, []);
+    return () => {
+      window.removeEventListener("resize", update);
+      window.removeEventListener("load", update);
+    };
+  }, []);
 
-  // sticky logic
+  // Sticky Logic
   useEffect(() => {
-  const handleScroll = () => {
-    if (!ref.current) return;
+    const handleScroll = () => {
+      if (!ref.current) return;
 
-    const footer = footerRef.current;
+      let shouldStick = window.scrollY >= offsetTop;
 
-    let shouldStick = window.scrollY >= offsetTop;
+      const footer = footerRef.current;
 
-    if (footer) {
-      const footerTop = footer.getBoundingClientRect().top;
+      if (footer) {
+        const footerTop = footer.getBoundingClientRect().top;
+        const stickyHeight = ref.current.offsetHeight;
+        const headerOffset = getHeaderOffset();
 
-      const stickyHeight = ref.current.offsetHeight;
-
-      const headerOffset =
-        window.innerWidth >= 768 ? 100 : 55;
-
-      if (footerTop <= stickyHeight + headerOffset) {
-        shouldStick = false;
+        if (footerTop <= stickyHeight + headerOffset) {
+          shouldStick = false;
+        }
       }
-    }
 
-    setIsFixed(shouldStick);
-  };
+      setIsFixed(shouldStick);
+    };
 
-  handleScroll();
+    handleScroll();
 
-  window.addEventListener("scroll", handleScroll);
-  window.addEventListener("resize", handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleScroll);
 
-  return () => {
-    window.removeEventListener("scroll", handleScroll);
-    window.removeEventListener("resize", handleScroll);
-  };
-}, [offsetTop]);
-  // scroll spy
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, [offsetTop]);
+
+  // Scroll Spy
   useEffect(() => {
     const handleScrollSpy = () => {
       if (ignoreScroll.current) return;
+
+      const offset = getHeaderOffset();
 
       let active = currentTab;
 
       for (const tab of tabs) {
         const el = document.getElementById(sectionIds[tab]);
+
         if (!el) continue;
 
         const rect = el.getBoundingClientRect();
 
-        if (rect.top <= 150 && rect.bottom >= 150) {
+        if (rect.top <= offset && rect.bottom >= offset) {
           active = tab;
           break;
         }
@@ -108,45 +116,57 @@ const [offsetTop, setOffsetTop] = useState(0);
 
       if (active !== currentTab) {
         setCurrentTab(active);
-        if (setActiveTab) setActiveTab(active);
+
+        if (setActiveTab) {
+          setActiveTab(active);
+        }
       }
     };
 
     window.addEventListener("scroll", handleScrollSpy);
-    return () => window.removeEventListener("scroll", handleScrollSpy);
+
+    return () => {
+      window.removeEventListener("scroll", handleScrollSpy);
+    };
   }, [currentTab, setActiveTab]);
 
   const handleScrollTo = (tab) => {
-    setCurrentTab(tab);
-    if (setActiveTab) setActiveTab(tab);
-
     const el = document.getElementById(sectionIds[tab]);
 
-    if (el) {
-      ignoreScroll.current = true;
+    if (!el) return;
 
-      el.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+    setCurrentTab(tab);
 
-      setTimeout(() => {
-        ignoreScroll.current = false;
-      }, 800);
+    if (setActiveTab) {
+      setActiveTab(tab);
     }
+
+    ignoreScroll.current = true;
+
+    const y =
+      el.getBoundingClientRect().top + window.pageYOffset - getHeaderOffset();
+
+    window.scrollTo({
+      top: y,
+      behavior: "smooth",
+    });
+
+    setTimeout(() => {
+      ignoreScroll.current = false;
+    }, 700);
   };
 
   return (
     <>
-      {/* prevent layout jump */}
       {isFixed && <div style={{ height }} />}
 
       <div
         ref={ref}
-        className={`z-[8] w-full border border-gray-200 bg-white text-[#0ea5e9] shadow-[0_8px_20px_rgba(14,165,233,0.25)] ${isFixed
-          ? "fixed top-[55px] sm:top-[55px] md:top-[100px] lg:top-[100px] xl:top-[100px] left-0 w-full"
-          : "relative"
-          }`}
+        className={`z-[8] w-full border border-gray-200 bg-white text-[#0ea5e9] shadow-[0_8px_20px_rgba(14,165,233,0.25)] ${
+          isFixed
+            ? "fixed top-[55px] left-0 w-full sm:top-[55px] md:top-[100px] lg:top-[100px] xl:top-[100px]"
+            : "relative"
+        }`}
       >
         <div className="scrollbar-hide flex overflow-x-auto">
           {tabs.map((tab) => {
@@ -156,10 +176,11 @@ const [offsetTop, setOffsetTop] = useState(0);
               <button
                 key={tab}
                 onClick={() => handleScrollTo(tab)}
-                className={`font-roboto relative min-w-max flex-1 px-6 py-5 text-[15px] font-bold whitespace-nowrap transition ${active
-                  ? "text-[#0ea5e9]"
-                  : "text-gray-600 hover:text-[#0ea5e9]"
-                  }`}
+                className={`font-roboto relative min-w-max flex-1 px-6 py-5 text-[15px] font-bold whitespace-nowrap transition ${
+                  active
+                    ? "text-[#0ea5e9]"
+                    : "text-gray-600 hover:text-[#0ea5e9]"
+                }`}
               >
                 {tab}
 

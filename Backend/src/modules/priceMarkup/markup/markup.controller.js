@@ -130,6 +130,7 @@ export const createMarkup = async (req, res) => {
       hotelId,
       startDate,
       endDate,
+     
     } = req.body;
 
     // ✅ Date validation
@@ -155,7 +156,7 @@ export const createMarkup = async (req, res) => {
     }
 
     // 🔎 uniqueness filter
-    let filter = { level };
+    let filter = { level};
 
     if (level === "country") filter.countryCode = countryCode;
 
@@ -204,6 +205,7 @@ export const updateMarkup = async (req, res) => {
       markupType,
       markupValue,
       isActive,
+      serviceChargeValue,
       startDate,
       endDate,
     } = req.body;

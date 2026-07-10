@@ -5,7 +5,14 @@ const markupSchema = new mongoose.Schema(
   {
     level: {
       type: String,
-      enum: ["worldwide", "country", "state", "city", "hotel","serviceTax"],
+     enum: [
+ "worldwide",
+ "country",
+ "state",
+ "city",
+ "hotel",
+ "additional_tax"
+],
       required: true,
     },
 
@@ -16,6 +23,15 @@ const markupSchema = new mongoose.Schema(
     },
 
     markupValue: {
+      type: Number,
+      required: true,
+    },
+    serviceChargeValue: {
+  type: Number,
+      required: true,
+},
+
+    serviceChargeValue: {
       type: Number,
       required: true,
     },

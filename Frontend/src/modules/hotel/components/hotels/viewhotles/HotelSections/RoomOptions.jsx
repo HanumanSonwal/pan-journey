@@ -8,30 +8,48 @@ import { useRouter } from "next/navigation";
 
 const RoomOptions = ({ ratePlans = [], supplierData = {} }) => {
   const router = useRouter();
-  const { setBookingData } = useHotelBookingStore();
+
   const { requireAuth } = useAuthGuard();
+  const { setBookingData } = useHotelBookingStore();
+
+  /*
+   * =========================
+   * IMAGE HELPER
+   * =========================
+   */
   const getHDImage = (url) => {
     if (!url) {
       return "/no-room.jpg";
     }
+
     return url.replace("_b.", "_z.");
   };
 
-  const handleSelectRoom = (plan, room, basicAmount, tax, totalAmount) => {
+  /*
+   * =========================
+   * SELECT ROOM
+   * =========================
+   */
+  const handleSelectRoom = ({ plan, room, pricing }) => {
+    const bookingState = useHotelBookingStore.getState();
+
     setBookingData({
-      ...useHotelBookingStore.getState().bookingData,
+      ...bookingState.bookingData,
+
       selectedHotel: {
-        ...useHotelBookingStore.getState().bookingData?.selectedHotel,
+        ...bookingState.bookingData?.selectedHotel,
+
         recommendationId: plan?.RecommendationID || plan?.RecommendationId,
       },
+
       supplierData,
+
       selectedRatePlan: plan,
+
       selectedRoom: room,
-      pricing: {
-        basicAmount,
-        tax,
-        totalAmount,
-      },
+      pricing,
+
+
     });
 
     router.push("/hotel-booking");
@@ -39,21 +57,32 @@ const RoomOptions = ({ ratePlans = [], supplierData = {} }) => {
   return (
     <div className="space-y-6">
       {ratePlans?.map((plan, index) => {
-        const detail = plan?.RatePlanDetails?.[0];
-        const room = detail?.RoomDetails?.[0];
+        const detail = plan?.RatePlanDetails?.[0] ?? null;
+        const room = detail?.RoomDetails?.[0] ?? null;
         const image = getHDImage(room?.HotelGallery?.[0]?.ImageURL);
+
+        const roomName = room?.GroupName || "Room Not Available";
+        const roomDescription = room?.HotelRoomTypeDesc || "";
+        const smokingAllowed = room?.SmokingAllowed;
+
         const refundable = detail?.Refundable === "True";
-        const basicAmount = Number(detail?.BasicAmount || 0);
-        const tax = Number(detail?.Tax || 0);
-        const totalAmount = Number(
-          detail?.TotalAmount || plan?.TotalAmount || 0,
-        );
-        const serviceFee = Number(detail?.ServiceFeeAmount || 0);
-        const gst = Number(detail?.GST || 0);
         const payAtHotel = detail?.PayatHotel;
         const panRequired = detail?.IsPANMandatory === "True";
         const ccRequired = detail?.CCRequired;
-        const smoking = room?.SmokingAllowed;
+
+        const inclusionList =
+          detail?.Inclusion?.split(",")
+            .map((item) => item.trim())
+            .filter(Boolean) ?? [];
+
+        const pricing = plan?.PricingBreakdown ?? {};
+        const basicAmount = Number(pricing.basePrice || 0);
+        const tax = Number(pricing.platformFeeAndTax || 0);
+        const totalAmount = Number(pricing.finalPrice || 0);
+        const currencySymbol = pricing.currencySymbol || "₹";
+
+        const formatPrice = (value) =>
+          Number(value || 0).toLocaleString("en-IN");
 
         return (
           <div
@@ -77,10 +106,11 @@ const RoomOptions = ({ ratePlans = [], supplierData = {} }) => {
                 {/* Top Badges */}
                 <div className="flex flex-wrap gap-2">
                   <span
-                    className={`font-roboto rounded-full px-3 py-1 text-xs font-semibold ${refundable
+                    className={`font-roboto rounded-full px-3 py-1 text-xs font-semibold ${
+                      refundable
                         ? "bg-green-100 text-green-700"
                         : "bg-red-100 text-red-600"
-                      }`}
+                    }`}
                   >
                     {refundable ? "Free Cancellation" : "Non Refundable"}
                   </span>
@@ -116,28 +146,28 @@ const RoomOptions = ({ ratePlans = [], supplierData = {} }) => {
 
                 {/* Name */}
                 <h3 className="font-roboto mt-3! mb-1! text-2xl font-bold text-[#0f172a]">
-                  {room?.GroupName}
+                  {roomName}
                 </h3>
 
                 <p className="font-roboto mt-1 font-semibold text-gray-500">
-                  {room?.HotelRoomTypeDesc}
+                  {roomDescription}
                 </p>
 
                 {/* Room Features */}
                 <div className="mt-0! flex flex-wrap gap-2">
                   <span className="rounded-full bg-slate-100 px-3 text-xs text-slate-600">
-                    {smoking ? "Smoking Allowed" : "Non Smoking"}
+                    {smokingAllowed ? "Smoking Allowed" : "Non Smoking"}
                   </span>
 
                   <span className="rounded-full bg-slate-100 px-3 text-xs text-slate-600">
-                    {room?.GroupName}
+                    {roomName}
                   </span>
                 </div>
 
                 {/* Inclusion */}
-                {!!detail?.Inclusion && (
+                {!!inclusionList.length && (
                   <div className="my-4 flex flex-wrap gap-2">
-                    {detail?.Inclusion?.split(",")
+                    {inclusionList
                       ?.map((i) => i.trim())
                       ?.filter((i) => i.length > 0)
                       ?.map((item, i) => (
@@ -164,7 +194,7 @@ const RoomOptions = ({ ratePlans = [], supplierData = {} }) => {
                     <span className="text-gray-500">Basic Price</span>
 
                     <span className="font-medium text-gray-700">
-                      ₹ {Number(basicAmount || 0).toLocaleString("en-IN")}
+                      {currencySymbol} {formatPrice(basicAmount)}
                     </span>
                   </div>
 
@@ -173,31 +203,9 @@ const RoomOptions = ({ ratePlans = [], supplierData = {} }) => {
                     <span className="text-gray-500">Tax</span>
 
                     <span className="font-medium text-gray-700">
-                      ₹ {Number(tax || 0).toLocaleString("en-IN")}
+                      {currencySymbol} {formatPrice(tax)}
                     </span>
                   </div>
-
-                  {/* GST */}
-                  {!!gst && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-500">GST</span>
-
-                      <span className="font-medium text-gray-700">
-                        ₹ {Number(gst).toLocaleString("en-IN")}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Service Fee */}
-                  {!!serviceFee && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-500">Service Fee</span>
-
-                      <span className="font-medium text-gray-700">
-                        ₹ {Number(serviceFee).toLocaleString("en-IN")}
-                      </span>
-                    </div>
-                  )}
 
                   {/* Total */}
                   <div className="border-t border-dashed pt-3">
@@ -212,8 +220,8 @@ const RoomOptions = ({ ratePlans = [], supplierData = {} }) => {
                         </p>
                       </div>
 
-                      <span className="text-lg sm:text-lg lg:text-2xl leading-none font-bold text-[#0f172a]">
-                        ₹ {Number(totalAmount || 0).toLocaleString("en-IN")}
+                      <span className="text-base leading-none font-bold text-[#0f172a] sm:text-lg lg:text-2xl">
+                        {currencySymbol} {formatPrice(totalAmount)}
                       </span>
                     </div>
                   </div>
@@ -224,13 +232,11 @@ const RoomOptions = ({ ratePlans = [], supplierData = {} }) => {
                   size="large"
                   onClick={() =>
                     requireAuth(() =>
-                      handleSelectRoom(
+                      handleSelectRoom({
                         plan,
                         room,
-                        basicAmount,
-                        tax,
-                        totalAmount,
-                      ),
+                        pricing,
+                      }),
                     )
                   }
                   className="!mt-5 !h-[48px] w-full rounded! bg-[#0f766e]! text-sm font-semibold tracking-wide text-white!"
