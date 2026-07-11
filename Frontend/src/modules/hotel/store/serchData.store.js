@@ -6,6 +6,7 @@ const getDefaultSearchData = () => ({
   city: "",
   cityData: {
     id: "",
+    name: "",
     stateName: "",
     countryCode: "",
     normalizedCity: "",
@@ -24,11 +25,16 @@ export const useHotelSearchStore = create(
     (set) => ({
       draftSearchData: getDefaultSearchData(),
       appliedSearchData: getDefaultSearchData(),
+
       setDraftSearchData: (data) =>
         set((state) => ({
           draftSearchData: {
             ...state.draftSearchData,
             ...data,
+            cityData: {
+              ...state.draftSearchData.cityData,
+              ...(data?.cityData || {}),
+            },
           },
         })),
 
@@ -36,33 +42,55 @@ export const useHotelSearchStore = create(
         set((state) => ({
           appliedSearchData: {
             ...state.draftSearchData,
+            cityData: {
+              ...state.draftSearchData.cityData,
+            },
           },
         })),
 
       setAppliedSearchData: (data) =>
-        set({
-          appliedSearchData: data,
-        }),
+        set((state) => ({
+          appliedSearchData: {
+            ...state.appliedSearchData,
+            ...data,
+            cityData: {
+              ...state.appliedSearchData.cityData,
+              ...(data?.cityData || {}),
+            },
+          },
+        })),
     }),
     {
       name: "hotel-search-storage",
 
-      version: 2,
+      version: 3,
 
       migrate: (persistedState, version) => {
-        if (version < 2) {
-          const oldData = persistedState?.searchData;
+        if (version < 3) {
+          const draft =
+            persistedState?.draftSearchData || getDefaultSearchData();
 
-          if (oldData) {
-            return {
-              draftSearchData: oldData,
-              appliedSearchData: oldData,
-            };
-          }
+          const applied =
+            persistedState?.appliedSearchData || getDefaultSearchData();
 
           return {
-            draftSearchData: getDefaultSearchData(),
-            appliedSearchData: getDefaultSearchData(),
+            draftSearchData: {
+              ...getDefaultSearchData(),
+              ...draft,
+              cityData: {
+                ...getDefaultSearchData().cityData,
+                ...(draft?.cityData || {}),
+              },
+            },
+
+            appliedSearchData: {
+              ...getDefaultSearchData(),
+              ...applied,
+              cityData: {
+                ...getDefaultSearchData().cityData,
+                ...(applied?.cityData || {}),
+              },
+            },
           };
         }
 
@@ -92,10 +120,7 @@ export const useHotelSearchStore = create(
 
         state.setDraftSearchData(updatedDates);
 
-        state.setAppliedSearchData({
-          ...state.appliedSearchData,
-          ...updatedDates,
-        });
+        state.setAppliedSearchData(updatedDates);
       },
     },
   ),

@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import SearchButton from "./SearchButton";
 import Tabs from "./Tabs";
+import { navigateToHotels } from "@/modules/hotel/utils/hotelNavigation";
 
 const FORM_MAP = {
   hotel: HotelSearchForm,
@@ -27,52 +28,16 @@ export default function Hero() {
   const [destinationError, setDestinationError] = useState(false);
   console.log(draftSearchData, "draft search home");
 
-  const handleSearch = () => {
-    if (!draftSearchData?.city?.trim()) {
-      setDestinationError(true);
-      return;
-    }
-    const updatedSearch = {
-      ...draftSearchData,
-      cityData: {
-        id: draftSearchData?.cityData?.id || "",
-        stateName:
-          draftSearchData?.cityData?.stateName ||
-          draftSearchData?.cityData?.state ||
-          "",
-        countryCode:
-          draftSearchData?.cityData?.countryCode ||
-          draftSearchData?.cityData?.country ||
-          "",
-      },
-    };
-    // APPLY SEARCH
-    console.log("UPDATED SEARCH in hero =>", updatedSearch);
-    console.log("CITY GOING TO URL in hero =>", updatedSearch?.city);
-    applySearch();
+const handleSearch = () => {
+  if (!draftSearchData?.city?.trim()) {
+    setDestinationError(true);
+    return;
+  }
 
-    const citySlug =
-      updatedSearch?.city
-        ?.split(",")[0]
-        ?.trim()
-        ?.toLowerCase()
-        ?.replace(/[^a-z0-9\s-]/g, "")
-        ?.replace(/\s+/g, "-") || "";
+  applySearch();
 
-    const query = new URLSearchParams({
-      city: citySlug,
-      cityId: updatedSearch?.cityData?.id || "",
-      stateName: updatedSearch?.cityData?.stateName || "",
-      countryCode: updatedSearch?.cityData?.countryCode || "",
-      checkIn: updatedSearch?.checkIn || "",
-      checkOut: updatedSearch?.checkOut || "",
-      rooms: String(updatedSearch?.rooms || 1),
-      adults: String(updatedSearch?.adults || 2),
-      children: String(updatedSearch?.children || 0),
-      pets: updatedSearch?.pets ? "true" : "false",
-    });
-    router.push(`/hotels?${query.toString()}`);
-  };
+  navigateToHotels(router, draftSearchData);
+};
   return (
     <section
       className="relative w-full bg-[#EDF7FF] pb-0 md:pb-30 lg:pb-45 xl:pb-15"
@@ -86,9 +51,9 @@ export default function Hero() {
             activeTab={activeTab}
             setActiveTab={setActiveTab}
           />
-          <h2 className="hidden min-[700px]:block mb-3 text-center text-[22px] font-bold text-[#72C0F0] lg:text-[28px] xl:text-[32px]">
-  Find What You Are Looking For
-</h2>
+          <h2 className="mb-3 hidden text-center text-[22px] font-bold text-[#72C0F0] min-[700px]:block lg:text-[28px] xl:text-[32px]">
+            Find What You Are Looking For
+          </h2>
           {ActiveForm && (
             <ActiveForm
               destinationError={destinationError}
