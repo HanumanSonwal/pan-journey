@@ -140,39 +140,50 @@ export default function BookingSummaryCard({
         </div>
       </div>
 
-      <div className="mt-5 rounded-xl border border-[#E5EEF7] bg-[#FAFCFF] p-4">
-        {/* Stay Timeline */}
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-          <div className="text-center sm:flex-1">
-            <Text className="block text-[13px] text-gray-500">Check-in</Text>
+<div className="mt-5 rounded-xl border border-[#E5EEF7] bg-[#FAFCFF] px-3 py-6 sm:p-4">
+  <div className="flex items-center justify-between gap-3 sm:gap-6">
+    {/* Check-in */}
+    <div className="flex-1 text-center">
+      <Text className="block text-[11px] text-gray-500 sm:text-[13px]">
+        Check-in
+      </Text>
 
-            <Text strong className="block text-[22px] leading-none">
-              {dayjs(search?.checkIn).format("DD MMM YYYY")}
-            </Text>
-          </div>
+      <Text
+        strong
+        className="block text-[14px] leading-none sm:text-[22px]"
+      >
+        {dayjs(search?.checkIn).format("DD MMM YYYY")}
+      </Text>
+    </div>
 
-          <div className="flex flex-col items-center sm:px-4">
-            <div className="rounded-full border border-[#76B7E5] px-4 py-1 text-[13px] font-medium text-[#2D8BC8]">
-              <ClockCircleOutlined className="mr-1" />
-              {nights} Night{nights > 1 ? "s" : ""}
-            </div>
-
-            <Text className="mt-2 text-[13px] text-gray-500">
-              {search?.rooms?.length || 1} Room • {search?.adults || 2} Adult
-              {search?.adults > 1 ? "s" : ""}
-            </Text>
-          </div>
-
-          <div className="text-center sm:flex-1">
-            <Text className="block text-[13px] text-gray-500">Check-out</Text>
-
-            <Text strong className="block text-[22px] leading-none">
-              {dayjs(search?.checkOut).format("DD MMM YYYY")}
-            </Text>
-          </div>
-        </div>
+    {/* Stay Info */}
+    <div className="flex shrink-0 flex-col items-center">
+      <div className="whitespace-nowrap rounded-full border border-[#76B7E5] px-2 py-1 text-[11px] font-medium text-[#2D8BC8] sm:px-4 sm:py-1 sm:text-[13px]">
+        <ClockCircleOutlined className="mr-1" />
+        {nights} Night{nights > 1 ? "s" : ""}
       </div>
 
+      <Text className="mt-2 whitespace-nowrap text-center text-[10px] text-gray-500 sm:text-[13px]">
+        {search?.rooms?.length || 1} Room • {search?.adults || 2} Adult
+        {search?.adults > 1 ? "s" : ""}
+      </Text>
+    </div>
+
+    {/* Check-out */}
+    <div className="flex-1 text-center">
+      <Text className="block text-[11px] text-gray-500 sm:text-[13px]">
+        Check-out
+      </Text>
+
+      <Text
+        strong
+        className="block text-[14px] leading-none sm:text-[22px]"
+      >
+        {dayjs(search?.checkOut).format("DD MMM YYYY")}
+      </Text>
+    </div>
+  </div>
+</div>
       {/* Footer */}
 
       <div className="mt-4 flex gap-3 rounded-xl border border-[#d8edf9] bg-[#f8fcff] px-4 py-3">

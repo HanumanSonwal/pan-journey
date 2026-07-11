@@ -73,14 +73,13 @@ export default function CouponCard({
             return (
               <div
                 key={coupon._id}
-                className={`rounded border border-[#E5EEF7] bg-white p-4 shadow-sm transition-all duration-200 hover:shadow-md ${
-                  applied
-                    ? "border-green-300 bg-green-50"
-                    : "border-gray-200 hover:border-[#0f766e]"
-                }`}
+                className={`rounded-xl border border-[#E5EEF7] bg-white p-4 shadow-sm transition-all duration-200 hover:shadow-md ${applied
+                  ? "border-green-300 bg-green-50"
+                  : "border-gray-200 hover:border-[#0f766e]"
+                  }`}
               >
                 <div>
-                  <div className="relative mb-4 h-[140px] w-full overflow-hidden rounded">
+                  <div className="relative mb-4 h-[180px] w-full overflow-hidden rounded">
                     <Image
                       src={coupon.image || "/images/no-image.jpg"}
                       alt={coupon.title}
@@ -108,7 +107,7 @@ export default function CouponCard({
                     <div className="flex justify-between">
                       <Title
                         level={5}
-                        className="font-roboto! !mb-1 !text-[14px] !font-semibold"
+                        className="font-roboto! !mb-1 !text-[21px] !font-semibold"
                       >
                         {coupon.title}
                       </Title>

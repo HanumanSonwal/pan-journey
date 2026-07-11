@@ -34,10 +34,10 @@ export default function BookingHeaderCard({ bookingData }) {
     >
 
       {/* MOBILE VIEW */}
-      <div className="flex gap-3 md:hidden">
+      <div className="flex gap-3 lg:hidden">
 
         {/* Image */}
-        <div className="relative h-[180px] w-[140px] shrink-0 overflow-hidden rounded">
+        <div className="relative  h-[140px] w-[110px] sm:h-[160px] sm:w-[125px] md:h-[150px] md:w-[240px]  shrink-0 overflow-hidden rounded">
           <Image
             src={hotel?.HotelImage || "/no-room.jpg"}
             alt={hotel?.HotelName || "Hotel"}
@@ -107,7 +107,7 @@ export default function BookingHeaderCard({ bookingData }) {
 
 
       {/* DESKTOP VIEW */}
-      <div className="hidden md:block">
+      <div className="hidden lg:block">
 
         {/* Hotel Image */}
         <div className="relative h-[250px] w-full overflow-hidden rounded">
