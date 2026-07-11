@@ -1,18 +1,14 @@
-
-
-
 import { supplierAPI } from "../../config/supplierApi.js";
 import { getAuthHeader } from "../../config/supplierAuth.service.js";
 import { getCurrencyRate } from "../currencyConverter/currency.service.js";
-import { getMarkup } from "../priceMarkup/markup/markup.service.js";
-import Markup  from "../priceMarkup/markup/markup.model.js";
+import Markup from "../priceMarkup/markup/markup.model.js";
 import { applyHotelPricing } from "../priceMarkup/markup/pricing.service.js";
+import getCountryTaxRule from "./../tax/countryTax.service.js";
 import { filterHotels } from "./hotel.filters.js";
 import { sortHotels } from "./hotel.sort.js";
 import HotelCache from "./hotelCache.model.js";
 import { paginateHotels } from "./hotelPagination.js";
 import { fetchRemainingHotelsInBackground } from "./supplierPagination.service.js";
-import getCountryTaxRule from "./../tax/countryTax.service.js";
 
 import {
   convertHotelPrices,
@@ -26,9 +22,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const normalizeCityName = (input) => {
   if (!input) return "";
 
-  const parts = input
-    .split(",")
-    .map((p) => p.trim());
+  const parts = input.split(",").map((p) => p.trim());
 
   // city search format
   if (parts.length === 3) {
@@ -70,7 +64,6 @@ export const normalizeBody = (body) => ({
     page: 1,
     limit: 10,
   },
-  
 });
 
 const resolveMarkupForHotel = ({
@@ -80,33 +73,29 @@ const resolveMarkupForHotel = ({
   cityMarkups,
   stateMarkups,
   countryMarkups,
-  worldwideMarkups
+  worldwideMarkups,
 }) => {
   // 1 HOTEL LEVEL
   const hotelMarkup = hotelMarkups.find(
-    (m) => String(m.hotelId) === String(hotel.hotelId)
+    (m) => String(m.hotelId) === String(hotel.hotelId),
   );
 
   if (hotelMarkup) return hotelMarkup;
 
   // 2 CITY LEVEL
- const normalizedCity = normalizeCityName(body.cityName);
+  const normalizedCity = normalizeCityName(body.cityName);
 
-const cityMarkup = cityMarkups.find(
-  (m) =>
-    m.cityName?.trim().toLowerCase() ===
-    normalizedCity.toLowerCase()
-);
+  const cityMarkup = cityMarkups.find(
+    (m) => m.cityName?.trim().toLowerCase() === normalizedCity.toLowerCase(),
+  );
 
   if (cityMarkup) return cityMarkup;
-
-
 
   // 3 STATE LEVEL
   const stateMarkup = stateMarkups.find(
     (m) =>
       m.stateName?.trim().toLowerCase() ===
-      body.stateName?.trim().toLowerCase()
+      body.stateName?.trim().toLowerCase(),
   );
 
   if (stateMarkup) return stateMarkup;
@@ -115,12 +104,12 @@ const cityMarkup = cityMarkups.find(
   const countryMarkup = countryMarkups.find(
     (m) =>
       m.countryCode?.trim().toUpperCase() ===
-      body.countryCode?.trim().toUpperCase()
+      body.countryCode?.trim().toUpperCase(),
   );
 
   if (countryMarkup) return countryMarkup;
-    const worldwideMarkup = worldwideMarkups.find((m) => m.level === "worldwide");
-   if (worldwideMarkup) return worldwideMarkup;
+  const worldwideMarkup = worldwideMarkups.find((m) => m.level === "worldwide");
+  if (worldwideMarkup) return worldwideMarkup;
 
   return null;
 };
@@ -176,26 +165,19 @@ export const mergeHotels = (data) => {
       hotelkey: hotel.HotelKey,
       image: hotel.HotelImage,
 
-      facilities:
-        hotel?.HotelFacilities?.map(
-          (f) => f.FacilityName
-        ) || [],
+      facilities: hotel?.HotelFacilities?.map((f) => f.FacilityName) || [],
 
       // IMPORTANT CHANGE
       price: price?.TotalAmount || 0,
       tax: 0,
 
-      supplierBaseAmount:
-        price?.BasicAmount || 0,
+      supplierBaseAmount: price?.BasicAmount || 0,
 
-      supplierTaxAmount:
-        price?.TaxAmount || 0,
+      supplierTaxAmount: price?.TaxAmount || 0,
 
-      supplierTotalAmount:
-        price?.TotalAmount || 0,
+      supplierTotalAmount: price?.TotalAmount || 0,
 
-      freeCancellation:
-        price?.FreeCancellation === "2",
+      freeCancellation: price?.FreeCancellation === "2",
     };
   });
 };
@@ -293,7 +275,7 @@ export const searchHotelsFromSupplier = async (reqBody) => {
 
     // console.log(JSON.stringify(data, null, 2));
 
-   // console.log("===================================================\n");
+    // console.log("===================================================\n");
 
     const hotels = mergeHotels(data);
 
@@ -327,7 +309,6 @@ export const searchHotelsFromSupplier = async (reqBody) => {
         upsert: true,
       },
     );
-
 
     /* =====================================================
        🚀 BACKGROUND PAGINATION
@@ -366,78 +347,69 @@ export const searchHotelsFromSupplier = async (reqBody) => {
     currency: body.currency,
   });
   // fetch all markups once
-const allMarkups = await Markup.find({
-  isActive: true,
-}).lean();
+  const allMarkups = await Markup.find({
+    isActive: true,
+  }).lean();
 
-const hotelMarkups = allMarkups.filter(
-  (m) => m.level === "hotel"
-);
+  const hotelMarkups = allMarkups.filter((m) => m.level === "hotel");
 
-const cityMarkups = allMarkups.filter(
-  (m) => m.level === "city"
-);
-// console.log("COUNTRY TAX FETCHED =>", cityMarkups);
+  const cityMarkups = allMarkups.filter((m) => m.level === "city");
+  // console.log("COUNTRY TAX FETCHED =>", cityMarkups);
 
-const stateMarkups = allMarkups.filter(
-  (m) => m.level === "state"
-);
+  const stateMarkups = allMarkups.filter((m) => m.level === "state");
 
-const countryMarkups = allMarkups.filter(
-  (m) => m.level === "country"
-);
+  const countryMarkups = allMarkups.filter((m) => m.level === "country");
 
+  const additionalTax = allMarkups.find((m) => m.level === "additional_tax");
 
-
-const additionalTax = allMarkups.find(
-  (m) => m.level === "additional_tax"
-);
-
-const countryTax = await getCountryTaxRule({
-  countryCode: body.countryCode,
-});
-  
-const worldwideMarkups = allMarkups.filter(
-  (m) => m.level === "worldwide"
-);
-
-// console.log("WORLDWIDE =", worldwideMarkups);
-const pricedHotels = [];
-
-for (const hotel of hotelsData) {
-  const matchedMarkup = resolveMarkupForHotel({
-    hotel,
-    body,
-    hotelMarkups,
-    cityMarkups,
-    stateMarkups,
-    countryMarkups,
-    worldwideMarkups
- 
-  });
-
-  const pricedHotel =  applyHotelPricing({
-    hotel,
-    markup: matchedMarkup,
-  
+  let countryTax = await getCountryTaxRule({
     countryCode: body.countryCode,
+  });
+  if (!countryTax) {
+    countryTax = {
+      ruleType: "flat", // ✅ Missing tha
+      taxType: "percentage",
+      taxValue: 18,
+    };
+  }
+  const worldwideMarkups = allMarkups.filter((m) => m.level === "worldwide");
+
+  // console.log("WORLDWIDE =", worldwideMarkups);
+  const pricedHotels = [];
+
+  for (const hotel of hotelsData) {
+    const matchedMarkup = resolveMarkupForHotel({
+      hotel,
+      body,
+      hotelMarkups,
+      cityMarkups,
+      stateMarkups,
+      countryMarkups,
+      worldwideMarkups,
+    });
+
+    const pricedHotel = applyHotelPricing({
+      hotel,
+      markup: matchedMarkup,
+
+      countryCode: body.countryCode,
       additionalTax,
-    countryTax,
-  });
+      countryTax,
+    });
 
-  pricedHotels.push({
-    ...pricedHotel,
+    pricedHotels.push({
+      ...pricedHotel,
 
-    appliedMarkup: matchedMarkup
-      ? {
-          level: matchedMarkup.level,
-          value: matchedMarkup.markupValue,
-        }
-      : null,
-  });
-}
+      appliedMarkup: matchedMarkup
+        ? {
+            level: matchedMarkup.level,
+            value: matchedMarkup.markupValue,
+          }
+        : null,
+    });
+  }
 
-hotelsData = pricedHotels;
+  hotelsData = pricedHotels;
   // console.log("\n🛏️ AFTER ROOM MULTIPLIER");
   // console.log({
   //   roomCount: body.RoomCount,
@@ -456,8 +428,6 @@ hotelsData = pricedHotels;
 
   const sorted = sortHotels(filtered, sort);
 
-
-
   const page = Number(pagination?.page) || 1;
 
   const limit = Number(pagination?.limit) || 10;
@@ -472,12 +442,11 @@ hotelsData = pricedHotels;
   // console.log("📦 RETURNED HOTELS:", paginated.hotels.length);
 
   // console.log("=================================================\n");
- 
+
   return {
     currency: body.currency,
 
     currencySymbol: getCurrencySymbol(body.currency),
-  
 
     searchKey: cache.searchKey,
 
@@ -493,4 +462,4 @@ hotelsData = pricedHotels;
 
     isComplete: cache.isComplete,
   };
-}
+};

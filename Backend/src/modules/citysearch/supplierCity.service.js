@@ -29,44 +29,6 @@ const generateSlug = (fullName, type) => {
   return `${namePart}-${typePart}`;
 };
 
-// // 🔥 main function
-// export const searchDestinationFromSupplier = async (searchText) => {
-//   try {
-//     const payload = {
-//       ...getAuthHeader(),
-//       SearchInput: searchText,
-//     };
-
-//     const { data } = await supplierAPI.post(
-//       "/JSONService/HotelSearchbyName",
-//       payload
-//     );
-
-//     const list = data?.DestinationList || [];
-
-//     // clean supplier response
-//     const cleaned = list
-//       .filter((item) => ALLOWED_TYPES.includes(item.type))
-//       .map((item) => ({
-//         id: item.id,
-//         name: item.fullName,
-//         slug:  generateSlug(item.fullName, item.type), // 👈 new field
-//         type: item.type,
-//         country: item.country,
-//         state: item.state,
-//       }));
-
-//     return cleaned;
-//   } catch (error) {
-//     console.log(
-//       "Supplier Search Error:",
-//       error.response?.data || error.message
-//     );
-
-//     throw new Error("Supplier search failed");
-//   }
-// };
-
 export const searchDestinationFromSupplier = async (searchText) => {
   try {
     console.time("SUPPLIER_CALL");
