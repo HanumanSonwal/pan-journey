@@ -1,7 +1,9 @@
 import Wishlist from "./wishlist.model.js";
 
 import Country from "../priceMarkup/countryData/country.model.js"
+import { getCurrencySymbol } from "../currencyConverter/currency.helper.js";
 
+import { getCurrencyRate } from "../currencyConverter/currency.service.js";
 
 export const toggleWishlistService = async (
   userId,
@@ -263,26 +265,71 @@ export const getWishlistService = async (userId) => {
   ]);
 };
 
-export const getWishlistCityService = async (userId, cityId) => {
+// export const getWishlistCityService = async (userId, cityId) => {
+//   const selected = await Wishlist.findOne({
+//     userId,
+//     cityId,
+//   }).lean();
+//   if (!selected) {
+//     return [];
+//   }
+//   return Wishlist.find({
+//     userId,
+//     normalizedCity: selected.normalizedCity,
+//     countryCode: selected.countryCode,
+//   })
+//     .sort({
+//       createdAt: -1,
+//     })
+//     .lean();
+// };
+
+export const getWishlistCityService = async (
+  userId,
+  cityId,
+  currency
+) => {
   const selected = await Wishlist.findOne({
     userId,
     cityId,
   }).lean();
+
   if (!selected) {
     return [];
   }
-  return Wishlist.find({
+
+  const hotels = await Wishlist.find({
     userId,
     normalizedCity: selected.normalizedCity,
     countryCode: selected.countryCode,
   })
-    .sort({
-      createdAt: -1,
-    })
+    .sort({ createdAt: -1 })
     .lean();
+
+  // currency is a STRING ("INR", "USD", etc.)
+  if (!currency || currency === "INR") {
+    return hotels.map((hotel) => ({
+      ...hotel,
+      currency: "INR",
+      currencySymbol: "₹",
+    }));
+  }
+
+  const rate = await getCurrencyRate({
+    from: "INR",
+    to: currency,
+  });
+
+
+
+  return hotels.map((hotel) => ({
+    ...hotel,
+    savedPrice: Number((hotel.savedPrice * rate).toFixed(2)),
+    savedTax: Number((hotel.savedTax * rate).toFixed(2)),
+    currency,
+   currencySymbol: getCurrencySymbol(currency)
+  }));
 };
-
-
 
 export const checkWishlistService = async (userId, hotelId) => {
   const exists = await Wishlist.exists({
