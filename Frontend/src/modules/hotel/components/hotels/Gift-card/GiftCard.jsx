@@ -55,7 +55,7 @@ export default function GiftCard({ card }) {
   const endDate = new Date(card.validity?.endDate).toLocaleDateString("en-IN");
 
   return (
-    <div className="group overflow-hidden rounded-2xl border border-[#dfeaf2] bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+    <div className="group overflow-hidden rounded-xl border border-[#dfeaf2] bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
       {/* Image */}
       <div className="relative h-[180px] overflow-hidden">
         <Image
@@ -128,11 +128,10 @@ export default function GiftCard({ card }) {
         {/* Button */}
         <button
           disabled={card.comingSoon}
-          className={`font-roboto h-[48px] w-full rounded-xl text-[15px] font-medium text-white! transition-all duration-300 ${
-            card.comingSoon
+          className={`font-roboto h-[48px] w-full rounded-xl text-[15px] font-medium text-white! transition-all duration-300 ${card.comingSoon
               ? "cursor-not-allowed bg-gray-400"
               : "bg-gradient-to-r from-[#6BC4F1] to-[#006D7D] hover:shadow-lg hover:brightness-110"
-          }`}
+            }`}
         >
           {card.comingSoon ? "Coming Soon" : "Claim Offer"}
         </button>
