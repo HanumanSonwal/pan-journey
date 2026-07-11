@@ -15,6 +15,7 @@ import SortBar from "../components/SortBar";
 import DynamicSeoFallback from "../seo/DynamicSeoFallback";
 import HotelsSeoSection from "../seo/HotelsSeoSection";
 import { useHotelSearchStore } from "../store/serchData.store";
+import { scrollToHotelList } from "../utils/scrollToHotelList";
 import HotelMobile from "./HotelMobile";
 
 const defaultFilters = {
@@ -54,6 +55,18 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
   const [mapOpen, setMapOpen] = useState(false);
   const [hotelsForMap, setHotelsForMap] = useState([]);
   const [sidebarZ0, setSidebarZ0] = useState(false);
+
+  const handleFilterChange = useCallback((updater) => {
+    setFilters(updater);
+
+    scrollToHotelList();
+  }, []);
+
+  const handleSortChange = useCallback((value) => {
+    setSort(value);
+
+    scrollToHotelList();
+  }, []);
 
   useEffect(() => {
     setMounted(true);
@@ -166,7 +179,9 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
 
   const clearAll = useCallback(() => {
     setFilters(defaultFilters);
+    scrollToHotelList();
   }, []);
+
   const activeFilters = useMemo(() => {
     return Object.entries(filters);
   }, [filters]);
@@ -205,7 +220,7 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
               >
                 <SidebarFilters
                   filters={filters}
-                  setFilters={setFilters}
+                  setFilters={handleFilterChange}
                   onMapClick={() => {
                     setMapOpen(true);
                   }}
@@ -220,7 +235,7 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
                     sidebarZ0 ? "!-z-10" : "z-20"
                   } bg-[#edf7ff]`}
                 >
-                  <SortBar sort={sort} setSort={setSort} />
+                  <SortBar sort={sort} setSort={handleSortChange} />
                 </div>
 
                 {/* ACTIVE FILTERS */}
@@ -372,7 +387,7 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
           <div className="hidden overflow-y-auto border-l bg-white md:block md:w-[280px] lg:w-[340px]">
             <SidebarFilters
               filters={filters}
-              setFilters={setFilters}
+              setFilters={handleFilterChange}
               hideMapSection
             />
           </div>

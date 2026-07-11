@@ -2,6 +2,7 @@
 
 import SectionHeading from "@/components/common/SectionHeading";
 import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
+import { buildSearchData } from "@/modules/hotel/utils/buildSearchData";
 import {
   destinations,
   tabs,
@@ -10,85 +11,87 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import ButtonTab from "./vacation_sections/ButtonTab";
+import { navigateToHotels } from "@/modules/hotel/utils/hotelNavigation";
 export default function DestinationsSection() {
   const [activeTab, setActiveTab] = useState("All Destinations");
 
   const activeDestinations =
     destinations[activeTab] || destinations["All Destinations"];
 
-  return (<section className="!mt-[-30px] sm:!mt-[-30px] md:!mt-[-30px] lg:!mt-[-70px] xl:!mt-[-90px] 2xl:!mt-[-50px] overflow-hidden bg-[#EDF7FF] px-3 !px-0 sm:!px-0 md:!px-2 lg:!px-3 xl:!px-4 2xl:!px-0 py-0 sm:py-0 md:py-24 text-black">
-    <div className="mx-auto w-full  lg:w-[88.87%] lg:!mt-[-170px]  xl:!mt-[10px]">
-      {/* Heading */}
-      <SectionHeading
-        title="Popular Destinations"
-        description="We’re committed to offering more than just products we provide exceptional experiences."
-      />
+  return (
+    <section className="!mt-[-30px] overflow-hidden bg-[#EDF7FF] !px-0 px-3 py-0 text-black sm:!mt-[-30px] sm:!px-0 sm:py-0 md:!mt-[-30px] md:!px-2 md:py-24 lg:!mt-[-70px] lg:!px-3 xl:!mt-[-90px] xl:!px-4 2xl:!mt-[-50px] 2xl:!px-0">
+      <div className="mx-auto w-full lg:!mt-[-170px] lg:w-[88.87%] xl:!mt-[10px]">
+        {/* Heading */}
+        <SectionHeading
+          title="Popular Destinations"
+          description="We’re committed to offering more than just products we provide exceptional experiences."
+        />
 
-      {/* Tabs */}
-      <div className="mt-5 flex justify-center">
-        <div className="scrollbar-hide flex max-w-full items-center gap-4 overflow-x-auto pb-2 whitespace-nowrap sm:gap-6 lg:gap-8">
-          <ButtonTab
-            tabs={tabs.map((tab) => ({
-              key: tab,
-              label: tab,
-            }))}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-          />
+        {/* Tabs */}
+        <div className="mt-5 flex justify-center">
+          <div className="scrollbar-hide flex max-w-full items-center gap-4 overflow-x-auto pb-2 whitespace-nowrap sm:gap-6 lg:gap-8">
+            <ButtonTab
+              tabs={tabs.map((tab) => ({
+                key: tab,
+                label: tab,
+              }))}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+            />
+          </div>
         </div>
-      </div>
 
-      {/* ================= MOBILE ================= */}
-      <div className="mt-4 md:hidden">
-        <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-2">
-          {activeDestinations.map((item) => (
-            <div key={item.id} className="w-[230px] flex-shrink-0">
-              <DestinationCard item={item} />
+        {/* ================= MOBILE ================= */}
+        <div className="mt-4 md:hidden">
+          <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-2">
+            {activeDestinations.map((item) => (
+              <div key={item.id} className="w-[230px] flex-shrink-0">
+                <DestinationCard item={item} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ================= DESKTOP ================= */}
+        <div className="hidden md:block">
+          {/* First Row */}
+          {activeDestinations.length >= 2 && (
+            <div className="mt-16 grid grid-cols-2 gap-5">
+              {activeDestinations.slice(0, 2).map((item) => (
+                <DestinationCard key={item.id} item={item} />
+              ))}
             </div>
-          ))}
+          )}
+
+          {/* Second Row */}
+          {activeDestinations.length > 2 && (
+            <div className="mt-5 grid grid-cols-3 gap-5">
+              {activeDestinations.slice(2, 5).map((item) => (
+                <DestinationCard key={item.id} item={item} />
+              ))}
+            </div>
+          )}
+
+          {/* Third Row */}
+          {activeDestinations.length > 5 && (
+            <div className="mt-5 grid grid-cols-2 gap-5">
+              {activeDestinations.slice(5, 7).map((item) => (
+                <DestinationCard key={item.id} item={item} />
+              ))}
+            </div>
+          )}
+
+          {/* Fourth Row */}
+          {activeDestinations.length > 7 && (
+            <div className="mt-5 grid grid-cols-3 gap-5">
+              {activeDestinations.slice(7, 10).map((item) => (
+                <DestinationCard key={item.id} item={item} />
+              ))}
+            </div>
+          )}
         </div>
       </div>
-
-      {/* ================= DESKTOP ================= */}
-      <div className="hidden md:block">
-        {/* First Row */}
-        {activeDestinations.length >= 2 && (
-          <div className="mt-16 grid grid-cols-2 gap-5">
-            {activeDestinations.slice(0, 2).map((item) => (
-              <DestinationCard key={item.id} item={item} />
-            ))}
-          </div>
-        )}
-
-        {/* Second Row */}
-        {activeDestinations.length > 2 && (
-          <div className="mt-5 grid grid-cols-3 gap-5">
-            {activeDestinations.slice(2, 5).map((item) => (
-              <DestinationCard key={item.id} item={item} />
-            ))}
-          </div>
-        )}
-
-        {/* Third Row */}
-        {activeDestinations.length > 5 && (
-          <div className="mt-5 grid grid-cols-2 gap-5">
-            {activeDestinations.slice(5, 7).map((item) => (
-              <DestinationCard key={item.id} item={item} />
-            ))}
-          </div>
-        )}
-
-        {/* Fourth Row */}
-        {activeDestinations.length > 7 && (
-          <div className="mt-5 grid grid-cols-3 gap-5">
-            {activeDestinations.slice(7, 10).map((item) => (
-              <DestinationCard key={item.id} item={item} />
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  </section>
+    </section>
   );
 }
 /* ================= Destination Card ================= */
@@ -96,29 +99,15 @@ export default function DestinationsSection() {
 function DestinationCard({ item }) {
   const router = useRouter();
   const { draftSearchData } = useHotelSearchStore();
+
   const handleSearch = () => {
-    const citySlug = item?.title
-      ?.trim()
-      ?.toLowerCase()
-      ?.replace(/[^a-z0-9\s-]/g, "")
-      ?.replace(/\s+/g, "-");
-
-    const query = new URLSearchParams({
-      city: citySlug || "",
-      cityName: item?.title || "",
-      cityId: String(item?.id || ""),
-
-      checkIn: draftSearchData?.checkIn || "",
-      checkOut: draftSearchData?.checkOut || "",
-
-      rooms: String(draftSearchData?.rooms || 1),
-      adults: String(draftSearchData?.adults || 2),
-      children: String(draftSearchData?.children || 0),
-
-      pets: draftSearchData?.pets ? "true" : "false",
+    const searchData = buildSearchData({
+      baseSearchData: draftSearchData,
+      city: item.title,
+      cityId: item.id,
     });
 
-    router.push(`/hotels?${query.toString()}`);
+    navigateToHotels(router, searchData);
   };
 
   return (
