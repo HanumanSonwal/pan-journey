@@ -196,9 +196,9 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
         <HotelMobile
           appliedSearchData={appliedSearchData}
           filters={filters}
-          setFilters={setFilters}
+          setFilters={handleFilterChange}
           sort={sort}
-          setSort={setSort}
+          setSort={handleSortChange}
           mapOpen={mapOpen}
           setMapOpen={setMapOpen}
           hotelsLoading={hotelsLoading}
