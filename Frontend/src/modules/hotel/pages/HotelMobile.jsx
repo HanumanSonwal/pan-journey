@@ -43,8 +43,8 @@ export default function HotelMobile({
       <SearchBar />
       {/* Controls */}
       <div className="min-h-screen bg-[#eef6fd]">
-        <div className="sticky top-[62px] z-40 bg-[#eef6fd] px-1 pr-2 pt-1 pb-1 !shadow-[0_12px_24px_rgba(0,0,0,0.29)]">
-          <div className=" grid grid-cols-3 gap-2 ml-2">
+        <div className="sticky top-[62px] z-40 bg-[#eef6fd] px-1 pt-1 pr-2 pb-1 !shadow-[0_12px_24px_rgba(0,0,0,0.29)]">
+          <div className="ml-2 grid grid-cols-3 gap-2">
             {/* SORT */}
             <div className="relative">
               <button
@@ -107,7 +107,7 @@ export default function HotelMobile({
         </Drawer>
 
         {/* HOTEL LIST */}
-        <div className="mt-3 px-2">
+        <div id="hotel-list-section" className="mt-3 px-2">
           <HotelList
             searchData={appliedSearchData}
             filters={filters}
@@ -118,6 +118,6 @@ export default function HotelMobile({
           />
         </div>
       </div>
-    </div >
+    </div>
   );
 }
