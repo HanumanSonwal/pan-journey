@@ -1,15 +1,27 @@
-export const buildSelectedHotel = ({ hotel, searchData }) => ({
-  hotelKey: hotel?.hotelKey || hotel?.HotelKey || hotel?.hotelkey || "",
+import { slugify } from "@/utils/slug/slugify";
 
-  searchKey: hotel?.searchKey || hotel?.SearchKey || "",
+export const buildSelectedHotel = ({ hotel = {}, searchData = {} }) => {
+  const hotelId = hotel?.id || hotel?.hotelId || hotel?.HotelId || "";
 
-  hotelMeta: {
-    hotelId: hotel?.hotelId || hotel?.HotelId || hotel?.id || "",
+  const hotelName = hotel?.name || hotel?.hotelName || hotel?.HotelName || "";
 
-    cityName: searchData?.cityData?.id || "",
+  return {
+    hotelKey: hotel?.hotelKey || hotel?.HotelKey || hotel?.hotelkey || "",
 
-    stateName: searchData?.cityData?.stateName || "",
+    searchKey: hotel?.searchKey || hotel?.SearchKey || "",
 
-    countryCode: searchData?.cityData?.countryCode || "",
-  },
-});
+    hotelMeta: {
+      hotelId,
+
+      hotelSlug: slugify(hotelName),
+
+      cityId: searchData?.cityData?.id || "",
+
+      cityName: searchData?.city || "",
+
+      stateName: searchData?.cityData?.stateName || "",
+
+      countryCode: searchData?.cityData?.countryCode || "",
+    },
+  };
+};
