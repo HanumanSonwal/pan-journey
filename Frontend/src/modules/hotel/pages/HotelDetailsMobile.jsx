@@ -1,5 +1,10 @@
 "use client";
-import { ArrowLeftOutlined, HeartFilled, HeartOutlined, ShareAltOutlined } from "@ant-design/icons";
+import {
+  ArrowLeftOutlined,
+  HeartFilled,
+  HeartOutlined,
+  ShareAltOutlined,
+} from "@ant-design/icons";
 import { Drawer } from "antd";
 import { useEffect, useState } from "react";
 
