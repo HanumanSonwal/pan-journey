@@ -12,7 +12,6 @@ import { useHotelDetails } from "@/modules/hotel/hooks/useHotelDetails";
 import { useSelectedHotelStore } from "@/modules/hotel/store/selectedHotel.store";
 import { useToggleWishlist } from "@/modules/wishlist/hooks/useToggleWishlist";
 import { useWishlistIds } from "@/modules/wishlist/hooks/useWishlistIds";
-import { slugify } from "@/utils/slug/slugify";
 import { HeartFilled } from "@ant-design/icons";
 import { message } from "antd";
 import { useSearchParams } from "next/navigation";
@@ -30,6 +29,9 @@ import RelatedHotels from "../sections/RelatedHotels";
 import DynamicHotelSeoFallback from "../seo/DynamicHotelSeoFallback";
 import { useHotelBookingStore } from "../store/booking.store";
 import { useHotelSearchStore } from "../store/serchData.store";
+import { buildHotelDetailsPayload } from "../utils/buildHotelDetailsPayload";
+import { buildWishlistPayload } from "../utils/buildWishlistPayload";
+import { shareHotel } from "../utils/shareHotel";
 import HotelDetailsMobile from "./HotelDetailsMobile";
 
 function HotelDetails({ initialPayload = null, cms = null }) {
@@ -51,59 +53,17 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   const countryCodeParam = searchParams.get("countryCode");
   const hotelSlugParam = searchParams.get("hotelSlug");
 
-  const formatSupplierDate = (date) => {
-    if (!date) return "";
-
-    const [year, month, day] = date.split("-");
-    return `${month}/${day}/${year}`;
-  };
-
-  console.log("appliedSearchData iiii details", appliedSearchData);
-
   const payload = useMemo(() => {
-    if (selectedHotel?.fromWishlist) {
-      return {
-        hotelId: selectedHotel?.hotelMeta?.hotelId || hid,
-        hotelMeta: {
-          cityId: selectedHotel?.hotelMeta?.cityId || cityIdParam,
-          stateName: selectedHotel?.hotelMeta?.stateName || stateNameParam,
-          countryCode:
-            selectedHotel?.hotelMeta?.countryCode || countryCodeParam,
-        },
-        searchContext: {
-          fullName: selectedHotel?.hotelMeta?.hotelSlug || hotelSlugParam || "",
-          CheckInDate: formatSupplierDate(appliedSearchData?.checkIn),
-          CheckOutDate: formatSupplierDate(appliedSearchData?.checkOut),
-          RoomCount: appliedSearchData?.rooms || 1,
-        },
-      };
-    }
-    if (initialPayload) {
-      return {
-        ...initialPayload,
-        hotelMeta: {
-          cityId: appliedSearchData?.cityData?.id,
-          stateName: appliedSearchData?.cityData?.stateName,
-          countryCode: appliedSearchData?.cityData?.countryCode,
-        },
-        searchContext: {
-          fullName: initialPayload?.searchContext?.fullName || "",
-          CheckInDate: formatSupplierDate(appliedSearchData?.checkIn),
-          CheckOutDate: formatSupplierDate(appliedSearchData?.checkOut),
-          RoomCount: appliedSearchData?.rooms,
-        },
-      };
-    }
-    return {
-      hotelId: selectedHotel?.hotelMeta?.hotelId,
-      hotelMeta: {
-        cityId: selectedHotel?.hotelMeta?.cityId,
-        stateName: selectedHotel?.hotelMeta?.stateName,
-        countryCode: selectedHotel?.hotelMeta?.countryCode,
-      },
-      hotelKey: selectedHotel?.hotelKey,
-      searchKey: selectedHotel?.searchKey,
-    };
+    return buildHotelDetailsPayload({
+      selectedHotel,
+      initialPayload,
+      appliedSearchData,
+      hid,
+      cityIdParam,
+      stateNameParam,
+      countryCodeParam,
+      hotelSlugParam,
+    });
   }, [
     selectedHotel,
     initialPayload,
@@ -114,8 +74,6 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     countryCodeParam,
     hotelSlugParam,
   ]);
-
-  console.log("payload in hotel detail", payload);
 
   const wishlistIds = useMemo(
     () => new Set(wishlistData || []),
@@ -209,35 +167,21 @@ function HotelDetails({ initialPayload = null, cms = null }) {
 
   const handleWishlist = () => {
     requireAuth(async () => {
+      console.log("payload", payload);
+      console.log("payload.hotelId", payload?.hotelId);
       try {
-        await mutateAsync({
-          hotelId: payload?.hotelId?.toString(),
-          hotelName: supplierData?.HotelName || "",
-          hotelSlug: slugify(supplierData?.HotelName || ""),
-          hotelImage:
-            supplierData?.HotelImage || supplierData?.HotelGallery?.[0] || "",
-          cityId: payload?.hotelMeta?.cityId || appliedSearchData?.cityData?.id,
-          cityName: appliedSearchData?.city || supplierData?.City || "",
-          stateName:
-            payload?.hotelMeta?.stateName ||
-            appliedSearchData?.cityData?.stateName ||
-            "",
-          countryCode:
-            payload?.hotelMeta?.countryCode ||
-            appliedSearchData?.cityData?.countryCode ||
-            "",
-          countryName: supplierData?.Country || "",
-          address: supplierData?.Address || "",
-          starRating: Number(supplierData?.StarRating || 0),
-          facilities: supplierData?.Amenities
-            ? supplierData.Amenities.split(",")
-                .map((item) => item.trim())
-                .filter(Boolean)
-            : [],
-          freeCancellation: false,
-          savedPrice: basePrice,
-          savedTax: platformFeeAndTax,
+        const wishlistPayload = buildWishlistPayload({
+          hotelId: payload?.hotelId,
+          supplierData,
+          searchData: appliedSearchData,
+          hotelMeta: payload?.hotelMeta,
+          pricing: {
+            basePrice,
+            platformFeeAndTax,
+          },
         });
+        console.log("Wishlist Payload", wishlistPayload);
+        await mutateAsync(wishlistPayload);
 
         message.success(
           isWishlisted ? "Removed from wishlist" : "Added to wishlist",
@@ -245,6 +189,14 @@ function HotelDetails({ initialPayload = null, cms = null }) {
       } catch {
         message.error("Wishlist update failed");
       }
+    });
+  };
+
+  const handleShare = async () => {
+    await shareHotel({
+      hotelName: supplierData?.HotelName,
+      cityName: appliedSearchData?.city,
+      hotelId: payload?.hotelId,
     });
   };
 
@@ -264,6 +216,9 @@ function HotelDetails({ initialPayload = null, cms = null }) {
         isFetching={isFetching}
         refetch={refetch}
         payload={payload}
+        onWishlist={handleWishlist}
+        onShare={handleShare}
+        isWishlisted={isWishlisted}
       />
     );
   }
@@ -321,7 +276,10 @@ function HotelDetails({ initialPayload = null, cms = null }) {
                       </span>
                     </button>
 
-                    <button className="flex h-9 w-9 items-center justify-center rounded-full border bg-white sm:h-11 sm:w-11">
+                    <button
+                      onClick={handleShare}
+                      className="flex h-9 w-9 items-center justify-center rounded-full border bg-white transition-all duration-200 hover:shadow-md active:scale-95 sm:h-11 sm:w-11"
+                    >
                       <ShareAltOutlined className="text-[16px] sm:text-[19px]" />
                     </button>
                   </div>

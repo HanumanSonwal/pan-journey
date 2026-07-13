@@ -7,7 +7,6 @@ import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
 import ImageGallery from "@/modules/profile/components/bookings/ImageGallery";
 import HotelBookingComingSoonModal from "@/modules/shared/home/components/HotelBookingComingSoonModal";
 import { useToggleWishlist } from "@/modules/wishlist/hooks/useToggleWishlist";
-import { slugify } from "@/utils/slug/slugify";
 import {
   EnvironmentOutlined,
   HeartFilled,
@@ -19,6 +18,9 @@ import { message } from "antd";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { memo, useMemo, useState } from "react";
+import { buildWishlistPayload } from "../utils/buildWishlistPayload";
+import { navigateToHotelDetails } from "../utils/navigateToHotelDetails";
+import { shareHotel } from "../utils/shareHotel";
 import MobileHotelCard from "./MobileHotelCard";
 
 function HotelCard({ hotel, wishlistIds }) {
@@ -91,75 +93,46 @@ function HotelCard({ hotel, wishlistIds }) {
   }, [hotel.facilities]);
 
   const handleNavigate = () => {
-    console.log("SELECTED HOTEL DATA", {
-      hotelKey: hotel?.hotelKey,
-      searchKey: hotel?.searchKey,
-      hotelMeta: {
-        hotelId: hotel?.id,
-        cityName: appliedSearchData?.cityData?.id,
-        stateName: appliedSearchData?.cityData?.stateName,
-        countryCode: appliedSearchData?.cityData?.countryCode,
-      },
+    navigateToHotelDetails({
+      router,
+      hotel,
+      searchData: appliedSearchData,
+      setSelectedHotel,
     });
-    const citySlug = slugify(
-      appliedSearchData?.city?.split(",")[0] ||
-        hotel?.cityName ||
-        hotel?.City ||
-        "hotel",
-    );
-
-    const hotelSlug = slugify(
-      hotel?.name || hotel?.hotelName || hotel?.HotelName || "hotel",
-    );
-    const hotelId = hotel?.hotelId || hotel?.HotelId || hotel?.id;
-    setSelectedHotel({
-      hotelKey: hotel.hotelKey || hotel.HotelKey || hotel.hotelkey || "",
-      searchKey: hotel?.searchKey || hotel?.SearchKey,
-      hotelMeta: {
-        hotelId: hotel?.hotelId || hotel?.HotelId || hotel?.id,
-        cityName: appliedSearchData?.cityData?.id,
-        stateName: appliedSearchData?.cityData?.stateName,
-        countryCode: appliedSearchData?.cityData?.countryCode,
-      },
-    });
-    router.push(`/hotel-details/${citySlug}/${hotelSlug}?hid=${hotelId}`);
   };
+
   const visibleFacilities = useMemo(() => {
     return showAllFacilities ? facilities : facilities.slice(0, 4);
   }, [showAllFacilities, facilities]);
 
   const handleWishlist = (e) => {
     e.stopPropagation();
+
     requireAuth(async () => {
-      const payload = {
-        hotelId: hotel.id?.toString(),
-        hotelName: hotel.name,
-        hotelSlug: slugify(hotel.name || hotel.hotelName),
-        hotelImage: hotel.image,
-        address: hotel.address || "",
-        starRating: Number(hotel.starRating || 0),
-        facilities: hotel.facilities || [],
-        freeCancellation: hotel.freeCancellation || false,
-        savedPrice: Number(hotel.price) || 0,
-        savedTax: Number(hotel.tax) || 0,
-        cityId: appliedSearchData?.cityData?.id,
-        cityName: appliedSearchData?.city || "",
-        stateName: appliedSearchData?.cityData?.stateName || "",
-        countryCode: appliedSearchData?.cityData?.countryCode || "",
-        countryName: appliedSearchData?.cityData?.countryCode || "",
-        searchType: appliedSearchData?.cityData?.type || "",
-      };
       try {
+        const payload = buildWishlistPayload({
+          hotel,
+          searchData: appliedSearchData,
+        });
+
         await mutateAsync(payload);
+
         message.success(
           isWishlisted ? "Removed from wishlist" : "Added to wishlist",
         );
-      } catch (error) {
-        console.log("WISHLIST ERROR", error?.response?.data);
-        message.error(
-          error?.response?.data?.message || "Wishlist update failed",
-        );
+      } catch {
+        message.error("Wishlist update failed");
       }
+    });
+  };
+
+  const handleShare = async (e) => {
+    e.stopPropagation();
+
+    await shareHotel({
+      hotelName: hotel.name,
+      cityName: appliedSearchData?.city,
+      hotelId: hotel.id,
     });
   };
 
@@ -297,7 +270,9 @@ function HotelCard({ hotel, wishlistIds }) {
               <button
                 disabled={isPending}
                 onClick={handleWishlist}
-                className={`flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-90`}
+                className={`flex cursor-pointer items-center justify-center transition-all duration-300 hover:scale-110 active:scale-90 ${
+                  isWishlisted ? "text-red-500" : ""
+                }`}
               >
                 <span
                   className={`inline-block transition-all duration-300 ${isWishlisted ? "scale-125" : "scale-100"} `}
@@ -310,7 +285,10 @@ function HotelCard({ hotel, wishlistIds }) {
                 </span>
               </button>
 
-              <button className="transition-all hover:text-[#0077b6]!">
+              <button
+                onClick={handleShare}
+                className="cursor-pointer transition-all hover:text-[#0077b6]!"
+              >
                 <ShareAltOutlined />
               </button>
             </div>

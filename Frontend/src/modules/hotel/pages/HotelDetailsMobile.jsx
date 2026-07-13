@@ -1,15 +1,17 @@
 "use client";
+<<<<<<< HEAD
 import { ArrowLeftOutlined, ShareAltOutlined } from "@ant-design/icons";
 import { Drawer, message } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useMemo, useState } from "react";
+=======
+import { ArrowLeftOutlined, HeartFilled, HeartOutlined, ShareAltOutlined } from "@ant-design/icons";
+import { Drawer } from "antd";
+import { useEffect, useState } from "react";
+>>>>>>> d79c0e3d1dad15e7ec7ba766e530518c7e7ca8a1
 
 import HotelDetailsSkeleton from "@/components/common/loder/HotelDetailsSkeleton";
-import { useAuthGuard } from "@/modules/auth/hooks/useAuthGuard";
 import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
-import { useToggleWishlist } from "@/modules/wishlist/hooks/useToggleWishlist";
-import { useWishlistIds } from "@/modules/wishlist/hooks/useWishlistIds";
-import { slugify } from "@/utils/slug/slugify";
 
 import SessionExpiredModal from "../components/hotels/viewhotles/SessionExpiredModal";
 import ViewHotelInfo from "../components/hotels/viewhotles/ViewHotelInfo";
@@ -35,6 +37,10 @@ function HotelDetailsMobile({
   isFetching,
   refetch,
   payload,
+
+  isWishlisted,
+  onWishlist,
+  onShare,
 }) {
   const { appliedSearchData } = useHotelSearchStore();
   const { setBookingData } = useHotelBookingStore();
@@ -44,17 +50,6 @@ function HotelDetailsMobile({
   const [sessionExpired] = useState(false);
   const [reloadingHotels] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-
-  const { requireAuth } = useAuthGuard();
-  const { mutateAsync } = useToggleWishlist();
-  const { data: wishlistData } = useWishlistIds();
-
-  const wishlistIds = useMemo(
-    () => new Set(wishlistData || []),
-    [wishlistData],
-  );
-
-  const isWishlisted = wishlistIds.has(payload?.hotelId?.toString());
 
   const showSkeleton = isLoading || isFetching;
 
@@ -112,6 +107,7 @@ function HotelDetailsMobile({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+<<<<<<< HEAD
   const handleWishlist = () => {
     requireAuth(async () => {
       try {
@@ -153,6 +149,8 @@ function HotelDetailsMobile({
     });
   };
 
+=======
+>>>>>>> d79c0e3d1dad15e7ec7ba766e530518c7e7ca8a1
   return (
     <div className="min-h-screen !bg-[#eef3f8]">
       <div
@@ -167,7 +165,23 @@ function HotelDetailsMobile({
         </button>
 
         <div className="flex items-center gap-2">
-          <button className="flex h-10 w-10 items-center justify-center">
+          {/* Wishlist */}
+          <button
+            onClick={onWishlist}
+            className="flex h-10 w-10 items-center justify-center rounded-full transition hover:bg-gray-100 active:scale-95"
+          >
+            {isWishlisted ? (
+              <HeartFilled className="text-lg text-red-500!" />
+            ) : (
+              <HeartOutlined className="text-lg" />
+            )}
+          </button>
+
+          {/* Share */}
+          <button
+            onClick={onShare}
+            className="flex h-10 w-10 items-center justify-center rounded-full transition hover:bg-gray-100 active:scale-95"
+          >
             <ShareAltOutlined className="text-lg" />
           </button>
         </div>
@@ -186,7 +200,7 @@ function HotelDetailsMobile({
                 images={hotelImages}
                 onOpen={() => setIsGalleryOpen(true)}
                 onBack={() => window.history.back()}
-                onWishlist={handleWishlist}
+                onWishlist={onWishlist}
                 isWishlisted={isWishlisted}
               />
             </div>
@@ -360,7 +374,7 @@ function HotelDetailsMobile({
           />
           {/* Sticky Bottom */}
 
-          <div className="!bg-offer-gradient sticky bottom-0 z-50 py-3 px-2 shadow-xl lg:hidden">
+          <div className="!bg-offer-gradient sticky bottom-0 z-50 px-2 py-3 shadow-xl lg:hidden">
             <div className="flex items-center justify-between">
               <div className="flex flex-col">
                 <h2 className="mb-1! text-2xl leading-none font-bold text-white">
