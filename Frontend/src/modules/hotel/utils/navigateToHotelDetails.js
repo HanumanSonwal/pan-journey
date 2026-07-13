@@ -9,18 +9,23 @@ export const navigateToHotelDetails = ({
 }) => {
   const citySlug = slugify(
     searchData?.city?.split(",")[0] ||
-      hotel?.cityName ||
+      hotel?.cityName?.split(",")[0] ||
       hotel?.City ||
       "hotel",
   );
 
-  const hotelSlug = slugify(
-    hotel?.name || hotel?.hotelName || hotel?.HotelName || "hotel",
-  );
+  const hotelSlug =
+    hotel?.hotelSlug ||
+    slugify(hotel?.name || hotel?.hotelName || hotel?.HotelName || "hotel");
 
-  const hotelId = hotel?.hotelId || hotel?.HotelId || hotel?.id;
+  const hotelId = hotel?.id || hotel?.hotelId || hotel?.HotelId || "";
 
-  setSelectedHotel(
+  if (!hotelId) {
+    console.error("Hotel id not found");
+    return;
+  }
+
+  setSelectedHotel?.(
     buildSelectedHotel({
       hotel,
       searchData,

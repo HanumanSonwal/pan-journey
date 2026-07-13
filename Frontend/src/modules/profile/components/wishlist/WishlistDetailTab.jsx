@@ -2,9 +2,9 @@
 
 import { useSelectedHotelStore } from "@/modules/hotel/store/selectedHotel.store";
 import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
+import { navigateToHotelDetails } from "@/modules/hotel/utils/navigateToHotelDetails";
 import { useToggleWishlist } from "@/modules/wishlist/hooks/useToggleWishlist";
 import { useWishlistCity } from "@/modules/wishlist/hooks/useWishlistCity";
-import { slugify } from "@/utils/slug/slugify";
 import {
   ArrowLeftOutlined,
   CheckCircleOutlined,
@@ -24,7 +24,9 @@ export default function WishlistDetailTab() {
   const cityId = searchParams.get("cityId");
   const { data, isLoading } = useWishlistCity(cityId);
   const hotels = data?.data || [];
-  const { setDraftSearchData } = useHotelSearchStore();
+  const { appliedSearchData, setDraftSearchData } = useHotelSearchStore();
+
+  console.log("hotels in wishlist", hotels);
 
   useEffect(() => {
     if (!isLoading && hotels.length === 0) {
@@ -59,23 +61,17 @@ export default function WishlistDetailTab() {
       },
     });
 
-    setDraftSearchData({
-      city: hotel.cityName || "",
-      cityData: {
-        id: hotel.cityId || "",
-        stateName: hotel.stateName || "",
-        countryCode: hotel.countryCode || "",
-        name: hotel.cityName || "",
+    navigateToHotelDetails({
+      router,
+      hotel: {
+        id: hotel.hotelId,
+        name: hotel.hotelName,
+        cityName: hotel.cityName,
+        hotelSlug: hotel.hotelSlug,
       },
+      searchData: appliedSearchData,
+      setSelectedHotel: null, // already above set kar diya
     });
-
-    router.push(
-      `/hotel-details/${slugify(
-        hotel.cityName?.split(",")[0] || "",
-      )}/${hotel.hotelSlug}?hid=${hotel.hotelId}&cityId=${hotel.cityId}&stateName=${encodeURIComponent(
-        hotel.stateName || "",
-      )}&countryCode=${hotel.countryCode || ""}`,
-    );
   };
 
   if (isLoading) {
@@ -214,11 +210,11 @@ export default function WishlistDetailTab() {
                 <div className="flex min-w-[180px] flex-col items-end justify-between">
                   <div className="text-right">
                     <p className="font-jost mb-0! text-[22px] font-bold text-gray-900">
-                      ₹ {hotel.savedPrice}
+                      {hotel.currencySymbol} {hotel.savedPrice}
                     </p>
 
                     <p className="font-jost text-[12px] text-gray-900">
-                      + ₹ {hotel.savedTax} taxes
+                      + {hotel.currencySymbol} {hotel.savedTax} taxes
                     </p>
                   </div>
                   <div className="flex items-end gap-3">

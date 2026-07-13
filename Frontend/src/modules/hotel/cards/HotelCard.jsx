@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { memo, useMemo, useState } from "react";
 import { buildWishlistPayload } from "../utils/buildWishlistPayload";
 import { navigateToHotelDetails } from "../utils/navigateToHotelDetails";
+import { shareHotel } from "../utils/shareHotel";
 import MobileHotelCard from "./MobileHotelCard";
 
 function HotelCard({ hotel, wishlistIds }) {
@@ -122,6 +123,16 @@ function HotelCard({ hotel, wishlistIds }) {
       } catch {
         message.error("Wishlist update failed");
       }
+    });
+  };
+
+  const handleShare = async (e) => {
+    e.stopPropagation();
+
+    await shareHotel({
+      hotelName: hotel.name,
+      cityName: appliedSearchData?.city,
+      hotelId: hotel.id,
     });
   };
 
@@ -259,7 +270,9 @@ function HotelCard({ hotel, wishlistIds }) {
               <button
                 disabled={isPending}
                 onClick={handleWishlist}
-                className={`flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-90`}
+                className={`flex cursor-pointer items-center justify-center transition-all duration-300 hover:scale-110 active:scale-90 ${
+                  isWishlisted ? "text-red-500" : ""
+                }`}
               >
                 <span
                   className={`inline-block transition-all duration-300 ${isWishlisted ? "scale-125" : "scale-100"} `}
@@ -272,7 +285,10 @@ function HotelCard({ hotel, wishlistIds }) {
                 </span>
               </button>
 
-              <button className="transition-all hover:text-[#0077b6]!">
+              <button
+                onClick={handleShare}
+                className="cursor-pointer transition-all hover:text-[#0077b6]!"
+              >
                 <ShareAltOutlined />
               </button>
             </div>
