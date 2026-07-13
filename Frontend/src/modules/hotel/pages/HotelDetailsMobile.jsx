@@ -1,17 +1,11 @@
 "use client";
-<<<<<<< HEAD
-import { ArrowLeftOutlined, ShareAltOutlined } from "@ant-design/icons";
-import { Drawer, message } from "antd";
-import dayjs from "dayjs";
-import { useEffect, useMemo, useState } from "react";
-=======
 import { ArrowLeftOutlined, HeartFilled, HeartOutlined, ShareAltOutlined } from "@ant-design/icons";
 import { Drawer } from "antd";
 import { useEffect, useState } from "react";
->>>>>>> d79c0e3d1dad15e7ec7ba766e530518c7e7ca8a1
 
 import HotelDetailsSkeleton from "@/components/common/loder/HotelDetailsSkeleton";
 import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
+import dayjs from "dayjs";
 
 import SessionExpiredModal from "../components/hotels/viewhotles/SessionExpiredModal";
 import ViewHotelInfo from "../components/hotels/viewhotles/ViewHotelInfo";
@@ -107,50 +101,6 @@ function HotelDetailsMobile({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-<<<<<<< HEAD
-  const handleWishlist = () => {
-    requireAuth(async () => {
-      try {
-        await mutateAsync({
-          hotelId: payload?.hotelId?.toString(),
-          hotelName: supplierData?.HotelName || "",
-          hotelSlug: slugify(supplierData?.HotelName || ""),
-          hotelImage:
-            supplierData?.HotelImage || supplierData?.HotelGallery?.[0] || "",
-          cityId: payload?.hotelMeta?.cityId || appliedSearchData?.cityData?.id,
-          cityName: appliedSearchData?.city || supplierData?.City || "",
-          stateName:
-            payload?.hotelMeta?.stateName ||
-            appliedSearchData?.cityData?.stateName ||
-            "",
-          countryCode:
-            payload?.hotelMeta?.countryCode ||
-            appliedSearchData?.cityData?.countryCode ||
-            "",
-          countryName: supplierData?.Country || "",
-          address: supplierData?.Address || "",
-          starRating: Number(supplierData?.StarRating || 0),
-          facilities: supplierData?.Amenities
-            ? supplierData.Amenities.split(",")
-              .map((i) => i.trim())
-              .filter(Boolean)
-            : [],
-          freeCancellation: false,
-          savedPrice: Number(FirstRoomPrice?.TotalAmount || 0),
-          savedTax: Number(FirstRoomPrice?.Tax || 0),
-        });
-
-        message.success(
-          isWishlisted ? "Removed from wishlist" : "Added to wishlist",
-        );
-      } catch {
-        message.error("Wishlist update failed");
-      }
-    });
-  };
-
-=======
->>>>>>> d79c0e3d1dad15e7ec7ba766e530518c7e7ca8a1
   return (
     <div className="min-h-screen !bg-[#eef3f8]">
       <div
@@ -267,8 +217,8 @@ function HotelDetailsMobile({
                             <div>
                               <p className="font-normal !text-gray-500">
                                 {appliedSearchData?.checkIn
-                                  ? dayjs(appliedSearchData.checkIn).format("DD MMM YYYY")
-                                  : "--"}
+  ? dayjs(appliedSearchData.checkIn).format("DD MMM YYYY")
+  : "--"}
                               </p>
                             </div>
 
