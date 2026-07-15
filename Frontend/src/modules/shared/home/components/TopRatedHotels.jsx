@@ -6,11 +6,15 @@ import { Card, Rate, Spin } from "antd";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
+import { buildSearchData } from "@/modules/hotel/utils/buildSearchData";
+import { navigateToHotels } from "@/modules/hotel/utils/hotelNavigation";
 import { useDestinations } from "@/modules/shared/home/hooks/useDestinations";
 import { useRouter } from "next/navigation";
 
 export default function TopRatedHotels() {
   const { data = [], isLoading } = useDestinations("Toprated");
+
+  console.log("top rated", data);
   const { draftSearchData } = useHotelSearchStore();
   const router = useRouter();
   const [perRow, setPerRow] = useState(4);
@@ -108,27 +112,13 @@ export default function TopRatedHotels() {
   };
 
   const handleSearch = (hotel) => {
-    const citySlug =
-      hotel?.name
-        ?.toLowerCase()
-        ?.replace(/[^a-z0-9\s-]/g, "")
-        ?.replace(/\s+/g, "-") || "";
-    const query = new URLSearchParams({
-      city: citySlug,
-      cityName: hotel?.name || "",
-      cityId: hotel?.id || "",
-
-      checkIn: draftSearchData?.checkIn || "",
-      checkOut: draftSearchData?.checkOut || "",
-
-      rooms: String(draftSearchData?.rooms || 1),
-      adults: String(draftSearchData?.adults || 2),
-      children: String(draftSearchData?.children || 0),
-
-      pets: draftSearchData?.pets ? "true" : "false",
+    const searchData = buildSearchData({
+      baseSearchData: draftSearchData,
+      city: hotel.name,
+      cityId: hotel.id,
     });
 
-    router.push(`/hotels?${query.toString()}`);
+    navigateToHotels(router, searchData);
   };
 
   // LOADING

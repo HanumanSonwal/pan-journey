@@ -1,12 +1,13 @@
 "use client";
 
-import { slugify } from "@/utils/slug/slugify";
 import { Spin } from "antd";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import RelatedHotelCard from "../cards/RelatedHotelCard";
 import { useInfiniteHotels } from "../hooks/useInfiniteHotels";
 import { useSelectedHotelStore } from "../store/selectedHotel.store";
+import { buildHotelPayload } from "../utils/buildHotelPayload";
+import { navigateToHotelDetails } from "../utils/navigateToHotelDetails";
 
 export default function RelatedHotels({
   cityId,
@@ -16,27 +17,13 @@ export default function RelatedHotels({
 }) {
   const router = useRouter();
   const { setSelectedHotel } = useSelectedHotelStore();
+
   const params = useMemo(() => {
-    if (!searchData?.cityData?.id) return null;
-    return {
-      HotelSeedValue: "",
-      CheckInDate: searchData?.checkIn,
-      CheckOutDate: searchData?.checkOut,
-      HotelRoomDetail: [
-        {
-          AdultCount: searchData?.adults || 1,
-          ChildCount: searchData?.children || 0,
-          Child1Age: searchData?.childAges?.[0] || 0,
-          Child2Age: searchData?.childAges?.[1] || 0,
-        },
-      ],
-      fullName: searchData?.city || "",
-      id: searchData?.cityData?.id || "",
-      stateName: searchData?.cityData?.stateName || "",
-      countryCode: searchData?.cityData?.countryCode || "",
-      RoomCount: searchData?.rooms || 1,
-    };
+    return buildHotelPayload({
+      searchData,
+    });
   }, [searchData]);
+
   const { data, isLoading } = useInfiniteHotels(params);
   const hotels = useMemo(() => {
     const rawHotels = data?.pages?.[0]?.data?.hotels || [];
@@ -66,24 +53,12 @@ export default function RelatedHotels({
   }
 
   const handleHotelClick = (hotel) => {
-    const hotelSlug = slugify(hotel?.hotelName);
-
-    setSelectedHotel({
-      hotelMeta: {
-        hotelId: hotel.hotelId,
-        cityId: searchData?.cityData?.id,
-        stateName: searchData?.cityData?.stateName,
-        countryCode: searchData?.cityData?.countryCode,
-        cityName: searchData?.city,
-        hotelSlug,
-      },
-      hotelKey: hotel?.hotelkey,
+    navigateToHotelDetails({
+      router,
+      hotel,
+      searchData,
+      setSelectedHotel,
     });
-    router.push(
-      `/hotel-details/${slugify(
-        cityName || "",
-      )}/${hotelSlug}?hid=${hotel.hotelId}&cityId=${searchData?.cityData?.id}`,
-    );
   };
   return (
     <div className="mt-8">

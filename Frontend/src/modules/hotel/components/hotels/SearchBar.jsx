@@ -8,10 +8,11 @@ import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import GuestsField from "@/modules/shared/home/components/GuestsField/GuestsField";
 import { EditOutlined } from "@ant-design/icons";
 import { Modal } from "antd";
 import HotelSearchForm from "./HotelSearchForm";
-import GuestsField from "@/modules/shared/home/components/GuestsField/GuestsField";
+import { navigateToHotels } from "../../utils/hotelNavigation";
 
 export default function SearchBar({ onSearch }) {
   const router = useRouter();
@@ -26,14 +27,6 @@ export default function SearchBar({ onSearch }) {
   const [guestOpen, setGuestOpen] = useState(false);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
 
-  const citySlug =
-    draftSearchData?.city
-      ?.split(",")[0]
-      ?.trim()
-      ?.toLowerCase()
-      ?.replace(/[^a-z0-9\s-]/g, "")
-      ?.replace(/\s+/g, "-") || "";
-
   const handleSearch = () => {
     if (!draftSearchData?.city?.trim()) {
       setDestinationError(true);
@@ -41,26 +34,8 @@ export default function SearchBar({ onSearch }) {
     }
     setDestinationError(false);
     onSearch?.();
-
-    const query = new URLSearchParams({
-      city: citySlug,
-      cityName: draftSearchData?.city || "",
-
-      cityId: draftSearchData?.cityData?.id || "",
-      stateName: draftSearchData?.cityData?.stateName || "",
-      countryCode: draftSearchData?.cityData?.countryCode || "",
-
-      checkIn: draftSearchData?.checkIn || "",
-      checkOut: draftSearchData?.checkOut || "",
-
-      rooms: String(draftSearchData?.rooms || 1),
-      adults: String(draftSearchData?.adults || 2),
-      children: String(draftSearchData?.children || 0),
-
-      pets: draftSearchData?.pets ? "true" : "false",
-    });
     applySearch();
-    router.push(`/hotels?${query.toString()}`);
+    navigateToHotels(router, draftSearchData);
   };
 
   return (

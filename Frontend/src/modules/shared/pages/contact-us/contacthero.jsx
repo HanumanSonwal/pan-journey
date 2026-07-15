@@ -84,7 +84,7 @@ export default function ContactSection() {
         </div>
       </div>
 
-      {/* Contact Cards */}
+      
      {/* Contact Cards */}
 <div className="absolute top-[280px] left-1/2 z-30 w-full max-w-[1400px] -translate-x-1/2 px-3">
   {/* Mobile Scroll */}

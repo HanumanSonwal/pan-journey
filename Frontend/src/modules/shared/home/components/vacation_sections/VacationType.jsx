@@ -6,8 +6,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
+import { navigateToHotels } from "@/modules/hotel/utils/hotelNavigation";
 import { useDestinations } from "@/modules/shared/home/hooks/useDestinations";
 import { VacationsimageMap } from "../data/VacationsData";
+import { buildSearchData } from "@/modules/hotel/utils/buildSearchData";
 
 export default function VacationType({ activeTab }) {
   const [index, setIndex] = useState(0);
@@ -62,45 +64,27 @@ export default function VacationType({ activeTab }) {
   };
 
   const visibleData =
-    perPage === data.length
-      ? data
-      : data.slice(index, index + perPage);
+    perPage === data.length ? data : data.slice(index, index + perPage);
 
   if (!mounted) return null;
 
   const handleSearch = (item) => {
-    const query = new URLSearchParams({
-      city:
-        item?.City?.split(",")[0]
-          ?.trim()
-          ?.toLowerCase()
-          ?.replace(/[^a-z0-9\s-]/g, "")
-          ?.replace(/\s+/g, "-") || "",
-
-      cityName: item?.City || "",
-      cityId: item?.id || "",
-
-      checkIn: draftSearchData?.checkIn || "",
-      checkOut: draftSearchData?.checkOut || "",
-
-      rooms: String(draftSearchData?.rooms || 1),
-      adults: String(draftSearchData?.adults || 2),
-      children: String(draftSearchData?.children || 0),
-
-      pets: draftSearchData?.pets ? "true" : "false",
+    const searchData = buildSearchData({
+      baseSearchData: draftSearchData,
+      city: item.City,
+      cityId: item.id,
     });
 
-    router.push(`/hotels?${query.toString()}`);
+    navigateToHotels(router, searchData);
   };
   return (
-    <div className="px-0 xs:px-1 sm:px-1 md:px-2 lg:px-4 xl:px-4 py-2 -mt-7 !sm:-mt-[50px] md:mt-[2px] lg:mt-[2px]
-">
+    <div className="xs:px-1 !sm:-mt-[50px] -mt-7 px-0 py-2 sm:px-1 md:mt-[2px] md:px-2 lg:mt-[2px] lg:px-4 xl:px-4">
       <div className="flex items-center gap-2 sm:gap-3">
         {/* PREV BUTTON - Hide on Mobile */}
         <button
           onClick={prev}
           disabled={index === 0}
-          className="hidden lg:flex h-10 w-10 items-center justify-center !text-[27px] !text-black"
+          className="hidden h-10 w-10 items-center justify-center !text-[27px] !text-black lg:flex"
         >
           <LeftOutlined />
         </button>
@@ -108,20 +92,20 @@ export default function VacationType({ activeTab }) {
         {/* Cards */}
         <div className="flex-1 overflow-hidden">
           {/* Mobile Scroll */}
-          <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide  lg:hidden">
+          <div className="scrollbar-hide flex gap-3 overflow-x-auto pb-4 lg:hidden">
             {data.map((item, idx) => {
               const image =
                 VacationsimageMap?.[activeTab]?.[
-                idx % VacationsimageMap?.[activeTab]?.length
+                  idx % VacationsimageMap?.[activeTab]?.length
                 ];
 
               return (
                 <div
                   key={item.id || idx}
-                  className="min-w-[159px] max-w-[159px] overflow-hidden rounded-[2px] bg-white shadow-sm transition !p-0 !m-0"
+                  className="!m-0 max-w-[159px] min-w-[159px] overflow-hidden rounded-[2px] bg-white !p-0 shadow-sm transition"
                 >
                   {/* Image */}
-                  <div className="relative h-[150px] overflow-hidden ">
+                  <div className="relative h-[150px] overflow-hidden">
                     <Image
                       src={image}
                       alt={item.name}
@@ -132,17 +116,17 @@ export default function VacationType({ activeTab }) {
 
                   {/* Content */}
                   <div className="bg-white px-2 py-1 text-center">
-                    <h2 className="text-[14px] font-semibold text-gray-900 leading-tight line-clamp-1">
+                    <h2 className="line-clamp-1 text-[14px] leading-tight font-semibold text-gray-900">
                       {item.name}
                     </h2>
 
-                    <p className=" text-[11px] text-gray-600 leading-tight line-clamp-1">
+                    <p className="line-clamp-1 text-[11px] leading-tight text-gray-600">
                       {item.City}
                     </p>
 
                     <button
                       onClick={() => handleSearch(item)}
-                      className=" text-[12px] lg:text-[16px] font-medium !text-[#72C0F0]"
+                      className="text-[12px] font-medium !text-[#72C0F0] lg:text-[16px]"
                     >
                       View Details
                     </button>
@@ -155,12 +139,11 @@ export default function VacationType({ activeTab }) {
           </div>
 
           {/* Tablet + Desktop Grid */}
-          <div className="hidden lg:grid mb-8 grid-cols-4 gap-4 ">
+          <div className="mb-8 hidden grid-cols-4 gap-4 lg:grid">
             {visibleData.map((item, idx) => {
               const image =
                 VacationsimageMap?.[activeTab]?.[
-                (index + idx) %
-                VacationsimageMap?.[activeTab]?.length
+                  (index + idx) % VacationsimageMap?.[activeTab]?.length
                 ];
 
               return (
@@ -188,7 +171,7 @@ export default function VacationType({ activeTab }) {
                     </p>
                     <button
                       onClick={() => handleSearch(item)}
-                      className="flex w-full items-center justify-center gap-1 !text-[18px] font-medium !text-[#5FA8C9] hover:text-[#3D8FB3] transition-colors duration-200"
+                      className="flex w-full items-center justify-center gap-1 !text-[18px] font-medium !text-[#5FA8C9] transition-colors duration-200 hover:text-[#3D8FB3]"
                     >
                       View Details →
                     </button>
@@ -205,7 +188,7 @@ export default function VacationType({ activeTab }) {
         <button
           onClick={next}
           disabled={index + perPage >= data.length}
-          className="hidden lg:flex h-10 w-10 items-center justify-center !text-[27px] !text-black"
+          className="hidden h-10 w-10 items-center justify-center !text-[27px] !text-black lg:flex"
         >
           <RightOutlined />
         </button>

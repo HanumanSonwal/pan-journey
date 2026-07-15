@@ -1,14 +1,16 @@
 "use client";
-import { ArrowLeftOutlined, ShareAltOutlined } from "@ant-design/icons";
-import { Drawer, message } from "antd";
-import { useEffect, useMemo, useState } from "react";
+import {
+  ArrowLeftOutlined,
+  HeartFilled,
+  HeartOutlined,
+  ShareAltOutlined,
+} from "@ant-design/icons";
+import { Drawer } from "antd";
+import { useEffect, useState } from "react";
 
 import HotelDetailsSkeleton from "@/components/common/loder/HotelDetailsSkeleton";
-import { useAuthGuard } from "@/modules/auth/hooks/useAuthGuard";
 import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
-import { useToggleWishlist } from "@/modules/wishlist/hooks/useToggleWishlist";
-import { useWishlistIds } from "@/modules/wishlist/hooks/useWishlistIds";
-import { slugify } from "@/utils/slug/slugify";
+import dayjs from "dayjs";
 
 import SessionExpiredModal from "../components/hotels/viewhotles/SessionExpiredModal";
 import ViewHotelInfo from "../components/hotels/viewhotles/ViewHotelInfo";
@@ -34,6 +36,10 @@ function HotelDetailsMobile({
   isFetching,
   refetch,
   payload,
+
+  isWishlisted,
+  onWishlist,
+  onShare,
 }) {
   const { appliedSearchData } = useHotelSearchStore();
   const { setBookingData } = useHotelBookingStore();
@@ -43,17 +49,6 @@ function HotelDetailsMobile({
   const [sessionExpired] = useState(false);
   const [reloadingHotels] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-
-  const { requireAuth } = useAuthGuard();
-  const { mutateAsync } = useToggleWishlist();
-  const { data: wishlistData } = useWishlistIds();
-
-  const wishlistIds = useMemo(
-    () => new Set(wishlistData || []),
-    [wishlistData],
-  );
-
-  const isWishlisted = wishlistIds.has(payload?.hotelId?.toString());
 
   const showSkeleton = isLoading || isFetching;
 
@@ -65,8 +60,8 @@ function HotelDetailsMobile({
 
   const amenities = supplierData?.Amenities
     ? supplierData.Amenities.split(",")
-        .map((item) => item.trim())
-        .filter(Boolean)
+      .map((item) => item.trim())
+      .filter(Boolean)
     : [];
 
   const hotelDetails = supplierData || [];
@@ -111,53 +106,11 @@ function HotelDetailsMobile({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleWishlist = () => {
-    requireAuth(async () => {
-      try {
-        await mutateAsync({
-          hotelId: payload?.hotelId?.toString(),
-          hotelName: supplierData?.HotelName || "",
-          hotelSlug: slugify(supplierData?.HotelName || ""),
-          hotelImage:
-            supplierData?.HotelImage || supplierData?.HotelGallery?.[0] || "",
-          cityId: payload?.hotelMeta?.cityId || appliedSearchData?.cityData?.id,
-          cityName: appliedSearchData?.city || supplierData?.City || "",
-          stateName:
-            payload?.hotelMeta?.stateName ||
-            appliedSearchData?.cityData?.stateName ||
-            "",
-          countryCode:
-            payload?.hotelMeta?.countryCode ||
-            appliedSearchData?.cityData?.countryCode ||
-            "",
-          countryName: supplierData?.Country || "",
-          address: supplierData?.Address || "",
-          starRating: Number(supplierData?.StarRating || 0),
-          facilities: supplierData?.Amenities
-            ? supplierData.Amenities.split(",")
-                .map((i) => i.trim())
-                .filter(Boolean)
-            : [],
-          freeCancellation: false,
-          savedPrice: Number(FirstRoomPrice?.TotalAmount || 0),
-          savedTax: Number(FirstRoomPrice?.Tax || 0),
-        });
-
-        message.success(
-          isWishlisted ? "Removed from wishlist" : "Added to wishlist",
-        );
-      } catch {
-        message.error("Wishlist update failed");
-      }
-    });
-  };
-
   return (
     <div className="min-h-screen !bg-[#eef3f8]">
       <div
-        className={`sticky top-0 z-50 flex items-center !justify-between p-2 transition-all duration-300 ${
-          isScrolled ? "bg-white shadow-md" : "bg-transparent"
-        }`}
+        className={`sticky top-0 z-50 flex items-center !justify-between p-2 transition-all duration-300 ${isScrolled ? "bg-white shadow-md" : "bg-transparent"
+          }`}
       >
         <button
           onClick={() => window.history.back()}
@@ -167,7 +120,23 @@ function HotelDetailsMobile({
         </button>
 
         <div className="flex items-center gap-2">
-          <button className="flex h-10 w-10 items-center justify-center">
+          {/* Wishlist */}
+          <button
+            onClick={onWishlist}
+            className="flex h-10 w-10 items-center justify-center rounded-full transition hover:bg-gray-100 active:scale-95"
+          >
+            {isWishlisted ? (
+              <HeartFilled className="text-lg text-red-500!" />
+            ) : (
+              <HeartOutlined className="text-lg" />
+            )}
+          </button>
+
+          {/* Share */}
+          <button
+            onClick={onShare}
+            className="flex h-10 w-10 items-center justify-center rounded-full transition hover:bg-gray-100 active:scale-95"
+          >
             <ShareAltOutlined className="text-lg" />
           </button>
         </div>
@@ -186,7 +155,7 @@ function HotelDetailsMobile({
                 images={hotelImages}
                 onOpen={() => setIsGalleryOpen(true)}
                 onBack={() => window.history.back()}
-                onWishlist={handleWishlist}
+                onWishlist={onWishlist}
                 isWishlisted={isWishlisted}
               />
             </div>
@@ -252,13 +221,17 @@ function HotelDetailsMobile({
                           <div className="flex items-center gap-4">
                             <div>
                               <p className="font-normal !text-gray-500">
-                                {appliedSearchData?.checkIn || "--"}
+                                {appliedSearchData?.checkIn
+  ? dayjs(appliedSearchData.checkIn).format("DD MMM YYYY")
+  : "--"}
                               </p>
                             </div>
 
                             <div>
                               <p className="font-normal !text-gray-500">
-                                {appliedSearchData?.checkOut || "--"}
+                                {appliedSearchData?.checkOut
+                                  ? dayjs(appliedSearchData.checkOut).format("DD MMM YYYY")
+                                  : "--"}
                               </p>
                             </div>
                           </div>
@@ -356,7 +329,7 @@ function HotelDetailsMobile({
           />
           {/* Sticky Bottom */}
 
-          <div className="!bg-offer-gradient sticky bottom-0 z-50 py-3 px-2 shadow-xl lg:hidden">
+          <div className="!bg-offer-gradient sticky bottom-0 z-50 px-2 py-3 shadow-xl lg:hidden">
             <div className="flex items-center justify-between">
               <div className="flex flex-col">
                 <h2 className="mb-1! text-2xl leading-none font-bold text-white">

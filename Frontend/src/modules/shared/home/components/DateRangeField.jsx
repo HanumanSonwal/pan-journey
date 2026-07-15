@@ -1,5 +1,6 @@
 "use client";
 
+import DateRangePicker from "@/components/common/date-range-picker";
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
@@ -32,7 +33,9 @@ export default function DateRangeField({
   };
 
   const picker = (
-    <RangePicker
+    <
+      RangePicker
+      // DateRangePicker
       open={open}
       onOpenChange={(nextOpen) => {
         setOpen?.(nextOpen);
@@ -137,7 +140,7 @@ export default function DateRangeField({
   return (
     <div className="relative z-50 h-[82px] rounded border border-gray-200 bg-white px-3 py-2 shadow-sm transition-all duration-200 hover:border-[#0077b6] hover:shadow-md">
       {/* LABEL */}
-      <span className="absolute -top-2.5 left-4 rounded bg-white px-2 text-[14px] font-bold  tracking-wide text-[#0F6A75] font-bold min-[700px]:text-[16px]! min-[700px]:font-bold!">
+      <span className="absolute -top-2.5 left-4 rounded bg-white px-2 text-[14px] font-bold tracking-wide text-[#0F6A75] min-[700px]:text-[16px]! min-[700px]:font-bold!">
         Check In - Check Out
       </span>
       {/* DISPLAY */}
@@ -145,16 +148,15 @@ export default function DateRangeField({
         className="flex h-full cursor-pointer items-center justify-between"
         onClick={() => setOpen(true)}
       >
-
         {/* CHECK IN */}
         <div className="flex min-w-0 flex-1 flex-col justify-center">
           <div className="flex items-center gap-1 leading-none sm:gap-2">
-            <span className="font-jost text-[20px] font-normal  sm:text-[24px] md:text-[28px] lg:text-[30px] text-gray-700 min-[700px]: font-medium! min-[700px]:text-gray-800!">
+            <span className="font-jost min-[700px]: text-[20px] font-medium! font-normal text-gray-700 min-[700px]:text-gray-800! sm:text-[24px] md:text-[28px] lg:text-[30px]">
               {start?.format("DD")}
             </span>
 
             <div className="flex flex-col">
-              <span className="text-[11px] leading-none font-semibold text-gray-700 sm:text-[13px] md:text-[15px] lg:text-[16px] ">
+              <span className="text-[11px] leading-none font-semibold text-gray-700 sm:text-[13px] md:text-[15px] lg:text-[16px]">
                 {start?.format("MMM")}
               </span>
 
@@ -179,7 +181,7 @@ export default function DateRangeField({
         {/* CHECK OUT */}
         <div className="flex min-w-0 flex-1 flex-col items-end justify-center">
           <div className="flex items-center gap-1 leading-none sm:gap-2">
-             <span className="font-jost text-[20px] font-normal  sm:text-[24px] md:text-[28px] lg:text-[30px] text-gray-700 min-[700px]: font-medium! min-[700px]:text-gray-800!">
+            <span className="font-jost min-[700px]: text-[20px] font-medium! font-normal text-gray-700 min-[700px]:text-gray-800! sm:text-[24px] md:text-[28px] lg:text-[30px]">
               {end?.format("DD")}
             </span>
 
