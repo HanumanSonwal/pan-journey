@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 
 import HotelDetailsSkeleton from "@/components/common/loder/HotelDetailsSkeleton";
 import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
+import dayjs from "dayjs";
 
 import SessionExpiredModal from "../components/hotels/viewhotles/SessionExpiredModal";
 import ViewHotelInfo from "../components/hotels/viewhotles/ViewHotelInfo";
@@ -59,8 +60,8 @@ function HotelDetailsMobile({
 
   const amenities = supplierData?.Amenities
     ? supplierData.Amenities.split(",")
-        .map((item) => item.trim())
-        .filter(Boolean)
+      .map((item) => item.trim())
+      .filter(Boolean)
     : [];
 
   const hotelDetails = supplierData || [];
@@ -108,9 +109,8 @@ function HotelDetailsMobile({
   return (
     <div className="min-h-screen !bg-[#eef3f8]">
       <div
-        className={`sticky top-0 z-50 flex items-center !justify-between p-2 transition-all duration-300 ${
-          isScrolled ? "bg-white shadow-md" : "bg-transparent"
-        }`}
+        className={`sticky top-0 z-50 flex items-center !justify-between p-2 transition-all duration-300 ${isScrolled ? "bg-white shadow-md" : "bg-transparent"
+          }`}
       >
         <button
           onClick={() => window.history.back()}
@@ -221,13 +221,17 @@ function HotelDetailsMobile({
                           <div className="flex items-center gap-4">
                             <div>
                               <p className="font-normal !text-gray-500">
-                                {appliedSearchData?.checkIn || "--"}
+                                {appliedSearchData?.checkIn
+  ? dayjs(appliedSearchData.checkIn).format("DD MMM YYYY")
+  : "--"}
                               </p>
                             </div>
 
                             <div>
                               <p className="font-normal !text-gray-500">
-                                {appliedSearchData?.checkOut || "--"}
+                                {appliedSearchData?.checkOut
+                                  ? dayjs(appliedSearchData.checkOut).format("DD MMM YYYY")
+                                  : "--"}
                               </p>
                             </div>
                           </div>

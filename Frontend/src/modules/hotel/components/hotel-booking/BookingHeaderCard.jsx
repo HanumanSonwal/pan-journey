@@ -92,8 +92,11 @@ export default function BookingHeaderCard({ bookingData }) {
           </Text>
 
 
-          <div className="mt-1">
-            <Tag color="blue" className="!text-[11px]">
+             <div className="mt-4 max-w-full">
+            <Tag
+              color="blue"
+              className="!whitespace-normal !break-words !h-auto !max-w-full"
+            >
               {room?.GroupName}
             </Tag>
           </div>
