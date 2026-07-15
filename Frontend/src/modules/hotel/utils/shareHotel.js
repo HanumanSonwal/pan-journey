@@ -36,4 +36,3 @@ export const shareHotel = async ({ hotelName, cityName, hotelId }) => {
     message.error("Unable to share hotel");
   }
 };
-           
