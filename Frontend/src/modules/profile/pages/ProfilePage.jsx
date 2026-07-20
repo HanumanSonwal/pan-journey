@@ -30,7 +30,6 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#edf7ff]">
-
       {/* Banner */}
       <div className="relative h-[180px] w-full overflow-hidden sm:h-[200px] md:h-[220px]">
         <img
@@ -43,9 +42,7 @@ export default function ProfilePage() {
 
       {/* Mobile Header */}
       <div className="sticky top-0 z-40 flex items-center justify-between bg-white px-4 py-3 shadow md:hidden">
-        <h2 className="text-lg font-semibold text-[#4A9BB5]">
-          My Account
-        </h2>
+        <h2 className="text-lg font-semibold text-[#4A9BB5]">My Account</h2>
 
         <Button
           type="text"
@@ -56,18 +53,18 @@ export default function ProfilePage() {
 
       {/* Mobile Drawer */}
       <Drawer
-  placement="left"
-  open={drawerOpen}
-  onClose={() => setDrawerOpen(false)}
-  styles={{
-    body: {
-      padding: 0,
-    },
-    wrapper: {
-      width: 320,
-    },
-  }}
->
+        placement="left"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        styles={{
+          body: {
+            padding: 0,
+          },
+          wrapper: {
+            width: 320,
+          },
+        }}
+      >
         <Sidebar
           activeTab={activeTab}
           setActiveTab={(tab) => {
@@ -79,7 +76,6 @@ export default function ProfilePage() {
 
       {/* Main Section */}
       <div className="relative mx-auto mt-8 max-w-[1300px] px-1 pb-10 sm:-mt-6 sm:px-4 md:-mt-12 md:px-1 md:pb-12 lg:px-6">
-
         {/* Tablet Sidebar */}
         <div className="mb-5 hidden overflow-x-auto md:block lg:hidden">
           <div className="flex min-w-max gap-3">
@@ -92,36 +88,25 @@ export default function ProfilePage() {
         </div>
 
         <div className="grid grid-cols-1 gap-2 md:gap-2 lg:grid-cols-[340px_minmax(0,1fr)] lg:gap-2">
-
           {/* Desktop Sidebar */}
           <div className="sticky top-5 hidden self-start lg:block">
-            <Sidebar
-              activeTab={activeTab}
-              setActiveTab={handleTabChange}
-            />
+            <Sidebar activeTab={activeTab} setActiveTab={handleTabChange} />
           </div>
 
           {/* Content */}
           <div className="min-w-0">
-
             {activeTab === "profile" && <ProfileOverview />}
 
             {activeTab === "documents" && <DocumentsTab />}
 
             {activeTab === "wishlist" && <WishlistTab />}
 
-            {activeTab === "wishlist-detail" && (
-              <WishlistDetailTab />
-            )}
+            {activeTab === "wishlist-detail" && <WishlistDetailTab />}
 
-            {activeTab === "BookingHistory" && (
-              <BookingHistoryTab />
-            )}
+            {activeTab === "BookingHistory" && <BookingHistoryTab />}
 
             {activeTab === "booking-details" && (
-              <BookingDetailsTab
-                bookingRefNo={bookingRefNo}
-              />
+              <BookingDetailsTab bookingRefNo={bookingRefNo} />
             )}
 
             {activeTab === "settings" && (
@@ -132,14 +117,9 @@ export default function ProfilePage() {
               </div>
             )}
 
-            {activeTab === "support" && (
-              <HelpSupportPage />
-            )}
+            {activeTab === "support" && <HelpSupportPage />}
 
-            {activeTab === "support-tickets" && (
-              <SupportTicketsTab />
-            )}
-
+            {activeTab === "support-tickets" && <SupportTicketsTab />}
           </div>
         </div>
       </div>

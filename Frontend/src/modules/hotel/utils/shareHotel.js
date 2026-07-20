@@ -28,11 +28,9 @@ export const shareHotel = async ({ hotelName, cityName, hotelId }) => {
     }
 
     await navigator.clipboard.writeText(hotelUrl);
-
     message.success("Hotel link copied to clipboard");
   } catch (error) {
     if (error?.name === "AbortError") return;
-
     message.error("Unable to share hotel");
   }
 };

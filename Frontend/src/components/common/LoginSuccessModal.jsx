@@ -16,14 +16,8 @@ export default function LoginSuccessModal({
       closable={false}
       centered
       width={720}
-      mask={{
-        closable: false,
-      }}
-      styles={{
-        body: {
-          padding: "40px 32px",
-        },
-      }}
+      mask={{ closable: false }}
+      styles={{ body: { padding: "40px 32px" } }}
     >
       <div className="flex flex-col items-center text-center">
         {/* ICON */}

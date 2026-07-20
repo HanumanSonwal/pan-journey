@@ -15,9 +15,7 @@ export const buildSearchData = ({
 
       id: cityId,
       name: city,
-
       stateName: stateName || baseSearchData?.cityData?.stateName || "",
-
       countryCode: countryCode || baseSearchData?.cityData?.countryCode || "",
     },
   };

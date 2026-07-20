@@ -5,7 +5,7 @@ export const navigateToHotelDetails = ({
   router,
   hotel,
   searchData,
-  setSelectedHotel,
+  setSelectedHotel, 
 }) => {
   const citySlug = slugify(
     searchData?.city?.split(",")[0] ||
