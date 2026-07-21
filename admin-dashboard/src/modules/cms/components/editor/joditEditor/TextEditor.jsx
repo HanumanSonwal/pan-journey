@@ -22,6 +22,7 @@ const TextEditor = ({
       readonly: false,
       height,
       placeholder,
+
       toolbarAdaptive: false,
       toolbarSticky: false,
 
@@ -33,13 +34,16 @@ const TextEditor = ({
         "underline",
         "strikethrough",
         "|",
+
+        "paragraph",
+
+        "|",
         "ul",
         "ol",
         "|",
         "font",
         "fontsize",
         "brush",
-        "paragraph",
         "|",
         "align",
         "|",
@@ -50,6 +54,7 @@ const TextEditor = ({
         "|",
         "undo",
         "redo",
+        "|",
         "copyformat",
         "cut",
         "copy",
@@ -58,6 +63,22 @@ const TextEditor = ({
         "|",
         "fullsize",
       ],
+
+      controls: {
+        paragraph: {
+          list: {
+            p: "Paragraph",
+            h1: "Heading 1",
+            h2: "Heading 2",
+            h3: "Heading 3",
+            h4: "Heading 4",
+            h5: "Heading 5",
+            h6: "Heading 6",
+            blockquote: "Blockquote",
+            pre: "Preformatted",
+          },
+        },
+      },
 
       showCharsCounter: false,
       showWordsCounter: false,
@@ -79,7 +100,7 @@ const TextEditor = ({
         ref={editor}
         value={value}
         config={config}
-        onBlur={(content) => onChange?.(content)}
+        onChange={(newContent) => onChange?.(newContent)}
       />
 
       <style jsx global>{`

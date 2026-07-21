@@ -1,8 +1,10 @@
 export default function HotelsSeoSection({ children }) {
+  console.log("HotelsSeoSection children", children);
+
   if (!children) return null;
 
   return (
-    <section className="mt-10 !z-20">
+    <section className="!z-20 mt-10">
       <div className="overflow-hidden rounded border border-[#dbe8f1] bg-white shadow-sm">
         {/* Header */}
         <div className="border-b border-[#edf3f8] bg-[#f8fbfd] px-6 py-5 md:px-8">

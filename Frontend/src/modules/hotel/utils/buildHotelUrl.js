@@ -14,7 +14,6 @@ export const buildHotelUrl = ({
     (typeof window !== "undefined" ? window.location.origin : "");
 
   const citySlug = slugify(cityName);
-
   const hotelSlug = slugify(hotelName);
 
   return `${siteUrl}/hotel-details/${citySlug}/${hotelSlug}?hid=${hotelId}`;

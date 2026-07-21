@@ -11,8 +11,6 @@ export const buildBookingPayload = ({
   const additionalGuests = guestData?.additionalGuests || [];
   const occupants = [primaryGuest, ...additionalGuests];
 
-  console.log("pricing in payload", pricing);
-
   return {
     CustomerName: `${primaryGuest?.firstName || ""} ${
       primaryGuest?.lastName || ""

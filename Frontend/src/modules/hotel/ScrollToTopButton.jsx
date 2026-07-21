@@ -10,11 +10,8 @@ const ScrollToTopButton = () => {
     const onScroll = () => {
       setShow(window.scrollY > 250);
     };
-
     onScroll();
-
     window.addEventListener("scroll", onScroll, { passive: true });
-
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 

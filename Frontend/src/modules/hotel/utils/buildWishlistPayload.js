@@ -25,21 +25,14 @@ export const buildWishlistPayload = ({
     "";
 
   const cityId = hotelMeta?.cityId || searchData?.cityData?.id || "";
-
   const cityName = searchData?.city || supplierData?.City || "";
-
   const stateName =
     hotelMeta?.stateName || searchData?.cityData?.stateName || "";
-
   const countryCode =
     hotelMeta?.countryCode || searchData?.cityData?.countryCode || "";
-
   const countryName = supplierData?.Country || "";
-
   const address = hotel?.address || supplierData?.Address || "";
-
   const starRating = Number(hotel?.rating || supplierData?.StarRating || 0);
-
   const facilities =
     hotel?.facilities ||
     (supplierData?.Amenities
@@ -49,7 +42,6 @@ export const buildWishlistPayload = ({
       : []);
 
   const savedPrice = pricing?.basePrice ?? hotel?.price ?? 0;
-
   const savedTax = pricing?.platformFeeAndTax ?? hotel?.tax ?? 0;
 
   return {
