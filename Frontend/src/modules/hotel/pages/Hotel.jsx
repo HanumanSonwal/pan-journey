@@ -37,6 +37,9 @@ const HotelMap = dynamic(() => import("../components/map/HotelMap"), {
 export default function HotelContent({ initialSearchData = null, cms = null }) {
   const isMobile = useIsMobile();
 
+  console.log("HotelContent cms.slug:", cms?.slug);
+  console.log("HotelContent content:", cms?.data?.blocks?.[0]?.data?.content);
+
   const {
     draftSearchData,
     appliedSearchData,

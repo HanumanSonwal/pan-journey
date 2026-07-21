@@ -2,6 +2,7 @@
 
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import { useEffect } from "react";
 
 export default function ContentBlock({ content }) {
   const editor = useEditor({
@@ -11,17 +12,13 @@ export default function ContentBlock({ content }) {
     immediatelyRender: false,
   });
 
-  if (!content) return null;
+  useEffect(() => {
+    if (editor && content) {
+      editor.commands.setContent(content);
+    }
+  }, [editor, content]);
 
-  return (
-    <section className="py-6">
-      <div className="mx-auto max-w-6xl px-4">
-        <div className="rounded">
-          <div className="cms-rich-content">
-            <EditorContent editor={editor} />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+  if (!editor) return null;
+
+  return <EditorContent editor={editor} />;
 }

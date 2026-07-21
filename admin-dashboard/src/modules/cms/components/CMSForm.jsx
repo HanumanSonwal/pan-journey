@@ -136,11 +136,11 @@ export default function CMSForm({ id }) {
                   },
                   {
                     value: "hotelCity",
-                    label: "City SEO",
+                    label: "City Pages",
                   },
                   {
                     value: "hotel",
-                    label: "Hotel SEO",
+                    label: "Hotel Pages",
                   },
                   {
                     value: "marketing",
