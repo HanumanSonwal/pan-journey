@@ -3,10 +3,7 @@ export const buildCmsMetadata = (cms) => {
     return {};
   }
 
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    process.env.NEXTAUTH_URL ||
-    "http://localhost:3000";
+  const siteUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
 
   const slug = cms?.slug || "";
 

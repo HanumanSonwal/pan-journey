@@ -31,7 +31,7 @@ export async function generateMetadata({ params, searchParams }) {
 
     return metadata;
   }
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const siteUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
   const hotelSlug =
     slug?.replace(/-/g, " ")?.replace(/\b\w/g, (l) => l.toUpperCase()) ||
     "Hotel";
@@ -84,7 +84,7 @@ export async function generateMetadata({ params, searchParams }) {
 export default async function Page({ params, searchParams }) {
   const { slug, city } = await params;
   const query = await searchParams;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const siteUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
   const preview = query?.preview === "true";
 
   const cms = await fetchCmsBySlug(slug, preview);

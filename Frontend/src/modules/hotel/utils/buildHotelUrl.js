@@ -10,7 +10,7 @@ export const buildHotelUrl = ({
   }
 
   const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.NEXTAUTH_URL ||
     (typeof window !== "undefined" ? window.location.origin : "");
 
   const citySlug = slugify(cityName);

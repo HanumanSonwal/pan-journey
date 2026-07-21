@@ -10,7 +10,7 @@ export async function generateMetadata() {
 
   console.log("contactUsCms", contactUsCms.metaTitle);
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  const siteUrl = process.env.NEXTAUTH_URL;
 
   return {
     title: contactUsCms?.metaTitle,

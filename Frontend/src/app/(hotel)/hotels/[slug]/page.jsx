@@ -26,7 +26,7 @@ export async function generateMetadata({ params, searchParams }) {
   /*
     DEFAULT SEO
   */
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const siteUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
   const cityName =
     slug?.replace(/-/g, " ")?.replace(/\b\w/g, (l) => l.toUpperCase()) ||
     "Hotels";
@@ -68,7 +68,7 @@ export async function generateMetadata({ params, searchParams }) {
       type: "website",
     },
 
-      twitter: {
+    twitter: {
       card: "summary_large_image",
       title: buildHotelTitle(cityName),
       description: buildHotelDescription(cityName),
@@ -82,7 +82,7 @@ export default async function Page({ params, searchParams }) {
   const query = await searchParams;
   const preview = query?.preview === "true";
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const siteUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
 
   const cms = await fetchCmsBySlug(slug, preview);
 
