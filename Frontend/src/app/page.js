@@ -13,6 +13,7 @@ import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
 import { fetchCmsBySlug } from "@/modules/cms/services/cmsFetch";
 import ScrollToTopButton from "@/modules/hotel/ScrollToTopButton";
 import Hero from "@/modules/shared/home/components/hero_section/Hero";
+import TrustSection from "@/modules/shared/home/components/hero_section/TrustSection";
 
 const SITE_URL = process.env.NEXTAUTH_URL || "https://panjourney.com";
 
@@ -77,17 +78,17 @@ export default async function Page() {
 
   const faqSchema = faqBlock?.data?.items?.length
     ? {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        mainEntity: faqBlock.data.items.map((item) => ({
-          "@type": "Question",
-          name: item.question,
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: item.answer,
-          },
-        })),
-      }
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: faqBlock.data.items.map((item) => ({
+        "@type": "Question",
+        name: item.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: item.answer,
+        },
+      })),
+    }
     : null;
 
   const websiteSchema = {
@@ -138,7 +139,13 @@ export default async function Page() {
       )}
 
       <Hero />
+     
       <ScrollToTopButton />
+       <div className="relative">
+  {/* Hero Section */}
+
+  <TrustSection />
+</div>
       <VacationSection />
       <Herobanner />
       <WhySection />

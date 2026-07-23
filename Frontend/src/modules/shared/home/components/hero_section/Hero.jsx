@@ -43,7 +43,7 @@ export default function Hero() {
       id="hero-search"
     >
       <div className={styles.heroBg} />
-      <div className="absolute top-10 left-1/2 w-[92%] -translate-x-1/2 px-0 min-[700px]:top-[22%] min-[700px]:w-[92%] lg:top-[27%] lg:w-[80.83%] xl:top-[40%]">
+      <div className="absolute top-10 left-1/2 w-[92%] -translate-x-1/2 px-0 min-[700px]:top-[22%] min-[700px]:w-[92%] lg:top-[27%] lg:w-[80.83%] xl:top-[50%]">
         <div className="w-full rounded-xl bg-[#f8f8f8] p-6 pb-20 shadow-2xl min-[700px]:p-6 md:p-8 md:pb-6">
           <Tabs
             tabs={HOME_TABS}

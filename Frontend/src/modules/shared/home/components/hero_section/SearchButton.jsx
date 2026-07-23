@@ -46,10 +46,10 @@ export default function SearchButton({ onSearch, floating = true }) {
           lg:w-[300px]
           lg:text-[19px]
 
-          xl:h-[72px]
+          xl:h-[52px]
           xl:w-[190px]
 
-          2xl:h-[79px]
+          2xl:h-[59px]
           2xl:w-[200px]
         "
         style={{
