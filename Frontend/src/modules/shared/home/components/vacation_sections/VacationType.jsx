@@ -6,10 +6,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
+import { buildSearchData } from "@/modules/hotel/utils/buildSearchData";
 import { navigateToHotels } from "@/modules/hotel/utils/hotelNavigation";
 import { useDestinations } from "@/modules/shared/home/hooks/useDestinations";
 import { VacationsimageMap } from "../data/VacationsData";
-import { buildSearchData } from "@/modules/hotel/utils/buildSearchData";
 
 export default function VacationType({ activeTab }) {
   const [index, setIndex] = useState(0);
@@ -96,7 +96,7 @@ export default function VacationType({ activeTab }) {
             {data.map((item, idx) => {
               const image =
                 VacationsimageMap?.[activeTab]?.[
-                  idx % VacationsimageMap?.[activeTab]?.length
+                idx % VacationsimageMap?.[activeTab]?.length
                 ];
 
               return (
@@ -143,7 +143,7 @@ export default function VacationType({ activeTab }) {
             {visibleData.map((item, idx) => {
               const image =
                 VacationsimageMap?.[activeTab]?.[
-                  (index + idx) % VacationsimageMap?.[activeTab]?.length
+                (index + idx) % VacationsimageMap?.[activeTab]?.length
                 ];
 
               return (
@@ -171,12 +171,12 @@ export default function VacationType({ activeTab }) {
                     </p>
                     <button
                       onClick={() => handleSearch(item)}
-                      className="flex w-full items-center justify-center gap-1 !text-[18px] font-medium !text-[#5FA8C9] transition-colors duration-200 hover:text-[#3D8FB3]"
+                      className="flex w-full items-center justify-center gap-1 !text-[18px] font-medium most-text-color transition-colors duration-200 hover:!text-most-text-color"
                     >
                       View Details →
                     </button>
 
-                    <div className="mx-auto mt-1 w-36 border-b border-dotted border-[#5FA8C9]" />
+                    <div className="mx-auto mt-1 w-36 border-b border-dotted teb-border-color" />
                   </div>
                 </div>
               );

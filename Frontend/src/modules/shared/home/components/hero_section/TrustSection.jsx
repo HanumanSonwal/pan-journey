@@ -14,7 +14,7 @@ const trustItems = [
     id: 1,
     icon: (
       <SafetyCertificateOutlined
-        className="text-[22px]"
+        className="text-[20px]"
         style={{ color: "#23437A" }}
       />
     ),
@@ -24,7 +24,10 @@ const trustItems = [
   {
     id: 2,
     icon: (
-      <TrophyOutlined className="text-[22px]" style={{ color: "#F4A825" }} />
+      <TrophyOutlined
+        className="text-[20px]"
+        style={{ color: "#F4A825" }}
+      />
     ),
     title: "Best Price Guarantee",
     description: "Find a lower price? We'll match it for you.",
@@ -33,7 +36,7 @@ const trustItems = [
     id: 3,
     icon: (
       <CustomerServiceOutlined
-        className="text-[22px]"
+        className="text-[20px]"
         style={{ color: "#23437A" }}
       />
     ),
@@ -42,14 +45,22 @@ const trustItems = [
   },
   {
     id: 4,
-    icon: <TagsOutlined className="text-[22px]" style={{ color: "#F4A825" }} />,
+    icon: (
+      <TagsOutlined
+        className="text-[20px]"
+        style={{ color: "#F4A825" }}
+      />
+    ),
     title: "Easy Booking",
     description: "Book in just a few clicks with a hassle-free experience.",
   },
   {
     id: 5,
     icon: (
-      <GlobalOutlined className="text-[22px]" style={{ color: "#23437A" }} />
+      <GlobalOutlined
+        className="text-[20px]"
+        style={{ color: "#23437A" }}
+      />
     ),
     title: "Worldwide Coverage",
     description: "Thousands of destinations across the globe.",
@@ -57,7 +68,10 @@ const trustItems = [
   {
     id: 6,
     icon: (
-      <SafetyOutlined className="text-[22px]" style={{ color: "#F4A825" }} />
+      <SafetyOutlined
+        className="text-[20px]"
+        style={{ color: "#F4A825" }}
+      />
     ),
     title: "Safe & Trusted",
     description: "Trusted by millions of travelers worldwide.",
@@ -66,32 +80,57 @@ const trustItems = [
 
 export default function TrustSection() {
   return (
-    <section className="absolute bottom-[-150px] left-1/2 z-20 w-full max-w-[1240px] -translate-x-1/2 border border-[#e5e7eb] bg-[#fafafa]">
-      <div className="mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
-          {trustItems.map((item, index) => (
-            <div
-              key={item.id}
-              className={`flex min-h-[100px] items-start gap-3 px-5 py-5 ${
-                index !== trustItems.length - 1
-                  ? "border-r border-[#e5e7eb]"
-                  : ""
-              } transition-all duration-300 hover:bg-white`}
-            >
-              <div className="mt-1 shrink-0">{item.icon}</div>
-
-              <div>
-                <h3 className="text-[13px] leading-[18px] font-semibold text-[#1F2937]">
-                  {item.title}
-                </h3>
-
-                <p className="mt-1 text-[11px] leading-[16px] text-[#6B7280]">
-                  {item.description}
-                </p>
-              </div>
+    <section
+      className="
+        absolute
+        left-1/2
+        -translate-x-1/2
+        bottom-[-125px]
+        z-20
+        w-full
+        max-w-[1240px]
+        bg-[#fafafa]
+        border
+        border-[#e5e7eb]
+        rounded-lg
+        overflow-hidden
+      "
+    >
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+        {trustItems.map((item, index) => (
+          <div
+            key={item.id}
+            className={`
+              flex
+              items-start
+              gap-2
+              px-4
+              py-3
+              min-h-[78px]
+              transition-all
+              duration-300
+              hover:bg-white
+              ${index !== trustItems.length - 1
+                ? "border-r border-[#e5e7eb]"
+                : ""
+              }
+            `}
+          >
+            <div className="shrink-0 pt-[2px]">
+              {item.icon}
             </div>
-          ))}
-        </div>
+
+            <div>
+              <h3 className="text-[13px] font-semibold leading-[18px] text-[#1F2937]">
+                {item.title}
+              </h3>
+
+              <p className="mt-0.5 text-[11px] leading-[15px] text-[#6B7280]">
+                {item.description}
+              </p>
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );
