@@ -24,10 +24,7 @@ const trustItems = [
   {
     id: 2,
     icon: (
-      <TrophyOutlined
-        className="text-[22px]"
-        style={{ color: "#F4A825" }}
-      />
+      <TrophyOutlined className="text-[22px]" style={{ color: "#F4A825" }} />
     ),
     title: "Best Price Guarantee",
     description: "Find a lower price? We'll match it for you.",
@@ -45,22 +42,14 @@ const trustItems = [
   },
   {
     id: 4,
-    icon: (
-      <TagsOutlined
-        className="text-[22px]"
-        style={{ color: "#F4A825" }}
-      />
-    ),
+    icon: <TagsOutlined className="text-[22px]" style={{ color: "#F4A825" }} />,
     title: "Easy Booking",
     description: "Book in just a few clicks with a hassle-free experience.",
   },
   {
     id: 5,
     icon: (
-      <GlobalOutlined
-        className="text-[22px]"
-        style={{ color: "#23437A" }}
-      />
+      <GlobalOutlined className="text-[22px]" style={{ color: "#23437A" }} />
     ),
     title: "Worldwide Coverage",
     description: "Thousands of destinations across the globe.",
@@ -68,10 +57,7 @@ const trustItems = [
   {
     id: 6,
     icon: (
-      <SafetyOutlined
-        className="text-[22px]"
-        style={{ color: "#F4A825" }}
-      />
+      <SafetyOutlined className="text-[22px]" style={{ color: "#F4A825" }} />
     ),
     title: "Safe & Trusted",
     description: "Trusted by millions of travelers worldwide.",
@@ -80,36 +66,22 @@ const trustItems = [
 
 export default function TrustSection() {
   return (
-    <section
-      className="
-    absolute
-    bottom-[-150px]
-    left-1/2
-    z-20
-    w-full
-    max-w-[1240px]
-    -translate-x-1/2
-    border
-    border-[#e5e7eb]
-    bg-[#fafafa]
-  "
-    >
-      <div className=" mx-auto">
+    <section className="absolute bottom-[-150px] left-1/2 z-20 w-full max-w-[1240px] -translate-x-1/2 border border-[#e5e7eb] bg-[#fafafa]">
+      <div className="mx-auto">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
           {trustItems.map((item, index) => (
             <div
               key={item.id}
-              className={`flex items-start gap-3 px-5 py-5 min-h-[100px]
-                ${index !== trustItems.length - 1
+              className={`flex min-h-[100px] items-start gap-3 px-5 py-5 ${
+                index !== trustItems.length - 1
                   ? "border-r border-[#e5e7eb]"
                   : ""
-                }
-                hover:bg-white transition-all duration-300`}
+              } transition-all duration-300 hover:bg-white`}
             >
-              <div className="shrink-0 mt-1">{item.icon}</div>
+              <div className="mt-1 shrink-0">{item.icon}</div>
 
               <div>
-                <h3 className="text-[13px] font-semibold text-[#1F2937] leading-[18px]">
+                <h3 className="text-[13px] leading-[18px] font-semibold text-[#1F2937]">
                   {item.title}
                 </h3>
 

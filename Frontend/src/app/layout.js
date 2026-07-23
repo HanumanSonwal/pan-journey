@@ -1,4 +1,3 @@
-import ComingSoonModal from "@/components/common/ComingSoonModal";
 import Footer from "@/components/common/Footer";
 import Header from "@/components/common/Header";
 import GlobalLoginModal from "@/modules/auth/components/GlobalLoginModal";
@@ -97,7 +96,6 @@ export default function RootLayout({ children }) {
                 <ProfileCompletionHandler />
                 <main className="flex-1">
                   <App>
-                    <ComingSoonModal />
                     <GlobalLoginModal />
                     {children}
                   </App>

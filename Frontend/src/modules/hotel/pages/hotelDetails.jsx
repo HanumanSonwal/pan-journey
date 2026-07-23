@@ -18,7 +18,6 @@ import { useSearchParams } from "next/navigation";
 import SearchBar from "../components/hotels/SearchBar";
 import HotelSectionsContent from "../components/hotels/viewhotles/HotelSectionsContent";
 import HotelSectionsTabs from "../components/hotels/viewhotles/HotelSectionsTabs";
-import SessionExpiredModal from "../components/hotels/viewhotles/SessionExpiredModal";
 import ViewHotelGallery from "../components/hotels/viewhotles/ViewHotelGallery";
 import ViewHotelInfo from "../components/hotels/viewhotles/ViewHotelInfo";
 import ViewHotelModal from "../components/hotels/viewhotles/ViewHotelModal";
@@ -363,12 +362,6 @@ function HotelDetails({ initialPayload = null, cms = null }) {
           open={isGalleryOpen}
           images={hotelImages}
           onClose={() => setIsGalleryOpen(false)}
-        />
-
-        <SessionExpiredModal
-          open={sessionExpired}
-          loading={reloadingHotels}
-          onReload={handleReloadHotels}
         />
       </div>
     </>
