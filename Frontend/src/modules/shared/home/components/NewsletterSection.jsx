@@ -87,9 +87,9 @@ export default function NewsletterSection() {
                 onClick={handleSubscribe}
                 disabled={isPending}
                 className="flex w-[150px] items-center justify-center self-start rounded-md px-5 py-3 text-[15px] font-medium !text-white transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:min-w-[180px]"
-                style={{
-                  background: "linear-gradient(to bottom, #63C0EC, #137C9C)",
-                }}
+ style={{
+  background: "#051449",
+}}
               >
                 {isPending ? "Subscribing..." : "Subscribe Now"}
               </button>

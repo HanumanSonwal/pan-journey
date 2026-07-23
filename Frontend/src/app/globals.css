@@ -246,5 +246,30 @@ body {
   -webkit-overflow-scrolling: touch !important;
   overscroll-behavior-x: contain !important;
 }
+ 
+/* THEM ON WEB SITE CODE */
+.teb-text-color {
+  color: #FDA20F;
 
+}
+.most-text-color {
+  color: #051449;
+ }
+ 
+.teb-bg-color {
+  background-color: #FDA20F;
+  
+}
+.buttion-background-color {
+  background-color: #051449;
+}
+.background-color:hover {
+  background-color: #051449;
+}
+.teb-border-color {
+  border-color: #051449;
+}
 
+.teb-gradient {
+  background: linear-gradient(180deg, #05144B 0%, #0C2FB1 100%);
+}

@@ -91,7 +91,7 @@ export default function WhySection() {
                 className="group flex flex-col rounded-2xl border border-white/60 bg-white p-5 shadow-[0_10px_35px_rgba(59,130,182,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_rgba(59,130,182,0.15)] sm:p-6 lg:rounded-[28px] lg:p-7"
               >
                 {/* Icon */}
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-[#D9ECF8] bg-[#EDF7FF] text-[20px] text-[#3B82B6] transition-transform group-hover:scale-110 sm:h-14 sm:w-14 sm:text-[24px] lg:h-16 lg:w-16 lg:rounded-2xl lg:text-[28px]">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-[#D9ECF8] bg-[#EDF7FF] text-[20px] most-text-color transition-transform group-hover:scale-110 sm:h-14 sm:w-14 sm:text-[24px] lg:h-16 lg:w-16 lg:rounded-2xl lg:text-[28px]">
                   {item.icon}
                 </div>
 

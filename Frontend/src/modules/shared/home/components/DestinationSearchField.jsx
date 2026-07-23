@@ -163,12 +163,12 @@ function DestinationSearchField({
       return [
         ...(recentSearches.length > 0
           ? [
-              {
-                label: "Recent Searches",
+            {
+              label: "Recent Searches",
 
-                options: buildOptions(recentSearches),
-              },
-            ]
+              options: buildOptions(recentSearches),
+            },
+          ]
           : []),
 
         {
@@ -261,21 +261,19 @@ function DestinationSearchField({
 
       <div
         title={value?.city || ""}
-        className={`relative w-full min-w-0 overflow-visible rounded border px-3 py-3 transition-all hover:border-[#0077b6] ${
-          error ? "border-red-500" : "border-gray-300"
-        } ${wrapperClassName}`}
+        className={`relative w-full min-w-0 overflow-visible rounded border px-3 py-1 transition-all hover:border-[#0077b6] !bg-white ${error ? "border-red-500" : "border-gray-300"
+          } ${wrapperClassName}`}
         style={{ height }}
       >
         {/* CONTENT */}
         <div
-          className={`flex w-full min-w-0 overflow-hidden ${
-            compact
-              ? "h-full items-center px-0"
-              : "min-h-[56px] flex-col justify-center px-1 md:px-2"
-          }`}
+          className={`flex w-full min-w-0 overflow-hidden ${compact
+            ? "h-full items-center px-0"
+            : "min-h-[6px] flex-col justify-center px-1 md:px-2"
+            }`}
         >
           {/* SELECT */}
-          <div className="w-full min-w-0 overflow-hidden">
+          <div className="w-full min-w-0 overflow-hidden ">
             <Popover
               open={error}
               placement="bottomLeft"

@@ -12,15 +12,15 @@ export default function ButtonTab({ tabs = [], activeTab, setActiveTab }) {
             !text-[15px] sm:!text-[21px] md:!text-[18px] lg:!text-[21px]
             font-medium whitespace-nowrap shadow-none transition-all duration-200 outline-none focus:ring-0 focus:outline-none
             ${activeTab === tab.key
-                ? "!text-[#72C0F0]"
-                : "!hover:text-[#72C0F0] !text-[#3D3D3D]"
+                ? "teb-text-color"
+                : "!hover:text-teb-text-color font-medium !text-gray-900"
               }`}
           >
             {tab.label}
 
             {/* ONLY active underline */}
             {activeTab === tab.key && (
-              <span className="absolute bottom-1 left-0 !h-[4px] w-full rounded-full bg-[#72C0F0] sm:h-[2px] shadow-[0_4px_6px_rgba(114,192,240,0.5)]"></span>
+              <span className="absolute bottom-1 left-0 !h-[4px] w-full rounded-full teb-bg-color sm:h-[2px]  shadow-[0_4px_6px_var(--teb-shadow)]"></span>
             )}
           </button>
         ))}

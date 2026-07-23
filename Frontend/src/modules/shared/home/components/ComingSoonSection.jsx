@@ -26,7 +26,7 @@ export default function ComingSoonSection() {
 
                 {/* Coming Soon Tag */}
                 <div className="absolute top-0 left-0 z-10">
-                  <span className="rounded-br-xl bg-[#49A6C9] px-3 py-2 text-[11px] text-white sm:px-4 sm:py-2 sm:text-sm lg:px-5 lg:py-3 lg:text-base">
+                  <span className="rounded-br-xl teb-gradient  px-3 py-2 text-[11px] text-white sm:px-4 sm:py-2 sm:text-sm lg:px-5 lg:py-3 lg:text-base">
                     Coming Soon
                   </span>
                 </div>

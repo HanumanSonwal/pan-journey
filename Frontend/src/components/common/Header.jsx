@@ -130,7 +130,7 @@ export default function Header() {
   };
 
   const drawerItemClass =
-    "group flex cursor-pointer items-center justify-between rounded border border-gray-200 bg-white px-2 py-2 shadow-sm transition-all duration-300 hover:border-[#72C0F0] hover:shadow-md";
+    "group flex cursor-pointer items-center justify-between rounded border border-gray-200 bg-white px-2 py-2 shadow-sm transition-all duration-300 hover:buttion-boder-color hover:shadow-md";
 
   const items = [
     {
@@ -171,7 +171,7 @@ export default function Header() {
   ];
 
   const navLinkClass =
-    "relative transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:text-[#0f766e] hover:after:w-full";
+    "relative transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#051449] after:transition-all after:duration-300 hover:text-[#051449] hover:after:w-full";
 
   const desktopNavigationItems = navigationItems.filter((item) => item.desktop);
 
@@ -191,9 +191,9 @@ export default function Header() {
   return (
     <div className="w-full">
       {/* Top Bar */}
-      <div className="bg-offer-gradient py-2 text-center text-sm text-white md:text-base">
+      {/* <div className="!bg-white py-2 text-center text-sm text-black md:text-base">
         Get the best offers on your every booking!
-      </div>
+      </div> */}
 
       {/* Navbar */}
       <header
@@ -223,7 +223,7 @@ export default function Header() {
         <nav className="hidden min-[901px]:flex items-center justify-center gap-7 lg:gap-4 xl:gap-7 2xl:gap-7 font-roboto text-gray-900">
           {desktopNavigationItems.map((item) =>
             item.type === "comingSoon" ? (
-              <Tooltip key={item.id} title="Coming Soon" color="#0f766e">
+              <Tooltip key={item.id} title="Coming Soon" color="most-text-color">
                 <span className={navLinkClass}>{item.label}</span>
               </Tooltip>
             ) : (
@@ -243,10 +243,10 @@ export default function Header() {
                 router.push("/profile?tab=wishlist");
               })
             }
-            className="group hidden cursor-pointer items-center gap-2 rounded-lg border border-[#4A9BB5] px-3 py-2 text-sm font-medium text-[#4A9BB5]! transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#4A9BB5] hover:text-white! md:flex"
+            className="group hidden cursor-pointer items-center gap-2 rounded-lg border teb-border-color px-3 py-2 text-sm font-medium most-text-color  transition-all duration-300 hover:-translate-y-0.5 background-color  hover:text-white! md:flex"
           >
             {wishlistCount > 0 && (
-              <span className="ml-1 rounded-full bg-[#4A9BB5] px-2 py-0.5 text-xs font-semibold text-white transition-colors duration-300 group-hover:bg-white group-hover:text-[#4A9BB5]">
+              <span className="ml-1 rounded-full bg-[#4A9BB5] px-2 py-0.5 text-xs font-semibold text-white transition-colors duration-300 group-hover:bg-white group-hover:text-most-text-color">
                 {wishlistCount}
               </span>
             )}
@@ -260,7 +260,7 @@ export default function Header() {
             getPopupContainer={(trigger) => trigger.parentElement}
             popupRender={() => currencyDropdownContent}
           >
-            <button className="hidden items-center gap-2 rounded-lg border border-[#4A9BB5] px-3 py-2 text-sm font-medium text-[#4A9BB5]! transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#4A9BB5] hover:text-white! md:flex">
+            <button className="group hidden cursor-pointer items-center gap-2 rounded-lg border teb-border-color px-3 py-2 text-sm font-medium most-text-color  transition-all duration-300 hover:-translate-y-0.5 background-color  hover:text-white! md:flex">
               <span>{hydrated ? selectedCurrency?.symbol : "₹"}</span>
               <span className="max-w-20 truncate">
                 {hydrated ? selectedCurrency?.code : "INR"}
@@ -273,7 +273,7 @@ export default function Header() {
           {!session ? (
             <button
               onClick={() => setOpen(true)}
-              className={`bg-offer-gradient flex items-center rounded-lg text-white! transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg ${isMobile
+              className={`buttion-background-color flex items-center rounded-lg text-white! transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg ${isMobile
                 ? "gap-3 px-4 py-2 text-[13px]"
                 : "gap-2 px-3 py-2 text-sm"
                 }`}
@@ -289,7 +289,7 @@ export default function Header() {
               <div className="flex cursor-pointer items-center gap-2 transition-all duration-300 hover:scale-105">
                 {/* ✅ PERFECT ROUND AVATAR */}
                 <div
-                  className={`flex items-center justify-center overflow-hidden rounded-full border-2 border-[#4A9BB5] bg-gray-100 transition-all duration-300 ${isMobile ? "h-7! w-7!" : "h-9 w-9"
+                  className={`flex items-center justify-center overflow-hidden rounded-full border-2 teb-border-color bg-gray-100 transition-all duration-300 ${isMobile ? "h-7! w-7!" : "h-9 w-9"
                     }`}
                 >
                   {user?.image ? (
@@ -429,7 +429,7 @@ export default function Header() {
 
                 <ChevronRight
                   size={20}
-                  className={`text-[#0F6A75] transition-transform duration-300 ${mobileCurrencyOpen ? "rotate-90" : ""
+                  className={` transition-transform duration-300 ${mobileCurrencyOpen ? "rotate-90" : ""
                     }`}
                 />
               </div>
