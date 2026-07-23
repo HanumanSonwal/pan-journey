@@ -309,7 +309,7 @@ function DestinationSearchField({
                 popupMatchSelectWidth={compact ? false : true}
                 filterOption={false}
                 loading={isLoading}
-                className={`font-jost! w-full min-w-0 overflow-hidden font-medium text-gray-600 min-[700px]:font-bold! min-[700px]:text-gray-800! ${styles.destinationSelect}`}
+                className={`font-jost! w-full min-w-0 overflow-hidden font-medium text-gray-600 min-[700px]:font-semibold! min-[700px]:text-gray-800! ${styles.destinationSelect}`}
                 style={{
                   width: "100%",
                   fontSize: 18,

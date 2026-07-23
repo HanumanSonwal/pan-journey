@@ -141,7 +141,7 @@ export default function DateRangeField({
         Check In - Check Out
       </span>
 
-      <div className="relative h-[82px] rounded-md border border-[#d9d9d9] bg-white px-6 py-3 transition-all hover:border-[#0077b6]">
+      <div className="relative h-[65px] rounded-md border border-[#d9d9d9] bg-white px-6 py-3 transition-all hover:border-[#0077b6]">
         {/* DISPLAY */}
         <div
           className="flex h-full cursor-pointer items-center justify-between"
@@ -150,7 +150,7 @@ export default function DateRangeField({
           {/* CHECK IN */}
           <div className="flex flex-col justify-center">
             <div className="flex items-start gap-1">
-              <span className="text-[28px] leading-none font-bold text-[#222]">
+              <span className="text-[26px] leading-none font-semibold text-[#222]">
                 {start?.format("DD")}
               </span>
 
@@ -178,7 +178,7 @@ export default function DateRangeField({
           {/* CHECK OUT */}
           <div className="flex flex-col items-end justify-center">
             <div className="flex items-start gap-1">
-              <span className="text-[28px] leading-none font-bold text-[#222]">
+              <span className="text-[26px] leading-none font-semibold text-[#222]">
                 {end?.format("DD")}
               </span>
 

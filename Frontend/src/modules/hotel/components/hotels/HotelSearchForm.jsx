@@ -64,7 +64,7 @@ export default function HotelSearchForm({
               }
             }}
             fontSize="clamp(18px, 2vw, 21px)"
-            height="clamp(73px, 8vw, 82px)"
+            height="clamp(65px, 8vw, 65px)"
             marginBottom="clamp(20px, 1vw, 20px)"
           />
         </div>

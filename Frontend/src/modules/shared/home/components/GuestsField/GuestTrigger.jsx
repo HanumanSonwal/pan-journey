@@ -26,7 +26,7 @@ export default function GuestTrigger({ variant = "default", value }) {
         Rooms & Guests
       </span>
 
-      <div className="h-[80px] rounded-md border border-[#d9d9d9] bg-white px-6 py-3 transition-all hover:border-[#0077b6]">
+      <div className="h-[60px] rounded-md border border-[#d9d9d9] bg-white px-6 py-3 transition-all hover:border-[#0077b6]">
         <div className="flex h-full items-center justify-between">
           <SummaryItem value={value.rooms} label="ROOM" />
           <SummaryItem value={value.adults} label="ADULTS" center />
