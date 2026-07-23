@@ -77,17 +77,17 @@ export default async function Page() {
 
   const faqSchema = faqBlock?.data?.items?.length
     ? {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      mainEntity: faqBlock.data.items.map((item) => ({
-        "@type": "Question",
-        name: item.question,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: item.answer,
-        },
-      })),
-    }
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: faqBlock.data.items.map((item) => ({
+          "@type": "Question",
+          name: item.question,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: item.answer,
+          },
+        })),
+      }
     : null;
 
   const websiteSchema = {
@@ -136,7 +136,6 @@ export default async function Page() {
           }}
         />
       )}
-
 
       <Hero />
       <ScrollToTopButton />

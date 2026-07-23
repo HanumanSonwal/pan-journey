@@ -1,6 +1,5 @@
 "use client";
 
-import DateRangePicker from "@/components/common/date-range-picker";
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
@@ -33,8 +32,7 @@ export default function DateRangeField({
   };
 
   const picker = (
-    <
-      RangePicker
+    <RangePicker
       // DateRangePicker
       open={open}
       onOpenChange={(nextOpen) => {
@@ -138,77 +136,77 @@ export default function DateRangeField({
   // DEFAULT PREMIUM UI
   // =========================
   return (
-    <div className="relative z-50 h-[82px] rounded border border-gray-200 bg-white px-3 py-2 shadow-sm transition-all duration-200 hover:border-[#0077b6] hover:shadow-md">
-      {/* LABEL */}
-      <span className="absolute -top-2.5 left-4 rounded bg-white px-2 text-[14px] font-bold tracking-wide text-[#0F6A75] min-[700px]:text-[16px]! min-[700px]:font-bold!">
+    <>
+      <span className="mb-2 block text-[14px] font-semibold text-[#222]">
         Check In - Check Out
       </span>
-      {/* DISPLAY */}
-      <div
-        className="flex h-full cursor-pointer items-center justify-between"
-        onClick={() => setOpen(true)}
-      >
-        {/* CHECK IN */}
-        <div className="flex min-w-0 flex-1 flex-col justify-center">
-          <div className="flex items-center gap-1 leading-none sm:gap-2">
-            <span className="font-jost min-[700px]: text-[20px] font-medium! font-normal text-gray-700 min-[700px]:text-gray-800! sm:text-[24px] md:text-[28px] lg:text-[30px]">
-              {start?.format("DD")}
-            </span>
 
-            <div className="flex flex-col">
-              <span className="text-[11px] leading-none font-semibold text-gray-700 sm:text-[13px] md:text-[15px] lg:text-[16px]">
-                {start?.format("MMM")}
+      <div className="relative h-[82px] rounded-md border border-[#d9d9d9] bg-white px-6 py-3 transition-all hover:border-[#0077b6]">
+        {/* DISPLAY */}
+        <div
+          className="flex h-full cursor-pointer items-center justify-between"
+          onClick={() => setOpen(true)}
+        >
+          {/* CHECK IN */}
+          <div className="flex flex-col justify-center">
+            <div className="flex items-start gap-1">
+              <span className="text-[28px] leading-none font-bold text-[#222]">
+                {start?.format("DD")}
               </span>
 
-              <span className="text-[10px] leading-none text-gray-500 sm:text-[11px] md:text-[13px] lg:text-[14px]">
-                {start?.format("YY")}
-              </span>
+              <div className="mt-2 flex flex-col leading-none">
+                <span className="text-[12px] font-semibold text-[#444]">
+                  {start?.format("MMM")}     {start?.format("YY")}
+                </span>
+
+                {/* <span className="text-[16px] text-[#666]">
+                  {start?.format("YY")}
+                </span> */}
+              </div>
             </div>
-          </div>
 
-          <span className="mt-1 truncate text-[10px] font-medium text-gray-500 sm:text-xs md:text-sm">
-            {start?.format("dddd")}
-          </span>
-        </div>
-
-        {/* CENTER */}
-        <div className="mx-1 flex h-7 w-7 items-center justify-center rounded bg-[#e6f4fb] sm:mx-2 sm:h-8 sm:w-8 md:mx-3 md:h-9 md:w-9">
-          <span className="text-sm font-bold text-[#0077b6] sm:text-base md:text-lg">
-            →
-          </span>
-        </div>
-
-        {/* CHECK OUT */}
-        <div className="flex min-w-0 flex-1 flex-col items-end justify-center">
-          <div className="flex items-center gap-1 leading-none sm:gap-2">
-            <span className="font-jost min-[700px]: text-[20px] font-medium! font-normal text-gray-700 min-[700px]:text-gray-800! sm:text-[24px] md:text-[28px] lg:text-[30px]">
-              {end?.format("DD")}
+            <span className="mt-2 text-[12px] font-medium text-[#777] uppercase">
+              {start?.format("dddd")}
             </span>
+          </div>
 
-            <div className="flex flex-col">
-              <span className="text-[11px] leading-none font-semibold text-gray-700 sm:text-[13px] md:text-[15px] lg:text-[16px]">
-                {end?.format("MMM")}
+          {/* CENTER */}
+          <div className="mx-4">
+            <span className="text-[28px] text-[#05144B]">→</span>
+          </div>
+
+          {/* CHECK OUT */}
+          <div className="flex flex-col items-end justify-center">
+            <div className="flex items-start gap-1">
+              <span className="text-[28px] leading-none font-bold text-[#222]">
+                {end?.format("DD")}
               </span>
 
-              <span className="text-[10px] leading-none text-gray-500 sm:text-[11px] md:text-[13px] lg:text-[14px]">
-                {end?.format("YY")}
-              </span>
+              <div className="mt-2 flex flex-col leading-none">
+                <span className="text-[12px] font-semibold text-[#444]">
+                  {end?.format("MMM")}  {end?.format("YY")}
+                </span>
+
+                {/* <span className="text-[12px] text-[#666]">
+                  {end?.format("YY")}
+                </span> */}
+              </div>
             </div>
-          </div>
 
-          <span className="mt-1 truncate text-right text-[10px] font-medium text-gray-500 sm:text-xs md:text-[14px]">
-            {end?.format("dddd")}
-          </span>
-        </div>
-        {/* NIGHTS */}
-        {nights > 0 && (
-          <div className="ml-3 rounded bg-[#0077b6] px-3 py-1 text-xs font-bold text-white shadow-sm">
-            {nights}N
+            <span className="mt-2 text-[12px] font-medium text-[#777] uppercase">
+              {end?.format("dddd")}
+            </span>
           </div>
-        )}
+          {/* NIGHTS */}
+          {nights > 0 && (
+            <div className="ml-5 rounded-md bg-[#05144B] px-2 py-1 text-[10px] font-semibold text-white">
+              {nights}N
+            </div>
+          )}
+        </div>
+        {/* PICKER */}
+        {picker}
       </div>
-      {/* PICKER */}
-      {picker}
-    </div>
+    </>
   );
 }

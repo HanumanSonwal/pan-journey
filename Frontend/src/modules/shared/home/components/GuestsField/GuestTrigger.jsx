@@ -4,7 +4,6 @@ import CompactItem from "./CompactItem";
 import SummaryItem from "./SummaryItem";
 
 export default function GuestTrigger({ variant = "default", value }) {
-
   console.log("GuestTrigger Render");
   if (variant === "compact") {
     return (
@@ -22,16 +21,18 @@ export default function GuestTrigger({ variant = "default", value }) {
   }
 
   return (
-    <div className="relative min-w-0 rounded border border-gray-300 px-5 py-3 transition-all hover:border-[#0077b6]">
-      <span className="absolute -top-2.5 left-4 rounded bg-white px-2 text-[14px] font-bold  tracking-wide text-[#0F6A75] font-bold min-[700px]:text-[16px]! min-[700px]:font-bold!">
+    <>
+      <span className="mb-2 block text-[14px] font-semibold text-[#222]">
         Rooms & Guests
       </span>
 
-      <div className="flex min-h-[56px] items-center justify-between">
-        <SummaryItem value={value.rooms} label="Room" />
-        <SummaryItem value={value.adults} label="Adults" center />
-        <SummaryItem value={value.children} label="Children" right />
+      <div className="h-[80px] rounded-md border border-[#d9d9d9] bg-white px-6 py-3 transition-all hover:border-[#0077b6]">
+        <div className="flex h-full items-center justify-between">
+          <SummaryItem value={value.rooms} label="ROOM" />
+          <SummaryItem value={value.adults} label="ADULTS" center />
+          <SummaryItem value={value.children} label="CHILDREN" right />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

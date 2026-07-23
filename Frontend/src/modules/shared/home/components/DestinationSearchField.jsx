@@ -163,12 +163,12 @@ function DestinationSearchField({
       return [
         ...(recentSearches.length > 0
           ? [
-            {
-              label: "Recent Searches",
+              {
+                label: "Recent Searches",
 
-              options: buildOptions(recentSearches),
-            },
-          ]
+                options: buildOptions(recentSearches),
+              },
+            ]
           : []),
 
         {
@@ -252,109 +252,110 @@ function DestinationSearchField({
   };
 
   return (
-    <div
-      title={value?.city || ""}
-      className={`relative w-full min-w-0 overflow-visible rounded border px-3 py-3 transition-all hover:border-[#0077b6] ${error ? "border-red-500" : "border-gray-300"
-        } ${wrapperClassName}`}
-      style={{ height }}
-    >
-      {/* LABEL */}
+    <>
       {!compact && (
-        <span className="absolute -top-2.5 left-4 rounded bg-white px-2 text-[14px] font-bold  tracking-wide text-[#0F6A75] font-bold min-[700px]:text-[16px]! min-[700px]:font-bold!">
+        <span className="mb-2 block text-[14px] font-semibold text-[#222]">
           City, Property name or Location
         </span>
       )}
 
-      {/* CONTENT */}
       <div
-        className={`flex w-full min-w-0 overflow-hidden ${compact
-          ? "h-full items-center px-0"
-          : "min-h-[56px] flex-col justify-center px-1 md:px-2"
-          }`}
+        title={value?.city || ""}
+        className={`relative w-full min-w-0 overflow-visible rounded border px-3 py-3 transition-all hover:border-[#0077b6] ${
+          error ? "border-red-500" : "border-gray-300"
+        } ${wrapperClassName}`}
+        style={{ height }}
       >
-        {/* SELECT */}
-        <div className="w-full min-w-0 overflow-hidden">
-          <Popover
-            open={error}
-            placement="bottomLeft"
-            content={
-              <span className="text-white">
-                Enter a destination to start searching.
-              </span>
-            }
-            color="#ef4444"
-            trigger={[]}
-          >
-            <Select
-              showSearch
-              allowClear
-              value={
-                value?.city
-                  ? value.city.length > 35
-                    ? `${value.city.slice(0, 35)}...`
-                    : value.city
-                  : undefined
+        {/* CONTENT */}
+        <div
+          className={`flex w-full min-w-0 overflow-hidden ${
+            compact
+              ? "h-full items-center px-0"
+              : "min-h-[56px] flex-col justify-center px-1 md:px-2"
+          }`}
+        >
+          {/* SELECT */}
+          <div className="w-full min-w-0 overflow-hidden">
+            <Popover
+              open={error}
+              placement="bottomLeft"
+              content={
+                <span className="text-white">
+                  Enter a destination to start searching.
+                </span>
               }
-              onClear={() => {
-                onChange({
-                  city: "",
-                  cityData: null,
-                });
-              }}
-              title={value?.city || ""}
-              placeholder="Where do you want to stay?"
-              variant="borderless"
-              popupMatchSelectWidth={compact ? false : true}
-              filterOption={false}
-              loading={isLoading}
-              className={`font-jost! w-full min-w-0 overflow-hidden font-medium  text-gray-600 min-[700px]:font-bold! min-[700px]:text-gray-800! ${styles.destinationSelect}`}
-              style={{
-                fontWeight: 300,
-                fontSize,
-                lineHeight: 1,
-                width: "100%",
-                minWidth: 0,
-              }}
-              options={groupedOptions}
-              onSearch={handleSearch}
-              onFocus={() => {
-                setDebouncedSearch("");
-              }}
-              onChange={handleChange}
-              notFoundContent={
-                isLoading ? (
-                  <div className="flex justify-center py-4">
-                    <Spin size="small" />
-                  </div>
-                ) : (
-                  <div className="py-3 text-center text-sm text-gray-500">
-                    No destinations found
-                  </div>
-                )
-              }
-            />
-          </Popover>
-        </div>
+              color="#ef4444"
+              trigger={[]}
+            >
+              <Select
+                showSearch
+                allowClear
+                value={
+                  value?.city
+                    ? value.city.length > 35
+                      ? `${value.city.slice(0, 35)}...`
+                      : value.city
+                    : undefined
+                }
+                onClear={() => {
+                  onChange({
+                    city: "",
+                    cityData: null,
+                  });
+                }}
+                title={value?.city || ""}
+                placeholder="Where do you want to stay?"
+                variant="borderless"
+                popupMatchSelectWidth={compact ? false : true}
+                filterOption={false}
+                loading={isLoading}
+                className={`font-jost! w-full min-w-0 overflow-hidden font-medium text-gray-600 min-[700px]:font-bold! min-[700px]:text-gray-800! ${styles.destinationSelect}`}
+                style={{
+                  width: "100%",
+                  fontSize: 18,
+                  fontWeight: 400,
+                }}
+                options={groupedOptions}
+                onSearch={handleSearch}
+                onFocus={() => {
+                  setDebouncedSearch("");
+                }}
+                onChange={handleChange}
+                notFoundContent={
+                  isLoading ? (
+                    <div className="flex justify-center py-4">
+                      <Spin size="small" />
+                    </div>
+                  ) : (
+                    <div className="py-3 text-center text-sm text-gray-500">
+                      No destinations found
+                    </div>
+                  )
+                }
+              />
+            </Popover>
+          </div>
 
-        {/* COUNTRY */}
-        {compact ? (
-          <span
-            className="ml-1 max-w-[70px] flex-shrink-0 overflow-hidden text-[11px] text-ellipsis whitespace-nowrap text-gray-400"
-            title={
-              value?.cityData?.country || value?.cityData?.countryCode || ""
-            }
-          >
-            {value?.cityData?.country || value?.cityData?.countryCode || ""}
-          </span>
-        ) : (
-          <span className="text-xs text-gray-500 md:text-sm">
-            {value?.cityData?.country ||
-              value?.cityData?.countryCode ||
-              "Search destinations"}
-          </span>
-        )}
+          {/* COUNTRY */}
+          {compact ? (
+            <span
+              className="ml-1 max-w-[70px] flex-shrink-0 overflow-hidden text-[11px] text-ellipsis whitespace-nowrap text-gray-400"
+              title={
+                value?.cityData?.country || value?.cityData?.countryCode || ""
+              }
+            >
+              {value?.cityData?.country || value?.cityData?.countryCode || ""}
+            </span>
+          ) : (
+            <span className="text-xs text-gray-500 md:text-sm">
+              {value?.cityData?.country ||
+                value?.cityData?.countryCode ||
+                "Search destinations"}
+            </span>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
