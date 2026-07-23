@@ -4,13 +4,12 @@ import BusSearchForm from "@/modules/bus/components/BusSearchForm";
 import FlightSearchForm from "@/modules/flight/components/FlightSearchForm";
 import HotelSearchForm from "@/modules/hotel/components/hotels/HotelSearchForm";
 import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
+import { navigateToHotels } from "@/modules/hotel/utils/hotelNavigation";
 import { HOME_TABS } from "@/modules/shared/config/homeTabs";
 import styles from "@/modules/shared/home/components/styles/Hero.module.css";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import SearchButton from "./SearchButton";
 import Tabs from "./Tabs";
-import { navigateToHotels } from "@/modules/hotel/utils/hotelNavigation";
 
 const FORM_MAP = {
   hotel: HotelSearchForm,
@@ -28,16 +27,16 @@ export default function Hero() {
   const [destinationError, setDestinationError] = useState(false);
   console.log(draftSearchData, "draft search home");
 
-const handleSearch = () => {
-  if (!draftSearchData?.city?.trim()) {
-    setDestinationError(true);
-    return;
-  }
+  const handleSearch = () => {
+    if (!draftSearchData?.city?.trim()) {
+      setDestinationError(true);
+      return;
+    }
 
-  applySearch();
+    applySearch();
 
-  navigateToHotels(router, draftSearchData);
-};
+    navigateToHotels(router, draftSearchData);
+  };
   return (
     <section
       className="relative w-full bg-[#EDF7FF] pb-0 md:pb-30 lg:pb-45 xl:pb-15"
@@ -45,22 +44,21 @@ const handleSearch = () => {
     >
       <div className={styles.heroBg} />
       <div className="absolute top-10 left-1/2 w-[92%] -translate-x-1/2 px-0 min-[700px]:top-[22%] min-[700px]:w-[92%] lg:top-[27%] lg:w-[80.83%] xl:top-[40%]">
-        <div className="w-full rounded-xl bg-white p-6 pb-20 shadow-2xl min-[700px]:p-6 md:p-8 md:pb-20">
+        <div className="w-full rounded-xl bg-[#f8f8f8] p-6 pb-20 shadow-2xl min-[700px]:p-6 md:p-8 md:pb-6">
           <Tabs
             tabs={HOME_TABS}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
           />
-          <h2 className="mb-3 hidden text-center text-[22px] font-bold text-[#72C0F0] min-[700px]:block lg:text-[28px] xl:text-[32px]">
-            Find What You Are Looking For
-          </h2>
+
           {ActiveForm && (
             <ActiveForm
               destinationError={destinationError}
               setDestinationError={setDestinationError}
+              onSearch={handleSearch}
             />
           )}
-          <SearchButton onSearch={handleSearch} />
+
         </div>
       </div>
     </section>

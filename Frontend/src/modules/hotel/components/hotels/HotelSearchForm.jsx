@@ -22,17 +22,9 @@ export default function HotelSearchForm({
 
   return (
     <div className="w-full">
-      <div className="hidden md:flex md:items-center md:justify-between">
-        <h3 className="text-[20px] font-extrabold text-gray-900 lg:text-[22px] xl:text-[24px]">
-          Select Your Hotels
-        </h3>
 
-        <h3 className="text-sm font-semibold text-gray-600">
-          Book Domestic and International Property Online.
-        </h3>
-      </div>
 
-      <div className="mt-4 grid grid-cols-1 gap-4 min-[700px]:grid-cols-2 min-[1205px]:grid-cols-[2fr_1.5fr_1.5fr]">
+      <div className="mt-4 grid grid-cols-1 gap-4 min-[700px]:grid-cols-2 min-[1205px]:grid-cols-[2fr_1.5fr_1.5fr_auto] items-end">
         {/* DESTINATION */}
         <div
           className="min-[700px]:col-span-2 min-[1205px]:col-span-1"
@@ -118,16 +110,13 @@ export default function HotelSearchForm({
             }}
           />
         </div>
-      </div>
-      {showSearchButton && (
         <SearchButton
           floating={false}
-          onSearch={() => {
-            onSearch?.();
-            onClose?.();
-          }}
+          onSearch={onSearch}
         />
-      )}
+      </div>
+
+
     </div>
   );
 }
