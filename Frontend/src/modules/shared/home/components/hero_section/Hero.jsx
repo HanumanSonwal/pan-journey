@@ -19,13 +19,16 @@ const FORM_MAP = {
 
 export default function Hero() {
   const [activeTab, setActiveTab] = useState(
-    HOME_TABS.find((t) => t.enabled)?.key,
+    HOME_TABS.find((t) => t.enabled)?.key
   );
+
   const router = useRouter();
+
   const { draftSearchData, applySearch } = useHotelSearchStore();
+
   const ActiveForm = FORM_MAP[activeTab];
+
   const [destinationError, setDestinationError] = useState(false);
-  console.log(draftSearchData, "draft search home");
 
   const handleSearch = () => {
     if (!draftSearchData?.city?.trim()) {
@@ -34,17 +37,56 @@ export default function Hero() {
     }
 
     applySearch();
-
     navigateToHotels(router, draftSearchData);
   };
+
   return (
     <section
-      className="relative w-full bg-[#EDF7FF] pb-0 md:pb-30 lg:pb-45 xl:pb-15"
       id="hero-search"
+      className="relative w-full overflow-visible bg-[#EDF7FF]"
     >
+      {/* Hero Background */}
       <div className={styles.heroBg} />
-      <div className="absolute top-10 left-1/2 w-[92%] -translate-x-1/2 px-0 min-[700px]:top-[22%] min-[700px]:w-[92%] lg:top-[27%] lg:w-[80.83%] xl:top-[55%]">
-        <div className="w-full rounded-xl bg-[#f8f8f8] p-6 pb-20 shadow-2xl min-[700px]:p-6 md:p-8 md:pb-6">
+
+      {/* Search Card */}
+      <div
+        className="
+          absolute
+          left-1/2
+          -translate-x-1/2
+          z-20
+
+          top-8
+          sm:top-10
+          md:top-12
+          lg:top-[56%]
+          xl:top-[61%]
+          2xl:top-[66%]
+
+          w-[95%]
+          sm:w-[94%]
+          md:w-[92%]
+          lg:w-[94%]
+          xl:w-[82%]
+          !2xl:max-w-[99%]
+        "
+      >
+        <div
+          className="
+            w-full
+            rounded-2xl
+            border
+            border-gray-200
+            bg-[#F8F8F8]
+            shadow-xl
+
+            p-4
+            sm:p-5
+            md:p-6
+            lg:p-7
+            xl:p-8
+          "
+        >
           <Tabs
             tabs={HOME_TABS}
             activeTab={activeTab}
@@ -58,7 +100,6 @@ export default function Hero() {
               onSearch={handleSearch}
             />
           )}
-
         </div>
       </div>
     </section>
