@@ -22,7 +22,6 @@ const createAdmin = async () => {
 
     await mongoose.connect(process.env.MONGO_URI);
     console.log("✅ MongoDB connected");
-
     const adminRole = await Role.findOne({
       name: "admin",
       type: "admin",
