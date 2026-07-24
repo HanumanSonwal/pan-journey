@@ -11,6 +11,7 @@ const ALLOWED_TYPES = [
   "Region",
   "Hotel",
   "State",
+  "TrainStation"
 ];
 
 // 🔥 slug generator

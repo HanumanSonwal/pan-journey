@@ -31,10 +31,10 @@ const resolveMarkup = ({
   console.log("hotelmarkup =", hotelMarkup);
   // city
   const normalizedCity = extractNormalizedCity(cityName);
-
+console.log("normalizedCity",normalizedCity)
   const cityMarkup = cityMarkups.find(
     (m) =>
-      m.cityName?.trim().toLowerCase() === normalizedCity?.trim().toLowerCase(),
+      m.cityName?.trim().toLowerCase() ,
   );
 
   if (cityMarkup) return cityMarkup;
