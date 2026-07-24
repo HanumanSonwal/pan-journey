@@ -138,8 +138,6 @@ export default async function Page() {
         />
       )}
 
-
-
       <ScrollToTopButton />
       <div className="relative">
         <Hero />
