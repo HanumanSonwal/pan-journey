@@ -86,9 +86,9 @@ const resolveMarkupForHotel = ({
   const normalizedCity = normalizeCityName(body.cityName);
 
   const cityMarkup = cityMarkups.find(
-    (m) => m.cityName?.trim().toLowerCase() === normalizedCity.toLowerCase(),
-  );
-
+    (m) => String(m.cityId) === String(body.cityId)
+);
+console.log("cityMarkup",cityMarkup)
   if (cityMarkup) return cityMarkup;
 
   // 3 STATE LEVEL
@@ -354,7 +354,7 @@ export const searchHotelsFromSupplier = async (reqBody) => {
   const hotelMarkups = allMarkups.filter((m) => m.level === "hotel");
 
   const cityMarkups = allMarkups.filter((m) => m.level === "city");
-  // console.log("COUNTRY TAX FETCHED =>", cityMarkups);
+   console.log("City markup =>", cityMarkups);
 
   const stateMarkups = allMarkups.filter((m) => m.level === "state");
 
@@ -387,7 +387,7 @@ export const searchHotelsFromSupplier = async (reqBody) => {
       countryMarkups,
       worldwideMarkups,
     });
-
+console.log("matchedmarkup",matchedMarkup)
     const pricedHotel = applyHotelPricing({
       hotel,
       markup: matchedMarkup,

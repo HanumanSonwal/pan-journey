@@ -34,7 +34,7 @@ console.log("incoming hotel =", hotelId);
   if (!markup) {
     markup = await Markup.findOne({
       level: "city",
-      cityName: normalizedCity,
+    
       isActive: true,
     });
   }
