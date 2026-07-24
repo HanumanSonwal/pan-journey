@@ -3,105 +3,172 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-
   height: 40vh;
   position: relative;
-
   display: flex;
   align-items: center;
   justify-content: center;
-}
 
+ 
+}
 .heroBg img {
   width: 100%;
   max-width: 1164px;
   height: 340px;
-  object-fit: contain;
-}
+  object-fit: contain; 
 
-/* ===================== Mobile Only ===================== */
-@media (max-width: 699px) {
+  
+}
+/* ===================== Mobile ===================== */
+
+@media (max-width:699px){
+
   .heroBg {
-    height: 515px;
-       background-image: url("/images/heromobile.png");
-    background-size: cover;
-    background-position: center;
+
+    height:515px;
+
+    background-image:url("/images/heromobile.png");
+
+    background-size:cover;
+
+    background-position:center;
+
   }
+
 
   .heroBg img {
-    width: 92%;
-    max-width: 100%;
-    height: auto;
-    max-height: 190px;
-    object-fit: contain;
+
+    width:92%;
+    max-width:100%;
+    height:auto;
+    max-height:190px;
+
   }
 
+
   .cardWrapper {
-    width: calc(100% - 4px);
-    max-width: 420px;
-    margin: -95px auto 0;
-    padding: 0 12px;
-    position: relative;
-    z-index: 10;
+
+    width:calc(100% - 4px);
+
+    max-width:420px;
+
+    margin:-95px auto 0;
+
+    padding:0 12px;
+
+    position:relative;
+
+    z-index:10;
+
   }
+
 
   .custom-scroll {
-    padding-bottom: 4px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+
+    padding-bottom:4px;
+
+    overflow-x:auto;
+
   }
+
 }
+
+
 
 /* ===================== Tablet ===================== */
-@media (min-width: 700px) and (max-width: 1024px) {
+
+@media (min-width:700px) and (max-width:999px){
+
   .heroBg {
-    height: 350px !important;
+
+    height:350px;
+
   }
+
 
   .heroBg img {
-    height: 280px;
+
+    height:280px;
+
   }
+
 
   .cardWrapper {
-    margin-top: -280px;
+
+    margin-top:-280px;
+
   }
+
 }
 
-/* ===================== Small Laptop ===================== */
-@media (min-width: 1025px) and (max-width: 1280px) {
+
+
+/* ===================== 1000px+ SAME DESIGN AS 1440 ===================== */
+
+@media (min-width:1000px){
+
   .heroBg {
-    height: 650px !important;
+
+    height:40vh;
+
   }
 
-  .cardWrapper {
-    margin-top: -350px;
+
+  .heroBg img {
+
+    height:340px;
+
   }
+
+
+  .cardWrapper {
+
+    margin-top:-520px;
+
+  }
+
 }
+
+
 
 /* ===================== Overlay ===================== */
+
 .heroBg::after {
-  content: "";
-  position: absolute;
-  inset: 0;
+
+  content:"";
+
+  position:absolute;
+
+  inset:0;
+
 }
 
-/* ===================== Desktop ===================== */
-.cardWrapper {
-  margin-top: -520px;
-}
+
 
 /* ===================== Scroll ===================== */
+
 .custom-scroll {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: auto;
-  white-space: nowrap;
-  cursor: text;
 
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  width:100%;
+
+  max-width:100%;
+
+  overflow-x:auto;
+
+  white-space:nowrap;
+
+  cursor:text;
+
+  scrollbar-width:none;
+
+  -ms-overflow-style:none;
+
 }
 
-.custom-scroll::-webkit-scrollbar {
-  display: none;
+
+.custom-scroll::-webkit-scrollbar{
+
+  display:none;
+
 }
+

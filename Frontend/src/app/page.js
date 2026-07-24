@@ -138,14 +138,14 @@ export default async function Page() {
         />
       )}
 
-      <Hero />
-     
-      <ScrollToTopButton />
-       <div className="relative">
-  {/* Hero Section */}
 
-  <TrustSection />
-</div>
+
+      <ScrollToTopButton />
+      <div className="relative">
+        <Hero />
+        <TrustSection />
+      </div>
+
       <VacationSection />
       <Herobanner />
       <WhySection />

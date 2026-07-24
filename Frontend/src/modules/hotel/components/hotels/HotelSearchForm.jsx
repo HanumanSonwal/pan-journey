@@ -16,18 +16,41 @@ export default function HotelSearchForm({
   onSearch,
 }) {
   const { draftSearchData, setDraftSearchData } = useHotelSearchStore();
+
   const [dateOpen, setDateOpen] = useState(false);
   const [guestOpen, setGuestOpen] = useState(false);
+
   const destinationClickedRef = useRef(false);
 
   return (
     <div className="w-full">
+      <div
+        className="
+    mt-4
+    grid
+    w-full
+    grid-cols-1
+    gap-3
+    items-end
 
+    min-[700px]:grid-cols-2
 
-      <div className="mt-4 grid grid-cols-1 gap-4 min-[700px]:grid-cols-2 min-[1205px]:grid-cols-[2fr_1.5fr_1.5fr_auto] items-end">
-        {/* DESTINATION */}
+    min-[1000px]:grid-cols-[minmax(220px,2fr)_minmax(170px,1.5fr)_minmax(170px,1.5fr)_auto]
+
+    min-[1000px]:gap-2
+
+    xl:gap-4
+
+    2xl:gap-4
+  "
+
+      >
+        {/* Destination */}
         <div
-          className="min-[700px]:col-span-2 min-[1205px]:col-span-1"
+          className="
+            min-[700px]:col-span-2
+            min-[1000px]:col-span-1
+          "
           onClick={() => {
             destinationClickedRef.current = true;
           }}
@@ -39,7 +62,6 @@ export default function HotelSearchForm({
             }}
             error={destinationError}
             onChange={(val) => {
-              console.log("HOME DESTINATION VALUE =>", val);
               setDestinationError?.(false);
 
               setDraftSearchData({
@@ -47,13 +69,16 @@ export default function HotelSearchForm({
                 cityData: {
                   ...val?.cityData,
                   stateName:
-                    val?.cityData?.stateName || val?.cityData?.state || "",
+                    val?.cityData?.stateName ||
+                    val?.cityData?.state ||
+                    "",
                   countryCode:
-                    val?.cityData?.countryCode || val?.cityData?.country || "",
+                    val?.cityData?.countryCode ||
+                    val?.cityData?.country ||
+                    "",
                 },
               });
 
-              // AUTO OPEN DATE
               if (
                 destinationClickedRef.current &&
                 (val?.city || val?.cityData)
@@ -63,18 +88,20 @@ export default function HotelSearchForm({
                 });
               }
             }}
-            fontSize="clamp(18px, 2vw, 21px)"
-            height="clamp(65px, 8vw, 65px)"
-            marginBottom="clamp(20px, 1vw, 20px)"
+
+            height="65px"
+
           />
         </div>
 
-        {/* DATE */}
+        {/* Date */}
         <div className="relative z-50 w-full">
           <DateRangeField
             variant="default"
             value={[
-              draftSearchData?.checkIn ? dayjs(draftSearchData.checkIn) : null,
+              draftSearchData?.checkIn
+                ? dayjs(draftSearchData.checkIn)
+                : null,
               draftSearchData?.checkOut
                 ? dayjs(draftSearchData.checkOut)
                 : null,
@@ -98,7 +125,7 @@ export default function HotelSearchForm({
           />
         </div>
 
-        {/* GUESTS */}
+        {/* Guests */}
         <div className="relative z-40 w-full">
           <GuestsField
             variant="default"
@@ -110,13 +137,15 @@ export default function HotelSearchForm({
             }}
           />
         </div>
-        <SearchButton
-          floating={false}
-          onSearch={onSearch}
-        />
+
+        {/* Search Button */}
+        <div className="w-full min-[1000px]:w-auto">
+          <SearchButton
+            floating={false}
+            onSearch={onSearch}
+          />
+        </div>
       </div>
-
-
     </div>
   );
 }
