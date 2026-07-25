@@ -24,33 +24,10 @@ export default function HotelSearchForm({
 
   return (
     <div className="w-full">
-      <div
-        className="
-    mt-4
-    grid
-    w-full
-    grid-cols-1
-    gap-3
-    items-end
-
-    min-[700px]:grid-cols-2
-
-    min-[1000px]:grid-cols-[minmax(220px,2fr)_minmax(170px,1.5fr)_minmax(170px,1.5fr)_auto]
-
-    min-[1000px]:gap-2
-
-    xl:gap-4
-
-    2xl:gap-4
-  "
-
-      >
+      <div className="mt-4 grid w-full grid-cols-1 items-end gap-3 min-[700px]:grid-cols-2 min-[1000px]:grid-cols-[minmax(220px,2fr)_minmax(170px,1.5fr)_minmax(170px,1.5fr)_auto] min-[1000px]:gap-2 xl:gap-4 2xl:gap-4">
         {/* Destination */}
         <div
-          className="
-            min-[700px]:col-span-2
-            min-[1000px]:col-span-1
-          "
+          className="min-[700px]:col-span-2 min-[1000px]:col-span-1"
           onClick={() => {
             destinationClickedRef.current = true;
           }}
@@ -69,13 +46,9 @@ export default function HotelSearchForm({
                 cityData: {
                   ...val?.cityData,
                   stateName:
-                    val?.cityData?.stateName ||
-                    val?.cityData?.state ||
-                    "",
+                    val?.cityData?.stateName || val?.cityData?.state || "",
                   countryCode:
-                    val?.cityData?.countryCode ||
-                    val?.cityData?.country ||
-                    "",
+                    val?.cityData?.countryCode || val?.cityData?.country || "",
                 },
               });
 
@@ -88,9 +61,7 @@ export default function HotelSearchForm({
                 });
               }
             }}
-
             height="65px"
-
           />
         </div>
 
@@ -99,9 +70,7 @@ export default function HotelSearchForm({
           <DateRangeField
             variant="default"
             value={[
-              draftSearchData?.checkIn
-                ? dayjs(draftSearchData.checkIn)
-                : null,
+              draftSearchData?.checkIn ? dayjs(draftSearchData.checkIn) : null,
               draftSearchData?.checkOut
                 ? dayjs(draftSearchData.checkOut)
                 : null,
@@ -140,10 +109,7 @@ export default function HotelSearchForm({
 
         {/* Search Button */}
         <div className="w-full min-[1000px]:w-auto">
-          <SearchButton
-            floating={false}
-            onSearch={onSearch}
-          />
+          <SearchButton floating={false} onSearch={onSearch} />
         </div>
       </div>
     </div>
