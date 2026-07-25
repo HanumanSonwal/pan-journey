@@ -11,8 +11,8 @@ import { useState } from "react";
 import GuestsField from "@/modules/shared/home/components/GuestsField/GuestsField";
 import { EditOutlined } from "@ant-design/icons";
 import { Modal } from "antd";
-import HotelSearchForm from "./HotelSearchForm";
 import { navigateToHotels } from "../../utils/hotelNavigation";
+import HotelSearchForm from "./HotelSearchForm";
 
 export default function SearchBar({ onSearch }) {
   const router = useRouter();
@@ -41,7 +41,7 @@ export default function SearchBar({ onSearch }) {
   return (
     <>
       {/* // <div className="sticky top-0 z-5 bg-[#72C0F0] shadow"> */}
-      <div className="sticky top-0 z-5 hidden bg-[#72C0F0] shadow md:block">
+      <div className="sticky top-0 z-5 hidden buttion-background-color shadow md:block">
         <div className="px-2 py-1 pb-8 md:px-6">
           <div className="mx-auto max-w-[1250px]">
             {/* Heading */}
@@ -134,7 +134,7 @@ export default function SearchBar({ onSearch }) {
                 <button
                   type="button"
                   onClick={handleSearch}
-                  className="h-[50px] w-full rounded bg-[#0f766e] text-sm font-semibold tracking-wide !text-white transition-all duration-200 hover:bg-[#0d5f58] active:scale-[0.98]"
+                  className="h-[50px] w-full border buttion-border-color rounded bg-white text-sm font-semibold tracking-wide most-text-color transition-all duration-200 hover:bg-[#0d5f58] active:scale-[0.98]"
                 >
                   SEARCH
                 </button>
