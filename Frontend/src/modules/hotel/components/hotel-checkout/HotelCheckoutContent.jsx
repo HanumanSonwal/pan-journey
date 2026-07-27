@@ -2,6 +2,9 @@
 
 import { Col, Row, Typography } from "antd";
 
+import { ClockCircleOutlined } from "@ant-design/icons";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import BackgroundSection from "../hotel-booking/BackgroundSection";
 import BookingSummaryCard from "./BookingSummaryCard";
 import CouponCard from "./CouponCard";
@@ -25,21 +28,42 @@ export default function HotelCheckoutContent({
   const room = bookingData?.selectedRoom;
   const search = bookingData?.searchData;
 
+  const router = useRouter();
+
+  // 20 Minutes = 1200 Seconds
+  const [timeLeft, setTimeLeft] = useState(20 * 60);
+
   const customer = booking?.customer;
   const guestDetails = booking?.guestDetails || [];
 
   const coupons = booking?.availableCoupons || [];
   const priceSummary = booking?.priceSummary || {};
 
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      router.push("/");
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft, router]);
+
+  const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
+  const seconds = String(timeLeft % 60).padStart(2, "0");
+
   return (
     <div className="min-h-screen bg-[#eef6fd]">
       {/* Top Background */}
-      <div className="relative  overflow-hidden">
+      <div className="relative overflow-hidden">
         <BackgroundSection />
       </div>
 
       {/* Main Content */}
-      <div className="relative z-20 mx-auto !-mt-10 md:!-mt-12 max-w-[1320px] px-3 md:px-5">
+      <div className="relative z-20 mx-auto !-mt-10 max-w-[1320px] px-3 md:!-mt-12 md:px-5">
         {/* HEADER */}
         <div className="mb-4 rounded-xl border border-[#d8edf9] bg-white px-5 py-4 shadow-md">
           <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
@@ -56,9 +80,22 @@ export default function HotelCheckoutContent({
               </Text>
             </div>
 
+            <div className="flex justify-center md:flex-1">
+              <div className="flex items-center gap-2 rounded-lg bg-[#fdf2ee] px-5 py-2">
+                <span className="text-[14px] text-gray-700">
+                  This price is guaranteed for...
+                </span>
+
+                <ClockCircleOutlined className="text-[18px] text-red-500" />
+
+                <span className="text-[20px] font-semibold text-red-500">
+                  {minutes}:{seconds}
+                </span>
+              </div>
+            </div>
             <div className="mt-3 md:mt-0">
               <div className="rounded-lg bg-[#f0f9ff] px-4 py-2">
-                <Text className="block text-[11px] uppercase tracking-wide text-gray-500">
+                <Text className="block text-[11px] tracking-wide text-gray-500 uppercase">
                   Booking Reference
                 </Text>
 

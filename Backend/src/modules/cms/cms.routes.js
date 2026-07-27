@@ -11,6 +11,7 @@ import {
   getCMSBySlug,
   getSingleCMS,
   getTemplates,
+  previewSlug,
   updateCMS,
 } from "./cms.controller.js";
 
@@ -51,6 +52,8 @@ router.get("/entity/:entityType/:entityId", protect, getCMSByEntityController);
 ADMIN
 =================================
 */
+
+router.post("/preview-slug", protect, previewSlug);
 
 /*
 CREATE

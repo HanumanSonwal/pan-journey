@@ -1,4 +1,5 @@
 import ApiError from "../../utils/response/ApiError.js";
+import { generateCMSSlug } from "../../utils/slug/cmsSlug.js";
 import { generateSlug } from "../../utils/slug/slugify.js";
 
 import CMSPage from "./cms.model.js";
@@ -11,7 +12,7 @@ export const createCMSPage = async (payload) => {
   const { entityType, entityId } = payload;
 
   // auto slug
-  let slug = payload.slug;
+  let slug = payload.slug || generateCMSSlug(payload);
 
   if (!slug) {
     // HOTEL
@@ -125,8 +126,11 @@ export const updateCMSPage = async (id, payload) => {
   }
 
   // regenerate slug if title changed
-  if (payload.title && !payload.slug) {
-    payload.slug = generateSlug(payload.title);
+  if (!payload.slug) {
+    payload.slug = generateCMSSlug({
+      ...page.toObject(),
+      ...payload,
+    });
   }
 
   // slug duplicate check
@@ -189,6 +193,22 @@ export const getCMSPageBySlug = async (slug, preview = false) => {
   }
 
   return page;
+};
+
+/*
+PREVIEW SLUG
+*/
+export const previewCMSSlug = async (payload) => {
+  const slug = generateCMSSlug(payload);
+
+  const exists = await CMSPage.exists({
+    slug,
+  });
+
+  return {
+    slug,
+    available: !exists,
+  };
 };
 
 /*

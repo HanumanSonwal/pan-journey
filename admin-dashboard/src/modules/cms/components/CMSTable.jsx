@@ -1,6 +1,11 @@
 "use client";
 
-import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
+import {
+  CopyOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  EyeOutlined,
+} from "@ant-design/icons";
 import { Button, Empty, Popconfirm, Table, Tag, Tooltip } from "antd";
 export default function CMSTable({
   pages,
@@ -14,18 +19,68 @@ export default function CMSTable({
 }) {
   const URL = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
 
+  const BASE_URL = URL.replace(/\/+$/, "");
+
+  const handleCopyUrl = async (slug) => {
+    const fullUrl = `${BASE_URL}/${slug}`;
+
+    try {
+      await navigator.clipboard.writeText(fullUrl);
+      message.success("URL copied successfully");
+    } catch {
+      message.error("Failed to copy URL");
+    }
+  };
+
   const columns = [
     {
       title: "Title",
       dataIndex: "title",
       width: 220,
     },
-    {
-      title: "Slug",
-      dataIndex: "slug",
-      width: 180,
-      render: (val) => <Tag>/{val}</Tag>,
-    },
+{
+  title: "Slug",
+  dataIndex: "slug",
+  width: 280,
+  render: (val) => {
+    const fullUrl = `${URL.replace(/\/+$/, "")}/${val}`;
+
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 8,
+        }}
+      >
+        <span
+          style={{
+            color: "#1677ff",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            maxWidth: 200,
+          }}
+        >
+          /{val}
+        </span>
+
+        <Tooltip title="Copy URL">
+          <Button
+            type="text"
+            size="small"
+            icon={<CopyOutlined />}
+            onClick={async () => {
+              await navigator.clipboard.writeText(fullUrl);
+              message.success("URL copied");
+            }}
+          />
+        </Tooltip>
+      </div>
+    );
+  },
+},
     {
       title: "Type",
       dataIndex: "entityType",
