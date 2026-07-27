@@ -56,7 +56,7 @@ export default function Hero() {
           -translate-x-1/2
           z-20
 
-          top-8
+          top-18
           sm:top-10
           md:top-12
           lg:top-[56%]

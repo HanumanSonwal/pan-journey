@@ -1,15 +1,20 @@
 "use client";
 
+import {
+  CalendarOutlined,
+  EditOutlined,
+  TeamOutlined
+} from "@ant-design/icons";
+
 import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
 import DateRangeField from "@/modules/shared/home/components/DateRangeField";
 import DestinationSearchField from "@/modules/shared/home/components/DestinationSearchField";
+import GuestsField from "@/modules/shared/home/components/GuestsField/GuestsField";
 
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import GuestsField from "@/modules/shared/home/components/GuestsField/GuestsField";
-import { EditOutlined } from "@ant-design/icons";
 import { Modal } from "antd";
 import { navigateToHotels } from "../../utils/hotelNavigation";
 import HotelSearchForm from "./HotelSearchForm";
@@ -57,6 +62,7 @@ export default function SearchBar({ onSearch }) {
             <div className="grid grid-cols-1 items-center gap-2 md:grid-cols-12">
               <div className="min-w-0 md:col-span-3 lg:col-span-4">
                 <DestinationSearchField
+
                   error={destinationError}
                   value={{
                     city: draftSearchData?.city,
@@ -90,6 +96,9 @@ export default function SearchBar({ onSearch }) {
 
               <div className="relative z-50 min-w-0 md:col-span-3 lg:col-span-3">
                 <DateRangeField
+                  icon={
+                    <CalendarOutlined className="text-gray-400 text-[18px]" />
+                  }
                   variant="compact"
                   open={dateOpen}
                   setOpen={setDateOpen}
@@ -120,6 +129,9 @@ export default function SearchBar({ onSearch }) {
 
               <div className="relative z-40 min-w-0 md:col-span-4 lg:col-span-3">
                 <GuestsField
+                  icon={
+                    <TeamOutlined className="text-gray-400 text-[18px]" />
+                  }
                   variant="compact"
                   open={guestOpen}
                   setOpen={setGuestOpen}
@@ -134,7 +146,7 @@ export default function SearchBar({ onSearch }) {
                 <button
                   type="button"
                   onClick={handleSearch}
-                  className="h-[50px] w-full border buttion-border-color rounded bg-white text-sm font-semibold tracking-wide most-text-color transition-all duration-200 hover:bg-[#0d5f58] active:scale-[0.98]"
+                  className="h-[50px] w-full border buttion-border-color rounded bg-white text-sm font-semibold tracking-wide most-text-color transition-all duration-200 active:scale-[0.98]"
                 >
                   SEARCH
                 </button>

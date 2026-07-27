@@ -1,5 +1,6 @@
 "use client";
-
+import useIsMobile from "@/hooks/useIsMobile";
+import MobileTrustSection from "@/modules/hotel/mobile-componant/MobileTrustSection";
 import {
   CustomerServiceOutlined,
   GlobalOutlined,
@@ -79,7 +80,16 @@ const trustItems = [
 ];
 
 export default function TrustSection() {
+  const isMobile = useIsMobile();
+
+  if (isMobile === null) return null;
+
+  if (isMobile) {
+    return <MobileTrustSection />;
+  }
+
   return (
+
     <section
       className="
     absolute
@@ -141,5 +151,6 @@ export default function TrustSection() {
         ))}
       </div>
     </section>
+
   );
 }

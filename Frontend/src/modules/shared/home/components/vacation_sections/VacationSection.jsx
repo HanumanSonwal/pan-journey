@@ -17,7 +17,7 @@ export default function VacationSection() {
       <div className="!mt-[124px]">
         <SectionHeading
           title="Places As Per Your Vibe"
-          description="We're committed to offering more than just products—we provide exceptional experiences."
+          // description="We're committed to offering more than just products—we provide exceptional experiences."
         />
       </div>
 
