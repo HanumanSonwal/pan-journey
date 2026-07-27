@@ -1,6 +1,7 @@
 "use client";
 
 import { useDestinationSearch } from "@/modules/hotel/hooks/useDestinationSearch";
+import { SearchOutlined } from "@ant-design/icons";
 import { Popover, Select, Spin } from "antd";
 import debounce from "lodash/debounce";
 import { memo, useEffect, useMemo, useState } from "react";
@@ -15,6 +16,7 @@ function DestinationSearchField({
   fontSize = "24px",
   wrapperClassName = "",
   autoSelectRecent = false,
+  icon,
 }) {
   const [searchText, setSearchText] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -266,74 +268,89 @@ function DestinationSearchField({
         style={{ height }}
       >
         {/* CONTENT */}
+
         <div
           className={`flex w-full min-w-0 overflow-hidden ${compact
-            ? "h-full items-center px-0"
+            ? "h-full items-center px-0 gap-2"
             : "min-h-[6px] flex-col justify-center px-1 md:px-2"
             }`}
         >
-          {/* SELECT */}
-          <div className="w-full min-w-0 overflow-hidden ">
-            <Popover
-              open={error}
-              placement="bottomLeft"
-              content={
-                <span className="text-white">
-                  Enter a destination to start searching.
-                </span>
-              }
-              color="#ef4444"
-              trigger={[]}
-            >
-              <Select
-                showSearch
-                allowClear
-                value={
-                  value?.city
-                    ? value.city.length > 35
-                      ? `${value.city.slice(0, 35)}...`
-                      : value.city
-                    : undefined
-                }
-                onClear={() => {
-                  onChange({
-                    city: "",
-                    cityData: null,
-                  });
-                }}
-                title={value?.city || ""}
-                placeholder="Where do you want to stay?"
-                variant="borderless"
-                popupMatchSelectWidth={compact ? false : true}
-                filterOption={false}
-                loading={isLoading}
-                className={`font-jost! w-full min-w-0 overflow-hidden font-medium text-gray-600 min-[700px]:font-semibold! min-[700px]:text-gray-800! ${styles.destinationSelect}`}
-                style={{
-                  width: "100%",
-                  fontSize: 18,
-                  fontWeight: 400,
-                }}
-                options={groupedOptions}
-                onSearch={handleSearch}
-                onFocus={() => {
-                  setDebouncedSearch("");
-                }}
-                onChange={handleChange}
-                notFoundContent={
-                  isLoading ? (
-                    <div className="flex justify-center py-4">
-                      <Spin size="small" />
-                    </div>
-                  ) : (
-                    <div className="py-3 text-center text-sm text-gray-500">
-                      No destinations found
-                    </div>
-                  )
-                }
-              />
-            </Popover>
-          </div>
 
+          {/* ICON */}
+          {icon && (
+            <div className="flex shrink-0 items-center">
+              {icon}
+            </div>
+          )}
+
+          {/* SELECT */}
+          <div className="flex w-full items-center gap-2 min-w-0 overflow-hidden">
+
+            {icon || (
+              <SearchOutlined className="text-gray-400 !text-[20px]" />
+            )}
+
+            <div className="flex-1 min-w-0">
+              <Popover
+                open={error}
+                placement="bottomLeft"
+                content={
+                  <span className="text-white">
+                    Enter a destination to start searching.
+                  </span>
+                }
+                color="#ef4444"
+                trigger={[]}
+              >
+                <Select
+                  showSearch
+                  allowClear
+                  value={
+                    value?.city
+                      ? value.city.length > 35
+                        ? `${value.city.slice(0, 35)}...`
+                        : value.city
+                      : undefined
+                  }
+                  onClear={() => {
+                    onChange({
+                      city: "",
+                      cityData: null,
+                    });
+                  }}
+                  title={value?.city || ""}
+                  placeholder="Where do you want to stay?"
+                  variant="borderless"
+                  popupMatchSelectWidth={compact ? false : true}
+                  filterOption={false}
+                  loading={isLoading}
+                  className={`font-jost! w-full min-w-0 overflow-hidden font-medium text-gray-600 min-[700px]:font-semibold! min-[700px]:text-gray-800! ${styles.destinationSelect}`}
+                  style={{
+                    width: "100%",
+                    fontSize: 18,
+                    fontWeight: 400,
+                  }}
+                  options={groupedOptions}
+                  onSearch={handleSearch}
+                  onFocus={() => {
+                    setDebouncedSearch("");
+                  }}
+                  onChange={handleChange}
+                  notFoundContent={
+                    isLoading ? (
+                      <div className="flex justify-center py-4">
+                        <Spin size="small" />
+                      </div>
+                    ) : (
+                      <div className="py-3 text-center text-sm text-gray-500">
+                        No destinations found
+                      </div>
+                    )
+                  }
+                />
+              </Popover>
+            </div>
+          </div>
           {/* COUNTRY */}
           {compact ? (
             <span
