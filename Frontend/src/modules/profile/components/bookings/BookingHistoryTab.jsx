@@ -90,8 +90,8 @@ export default function BookingHistoryTab({ setSelectedBooking }) {
                   key={tab.label}
                   onClick={() => setActiveFilter(tab.label)}
                   className={`flex items-center gap-2 text-[16px] font-medium transition-all ${active
-                      ? "text-[#4A9BB5]"
-                      : "text-gray-700 hover:text-[#4A9BB5]"
+                    ? "text-[#4A9BB5]"
+                    : "text-gray-700 hover:text-[#4A9BB5]"
                     }`}
                 >
                   <span className="text-[15px]">{tab.icon}</span>
@@ -136,7 +136,7 @@ export default function BookingHistoryTab({ setSelectedBooking }) {
               <div className="flex flex-col gap-5 p-5 xl:flex-row xl:items-center xl:justify-between">
                 <div className="flex min-w-0 flex-1 items-start gap-4">
                   <div className="flex h-[48px] w-[48px] shrink-0 items-center justify-center rounded bg-[#edf7ff]">
-                    <CalendarOutlined className="text-[28px] text-[#72C0F0]!" />
+                    <CalendarOutlined className="text-[28px] most-text-color" />
                   </div>
 
                   <div className="min-w-0">
@@ -145,7 +145,7 @@ export default function BookingHistoryTab({ setSelectedBooking }) {
                     </h3>
 
                     <div className="mt-2 flex flex-wrap items-center gap-3">
-                      <div className="rounded-full border border-[#72C0F0] bg-[#edf7ff] px-3 py-[3px] text-[12px] font-medium text-[#72C0F0]">
+                      <div className="rounded-full border most-boder-colour px-3 py-[3px] text-[12px] font-medium most-text-color">
                         {item?.status}
                       </div>
 
@@ -178,7 +178,7 @@ export default function BookingHistoryTab({ setSelectedBooking }) {
                       `/profile?tab=booking-details&bookingRefNo=${item.bookingId}`,
                     );
                   }}
-                  className="h-10 cursor-pointer rounded bg-[#72C0F0] text-[14px]! font-semibold text-white! transition-all hover:bg-[#4A9BB5] md:w-[120px] md:text-[14px] lg:w-[150px]"
+                  className="h-10 cursor-pointer rounded buttion-background-color text-[14px]! font-semibold text-white! transition-all  md:w-[120px] md:text-[14px] lg:w-[150px]"
                 >
                   View Booking
                 </button>

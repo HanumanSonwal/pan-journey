@@ -16,7 +16,7 @@ const GuestDetailsForm = forwardRef(({ onSubmit }, ref) => {
   const { Title, Text } = Typography;
   const [guests, setGuests] = useState([]);
 
-  
+
 
   console.log("guests details", guests);
 
@@ -73,8 +73,10 @@ const GuestDetailsForm = forwardRef(({ onSubmit }, ref) => {
               theme={{
                 components: {
                   Radio: {
-                    colorPrimary: "#72c0f0",
-                    colorPrimaryHover: "#72c0f0",
+                    colorPrimary: "#05144B",
+
+
+                    colorPrimaryHover: "#05144B",
                     dotSize: 8,
                   },
                 },
@@ -137,12 +139,12 @@ const GuestDetailsForm = forwardRef(({ onSubmit }, ref) => {
             )}
 
             <button
-              type="button"
-              onClick={() => setOpenGuestModal(true)}
-              className="mt-6! cursor-pointer! font-[15px]! font-bold text-[#62B7EB]!"
-            >
-              + Add Guest
-            </button>
+  type="button"
+  onClick={() => setOpenGuestModal(true)}
+  className="mt-6 cursor-pointer font-[15px] font-bold most-text-color"
+>
+  + Add Guest
+</button>
           </form>
         </FormProvider>
       </Card>

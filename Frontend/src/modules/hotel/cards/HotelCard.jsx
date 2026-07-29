@@ -218,7 +218,7 @@ function HotelCard({ hotel, wishlistIds }) {
 
                     <div className="flex-1">
                       <p className="text-[14px] leading-[18px] font-semibold">
-                        <span className="text-[#0077b6]">
+                        <span className="most-text-color ">
                           {hotel.address || hotel.location}
                         </span>
 
@@ -249,7 +249,7 @@ function HotelCard({ hotel, wishlistIds }) {
                           e.stopPropagation();
                           setShowAllFacilities(!showAllFacilities);
                         }}
-                        className="rounded-md bg-[#edf7ff] px-3 py-1.5 text-[12px] leading-none font-semibold text-[#0077b6]! transition-colors hover:bg-[#dcefff]!"
+                        className="rounded-md bg-[#edf7ff] px-3 py-1.5 text-[12px] leading-none font-semibold most-text-color transition-colors hover:bg-[#dcefff]!"
                       >
                         {showAllFacilities
                           ? "View Less"
@@ -273,6 +273,7 @@ function HotelCard({ hotel, wishlistIds }) {
                 className={`flex cursor-pointer items-center justify-center transition-all duration-300 hover:scale-110 active:scale-90 ${isWishlisted ? "text-red-500" : ""
                   }`}
               >
+
                 <span
                   className={`inline-block transition-all duration-300 ${isWishlisted ? "scale-125" : "scale-100"} `}
                 >
@@ -292,13 +293,13 @@ function HotelCard({ hotel, wishlistIds }) {
               </button>
             </div>
             <div className="flex justify-end">
-              <div className="flex w-[170px] flex-col gap-1 rounded border border-blue-100 buttion-background-color-40 px-2 py-1">
+              <div className="flex w-[170px] flex-col gap-1 rounded border most-boder-colour  px-2 py-1">
                 <div className="flex items-center justify-between">
-                  <p className="m-1! text-[12px] font-semibold text-[#72C0F0]">
+                  <p className="m-1! text-[12px] font-semibold most-text-color">
                     {ratingLabel}
                   </p>
 
-                  <p className="m-1! flex h-[18px] min-w-[34px] items-center justify-center rounded bg-[#72C0F0] px-1.5 text-[12px] font-bold text-white">
+                  <p className="m-1! flex h-[18px] min-w-[34px] items-center justify-center rounded buttion-background-color px-1.5 text-[12px] font-bold text-white">
                     {rating.toFixed(1)}
                   </p>
                 </div>

@@ -39,7 +39,7 @@ const ViewField = memo(({ label, value, type, prefix }) => (
           dayjs(value).format("DD MMM YYYY")
         ) : (
           <>
-            {prefix && <span className="text-[#63B3ED]">{prefix}</span>}
+            {prefix && <span className="most-text-color">{prefix}</span>}
 
             <span>{value}</span>
           </>
@@ -179,90 +179,90 @@ const profileFields = ({
   filteredCityOptions,
   maritalStatus,
 }) => [
-  {
-    name: "firstName",
-    label: "First Name",
-    component: RHFInput,
-  },
-  {
-    name: "lastName",
-    label: "Last Name",
-    component: RHFInput,
-  },
-  {
-    name: "gender",
-    label: "Gender",
-    component: RHFSelect,
-    props: {
-      placeholder: "Select Gender",
-      options: genderOptions,
+    {
+      name: "firstName",
+      label: "First Name",
+      component: RHFInput,
     },
-  },
-  {
-    name: "dateOfBirth",
-    label: "Birth Date",
-    component: RHFDatePicker,
-    type: "date",
-    props: {
-      placeholder: "Select Birth Date",
-      showToday: false,
-      disabledDate: (current) => current && current >= dayjs().endOf("day"),
+    {
+      name: "lastName",
+      label: "Last Name",
+      component: RHFInput,
     },
-  },
-  {
-    name: "nationality",
-    label: "Nationality",
-    component: RHFSelect,
-    props: {
-      placeholder: "Select Country",
-      options: Object.keys(countryStateCityData).map((country) => ({
-        label: country,
-        value: country,
-      })),
+    {
+      name: "gender",
+      label: "Gender",
+      component: RHFSelect,
+      props: {
+        placeholder: "Select Gender",
+        options: genderOptions,
+      },
     },
-  },
-  {
-    name: "state",
-    label: "State",
-    component: RHFSelect,
-    props: {
-      placeholder: selectedCountry ? "Select State" : "Select Country First",
-      disabled: !selectedCountry,
-      options: filteredStateOptions,
+    {
+      name: "dateOfBirth",
+      label: "Birth Date",
+      component: RHFDatePicker,
+      type: "date",
+      props: {
+        placeholder: "Select Birth Date",
+        showToday: false,
+        disabledDate: (current) => current && current >= dayjs().endOf("day"),
+      },
     },
-  },
-  {
-    name: "city",
-    label: "City",
-    component: RHFSelect,
-    props: {
-      placeholder: selectedState ? "Select City" : "Select State First",
-      disabled: !selectedState,
-      options: filteredCityOptions,
+    {
+      name: "nationality",
+      label: "Nationality",
+      component: RHFSelect,
+      props: {
+        placeholder: "Select Country",
+        options: Object.keys(countryStateCityData).map((country) => ({
+          label: country,
+          value: country,
+        })),
+      },
     },
-  },
-  {
-    name: "maritalStatus",
-    label: "Marital Status",
-    component: RHFSelect,
-    props: {
-      placeholder: "Select Status",
-      options: maritalStatusOptions,
+    {
+      name: "state",
+      label: "State",
+      component: RHFSelect,
+      props: {
+        placeholder: selectedCountry ? "Select State" : "Select Country First",
+        disabled: !selectedCountry,
+        options: filteredStateOptions,
+      },
     },
-  },
-  {
-    name: "anniversary",
-    label: "Anniversary",
-    component: RHFDatePicker,
-    type: "date",
-    props: {
-      placeholder: "Select Anniversary",
-      disabled: maritalStatus === "Single",
-      showToday: false,
-      disabledDate: (current) => current && current > dayjs().endOf("day"),
+    {
+      name: "city",
+      label: "City",
+      component: RHFSelect,
+      props: {
+        placeholder: selectedState ? "Select City" : "Select State First",
+        disabled: !selectedState,
+        options: filteredCityOptions,
+      },
     },
-  },
-];
+    {
+      name: "maritalStatus",
+      label: "Marital Status",
+      component: RHFSelect,
+      props: {
+        placeholder: "Select Status",
+        options: maritalStatusOptions,
+      },
+    },
+    {
+      name: "anniversary",
+      label: "Anniversary",
+      component: RHFDatePicker,
+      type: "date",
+      props: {
+        placeholder: "Select Anniversary",
+        disabled: maritalStatus === "Single",
+        showToday: false,
+        disabledDate: (current) => current && current > dayjs().endOf("day"),
+      },
+    },
+  ];
 
 export default function ProfileOverview() {
   const { data: user } = useProfile();
@@ -574,11 +574,8 @@ export default function ProfileOverview() {
                   type="primary"
                   disabled={!canSave}
                   loading={updateProfile.isPending}
-                  className="!h-[42px] !border-none !px-6"
-                  style={{
-                    background:
-                      "linear-gradient(180deg, #72C0F0 0%, #0F6A75 100%)",
-                  }}
+                  className="!h-[42px] !border-none !px-6 buttion-background-color"
+
                 >
                   Save Changes
                 </Button>

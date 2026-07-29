@@ -333,7 +333,7 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
                     onResultChange={setHasHotels}
                   />
                 </div>
-
+                                               
                 {/* SEO CONTENT */}
                 {cms ? (
                   <HotelsSeoSection>
@@ -396,6 +396,6 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
           </div>
         </div>
       </Modal>
-    </>
+    </> 
   );
 }

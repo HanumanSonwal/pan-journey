@@ -413,11 +413,8 @@ export default function DocumentsTab() {
                   htmlType="submit"
                   type="primary"
                   loading={loading}
-                  className="!h-[42px] !border-none !px-6"
-                  style={{
-                    background:
-                      "linear-gradient(180deg, #72C0F0 0%, #0F6A75 100%)",
-                  }}
+                  className="!h-[42px] !border-none !px-6 buttion-background-color"
+                  
                 >
                   Save Changes
                 </Button>

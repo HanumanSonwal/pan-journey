@@ -27,7 +27,7 @@ const AppInput = forwardRef(
           <label
             className={`pointer-events-none absolute left-3 z-10 bg-white px-1 transition-all duration-200 ${
               isActive
-                ? "-top-[8px] text-[13px] text-[#4A9BB5]"
+                ? "-top-[8px] text-[13px] most-text-color"
                 : "top-1/2 -translate-y-1/2 text-sm text-gray-400"
             }`}
           >
