@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  CalendarOutlined,
-  TeamOutlined
-} from "@ant-design/icons";
+import { CalendarOutlined, TeamOutlined } from "@ant-design/icons";
 
 import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
 import DateRangeField from "@/modules/shared/home/components/DateRangeField";
@@ -29,25 +26,7 @@ export default function HotelSearchForm({
 
   return (
     <div className="w-full">
-      <div
-        className="
-          mt-4
-          grid
-          w-full
-          grid-cols-1
-          gap-3
-          items-end
-
-          min-[700px]:grid-cols-2
-
-          min-[1000px]:grid-cols-[minmax(220px,2fr)_minmax(170px,1.5fr)_minmax(170px,1.5fr)_auto]
-
-          min-[1000px]:gap-2
-          xl:gap-4
-          2xl:gap-4
-        "
-      >
-
+      <div className="mt-4 grid w-full grid-cols-1 items-end gap-3 min-[700px]:grid-cols-2 min-[1000px]:grid-cols-[minmax(220px,2fr)_minmax(170px,1.5fr)_minmax(170px,1.5fr)_auto] min-[1000px]:gap-2 xl:gap-4 2xl:gap-4">
         {/* Destination */}
         <div
           className="min-[700px]:col-span-2 min-[1000px]:col-span-1"
@@ -56,15 +35,11 @@ export default function HotelSearchForm({
           }}
         >
           <DestinationSearchField
-
-
             value={{
               city: draftSearchData?.city,
               cityData: draftSearchData?.cityData,
             }}
-
             error={destinationError}
-
             onChange={(val) => {
               setDestinationError?.(false);
 
@@ -92,30 +67,20 @@ export default function HotelSearchForm({
           />
         </div>
 
-
         {/* Date */}
         <div className="relative z-50 w-full">
           <DateRangeField
-
-            icon={
-              <CalendarOutlined className="text-gray-400 text-[18px]" />
-            }
-
+            icon={<CalendarOutlined className="text-[18px] text-gray-400" />}
             variant="default"
-
             value={[
-              draftSearchData?.checkIn
-                ? dayjs(draftSearchData.checkIn)
-                : null,
+              draftSearchData?.checkIn ? dayjs(draftSearchData.checkIn) : null,
 
               draftSearchData?.checkOut
                 ? dayjs(draftSearchData.checkOut)
                 : null,
             ]}
-
             open={dateOpen}
             setOpen={setDateOpen}
-
             onChange={(dates) => {
               setDraftSearchData({
                 checkIn: dates?.[0]?.format("YYYY-MM-DD"),
@@ -133,15 +98,10 @@ export default function HotelSearchForm({
           />
         </div>
 
-
         {/* Guests */}
         <div className="relative z-40 w-full">
           <GuestsField
-            icon={
-              <  TeamOutlined
-                className="!text-gray-900 text-[22px]"
-              />
-            }
+            icon={<TeamOutlined className="text-[22px] !text-gray-900" />}
             variant="default"
             value={draftSearchData}
             open={guestOpen}
@@ -152,12 +112,10 @@ export default function HotelSearchForm({
           />
         </div>
 
-
         {/* Search Button */}
         <div className="w-full min-[1000px]:w-auto">
           <SearchButton floating={false} onSearch={onSearch} />
         </div>
-
       </div>
     </div>
   );
