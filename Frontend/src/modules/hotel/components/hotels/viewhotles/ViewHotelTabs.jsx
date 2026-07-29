@@ -34,30 +34,31 @@ const ViewHotelTabs = ({ supplierData = {} }) => {
       {cards.map((card, i) => (
         <div
           key={i}
-          className={`flex h-[92px] items-center gap-3 rounded border px-4 py-3 shadow-sm transition duration-300 hover:shadow-md ${
-            card.blue
-              ? "border-[#8fc6e2] bg-[#f3fbff]"
-              : "border-[#d8e7f0] bg-white hover:border-[#0ea5e9]"
-          }`}
+          className={`flex h-[52px] items-center gap-3 rounded border px-4 py-3 shadow-sm transition duration-300 hover:shadow-md ${card.blue
+            ? "most-boder-colour "
+            : "border-[#d8e7f0] bg-white !hover:most-boder-colour "
+            }`}
         >
           {/* Left Icon / Badge */}
           {card.badge ? (
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded bg-[#4ca7d8] text-sm font-semibold text-white">
+            <div className="flex h-7 w-11 shrink-0 items-center justify-center rounded buttion-background-color text-sm font-semibold text-white">
               {card.badge}
             </div>
           ) : (
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded bg-[#eef8fd]">
+            <div className="most-text-color flex h-7 w-11 shrink-0 items-center justify-center rounded  text-[18px]">
               {card.icon}
             </div>
           )}
 
-          {/* Text Only */}
-          <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-gray-800">
+          {/* Text */}
+          <div className="flex flex-col justify-center gap-2">
+            <span className="text-sm font-semibold leading-[16px] text-gray-800">
               {card.title}
-            </p>
+            </span>
 
-            <p className="mt-1 truncate text-xs text-gray-500">{card.sub}</p>
+            <span className="text-xs leading-[14px] text-gray-500">
+              {card.sub}
+            </span>
           </div>
         </div>
       ))}

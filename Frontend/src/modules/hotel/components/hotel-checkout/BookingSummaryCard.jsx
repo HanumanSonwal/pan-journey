@@ -55,7 +55,7 @@ export default function BookingSummaryCard({
   return (
     <Card
       variant={false}
-      className="overflow-hidden rounded-3xl border border-[#EAF2F8] bg-white shadow-[0_10px_35px_rgba(0,0,0,0.08)]"
+      className="overflow-hidden rounded-xl border border-[#EAF2F8] bg-white shadow-[0_10px_35px_rgba(0,0,0,0.08)]"
       styles={{
         body: {
           padding: 24,
@@ -65,7 +65,7 @@ export default function BookingSummaryCard({
       {/* Image */}
       <div className="flex flex-col gap-4 sm:flex-row">
         {/* Hotel Image */}
-        <div className="relative h-[230px] overflow-hidden rounded-2xl sm:h-[170px] sm:w-[240px]">
+        <div className="relative h-[230px] overflow-hidden rounded-2xl sm:h-[190px] sm:w-[290px]">
           <Image
             src={hotelImage}
             fill
@@ -76,7 +76,7 @@ export default function BookingSummaryCard({
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
 
           <div className="absolute bottom-4 left-4">
-            <Tag color="blue" className="rounded-full px-3">
+            <Tag color="blue" className="rounded-full px-2">
               {roomName}
             </Tag>
           </div>
@@ -87,15 +87,15 @@ export default function BookingSummaryCard({
           <div>
             <Title
               level={3}
-              className="font-roboto !mb-2 !text-[28px] !font-semibold !text-[#1D2939]"
+              className="font-roboto !mb-2 !text-[22px] !font-semibold !text-[#1D2939]"
             >
               {hotelName}
             </Title>
 
             <div className="mt-2 flex items-start gap-2">
-              <EnvironmentOutlined className="mt-1 text-[#76B7E5]" />
+              <EnvironmentOutlined className="most-text-color mt-1" />
 
-              <Text className="font-roboto text-[15px] text-gray-500">
+              <Text className="font-roboto most-text-color text-[15px]">
                 {address}
               </Text>
             </div>
@@ -104,37 +104,36 @@ export default function BookingSummaryCard({
                 Reservation Confirmed
               </Tag>
             </div>
+            <div className="my-5 border-t border-dashed" />
+
+            {/* Booking Details */}
+
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="rounded-lg border border-gray-200 bg-white p-3">
+                <Text className="block text-[12px] tracking-wide text-gray-500 uppercase">
+                  Booking Reference
+                </Text>
+
+                <Text strong className="text-[15px]">
+                  {booking?.bookingReference}
+                </Text>
+              </div>
+
+              <div className="rounded-lg border border-gray-200 bg-white p-3">
+                <Text className="block text-[12px] tracking-wide text-gray-500 uppercase">
+                  Booking Date
+                </Text>
+
+                <Text strong className="text-[15px]">
+                  {bookingDate}
+                </Text>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Divider */}
-
-      <div className="my-5 border-t border-dashed" />
-
-      {/* Booking Details */}
-
-      <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <div className="rounded-lg border border-gray-200 bg-white p-3">
-          <Text className="block text-[12px] tracking-wide text-gray-500 uppercase">
-            Booking Reference
-          </Text>
-
-          <Text strong className="text-[15px]">
-            {booking?.bookingReference}
-          </Text>
-        </div>
-
-        <div className="rounded-lg border border-gray-200 bg-white p-3">
-          <Text className="block text-[12px] tracking-wide text-gray-500 uppercase">
-            Booking Date
-          </Text>
-
-          <Text strong className="text-[15px]">
-            {bookingDate}
-          </Text>
-        </div>
-      </div>
 
       <div className="mt-5 rounded-xl border border-[#E5EEF7] bg-[#FAFCFF] px-3 py-6 sm:p-4">
         <div className="flex items-center justify-between gap-3 sm:gap-6">

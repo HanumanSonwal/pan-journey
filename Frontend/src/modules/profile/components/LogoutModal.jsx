@@ -32,13 +32,13 @@ export default function LogoutModal({
     >
       <div className="relative overflow-hidden bg-white">
         {/* TOP DESIGN */}
-        <div className="absolute top-0 left-0 h-[120px] w-full bg-gradient-to-r from-[#4A9BB5] via-[#5aa9c2] to-[#6bb6cd]" />
+        <div className="absolute top-0 left-0 h-[120px] w-full bg-gradient-to-r buttion-background-color" />
 
         {/* CONTENT */}
         <div className="relative z-10 px-7 pt-8 pb-7">
           {/* ICON */}
           <div className="mx-auto mb-5 flex h-[88px] w-[88px] items-center justify-center rounded-full border-[6px] border-white bg-[#e8f7fc] shadow-lg">
-            <LogoutOutlined className="text-[34px] text-[#4A9BB5]" />
+            <LogoutOutlined className="text-[34px] most-text-color" />
           </div>
 
           {/* TITLE */}
@@ -72,7 +72,7 @@ export default function LogoutModal({
                 await onLogout();
                 onCancel();
               }}
-              className="!h-[52px] !flex-1 !rounded-xl !border-0 !bg-[#4A9BB5] !text-[15px] !font-semibold !shadow-none hover:!bg-[#3d8ea8]"
+              className="!h-[52px] !flex-1 !rounded-xl !border-0  !text-[15px] !font-semibold !shadow-none buttion-background-color"
             >
               Logout
             </Button>

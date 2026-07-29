@@ -246,7 +246,7 @@ function HotelDetails({ initialPayload = null, cms = null }) {
                       </h1>
 
                       {(supplierData?.City || supplierData?.Country) && (
-                        <span className="lg:!mb-0m !mb-4 w-fit rounded-full bg-[#eef8fd] px-2 py-1 text-[11px] font-medium text-[#5bb7ec] sm:!mb-3 sm:px-3 sm:text-sm md:!mb-4 xl:!mb-0">
+                        <span className="lg:!mb-0m !mb-4 w-fit rounded-full bg-[#eef8fd] px-2 py-1 text-[11px] font-medium most-text-color sm:!mb-3 sm:px-3 sm:text-sm md:!mb-4 xl:!mb-0">
                           {[supplierData?.City, supplierData?.Country]
                             .filter(Boolean)
                             .join(", ")}

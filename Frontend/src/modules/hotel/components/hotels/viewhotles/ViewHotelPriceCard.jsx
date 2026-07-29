@@ -73,11 +73,10 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
         {/* Badge */}
         <div className="mb-3">
           <span
-            className={`font-roboto rounded-full px-3 py-[6px] text-[11px] font-medium ${
-              refundable
-                ? "bg-green-100 text-green-700"
-                : "bg-red-100 text-red-600"
-            }`}
+            className={`font-roboto rounded-full px-3 py-[6px] text-[11px] font-medium ${refundable
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-600"
+              }`}
           >
             {refundable ? "Free Cancellation" : "Non Refundable"}
           </span>
@@ -170,7 +169,7 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
           type="primary"
           size="large"
           onClick={() => requireAuth(handleBookNow)}
-          className="!h-[42px] w-full rounded! !bg-offer-gradient text-xl !font-bold tracking-wide text-white!"
+          className="!h-[42px] w-full rounded! buttion-background-color text-xl !font-bold text-white!"
         >
           Book Now
         </Button>
@@ -178,7 +177,7 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
         <Button
           size="large"
           onClick={handleRoomScroll}
-          className="flex-1 !h-[40px] sm:!h-[42px] !text-[#0ea5e9]  !rounded px-2 sm:px-4 text-[12px] sm:text-[16px] md:text-[16px] whitespace-normal leading-tight"
+          className="flex-1 !h-[40px] sm:!h-[42px] most-text-color !rounded px-2 sm:px-4 text-[12px] sm:text-[16px] md:text-[16px] whitespace-normal leading-tight"
         >
           <span className="hidden sm:inline">
             View All

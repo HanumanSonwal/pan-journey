@@ -2,7 +2,7 @@
 
 export default function EditableField({ label, isEdit, value, children }) {
   const displayValue = value || (
-    <span className="text-[#4A9BB5]">Add Detail</span>
+    <span className="most-text-color">Add Detail</span>
   );
 
   return (

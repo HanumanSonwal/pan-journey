@@ -110,8 +110,8 @@ export default function BookingDetailsTab({ bookingRefNo }) {
   // Room Inclusions
   const policies = ratePlan?.Inclusion
     ? ratePlan.Inclusion.split(",")
-        .map((item) => item.trim())
-        .filter(Boolean)
+      .map((item) => item.trim())
+      .filter(Boolean)
     : [];
 
   // Guest Details 
@@ -184,16 +184,14 @@ export default function BookingDetailsTab({ bookingRefNo }) {
 
   const PriceRow = ({ label, value, last = false, valueClass = "" }) => (
     <div
-      className={`flex items-center justify-between py-1 ${
-        !last ? "border-b border-gray-100" : ""
-      }`}
+      className={`flex items-center justify-between py-1 ${!last ? "border-b border-gray-100" : ""
+        }`}
     >
       <p className="font-roboto! mb-0! text-[14px] text-gray-600">{label}</p>
 
       <p
-        className={`font-roboto! mb-0! text-[15px] font-semibold ${
-          valueClass || "text-gray-900"
-        }`}
+        className={`font-roboto! mb-0! text-[15px] font-semibold ${valueClass || "text-gray-900"
+          }`}
       >
         {value}
       </p>
@@ -224,7 +222,7 @@ export default function BookingDetailsTab({ bookingRefNo }) {
         </h2>
         <button
           onClick={() => router.push("/profile?tab=BookingHistory")}
-          className="flex items-center gap-2 text-[15px] font-semibold text-[#72C0F0]!"
+          className="flex items-center gap-2 text-[15px] font-semibold most-text-color!"
         >
           <ArrowLeftOutlined />
           Back
@@ -273,7 +271,7 @@ export default function BookingDetailsTab({ bookingRefNo }) {
               </div>
 
               {/* STATUS */}
-              <div className="h-fit rounded-full border border-[#72C0F0] bg-[#edf7ff] px-4 py-1 text-[13px] font-semibold text-[#72C0F0]">
+              <div className="h-fit rounded-full border most-boder-colour  px-4 py-1 text-[13px] font-semibold most-text-colour">
                 {bookingData?.ticketStatusDesc}
               </div>
             </div>
@@ -370,9 +368,9 @@ export default function BookingDetailsTab({ bookingRefNo }) {
                 {policies?.map((item, index) => (
                   <div
                     key={index}
-                    className="rounded-full border border-[#d9ecf8] bg-[#edf7ff] px-4 py-1"
+                    className="rounded-full border most-boder-colour  px-4 py-1"
                   >
-                    <span className="font-roboto text-[13px] font-medium text-[#3b82b6]">
+                    <span className="font-roboto text-[13px] font-medium most-text-color">
                       {item}
                     </span>
                   </div>
@@ -597,11 +595,10 @@ export default function BookingDetailsTab({ bookingRefNo }) {
                       <span className="text-[13px] text-gray-500">Status:</span>
 
                       <span
-                        className={`rounded-full px-2 py-[2px] text-[12px] font-medium ${
-                          bookingData?.paymentStatus === "paid"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-orange-100 text-orange-700"
-                        }`}
+                        className={`rounded-full px-2 py-[2px] text-[12px] font-medium ${bookingData?.paymentStatus === "paid"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-orange-100 text-orange-700"
+                          }`}
                       >
                         {bookingData?.paymentStatus === "paid"
                           ? "Paid"
@@ -777,7 +774,7 @@ export default function BookingDetailsTab({ bookingRefNo }) {
                     key={i}
                     className="flex items-center gap-3 rounded-lg border border-gray-100 bg-gray-50 p-3 transition-all hover:border-[#72C0F0] hover:bg-[#f8fcff]"
                   >
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#edf7ff] text-[18px] text-[#0ea5e9]">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full boder most-boder-colour text-[18px] most-text-color">
                       {getAmenityIcon(item)}
                     </div>
 
@@ -801,7 +798,7 @@ export default function BookingDetailsTab({ bookingRefNo }) {
           <button
             onClick={handleDownloadInvoice}
             type="button"
-            className="flex h-[45px] items-center justify-center gap-2 rounded border border-[#72C0F0] bg-[#edf7ff] text-[16px]! font-semibold !text-[#3b82b6] shadow-sm transition-all duration-200 hover:bg-[#72C0F0] hover:!text-white active:scale-[0.98] md:text-[15px]"
+            className="flex h-[45px] items-center justify-center gap-2 rounded border border-[#72C0F0] bg-[#edf7ff] text-[16px]! font-semibold !text-[#3b82b6] shadow-sm transition-all duration-200  hover:!text-white active:scale-[0.98] md:text-[15px]"
           >
             <DownloadOutlined className="text-[16px]" />
 

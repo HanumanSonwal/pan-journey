@@ -64,12 +64,12 @@ export default function Sidebar({ activeTab, setActiveTab, horizontal }) {
   return (
     <>
       <div
-  className={
-    horizontal
-      ? "w-full overflow-x-auto bg-white p-3 shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
-      : "w-full max-w-[320px] lg:w-[320px] bg-white p-4 sm:p-5 lg:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
-  }
->
+        className={
+          horizontal
+            ? "w-full overflow-x-auto bg-white p-3 shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
+            : "w-full max-w-[320px] lg:w-[320px] bg-white p-4 sm:p-5 lg:p-6 shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
+        }
+      >
         {/* 🔹 DESKTOP PROFILE HEADER */}
         {!horizontal && (
           <div className="flex flex-col items-center gap-3 border-b border-gray-100 pb-5 sm:flex-row sm:items-center sm:gap-4 lg:pb-6">
@@ -123,16 +123,16 @@ export default function Sidebar({ activeTab, setActiveTab, horizontal }) {
                   setActiveTab(item.key);
                 }}
                 className={`font-roboto flex cursor-pointer items-center justify-between rounded border transition-all duration-200 ${horizontal
-                    ? "whitespace-nowrap px-2 py-1"
-                    : "px-3 py-3 sm:px-3 sm:py-3"
+                  ? "whitespace-nowrap px-2 py-1"
+                  : "px-3 py-3 sm:px-3 sm:py-3"
                   } ${isActive
-                    ? "border-[#4A9BB5] bg-[#4A9BB5]/10"
+                    ? "most-boder-colour"
                     : "border-gray-200 hover:bg-gray-50"
                   }`}
               >
                 {/* LEFT */}
                 <div
-                  className={`flex items-center gap-3 ${isActive ? "text-[#4A9BB5]" : "text-black"
+                  className={`flex items-center gap-3 ${isActive ? "most-text-color" : "text-black"
                     }`}
                 >
                   {/* 🔥 PROFILE ICON → DP (ONLY in tablet) */}

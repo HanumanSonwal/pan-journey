@@ -99,7 +99,7 @@ export default function HotelCheckoutContent({
                   Booking Reference
                 </Text>
 
-                <Text className="text-[15px] font-semibold text-[#0f766e]">
+                <Text className="text-[16px] font-semibold text-[#0f766e]">
                   {booking?.bookingReference}
                 </Text>
               </div>
