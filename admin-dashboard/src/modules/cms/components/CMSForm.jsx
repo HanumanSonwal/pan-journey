@@ -82,51 +82,36 @@ export default function CMSForm({ id }) {
   */
   const handlePreview = () => {
     const values = form.getFieldsValue(true);
-    const slug = values.slug;
 
-    /*
-    SAVE FIRST
-  */
     if (!id) {
       message.warning("Save draft before preview");
       return;
     }
-    if (!slug) {
-      message.warning("Missing page slug");
+
+    if (!values.url) {
+      message.warning("Preview URL not found");
       return;
     }
-    const frontendUrl =
-      process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
-    let previewUrl = `${frontendUrl}/${slug}?preview=true`;
-    if (values.entityType === "hotelCity") {
-      previewUrl = `${frontendUrl}/hotels/${slug}?preview=true`;
-    }
-    if (values.entityType === "hotel") {
-      previewUrl = `${frontendUrl}/hotel/${slug}?preview=true`;
-    }
-    window.open(previewUrl, "_blank");
+
+    const frontendUrl = (
+      process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000"
+    ).replace(/\/+$/, "");
+
+    window.open(`${frontendUrl}${values.url}?preview=true`, "_blank");
   };
 
   const slug = Form.useWatch("slug", form);
 
+  const url = Form.useWatch("url", form);
+
   const handleCopySlug = async () => {
-    if (!slug) return;
+    if (!url) return;
 
     const baseUrl = (
       process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000"
     ).replace(/\/+$/, "");
 
-    let url = `${baseUrl}/${slug}`;
-
-    if (entityType === "hotelCity") {
-      url = `${baseUrl}/hotels/${slug}`;
-    }
-
-    if (entityType === "hotel") {
-      url = `${baseUrl}/hotel/${slug}`;
-    }
-
-    await navigator.clipboard.writeText(url);
+    await navigator.clipboard.writeText(`${baseUrl}${url}`);
 
     message.success("URL copied successfully");
   };
@@ -224,7 +209,7 @@ export default function CMSForm({ id }) {
                   >
                     <Input
                       size="large"
-                      value={slug}
+                      value={url}
                       disabled
                       placeholder="Auto generated"
                       style={{
@@ -236,13 +221,13 @@ export default function CMSForm({ id }) {
                       <Button
                         icon={<CopyOutlined />}
                         onClick={handleCopySlug}
-                        disabled={!slug}
+                        disabled={!url}
                       />
                     </Tooltip>
                   </div>
                 </Form.Item>
 
-                <Form.Item name="slug" hidden>
+                <Form.Item name="url" hidden>
                   <Input />
                 </Form.Item>
               </Col>
@@ -322,7 +307,7 @@ export default function CMSForm({ id }) {
                   block
                   size="large"
                   onClick={handlePreview}
-                  disabled={!form.getFieldValue("slug")}
+                  disabled={!form.getFieldValue("url")}
                 >
                   Preview
                 </Button>

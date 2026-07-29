@@ -6,7 +6,7 @@ import {
   EditOutlined,
   EyeOutlined,
 } from "@ant-design/icons";
-import { Button, Empty, Popconfirm, Table, Tag, Tooltip } from "antd";
+import { App, Button, Empty, Popconfirm, Table, Tag, Tooltip } from "antd";
 export default function CMSTable({
   pages,
   meta,
@@ -17,15 +17,15 @@ export default function CMSTable({
   isLoading,
   deleteCMS,
 }) {
-  const URL = process.env.NEXT_PUBLIC_URL || "http://localhost:3000";
+  const { message } = App.useApp();
 
-  const BASE_URL = URL.replace(/\/+$/, "");
+  const BASE_URL = (
+    process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000"
+  ).replace(/\/+$/, "");
 
-  const handleCopyUrl = async (slug) => {
-    const fullUrl = `${BASE_URL}/${slug}`;
-
+  const handleCopyUrl = async (url) => {
     try {
-      await navigator.clipboard.writeText(fullUrl);
+      await navigator.clipboard.writeText(`${BASE_URL}${url}`);
       message.success("URL copied successfully");
     } catch {
       message.error("Failed to copy URL");
@@ -38,49 +38,44 @@ export default function CMSTable({
       dataIndex: "title",
       width: 220,
     },
-{
-  title: "Slug",
-  dataIndex: "slug",
-  width: 280,
-  render: (val) => {
-    const fullUrl = `${URL.replace(/\/+$/, "")}/${val}`;
-
-    return (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 8,
-        }}
-      >
-        <span
-          style={{
-            color: "#1677ff",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            maxWidth: 200,
-          }}
-        >
-          /{val}
-        </span>
-
-        <Tooltip title="Copy URL">
-          <Button
-            type="text"
-            size="small"
-            icon={<CopyOutlined />}
-            onClick={async () => {
-              await navigator.clipboard.writeText(fullUrl);
-              message.success("URL copied");
+    {
+      title: "Slug",
+      dataIndex: "slug",
+      width: 280,
+      render: (val, record) => {
+        return (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 8,
             }}
-          />
-        </Tooltip>
-      </div>
-    );
-  },
-},
+          >
+            <span
+              style={{
+                color: "#1677ff",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                maxWidth: 200,
+              }}
+            >
+              /{val}
+            </span>
+
+            <Tooltip title="Copy URL">
+              <Button
+                type="text"
+                size="small"
+                icon={<CopyOutlined />}
+                onClick={() => handleCopyUrl(record.url)}
+              />
+            </Tooltip>
+          </div>
+        );
+      },
+    },
     {
       title: "Type",
       dataIndex: "entityType",
@@ -121,7 +116,7 @@ export default function CMSTable({
           <Tooltip title="Preview">
             <Button
               icon={<EyeOutlined />}
-              href={`${URL}/${record.slug}?preview=true`}
+              href={`${BASE_URL}${record.url}?preview=true`}
               target="_blank"
             />
           </Tooltip>

@@ -17,6 +17,8 @@ export default function useCMSForm({ id, form }) {
     const load = async () => {
       try {
         const page = await getCMSPageApi(id);
+
+        console.log("use cms page", page);
         form.setFieldsValue({
           ...page,
           keywords: page?.keywords?.join(", "),
@@ -29,6 +31,7 @@ export default function useCMSForm({ id, form }) {
           data: page?.data,
 
           entityId: page?.entityId,
+          url: page?.url,
         });
       } catch {
         message.error("Failed to load page");
@@ -72,7 +75,10 @@ export default function useCMSForm({ id, form }) {
 
       const res = await previewSlugApi(payload);
 
-      form.setFieldValue("slug", res.slug);
+      form.setFieldsValue({
+        slug: res.slug,
+        url: res.url,
+      });
     } catch (err) {
       console.log(err);
     }
@@ -101,11 +107,18 @@ export default function useCMSForm({ id, form }) {
           id,
           data: payload,
         });
+
+        router.push("/dashboard/cms/pages");
       } else {
         await createCMS.mutateAsync(payload);
-      }
 
-      router.push("/dashboard/cms/pages");
+        form.resetFields();
+
+        form.setFieldsValue({
+          isPublished: true,
+          entityType: "static",
+        });
+      }
     } catch (err) {
       console.log(err);
     }
