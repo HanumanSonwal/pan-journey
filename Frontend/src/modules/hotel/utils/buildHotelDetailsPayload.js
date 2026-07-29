@@ -10,53 +10,83 @@ export const buildHotelDetailsPayload = ({
   countryCodeParam,
   hotelSlugParam,
 }) => {
+  console.log("BUILD HOTEL DETAILS PAYLOAD:", {
+    selectedHotel,
+    initialPayload,
+    appliedSearchData,
+    hid,
+    cityIdParam,
+    stateNameParam,
+    countryCodeParam,
+    hotelSlugParam,
+  });
+
+  // Common Values
+  const cityData = appliedSearchData?.cityData;
+  const hotelMeta = selectedHotel?.hotelMeta || {};
+
+  const cityId = cityData?.id || hotelMeta?.cityId || cityIdParam || "";
+
+  const stateName =
+    cityData?.stateName ||
+    hotelMeta?.stateName ||
+    stateNameParam ||
+    cityData?.name?.split(",")[1]?.trim() ||
+    "";
+
+  const countryCode =
+    cityData?.countryCode || hotelMeta?.countryCode || countryCodeParam || "";
+
+  // Hotel Name > City Name > Slug
+  const fullName =
+    appliedSearchData?.cityData?.name ||
+    selectedHotel?.hotelMeta?.cityName ||
+    hotelSlugParam ||
+    "";
+
+  const searchContext = {
+    fullName,
+    CheckInDate: formatSupplierDate(appliedSearchData?.checkIn),
+    CheckOutDate: formatSupplierDate(appliedSearchData?.checkOut),
+    RoomCount: appliedSearchData?.rooms || 1,
+  };
+
+  // Wishlist
   if (selectedHotel?.fromWishlist) {
     return {
-      hotelId: selectedHotel?.hotelMeta?.hotelId || hid,
+      hotelId: hotelMeta?.hotelId || hid,
       hotelMeta: {
-        cityId: selectedHotel?.hotelMeta?.cityId || cityIdParam,
-        stateName: selectedHotel?.hotelMeta?.stateName || stateNameParam,
-        countryCode: selectedHotel?.hotelMeta?.countryCode || countryCodeParam,
+        cityId,
+        stateName,
+        countryCode,
       },
-
-      searchContext: {
-        fullName: selectedHotel?.hotelMeta?.hotelSlug || hotelSlugParam || "",
-        CheckInDate: formatSupplierDate(appliedSearchData?.checkIn),
-        CheckOutDate: formatSupplierDate(appliedSearchData?.checkOut),
-        RoomCount: appliedSearchData?.rooms || 1,
-      },
+      searchContext,
     };
   }
 
+  // Initial Payload
   if (initialPayload) {
     return {
       ...initialPayload,
-
       hotelMeta: {
-        cityId: appliedSearchData?.cityData?.id,
-        stateName: appliedSearchData?.cityData?.stateName,
-        countryCode: appliedSearchData?.cityData?.countryCode,
+        cityId,
+        stateName,
+        countryCode,
       },
-
-      searchContext: {
-        fullName: initialPayload?.searchContext?.fullName || "",
-        CheckInDate: formatSupplierDate(appliedSearchData?.checkIn),
-        CheckOutDate: formatSupplierDate(appliedSearchData?.checkOut),
-        RoomCount: appliedSearchData?.rooms || 1,
-      },
+      searchContext,
     };
   }
 
+  // Default
   return {
-    hotelId: selectedHotel?.hotelMeta?.hotelId,
-
+    hotelId: hotelMeta?.hotelId || hid,
     hotelMeta: {
-      cityId: selectedHotel?.hotelMeta?.cityId,
-      stateName: selectedHotel?.hotelMeta?.stateName,
-      countryCode: selectedHotel?.hotelMeta?.countryCode,
+      cityId,
+      stateName,
+      countryCode,
     },
-
     hotelKey: selectedHotel?.hotelKey,
     searchKey: selectedHotel?.searchKey,
+    searchContext,
   };
 };

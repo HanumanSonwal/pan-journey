@@ -10,6 +10,7 @@ import {
   getCMSPageBySlug,
   getCMSTemplates,
   updateCMSPage,
+  previewCMSSlug,
 } from "./cms.service.js";
 
 export const createCMS = asyncHandler(async (req, res) => {
@@ -34,6 +35,12 @@ export const updateCMS = asyncHandler(async (req, res) => {
 export const deleteCMS = asyncHandler(async (req, res) => {
   await deleteCMSPage(req.params.id);
   sendSuccess(res, "CMS page deleted successfully");
+});
+
+export const previewSlug = asyncHandler(async (req, res) => {
+  const data = await previewCMSSlug(req.body);
+
+  sendSuccess(res, "Slug preview generated successfully", data);
 });
 
 export const getCMSBySlug = asyncHandler(async (req, res) => {

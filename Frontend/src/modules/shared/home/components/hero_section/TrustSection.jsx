@@ -1,5 +1,6 @@
 "use client";
-
+import useIsMobile from "@/hooks/useIsMobile";
+import MobileTrustSection from "@/modules/hotel/mobile-componant/MobileTrustSection";
 import {
   CustomerServiceOutlined,
   GlobalOutlined,
@@ -65,8 +66,16 @@ const trustItems = [
 ];
 
 export default function TrustSection() {
+  const isMobile = useIsMobile();
+
+  if (isMobile === null) return null;
+
+  if (isMobile) {
+    return <MobileTrustSection />;
+  }
+
   return (
-    <section className="absolute bottom-[-125px] left-1/2 z-20 w-full max-w-[1240px] -translate-x-1/2 overflow-hidden rounded-lg border border-[#e5e7eb] bg-[#fafafa]">
+    <section className="absolute top-100 left-1/2 z-20 w-[92%] -translate-x-1/2 -translate-y-2 overflow-hidden rounded-lg border border-[#e5e7eb] bg-[#fafafa] min-[1000px]:w-[90%] min-[1200px]:w-[86%] sm:w-[94%] xl:w-[82%] 2xl:w-[82%]">
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
         {trustItems.map((item, index) => (
           <div

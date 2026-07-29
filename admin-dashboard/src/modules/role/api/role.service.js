@@ -8,7 +8,9 @@ export const getRoles = async () => {
 
 // 🔹 Get All Roles
 export const getRolesDropdown = async () => {
-  const res = await api.get("/roles/dropdown");
+  const res = await api.get("/roles/dropdown", {
+    skipToast: true,
+  });
   return res.data;
 };
 
@@ -29,7 +31,6 @@ export const updateRole = async (id, data) => {
   const res = await api.put(`/roles/${id}`, data);
   return res.data;
 };
-
 
 export const statusUpdateRole = async (id, data) => {
   const res = await api.patch(`/roles/${id}/status`, data);

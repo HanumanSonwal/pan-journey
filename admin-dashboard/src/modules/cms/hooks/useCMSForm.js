@@ -3,7 +3,7 @@
 import { App } from "antd";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { getCMSPageApi } from "../api/cms.service";
+import { getCMSPageApi, previewSlugApi } from "../api/cms.service";
 import { useCMS } from "./useCMS";
 
 export default function useCMSForm({ id, form }) {
@@ -38,13 +38,51 @@ export default function useCMSForm({ id, form }) {
     load();
   }, [id, form]);
 
+  const previewSlug = async () => {
+    const values = form.getFieldsValue(true);
+
+    // Static / Marketing
+    if (
+      (values.entityType === "static" || values.entityType === "marketing") &&
+      !values.title
+    ) {
+      return;
+    }
+
+    // Hotel City
+    if (values.entityType === "hotelCity" && !values.cityMeta?.destination) {
+      return;
+    }
+
+    // Hotel
+    if (values.entityType === "hotel" && !values?.data?.hotelMeta?.hotelName) {
+      return;
+    }
+
+    try {
+      const payload = {
+        title: values.title,
+        entityType: values.entityType,
+        entityId: values.entityId,
+        data: {
+          cityMeta: values.cityMeta || null,
+          hotelMeta: values?.data?.hotelMeta || null,
+        },
+      };
+
+      const res = await previewSlugApi(payload);
+
+      form.setFieldValue("slug", res.slug);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const handleSubmit = async (values) => {
     const formValues = form.getFieldsValue(true);
     try {
       const payload = {
         title: formValues.title,
-        slug: formValues.slug,
-        // template: formValues.template,
         entityType: formValues.entityType,
         entityId: formValues.entityId,
         metaTitle: formValues.metaTitle,
@@ -74,6 +112,7 @@ export default function useCMSForm({ id, form }) {
   };
   return {
     handleSubmit,
+    previewSlug,
     isSubmitting: createCMS.isPending || updateCMS.isPending,
   };
 }

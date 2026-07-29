@@ -18,7 +18,8 @@ function GuestsField({
   onChange,
   open,
   setOpen,
-  variant = "default", // default | compact
+  variant = "default",
+  icon,
 }) {
   const safeValue = useMemo(
     () => ({
@@ -113,6 +114,7 @@ function GuestsField({
 
   const childAgesValid = useMemo(() => {
     return (
+      
       draftGuests.children === 0 ||
       draftGuests.childAges.every(
         (age) => age !== "" && age !== null && age !== undefined,
@@ -120,12 +122,14 @@ function GuestsField({
     );
   }, [draftGuests.children, draftGuests.childAges]);
   const renderDropdownContent = ({ mobile = false } = {}) => (
+    
     <div
       onClick={(e) => e.stopPropagation()}
       className={`rounded-xl bg-white p-4 ${
         mobile ? "w-full max-w-none" : "w-[calc(100vw-32px)] max-w-[340px]"
       }`}
     >
+      
       <Counter
         label="Room"
         value={draftGuests.rooms}
@@ -242,11 +246,18 @@ function GuestsField({
     </div>
   );
 
-  const triggerUI = <GuestTrigger variant={variant} value={safeValue} />;
+ const triggerUI = (
+  <GuestTrigger
+    variant={variant}
+    value={safeValue}
+    icon={icon}
+  />
+);
 
   if (isMobile) {
     return (
       <>
+      
         <div onClick={() => setDrawerOpen(true)} className="cursor-pointer">
           {triggerUI}
         </div>
@@ -293,7 +304,11 @@ function GuestsField({
       content={renderDropdownContent()}
     >
       <div className="cursor-pointer">
-        <GuestTrigger variant={variant} value={safeValue} />
+       <GuestTrigger
+  variant={variant}
+  value={safeValue}
+  icon={icon}
+/>
       </div>
     </Popover>
   );

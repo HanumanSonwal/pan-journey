@@ -246,7 +246,7 @@ export default function Header() {
             className="group hidden cursor-pointer items-center gap-2 rounded-lg border teb-border-color px-3 py-2 text-sm font-medium most-text-color  transition-all duration-300 hover:-translate-y-0.5 background-color  hover:text-white! md:flex"
           >
             {wishlistCount > 0 && (
-              <span className="ml-1 rounded-full bg-[#4A9BB5] px-2 py-0.5 text-xs font-semibold text-white transition-colors duration-300 group-hover:bg-white group-hover:text-most-text-color">
+              <span className="ml-1 rounded-full buttion-background-color px-2 py-0.5 text-xs font-semibold text-white transition-colors duration-300 group-hover:bg-white group-hover:text-most-text-color">
                 {wishlistCount}
               </span>
             )}

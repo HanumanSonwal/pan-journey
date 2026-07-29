@@ -3,6 +3,8 @@ export const PERMISSIONS = {
 
   bookings: ["read", "write", "update", "delete"],
 
+  userQuery: ["read", "update"],
+
   users: ["read", "write", "update", "delete"],
 
   roles: ["read", "write", "update", "delete"],
@@ -10,6 +12,14 @@ export const PERMISSIONS = {
   staff: ["read", "write", "update", "delete"],
 
   Markups: ["read", "write", "update", "delete"],
+
+  couponCodes: ["read", "write", "update", "delete"],
+
+  services: ["read", "write", "update", "delete"],
+
+  customers: ["read", "write", "update", "delete"],
+
+  reports: ["read"],
 
   cmsPages: ["read", "write", "update", "delete"],
 

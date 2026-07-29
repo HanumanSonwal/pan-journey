@@ -1,5 +1,5 @@
 import { asyncHandler } from "../../middleware/asyncHandler.js";
-import { sendSuccess } from "../../utils/response/ApiResponse.js";
+import { sendError, sendSuccess } from "../../utils/response/ApiResponse.js";
 import Role from "./role.model.js";
 import {
   createRoleService,

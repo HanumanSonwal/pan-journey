@@ -32,7 +32,7 @@ export default function CustomersPage() {
 
   const [debouncedSearch] = useDebounce(search, 500);
   const { message } = App.useApp();
-  const { canRead, isAdmin } = usePermission("users");
+  const { canRead, isAdmin, canEdit } = usePermission("userQuery");
   const canFetch = canRead || isAdmin;
 
   // FIRST: query call
@@ -157,37 +157,41 @@ export default function CustomersPage() {
         <Tag color="cyan">{value?.replaceAll("_", " ") || "-"}</Tag>
       ),
     },
-    {
-      title: "Status",
-      dataIndex: "status",
-      width: 180,
-      render: (value, record) => (
-        <Select
-          size="small"
-          value={value}
-          style={{ width: 150 }}
-          loading={updatingId === record._id}
-          onChange={(status) => {
-            setTableData((prev) =>
-              prev.map((item) =>
-                item._id === record._id ? { ...item, status } : item,
-              ),
-            );
+    ...(canEdit
+      ? [
+          {
+            title: "Status",
+            dataIndex: "status",
+            width: 180,
+            render: (value, record) => (
+              <Select
+                size="small"
+                value={value}
+                style={{ width: 150 }}
+                loading={updatingId === record._id}
+                onChange={(status) => {
+                  setTableData((prev) =>
+                    prev.map((item) =>
+                      item._id === record._id ? { ...item, status } : item,
+                    ),
+                  );
 
-            updateStatus({
-              id: record._id,
-              payload: {
-                status,
-              },
-            });
-          }}
-          options={statusOptions.map((item) => ({
-            value: item,
-            label: <Tag color={getStatusColor(item)}>{item}</Tag>,
-          }))}
-        />
-      ),
-    },
+                  updateStatus({
+                    id: record._id,
+                    payload: {
+                      status,
+                    },
+                  });
+                }}
+                options={statusOptions.map((item) => ({
+                  value: item,
+                  label: <Tag color={getStatusColor(item)}>{item}</Tag>,
+                }))}
+              />
+            ),
+          },
+        ]
+      : []),
     {
       title: "Created",
       dataIndex: "createdAt",

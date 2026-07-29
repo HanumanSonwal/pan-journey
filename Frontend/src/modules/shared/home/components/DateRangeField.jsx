@@ -9,7 +9,8 @@ export default function DateRangeField({
   onChange,
   open,
   setOpen,
-  variant = "default", // default | compact
+  variant = "default",
+  icon,
 }) {
   const start = value?.[0] || dayjs();
   const end = value?.[1] || dayjs().add(1, "day");
@@ -84,10 +85,20 @@ export default function DateRangeField({
         className="relative h-[50px] w-full cursor-pointer rounded border border-gray-300 bg-white px-3 transition-all hover:border-[#0077b6]"
         onClick={() => setOpen(true)}
       >
+        
         {/* FULL WIDTH WRAPPER */}
-        <div className="flex h-full w-full items-center justify-between gap-2">
-          {/* CHECK IN */}
-          <div className="flex flex-1 flex-col justify-center leading-tight">
+        {/* FULL WIDTH WRAPPER */}
+<div className="flex h-full w-full items-center justify-between gap-2">
+
+  {/* ICON */}
+  {icon && (
+    <div className="flex shrink-0 items-center">
+      {icon}
+    </div>
+  )}
+
+  {/* CHECK IN */}
+  <div className="flex flex-1 flex-col justify-center leading-tight">
             <span className="text-[9px] leading-none text-gray-500">
               Check In
             </span>
@@ -141,12 +152,15 @@ export default function DateRangeField({
         Check In - Check Out
       </span>
 
-      <div className="relative h-[65px] rounded-md border border-[#d9d9d9] bg-white px-6 py-3 transition-all hover:border-[#0077b6]">
+      <div className="relative h-[65px] rounded-md border border-[#d9d9d9] bg-white px-2 py-3 transition-all hover:border-[#0077b6]">
         {/* DISPLAY */}
         <div
-          className="flex h-full cursor-pointer items-center justify-between"
+          className="flex h-full cursor-pointer items-center gap-1"
           onClick={() => setOpen(true)}
         >
+
+          {icon}
+
           {/* CHECK IN */}
           <div className="flex flex-col justify-center">
             <div className="flex items-start gap-1">

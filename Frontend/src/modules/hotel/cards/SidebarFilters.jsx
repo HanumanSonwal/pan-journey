@@ -43,7 +43,6 @@ function SidebarFilters({
   const [tempFilters, setTempFilters] = useState(filters);
   const [isMobile, setIsMobile] = useState(false);
 
-
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
 
@@ -95,10 +94,7 @@ function SidebarFilters({
     (rating) => {
       updateFilters((prev) => ({
         ...prev,
-        starRating:
-          prev.starRating === String(rating)
-            ? ""
-            : String(rating),
+        starRating: prev.starRating === String(rating) ? "" : String(rating),
       }));
     },
     [updateFilters],
@@ -222,7 +218,9 @@ function SidebarFilters({
             {propertyOptions.map((option) => (
               <Checkbox
                 key={option}
-                checked={currentFilters?.propertyType?.includes(option) || false}
+                checked={
+                  currentFilters?.propertyType?.includes(option) || false
+                }
                 onChange={() => handleCheckbox("propertyType", option)}
               >
                 {option}
@@ -286,15 +284,14 @@ function SidebarFilters({
         ),
       },
     ];
-  }, 
-  [
-  currentFilters,
-  handleCheckbox,
-  handleStarRating,
-  handlePriceRange,
-  handleCustomPrice,
-  handleFreeCancellation,
-]);
+  }, [
+    currentFilters,
+    handleCheckbox,
+    handleStarRating,
+    handlePriceRange,
+    handleCustomPrice,
+    handleFreeCancellation,
+  ]);
 
   return (
     <div className={`flex h-full flex-col bg-white p-3 shadow-md md:p-4`}>
@@ -361,19 +358,19 @@ function SidebarFilters({
             <div className="flex gap-3">
               <button
                 onClick={() => {
-             const resetFilters = {
-  freeCancellation: false,
-  search: "",
-  starRating: "",
-  minPrice: "",
-  maxPrice: "",
-  suggested: [],
-  propertyType: [],
-  rating: [],
-  locations: [],
-};
+                  const resetFilters = {
+                    freeCancellation: false,
+                    search: "",
+                    starRating: "",
+                    minPrice: "",
+                    maxPrice: "",
+                    suggested: [],
+                    propertyType: [],
+                    rating: [],
+                    locations: [],
+                  };
 
-setTempFilters(resetFilters);
+                  setTempFilters(resetFilters);
 
                   onClose?.();
                 }}
@@ -384,9 +381,9 @@ setTempFilters(resetFilters);
 
               <button
                 onClick={() => {
-  setFilters(tempFilters);
-  onClose?.();
-}}
+                  setFilters(tempFilters);
+                  onClose?.();
+                }}
                 className="h-8 flex-1 rounded bg-[#0B6CFF] text-sm font-semibold text-white! transition hover:bg-[#0953be]"
               >
                 View Properties

@@ -1,3 +1,4 @@
+import { checkPermission } from "../../middleware/checkPermission.js";
 import express from "express";
 import { protect } from "../../middleware/auth.middleware.js";
 import { protectCustomer } from "../../middleware/customerAuth.middleware.js";
@@ -18,7 +19,18 @@ router.get("/getAllContacts", protectCustomer, getAllContacts);
 router.get("/getSingleContact/:id", protectCustomer, getSingleContact);
 router.put("/updateContact/:id", protectCustomer, updateContact);
 router.delete("/deleteContact/:id", protectCustomer, deleteContact);
-router.get("/admin/all-contacts", protect, getAllContactsAdmin);
-router.patch("/admin/update-contact/:id", protect, updateContactAdmin);
+
+router.get(
+  "/admin/all-contacts",
+  protect,
+  checkPermission("userQuery", "read"),
+  getAllContactsAdmin,
+);
+router.patch(
+  "/admin/update-contact/:id",
+  protect,
+  checkPermission("userQuery", "update"),
+  updateContactAdmin,
+);
 
 export default router;

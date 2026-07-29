@@ -3,8 +3,9 @@ import {
   CheckCircleFilled,
   CheckOutlined,
   GiftOutlined,
+  ThunderboltFilled,
 } from "@ant-design/icons";
-import { App, Button, Card, Empty, Tag, Typography } from "antd";
+import { App, Button, Card, Empty, Typography } from "antd";
 import Image from "next/image";
 
 const { Title, Text } = Typography;
@@ -73,96 +74,115 @@ export default function CouponCard({
             return (
               <div
                 key={coupon._id}
-                className={`rounded-xl border border-[#E5EEF7] bg-white p-4 shadow-sm transition-all duration-200 hover:shadow-md ${applied
-                  ? "border-green-300 bg-green-50"
-                  : "border-gray-200 hover:border-[#0f766e]"
-                  }`}
+                className={`overflow-hidden rounded  border transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${
+                  applied
+                    ? "border-green-500 bg-green-50"
+                    : "border-gray-200 bg-white hover:border-[#0F766E]"
+                }`}
               >
-                <div>
-                  <div className="relative mb-4 h-[180px] w-full overflow-hidden rounded">
-                    <Image
-                      src={coupon.image || "/images/no-image.jpg"}
-                      alt={coupon.title}
-                      fill
-                      className="object-cover"
-                    />
+                {/* Image */}
+                <div className="relative h-[110px] w-full">
+                  <Image
+                    src={coupon.image || "/images/no-image.jpg"}
+                    alt={coupon.title}
+                    fill
+                    className="object-cover"
+                  />
+
+                  <div className="absolute top-3 left-3">
+                    <span className="rounded-full bg-blue-600 px-3 py-1 text-[11px] font-semibold text-white shadow">
+                      {coupon.code}
+                    </span>
                   </div>
-                  <div className="flex-1">
-                    <div className="mb-3 flex flex-wrap items-center gap-2">
-                      <Tag color={applied ? "green" : "blue"}>
-                        {coupon.code}
-                      </Tag>
 
-                      {coupon.isAutoApply && (
-                        <Tag color="gold">Recommended</Tag>
-                      )}
-
-                      {applied && (
-                        <Tag color="success" icon={<CheckCircleFilled />}>
-                          Applied
-                        </Tag>
-                      )}
+                  {coupon.isAutoApply && (
+                    <div className="absolute top-3 right-3 rounded-full bg-yellow-400 px-3 py-1 text-[11px] font-semibold text-black shadow">
+                      ⭐ Recommended
                     </div>
+                  )}
+                </div>
 
-                    <div className="flex justify-between">
+                {/* Body */}
+                <div className="p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1">
                       <Title
                         level={5}
-                        className="font-roboto! !mb-1 !text-[21px] !font-semibold"
+                        className="!mb-1 !text-[18px] !font-semibold"
                       >
                         {coupon.title}
                       </Title>
 
-                      <div className="!m-0! font-roboto! font-bold !text-[#0F766E]">
+                      <Text className="block text-[13px] text-gray-500">
+                        Save instantly on your booking
+                      </Text>
+                    </div>
+
+                    {/* Discount */}
+                    <div className="rounded-xl bg-[#ECFDF5] px-3 py-2 text-center">
+                      <div className="text-[10px] font-bold tracking-widest text-[#0F766E] uppercase">
+                        UP TO
+                      </div>
+
+                      <div className="text-[24px] leading-none font-bold text-[#0F766E]">
                         {coupon.discountType === "flat"
-                          ? `₹ ${formatPrice(coupon.discountValue)} OFF`
-                          : `${coupon.discountValue}% OFF`}
+                          ? `₹${formatPrice(coupon.discountValue)}`
+                          : `${coupon.discountValue}%`}
+                      </div>
+
+                      <div className="text-[11px] font-semibold text-[#0F766E]">
+                        OFF
                       </div>
                     </div>
-
-                    <div className="mt-3 space-y-2">
-                      <div className="flex items-center gap-2">
-                        <CheckOutlined className="text-[12px] text-[#0f766e]!" />
-
-                        <Text className="text-[13px] text-gray-600">
-                          Minimum Booking:
-                          <strong> ₹ {formatPrice(coupon.minAmount)}</strong>
-                        </Text>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <CheckOutlined className="text-[12px] text-[#0f766e]!" />
-
-                        <Text className="text-[13px] text-gray-600">
-                          Max Service Tax Discount:
-                          <strong>
-                            {" "}
-                            {coupon.maxDiscountPercentOfServiceTax}%
-                          </strong>
-                        </Text>
-                      </div>
-                    </div>
-
-                    {applied && totalDiscount > 0 && (
-                      <div className="my-3 rounded border border-green-200 bg-white px-3 py-2">
-                        <Text className="font-medium text-green-700">
-                          🎉 You saved ₹ {formatPrice(totalDiscount)}
-                        </Text>
-                      </div>
-                    )}
                   </div>
 
-                  <div className="shrink-0">
+                  <div className="mt-4 space-y-2">
+                    <div className="flex items-center gap-2 text-[13px] text-gray-600">
+                      <CheckOutlined className="text-[#0F766E]" />
+                      Minimum Booking
+                      <strong>₹ {formatPrice(coupon.minAmount)}</strong>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-[13px] text-gray-600">
+                      <ThunderboltFilled className="text-yellow-500" />
+                      Instant Discount
+                    </div>
+                  </div>
+
+                  {applied && totalDiscount > 0 && (
+                    <div className="mt-4 rounded-xl border border-green-200 bg-green-100 p-3">
+                      <div className="flex items-center gap-2">
+                        <CheckCircleFilled className="text-green-600" />
+
+                        <div>
+                          <div className="font-semibold text-green-700">
+                            Coupon Applied
+                          </div>
+
+                          <div className="text-sm text-green-600">
+                            You saved ₹ {formatPrice(totalDiscount)}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="mt-4">
                     {applied ? (
-                      <Button block size="large" disabled type="default">
-                        Applied
+                      <Button
+                        block
+                        size="large"
+                        disabled
+                        className="!h-11 !rounded-xl !border-green-500 !bg-green-50 !font-semibold !text-green-700"
+                      >
+                        ✓ Applied
                       </Button>
                     ) : (
                       <Button
                         block
                         size="large"
-                        type="primary"
                         loading={loading}
-                        className="my-3! !bg-[#0f766e]"
+                        className="!h-11 !rounded-xl !border-none text-white! !bg-[#0F766E] !font-semibold hover:!bg-[#115e59]"
                         onClick={() => handleApply(coupon)}
                       >
                         Apply Coupon

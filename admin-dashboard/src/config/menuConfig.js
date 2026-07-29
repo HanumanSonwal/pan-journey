@@ -22,7 +22,7 @@ export const menuItems = [
     key: "/dashboard/user-query",
     icon: <UserOutlined />,
     label: <Link href="/dashboard/user-query">User Query</Link>,
-    module: "users", // ✅ FIX
+    module: "userQuery", // ✅ FIX
   },
 
   {

@@ -73,6 +73,11 @@ export const getCMSByEntityApi = async ({ entityType, entityId }) => {
   return res?.data?.data || null;
 };
 
+export const previewSlugApi = async (payload) => {
+  const { data } = await api.post("/cms/preview-slug", payload);
+  return data.data;
+};
+
 /*
 MEDIA
 */

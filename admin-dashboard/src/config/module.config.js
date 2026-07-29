@@ -4,6 +4,11 @@ export const moduleConfig = {
     actions: ["read"],
   },
 
+  userQuery: {
+    label: "User Query",
+    actions: ["read", "update"],
+  },
+
   bookings: {
     label: "Bookings",
     actions: ["read", "write", "update", "delete"],

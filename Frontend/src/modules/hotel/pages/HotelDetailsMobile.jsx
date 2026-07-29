@@ -11,7 +11,6 @@ import { useEffect, useState } from "react";
 import HotelDetailsSkeleton from "@/components/common/loder/HotelDetailsSkeleton";
 import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
 
-import SessionExpiredModal from "../components/hotels/viewhotles/SessionExpiredModal";
 import ViewHotelInfo from "../components/hotels/viewhotles/ViewHotelInfo";
 import ViewHotelModal from "../components/hotels/viewhotles/ViewHotelModal";
 import ViewHotelPriceCard from "../components/hotels/viewhotles/ViewHotelPriceCard";
@@ -59,8 +58,8 @@ function HotelDetailsMobile({
 
   const amenities = supplierData?.Amenities
     ? supplierData.Amenities.split(",")
-      .map((item) => item.trim())
-      .filter(Boolean)
+        .map((item) => item.trim())
+        .filter(Boolean)
     : [];
 
   const hotelDetails = supplierData || [];
@@ -108,8 +107,9 @@ function HotelDetailsMobile({
   return (
     <div className="min-h-screen !bg-[#eef3f8]">
       <div
-        className={`sticky top-0 z-50 flex items-center !justify-between p-2 transition-all duration-300 ${isScrolled ? "bg-white shadow-md" : "bg-transparent"
-          }`}
+        className={`sticky top-0 z-50 flex items-center !justify-between p-2 transition-all duration-300 ${
+          isScrolled ? "bg-white shadow-md" : "bg-transparent"
+        }`}
       >
         <button
           onClick={() => window.history.back()}
@@ -216,18 +216,20 @@ function HotelDetailsMobile({
                           Check In / Check Out
                         </p>
 
-                        <div className="!rounded-[3px] border font-normal !border-gray-400 p-1 gap-2 h-8 !-mt-2 sm:h-7 md:h-7 lg:h-7 ">
+                        <div className="!-mt-2 h-8 gap-2 !rounded-[3px] border !border-gray-400 p-1 font-normal sm:h-7 md:h-7 lg:h-7">
                           <div className="flex items-center gap-4">
                             <div>
                               <p className="font-normal !text-gray-500">
                                 {appliedSearchData?.checkIn
-  ? dayjs(appliedSearchData.checkIn).format("DD MMM YYYY")
-  : "--"}
+                                  ? dayjs(appliedSearchData.checkIn).format(
+                                      "DD MMM YYYY",
+                                    )
+                                  : "--"}
                               </p>
                             </div>
 
                             <div>
-                              <p className="font-normal !text-gray-500 ">
+                              <p className="font-normal !text-gray-500">
                                 {appliedSearchData?.checkOut || "--"}
                               </p>
                             </div>
@@ -237,12 +239,12 @@ function HotelDetailsMobile({
 
                       {/* Guests */}
                       <div className="w-[110px]">
-                        <p className=" text-sm font-medium !text-[#4AA3DF] ">
+                        <p className="text-sm font-medium !text-[#4AA3DF]">
                           Guests
                         </p>
 
-                        <div className="rounded-[4px] border !border-gray-400 p-1 !h-8 !-mt-2 !sm:h-8 !md:h-7 lg:h-7 ">
-                          <p className="font-normal !text-gray-500 ">
+                        <div className="!sm:h-8 !md:h-7 !-mt-2 !h-8 rounded-[4px] border !border-gray-400 p-1 lg:h-7">
+                          <p className="font-normal !text-gray-500">
                             {appliedSearchData?.rooms || 1} Room
                           </p>
                         </div>
@@ -318,12 +320,6 @@ function HotelDetailsMobile({
             onClose={() => setIsGalleryOpen(false)}
           />
 
-          {/* Session Expired */}
-          <SessionExpiredModal
-            open={sessionExpired}
-            loading={reloadingHotels}
-            onReload={handleReloadHotels}
-          />
           {/* Sticky Bottom */}
 
           <div className="!bg-offer-gradient sticky bottom-0 z-50 px-2 py-3 shadow-xl lg:hidden">

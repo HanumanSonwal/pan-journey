@@ -269,7 +269,9 @@ body {
 .teb-border-color {
   border-color: #051449;
 }
-
+.buttion-border-color{
+  border-color:#FDA20F;
+}
 .teb-gradient {
   background: linear-gradient(180deg, #05144B 0%, #0C2FB1 100%);
 }
