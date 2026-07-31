@@ -36,7 +36,7 @@ export default function ImportantInfoCard({ bookingData }) {
         <button
           type="button"
           onClick={() => setExpanded(!expanded)}
-          className="mt-6! text-[16px]! font-medium! text-[#62B7EB]! transition hover:text-[#4da8dc]!"
+          className="mt-6! text-[16px]! font-medium! most-text-color transition "
         >
           {expanded ? "View Less" : "View More"}
         </button>

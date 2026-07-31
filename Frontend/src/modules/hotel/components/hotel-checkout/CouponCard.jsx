@@ -36,7 +36,7 @@ export default function CouponCard({
   return (
     <Card
       variant={false}
-      className="rounded shadow-[0_6px_18px_rgba(0,0,0,0.08)]"
+      className="rounded shadow-[0_6px_18px_rgba(0,0,0,0.08)] !mt-4"
       styles={{
         body: {
           padding: 20,
@@ -44,7 +44,7 @@ export default function CouponCard({
       }}
     >
       {/* Header */}
-      <div className="mb-4 flex items-center gap-3">
+      <div className="!mt-4 flex items-center gap-3">
         <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#ECFDF5]">
           <GiftOutlined className="text-xl text-[#0f766e]" />
         </div>

@@ -33,10 +33,10 @@ const Amenities = ({ amenities = [] }) => {
         {amenities?.map((item, i) => (
           <div
             key={i}
-            className="flex items-center gap-3 rounded border border-gray-100 bg-gray-50 p-3"
+            className="flex items-center gap-3 rounded border most-boder-colour bg-gray-50 p-3"
           >
             {/* Dynamic Icon */}
-            <div className="text-[18px] text-[#0ea5e9]">
+            <div className="text-[18px] most-text-color">
               {getAmenityIcon(item)}
             </div>
 

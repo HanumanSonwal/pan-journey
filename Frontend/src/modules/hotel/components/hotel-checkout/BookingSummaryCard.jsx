@@ -65,7 +65,7 @@ export default function BookingSummaryCard({
       {/* Image */}
       <div className="flex flex-col gap-4 sm:flex-row">
         {/* Hotel Image */}
-        <div className="relative h-[230px] overflow-hidden rounded-2xl sm:h-[190px] sm:w-[290px]">
+        <div className="relative !h-[200px] overflow-hidden rounded-xl sm:h-[190px] sm:w-[290px]">
           <Image
             src={hotelImage}
             fill
@@ -108,31 +108,31 @@ export default function BookingSummaryCard({
                 Payment Success
               </Tag>
             </div>
-             <div className="my-5 border-t border-dashed" />
+            <div className="my-5 border-t border-dashed" />
 
-      {/* Booking Details */}
+            {/* Booking Details */}
 
-      <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <div className="rounded-lg border border-gray-200 bg-white p-3">
-          <Text className="block text-[12px] tracking-wide text-gray-500 uppercase">
-            Booking Reference
-          </Text>
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="rounded-lg border border-gray-200 bg-white p-3">
+                <Text className="block text-[12px] tracking-wide text-gray-500 uppercase">
+                  Booking Reference
+                </Text>
 
-          <Text strong className="text-[15px]">
-            {booking?.bookingReference}
-          </Text>
-        </div>
+                <Text strong className="text-[15px]">
+                  {booking?.bookingReference}
+                </Text>
+              </div>
 
-        <div className="rounded-lg border border-gray-200 bg-white p-3">
-          <Text className="block text-[12px] tracking-wide text-gray-500 uppercase">
-            Booking Date
-          </Text>
+              <div className="rounded-lg border border-gray-200 bg-white p-3">
+                <Text className="block text-[12px] tracking-wide text-gray-500 uppercase">
+                  Booking Date
+                </Text>
 
-          <Text strong className="text-[15px]">
-            {bookingDate}
-          </Text>
-        </div>
-      </div>
+                <Text strong className="text-[15px]">
+                  {bookingDate}
+                </Text>
+              </div>
+            </div>
 
           </div>
         </div>
@@ -140,7 +140,7 @@ export default function BookingSummaryCard({
 
       {/* Divider */}
 
-     
+
       <div className="mt-5 rounded-xl border border-[#E5EEF7] bg-[#FAFCFF] px-3 py-6 sm:p-4">
         <div className="flex items-center justify-between gap-3 sm:gap-6">
           {/* Check-in */}
