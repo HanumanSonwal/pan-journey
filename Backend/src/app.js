@@ -36,6 +36,7 @@ import roleRoutes from "./modules/role/role.routes.js";
 import support from "./modules/supportContact/support.routes.js";
 import tax from "./modules/tax/tax.route.js";
 import userRoutes from "./modules/user/user.routes.js";
+import homecontent from "./modules/HomeContent/homeContent.route.js";
 import wishlistRoutes from "./modules/wishlist/wishlist.routes.js";
 import testRoutes from "./test.routes.js";
 import path from "path";
@@ -81,6 +82,7 @@ app.use("/api/v1/newsletter", newsletter);
 app.use("/api/v1/tax", tax);
 app.use("/api/v1/couponCode", couponCode);
 app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/homecontent", homecontent);
 
 app.use("/api/v1/cms", cmsRoutes);
 app.use("/api/v1/roles", roleRoutes);
@@ -98,7 +100,8 @@ app.use("/api/v1/currency", currencyRoutes);
 app.use("/api/v1", testRoutes);
 app.use("/api/v1/newsletter", newsletter);
 app.use("/api/v1", invoiceRoutes);
-app.use("/api/v1", destinationRoutes);
+
+app.use("/api/v1/destinations", destinationRoutes);
 app.use("/api/v1/customer", customerProfileRoutes);
 app.use("/api/v1", countryRoutes);
 app.use("/api/v1/states", stateRoutes);

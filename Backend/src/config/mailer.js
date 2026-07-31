@@ -9,8 +9,10 @@
 // });
 
 import nodemailer from "nodemailer";
-const GMAIL_USER="himanshu11752@gmail.com"
-const GMAIL_APP_PASS="bhqr rtnd rkko oilf"
+// const GMAIL_USER="himanshu11752@gmail.com"
+// const GMAIL_APP_PASS="bhqr rtnd rkko oilf"
+const GMAIL_USER="asonwal5@gmail.com"
+const GMAIL_APP_PASS="gbkd jusi loxd rccn"
 
 
 

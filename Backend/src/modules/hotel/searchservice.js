@@ -387,7 +387,7 @@ export const searchHotelsFromSupplier = async (reqBody) => {
       countryMarkups,
       worldwideMarkups,
     });
-console.log("matchedmarkup",matchedMarkup)
+
     const pricedHotel = applyHotelPricing({
       hotel,
       markup: matchedMarkup,
