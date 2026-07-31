@@ -44,7 +44,7 @@ router.post(
 router.get(
   "/",
   protect,
-  checkPermission("users", "read"),
+  checkPermission("customers", "read"),
   getAllUsersController,
 );
 

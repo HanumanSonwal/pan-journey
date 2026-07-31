@@ -7,6 +7,7 @@ import {
   EyeOutlined,
 } from "@ant-design/icons";
 import { App, Button, Empty, Popconfirm, Table, Tag, Tooltip } from "antd";
+
 export default function CMSTable({
   pages,
   meta,
@@ -16,6 +17,8 @@ export default function CMSTable({
   setLimit,
   isLoading,
   deleteCMS,
+  canEdit,
+  canDelete,
 }) {
   const { message } = App.useApp();
 
@@ -95,51 +98,66 @@ export default function CMSTable({
       width: 140,
       render: (val) => new Date(val).toLocaleDateString("en-IN"),
     },
-    {
-      title: "Actions",
-      width: 180,
+    ...(canEdit || canDelete
+      ? [
+          {
+            title: "Actions",
+            width: 180,
 
-      render: (_, record) => (
-        <div
-          style={{
-            display: "flex",
-            gap: 8,
-          }}
-        >
-          <Tooltip title="Edit">
-            <Button
-              icon={<EditOutlined />}
-              href={`/dashboard/cms/edit/${record._id}`}
-            />
-          </Tooltip>
+            render: (_, record) => (
+              <div
+                style={{
+                  display: "flex",
+                  gap: 8,
+                }}
+              >
+                {/* EDIT */}
 
-          <Tooltip title="Preview">
-            <Button
-              icon={<EyeOutlined />}
-              href={`${BASE_URL}${record.url}?preview=true`}
-              target="_blank"
-            />
-          </Tooltip>
+                {canEdit && (
+                  <Tooltip title="Edit">
+                    <Button
+                      icon={<EditOutlined />}
+                      href={`/dashboard/cms/edit/${record._id}`}
+                    />
+                  </Tooltip>
+                )}
 
-          <Popconfirm
-            title="Delete page?"
-            onConfirm={async () => {
-              try {
-                await deleteCMS.mutateAsync(record._id);
-              } catch {}
-            }}
-          >
-            <Button
-              danger
-              icon={<DeleteOutlined />}
-              loading={
-                deleteCMS.variables === record._id && deleteCMS.isPending
-              }
-            />
-          </Popconfirm>
-        </div>
-      ),
-    },
+                {/* PREVIEW */}
+
+                <Tooltip title="Preview">
+                  <Button
+                    icon={<EyeOutlined />}
+                    href={`${BASE_URL}${record.url}?preview=true`}
+                    target="_blank"
+                  />
+                </Tooltip>
+
+                {/* DELETE */}
+
+                {canDelete && (
+                  <Popconfirm
+                    title="Delete page?"
+                    onConfirm={async () => {
+                      try {
+                        await deleteCMS.mutateAsync(record._id);
+                      } catch {}
+                    }}
+                  >
+                    <Button
+                      danger
+                      icon={<DeleteOutlined />}
+                      loading={
+                        deleteCMS.variables === record._id &&
+                        deleteCMS.isPending
+                      }
+                    />
+                  </Popconfirm>
+                )}
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
   return (

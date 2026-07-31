@@ -25,6 +25,9 @@ export const login = asyncHandler(async (req, res) => {
     ...cookieOptions,
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
+
+  console.log("Response Headers:", res.getHeaders());
+
   sendSuccess(res, "Login successful", {
     user: {
       id: data.user.id,

@@ -1,10 +1,11 @@
 "use client";
 
 import { PlusOutlined } from "@ant-design/icons";
-import { Button, Card } from "antd";
+import { Button, Card, Empty } from "antd";
 import { useMemo, useState } from "react";
 import { useDebounce } from "use-debounce";
 
+import { usePermission } from "@/modules/shared/hooks/usePermission";
 import CouponFilters from "../components/CouponFilters";
 import CouponFormModal from "../components/CouponFormModal";
 import CouponTable from "../components/CouponTable";
@@ -27,6 +28,11 @@ export default function CouponCodesPage() {
   const [limit, setLimit] = useState(10);
 
   const [debouncedSearch] = useDebounce(search, 500);
+
+  const { canRead, canCreate, canEdit, canDelete, isAdmin } =
+    usePermission("couponCodes");
+
+  const canFetch = canRead || isAdmin;
 
   // ================= FILTERS =================
 
@@ -74,14 +80,8 @@ export default function CouponCodesPage() {
 
   // ================= API =================
 
-  const {
-    coupons,
-    meta,
-    isLoading,
-
-    updateStatus,
-    deleteCoupon,
-  } = useCouponCodes(queryParams);
+  const { coupons, meta, isLoading, updateStatus, deleteCoupon } =
+    useCouponCodes(queryParams, canFetch);
 
   console.log("React Query Data in pages =>", coupons);
 
@@ -97,16 +97,18 @@ export default function CouponCodesPage() {
       <Card
         title="Coupon Management"
         extra={
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => {
-              setEditData(null);
-              setOpen(true);
-            }}
-          >
-            Create Coupon
-          </Button>
+          canCreate && (
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => {
+                setEditData(null);
+                setOpen(true);
+              }}
+            >
+              Create Coupon
+            </Button>
+          )
         }
       >
         {/* FILTERS */}
@@ -126,28 +128,36 @@ export default function CouponCodesPage() {
 
         {/* TABLE */}
 
-        <CouponTable
-          coupons={coupons}
-          meta={meta}
-          page={page}
-          limit={limit}
-          setPage={setPage}
-          setLimit={setLimit}
-          isLoading={isLoading}
-          updateStatus={updateStatus}
-          deleteCoupon={deleteCoupon}
-          handleEdit={handleEdit}
-        />
+        {canFetch ? (
+          <CouponTable
+            coupons={coupons}
+            meta={meta}
+            page={page}
+            limit={limit}
+            setPage={setPage}
+            setLimit={setLimit}
+            isLoading={isLoading}
+            updateStatus={updateStatus}
+            deleteCoupon={deleteCoupon}
+            handleEdit={handleEdit}
+            canEdit={canEdit || isAdmin}
+            canDelete={canDelete || isAdmin}
+          />
+        ) : (
+          <Empty description="No permission to view coupons" />
+        )}
       </Card>
 
       {/* MODAL */}
-
-      <CouponFormModal
-        open={open}
-        setOpen={setOpen}
-        editData={editData}
-        setEditData={setEditData}
-      />
+      
+      {(canCreate || canEdit || isAdmin) && (
+        <CouponFormModal
+          open={open}
+          setOpen={setOpen}
+          editData={editData}
+          setEditData={setEditData}
+        />
+      )}
     </>
   );
 }

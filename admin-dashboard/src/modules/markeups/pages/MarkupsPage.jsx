@@ -1,6 +1,8 @@
 "use client";
 import { PlusOutlined } from "@ant-design/icons";
-import { Button, Card } from "antd";
+
+import { usePermission } from "@/modules/shared/hooks/usePermission";
+import { Button, Card, Empty } from "antd";
 import { useMemo, useState } from "react";
 import { useDebounce } from "use-debounce";
 import MarkupFilters from "../componants/MarkupFilters";
@@ -17,6 +19,11 @@ export default function MarkupsPage() {
   const [statusFilter, setStatusFilter] = useState("all");
 
   const [page, setPage] = useState(1);
+
+  const { canRead, canCreate, canEdit, canDelete, isAdmin } =
+    usePermission("Markups");
+
+  const canFetch = canRead || isAdmin;
 
   const [limit, setLimit] = useState(10);
   const [debouncedSearch] = useDebounce(search, 500);
@@ -68,7 +75,7 @@ export default function MarkupsPage() {
     updateStatus,
     deleteTax,
     updateTaxStatus,
-  } = useMarkups(queryParams);
+  } = useMarkups(queryParams, canFetch);
 
   // ================= EDIT =================
 
@@ -87,17 +94,19 @@ export default function MarkupsPage() {
             : "Markup Management"
         }
         extra={
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => {
-              setEditData(null);
-              setIsTaxEdit(false);
-              setOpen(true);
-            }}
-          >
-            {levelFilter === "serviceTax" ? "Create Tax" : "Create Markup"}
-          </Button>
+          canCreate && (
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => {
+                setEditData(null);
+                setIsTaxEdit(false);
+                setOpen(true);
+              }}
+            >
+              {levelFilter === "serviceTax" ? "Create Tax" : "Create Markup"}
+            </Button>
+          )
         }
       >
         {/* FILTERS */}
@@ -116,36 +125,44 @@ export default function MarkupsPage() {
 
         {/* TABLE */}
 
-        <MarkupTable
-          markups={markups}
-          levelFilter={levelFilter}
-          meta={meta}
-          page={page}
-          limit={limit}
-          setPage={setPage}
-          setLimit={setLimit}
-          isLoading={isLoading}
-          deleteMarkup={deleteMarkup}
-          updateStatus={updateStatus}
-          handleEdit={handleEdit}
-          taxes={taxes}
-          taxMeta={taxMeta}
-          taxLoading={taxLoading}
-          deleteTax={deleteTax}
-          updateTaxStatus={updateTaxStatus}
-        />
+        {canFetch ? (
+          <MarkupTable
+            markups={markups}
+            levelFilter={levelFilter}
+            meta={meta}
+            page={page}
+            limit={limit}
+            setPage={setPage}
+            setLimit={setLimit}
+            isLoading={isLoading}
+            deleteMarkup={deleteMarkup}
+            updateStatus={updateStatus}
+            handleEdit={handleEdit}
+            taxes={taxes}
+            taxMeta={taxMeta}
+            taxLoading={taxLoading}
+            deleteTax={deleteTax}
+            updateTaxStatus={updateTaxStatus}
+            canEdit={canEdit || isAdmin}
+            canDelete={canDelete || isAdmin}
+          />
+        ) : (
+          <Empty description="No permission to view markups" />
+        )}
       </Card>
 
       {/* MODAL */}
 
-      <MarkupFormModal
-        open={open}
-        setOpen={setOpen}
-        editData={editData}
-        isTaxEdit={isTaxEdit}
-        setEditData={setEditData}
-        setIsTaxEdit={setIsTaxEdit}
-      />
+      {(canCreate || canEdit || isAdmin) && (
+        <MarkupFormModal
+          open={open}
+          setOpen={setOpen}
+          editData={editData}
+          isTaxEdit={isTaxEdit}
+          setEditData={setEditData}
+          setIsTaxEdit={setIsTaxEdit}
+        />
+      )}
     </>
   );
 }

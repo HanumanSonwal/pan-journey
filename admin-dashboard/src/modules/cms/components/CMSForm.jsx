@@ -1,5 +1,6 @@
 "use client";
 
+import { usePermission } from "@/modules/shared/hooks/usePermission";
 import { CopyOutlined } from "@ant-design/icons";
 import {
   App,
@@ -32,6 +33,10 @@ export default function CMSForm({ id }) {
   const title = Form.useWatch("title", form);
   const hotelMeta = Form.useWatch(["data", "hotelMeta"], form);
   const cityMeta = Form.useWatch("cityMeta", form);
+
+  const { canCreate, canEdit, isAdmin } = usePermission("cmsPages");
+
+  const canSubmit = id ? canEdit || isAdmin : canCreate || isAdmin;
 
   const { handleSubmit, isSubmitting, previewSlug } = useCMSForm({
     id,
@@ -94,7 +99,7 @@ export default function CMSForm({ id }) {
     }
 
     const frontendUrl = (
-      process.env.NEXT_PUBLIC_URL || "http://localhost:3000"
+      process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000"
     ).replace(/\/+$/, "");
 
     window.open(`${frontendUrl}${values.url}?preview=true`, "_blank");
@@ -108,7 +113,7 @@ export default function CMSForm({ id }) {
     if (!url) return;
 
     const baseUrl = (
-      process.env.NEXT_PUBLIC_URL || "http://localhost:3000"
+      process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000"
     ).replace(/\/+$/, "");
 
     await navigator.clipboard.writeText(`${baseUrl}${url}`);
@@ -318,6 +323,7 @@ export default function CMSForm({ id }) {
                   block
                   size="large"
                   loading={isSubmitting}
+                  disabled={!canSubmit}
                 >
                   {id ? "Update Page" : "Publish Page"}
                 </Button>

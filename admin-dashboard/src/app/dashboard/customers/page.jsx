@@ -21,8 +21,6 @@ import {
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 export default function CustomersPage() {
-  const [open, setOpen] = useState(false);
-  const [editData, setEditData] = useState(null);
   const [search, setSearch] = useState("");
   const [debouncedSearch] = useDebounce(search, 500);
   const [status, setStatus] = useState();
@@ -30,21 +28,25 @@ export default function CustomersPage() {
   const [limit, setLimit] = useState(10);
   const [sortBy, setSortBy] = useState("createdAt");
   const [order, setOrder] = useState("desc");
-  const { canRead, canCreate, canEdit, isAdmin } = usePermission("users");
+
+  const { canRead, isAdmin } = usePermission("customers");
   const canFetch = canRead || isAdmin;
 
   useEffect(() => {
     setPage(1);
   }, [debouncedSearch]);
 
-  const { data, isLoading } = useCustomers({
-    search: debouncedSearch,
-    page,
-    limit,
-    isActive: status,
-    sortBy,
-    order,
-  });
+  const { data, isLoading } = useCustomers(
+    {
+      search: debouncedSearch,
+      page,
+      limit,
+      isActive: status,
+      sortBy,
+      order,
+    },
+    canFetch,
+  );
 
   const customers = data?.data || [];
 
