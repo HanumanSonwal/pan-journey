@@ -20,6 +20,8 @@ const PAGE_SLUG = "about-us";
 export async function generateMetadata() {
   const cms = await getCmsBySlug(PAGE_SLUG);
 
+  console.log("LIVE FAQ", cms?.data?.blocks?.[0]?.data?.items?.[0]);
+
   const title =
     cms?.metaTitle ||
     "About PAN Journey | Trusted Travel & Hotel Booking Platform";
