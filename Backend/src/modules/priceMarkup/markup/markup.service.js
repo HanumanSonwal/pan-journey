@@ -22,12 +22,23 @@ export const getMarkup = async ({
 }) => {
 
   // 1 hotel
-  let markup = await Markup.findOne({
-    level: "hotel",
-    hotelId,
-    isActive: true,
-  });
+ const normalizeHotelId = (hotelId) => {
+  const id = String(hotelId);
+
+  // Agar already 99 se start ho rahi hai to dobara mat lagao
+  return id.startsWith("99") ? id : `99${id}`;
+};
+
+const normalizedHotelId = normalizeHotelId(hotelId);
+
 console.log("incoming hotel =", hotelId);
+console.log("normalized hotel =", normalizedHotelId);
+
+let markup = await Markup.findOne({
+  level: "hotel",
+  hotelId: normalizedHotelId,
+  isActive: true,
+});
   // 2 city
   const normalizedCity = extractNormalizedCity(cityName);
 
