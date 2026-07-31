@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import Herobanner from "@/modules/shared/home/components/cashback_sections/OfferBanner";
 import NewsletterSection from "@/modules/shared/home/components/NewsletterSection";
 import TestimonialsSection from "@/modules/shared/home/components/TestimonialsSection";
