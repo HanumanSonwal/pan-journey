@@ -213,7 +213,7 @@ export default function Header() {
               priority
               unoptimized
               className={`object-contain transition-all duration-300 ${isMobile
-                ? "absolute left-2 top-9 h-[50px] w-[50px]"
+                ? "absolute left-2 top-2 h-[50px] w-[50px]"
                 : "h-[100px] w-[100px]"
                 }`}
             />

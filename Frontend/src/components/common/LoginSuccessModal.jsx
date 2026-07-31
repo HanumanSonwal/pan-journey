@@ -49,7 +49,7 @@ export default function LoginSuccessModal({
             onClick={onProfile}
             className="h-[44px] rounded-lg px-10 font-medium text-white!"
             style={{
-              background: "linear-gradient(180deg, #72C0F0 0%, #0F6A75 100%)",
+              background: "buttion-background-color",
               border: "none",
             }}
           >
