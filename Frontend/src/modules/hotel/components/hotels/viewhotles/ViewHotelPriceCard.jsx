@@ -96,7 +96,7 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
         {/* Inclusion */}
         {!!inclusion && (
           <div className="rounded bg-[#f8fafc] px-3">
-            <p className="font-roboto! mb-2 text-[11px] font-bold tracking-wide text-[#0ea5e9] uppercase">
+            <p className="font-roboto! mb-2 text-[11px] font-bold tracking-wide most-text-color uppercase">
               Included
             </p>
 

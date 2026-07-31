@@ -166,14 +166,14 @@ const HotelSectionsTabss = ({
                 key={tab}
                 onClick={() => handleScrollTo(tab)}
                 className={`font-roboto relative min-w-max flex-1 px-6 py-5 text-[15px] font-bold whitespace-nowrap transition ${active
-                  ? "text-[#0ea5e9]"
-                  : "text-gray-600 hover:text-[#0ea5e9]"
+                  ? "teb-text-color"
+                  : "!text-gray-900 hover:teb-text-color"
                   }`}
               >
                 {tab}
 
                 {active && (
-                  <span className="absolute bottom-0 left-0 h-[3px] w-full rounded-full bg-[#0ea5e9]" />
+                  <span className="absolute bottom-0 left-0 h-[3px] w-full rounded-full teb-bg-color" />
                 )}
               </button>
             );

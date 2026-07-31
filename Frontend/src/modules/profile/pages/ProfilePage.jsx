@@ -42,7 +42,7 @@ export default function ProfilePage() {
 
       {/* Mobile Header */}
       <div className="sticky top-0 z-40 flex items-center justify-between bg-white px-4 py-3 shadow md:hidden">
-        <h2 className="text-lg font-semibold text-[#4A9BB5]">My Account</h2>
+        <h2 className="text-lg font-semibold most-text-color">My Account</h2>
 
         <Button
           type="text"

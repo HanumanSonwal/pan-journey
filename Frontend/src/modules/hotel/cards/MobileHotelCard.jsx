@@ -288,11 +288,11 @@ function MobileHotelCard({ hotel, wishlistIds }) {
 
           <div className="flex items-center gap-2">
 
-            <span className="rounded bg-[#72C0F0] px-2 py-1 text-xs font-bold text-white">
+            <span className="rounded buttion-background-color px-2 py-1 text-xs font-bold text-white">
               {rating.toFixed(1)}
             </span>
 
-            <span className="text-sm font-semibold text-[#4AA3DF]">
+            <span className="text-sm font-semibold most-text-color">
               {ratingLabel}
             </span>
 
@@ -337,7 +337,7 @@ function MobileHotelCard({ hotel, wishlistIds }) {
             {Array.from({ length: stars }).map((_, i) => (
               <StarFilled
                 key={i}
-                className="text-[13px] text-yellow-500"
+                className="text-[13px] !text-yellow-500"
               />
             ))}
 
@@ -350,13 +350,13 @@ function MobileHotelCard({ hotel, wishlistIds }) {
 
         {/* Address */}
 
-        <div className="mt-3 flex items-start gap-2">
+        <div className="mt-2 flex items-start gap-2">
 
           <EnvironmentOutlined className="mt-1 text-[#4AA3DF]" />
 
           <p className="text-sm leading-5">
 
-            <span className="font-semibold text-[#4AA3DF]">
+            <span className="font-semibold most-text-color">
               {hotel.address || hotel.location}
             </span>
 
@@ -370,7 +370,7 @@ function MobileHotelCard({ hotel, wishlistIds }) {
 
         {/* Facilities */}
 
-        <div className="mt-0 flex items-start justify-between gap-4">
+        <div className="-mt-1 flex items-start justify-between gap-4">
 
           {/* Left Side */}
           <div className="flex flex-1 flex-col">
@@ -402,7 +402,7 @@ function MobileHotelCard({ hotel, wishlistIds }) {
                   e.stopPropagation();
                   setShowAllFacilities(!showAllFacilities);
                 }}
-                className="mt-2 w-fit rounded bg-[#EDF7FF] px-3 py-1 text-[11px] font-semibold text-[#0077B6]"
+                className="mt-2 w-fit rounded bg-[#EDF7FF] px-3 py-1 text-[11px] font-semibold most-text-color"
               >
                 {showAllFacilities
                   ? "View Less"
@@ -431,7 +431,7 @@ function MobileHotelCard({ hotel, wishlistIds }) {
               {tax.toLocaleString("en-IN")} taxes & fees
             </p>
 
-            <p className="text-[14px] text-[#72C0F0]">
+            <p className="text-[14px] most-text-color">
               Per Night
             </p>
 

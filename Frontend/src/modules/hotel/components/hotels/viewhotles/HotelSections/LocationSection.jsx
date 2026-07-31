@@ -18,7 +18,7 @@ const LocationSection = ({ supplierData = {} }) => {
         {/* Header */}
         <div className="border-b border-[#e9f2f8] bg-[#f7fcff] px-5 py-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded bg-[#eaf6fd] text-[#0ea5e9]">
+            <div className="flex h-11 w-11 items-center justify-center rounded most-boder-colour most-text-color">
               <EnvironmentOutlined className="text-[18px]" />
             </div>
 

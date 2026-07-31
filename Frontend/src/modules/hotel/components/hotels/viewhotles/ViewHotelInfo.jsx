@@ -24,7 +24,7 @@ const ViewHotelInfo = ({ supplierData = {} }) => {
         {/* About */}
         <div className="rounded border border-gray-200 bg-white p-4 shadow-sm">
           <div className="mb-3 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded bg-[#eef8fd] text-[#0ea5e9]">
+            <div className="flex h-10 w-10 items-center justify-center rounded boder most-boder-colour most-text-colour">
               <InfoCircleOutlined />
             </div>
 
@@ -49,7 +49,7 @@ const ViewHotelInfo = ({ supplierData = {} }) => {
         {/* Address */}
         <div className="rounded border border-gray-200 bg-white p-4 shadow-sm">
           <div className="mb-3 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded bg-[#eef8fd] text-[#0ea5e9]">
+            <div className="flex h-10 w-10 items-center justify-center rounded boder most-boder-colour most-text-color">
               <EnvironmentOutlined />
             </div>
 

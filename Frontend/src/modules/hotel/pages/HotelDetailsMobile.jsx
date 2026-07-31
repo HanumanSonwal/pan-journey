@@ -1,15 +1,17 @@
 "use client";
-import {
-  ArrowLeftOutlined,
-  HeartFilled,
-  HeartOutlined,
-  ShareAltOutlined,
-} from "@ant-design/icons";
-import { Drawer } from "antd";
-import { useEffect, useState } from "react";
-
 import HotelDetailsSkeleton from "@/components/common/loder/HotelDetailsSkeleton";
 import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
+import {
+  ArrowLeftOutlined,
+  CalendarFilled,
+  FieldTimeOutlined,
+  HeartFilled,
+  HeartOutlined, SendOutlined, ShareAltOutlined,
+  TeamOutlined
+} from "@ant-design/icons";
+import { Drawer } from "antd";
+import dayjs from "dayjs";
+import { useEffect, useState } from "react";
 
 import ViewHotelInfo from "../components/hotels/viewhotles/ViewHotelInfo";
 import ViewHotelModal from "../components/hotels/viewhotles/ViewHotelModal";
@@ -179,79 +181,153 @@ function HotelDetailsMobile({
 
                 {/* Rating */}
                 <div className="flex items-center gap-2">
-                  <div className="!bg-offer-gradient rounded px-3 py-1 text-xs font-bold text-white">
-                    {supplierData?.ReviewScore || "4.2"}
+                  {/* Rating Box */}
+                  <span className="bg-[#0B5CB5] text-white text-[14px] font-bold 
+                   px-3 py-2 rounded-[10px]">
+                    4.4
+                  </span>
+
+                  {/* Review Text */}
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-1">
+                      <span className="text-[14px] font-bold most-text-color">
+                        Very Good
+                      </span>
+
+                      <span className="text-gray-500 text-[14px] font-medium">
+                        ({supplierData?.ReviewCount || "1200"} Ratings)
+                      </span>
+                    </div>
+
+                    <span className="text-[13px] text-gray-600">
+                      85% guests rated this property 4 and above
+                    </span>
                   </div>
-
-                  <span className="text-[14px] font-bold text-[#4AA3DF]">
-                    Very Good
-                  </span>
-
-                  <span className="text-gray-500">
-                    ({supplierData?.ReviewCount || "1200"} Ratings)
-                  </span>
                 </div>
 
-                {/* Address */}
-                <div className="mt-2">
-                  <p className="font-bold !text-gray-500">
-                    📍 {supplierData?.Address}
-                  </p>
 
-                  <p className="!-mt-3 text-sm text-[#4AA3DF]">
-                    {supplierData?.City}, {supplierData?.Country}
-                  </p>
+
+                <div className="mt-3 flex items-center justify-between rounded-xl border border-gray-200 bg-white p-0 shadow-sm px-1">
+                  {/* Left */}
+                  <div className="flex items-center gap-3">
+                    {/* Map Image */}
+                    <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-lg bg-[#F5F7FA] p-1">
+                      <img
+                        src="/images/location.png"
+                        alt="Location"
+                        className="max-h-full max-w-full object-contain"
+                      />
+                    </div>
+
+                    {/* Address */}
+                    <div className="flex flex-col ">
+                      <h3 className="m-0 text-[18px] font-bold leading-[1.3] text-[#1F2937]">
+                        {supplierData?.City || "East Delhi"}
+                      </h3>
+
+                      <p className="m-0 text-sm leading-[1] text-gray-500">
+                        {supplierData?.Address}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Right */}
+                  <button className="flex h-9 w-9 items-center justify-center rounded-full most-boder-colour bg-[#EAF6FF]">
+                    <SendOutlined
+                      className="!most-text-color"
+                      style={{
+                        fontSize: "16px",
+                        transform: "rotate(-45deg)",
+                      }}
+                    />
+                  </button>
                 </div>
 
                 {/* Travel Dates & Guests */}
-                <div className="mt-4">
-                  <h3 className="mb-3 !font-bold">Travel Dates & Guests</h3>
+                {/* Travel Dates & Guests */}
+                <div className="mt-4 border-t border-gray-300 pt-4">
+                  {/* Heading */}
+                  <div className="flex items-center justify-between ">
+                    <h3 className="text-[18px] font-bold text-black">
+                      Travel Dates & Guests
+                    </h3>
 
-                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      className="text-[16px] font-medium most-text-color"
+                    >
+                      View Calendar
+                    </button>
+                  </div>
+
+                  {/* Check-in / Check-out */}
+                  <div className="flex items-center gap-5 mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="h-2.5 w-2.5 rounded-full bg-gray-400"></span>
+
+                      <span className="text-[16px] text-black">
+                        <span className="font-medium">Check-in:</span>{" "}
+                        <span className="text-gray-600">2 PM</span>
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="h-2.5 w-2.5 rounded-full bg-gray-400"></span>
+
+                      <span className="text-[16px] text-black">
+                        <span className="font-medium">Check-out:</span>{" "}
+                        <span className="text-gray-600">12 PM</span>
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Date + Guests */}
+                  <div className="flex gap-3">
                     {/* Travel Dates */}
-                    <div className="flex gap-3">
-                      {/* Check In / Check Out */}
-                      <div className="flex-1">
-                        <p className="mb-0 text-sm font-medium text-[#4AA3DF]">
-                          Check In / Check Out
-                        </p>
+                    <div className="flex-1">
+                      <div className="flex h-[43px] items-center gap-3 rounded-[9px] border border-gray-300 px-3">
+                        {/* Calendar Icon */}
+                        <CalendarFilled className="text-[20px] text-gray-900 " />
 
-                        <div className="!-mt-2 h-8 gap-2 !rounded-[3px] border !border-gray-400 p-1 font-normal sm:h-7 md:h-7 lg:h-7">
-                          <div className="flex items-center gap-4">
-                            <div>
-                              <p className="font-normal !text-gray-500">
-                                {appliedSearchData?.checkIn
-                                  ? dayjs(appliedSearchData.checkIn).format(
-                                      "DD MMM YYYY",
-                                    )
-                                  : "--"}
-                              </p>
-                            </div>
-
-                            <div>
-                              <p className="font-normal !text-gray-500">
-                                {appliedSearchData?.checkOut || "--"}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
+                        <span className="text-[14px] font-medium most-text-color">
+                          {appliedSearchData?.checkIn
+                            ? dayjs(appliedSearchData.checkIn).format("DD MMM, ddd")
+                            : "30 Jul, Thu"}
+                          {" - "}
+                          {appliedSearchData?.checkOut
+                            ? dayjs(appliedSearchData.checkOut).format("DD MMM, ddd")
+                            : "31 Jul, Fri"}
+                        </span>
                       </div>
+                    </div>
 
-                      {/* Guests */}
-                      <div className="w-[110px]">
-                        <p className="text-sm font-medium !text-[#4AA3DF]">
-                          Guests
-                        </p>
+                    {/* Guests */}
+                    <div className="w-[200px]">
+                      <div className="flex h-[43px] items-center gap-3 rounded-[9px] border border-gray-300 px-3">
+                        {/* User Icon */}
+                        <TeamOutlined className="text-[20px] text-gray-900" />
 
-                        <div className="!sm:h-8 !md:h-7 !-mt-2 !h-8 rounded-[4px] border !border-gray-400 p-1 lg:h-7">
-                          <p className="font-normal !text-gray-500">
-                            {appliedSearchData?.rooms || 1} Room
-                          </p>
-                        </div>
+                        <span className="text-[14px] font-medium most-text-color">
+                          {appliedSearchData?.guests || 2} Guests/
+                          {appliedSearchData?.rooms || 1} Room
+                        </span>
                       </div>
                     </div>
                   </div>
+
+                  {/* Checkout Information */}
+                  <div className="mt-4 flex items-start gap-2">
+                    <FieldTimeOutlined className="text-[18px] text-black" />
+
+                    <p className="m-0 text-[15px] leading-5 text-black">
+                      Allows to extend guaranteed check-out as late as 3 PM at
+                      <br className="hidden sm:block" />
+                      extra charges
+                    </p>
+                  </div>
                 </div>
+
+
               </div>
               {/* Price Card */}
               <div className="mt-6">
@@ -322,7 +398,7 @@ function HotelDetailsMobile({
 
           {/* Sticky Bottom */}
 
-          <div className="!bg-offer-gradient sticky bottom-0 z-50 px-2 py-3 shadow-xl lg:hidden">
+          <div className="teb-gradient sticky bottom-0 z-50 px-2 py-3 shadow-xl lg:hidden">
             <div className="flex items-center justify-between">
               <div className="flex flex-col">
                 <h2 className="mb-1! text-2xl leading-none font-bold text-white">
@@ -352,8 +428,9 @@ function HotelDetailsMobile({
             </div>
           </div>
         </>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 }
 
