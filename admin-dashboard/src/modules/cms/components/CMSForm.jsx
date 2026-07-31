@@ -94,7 +94,7 @@ export default function CMSForm({ id }) {
     }
 
     const frontendUrl = (
-      process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000"
+      process.env.NEXT_PUBLIC_URL || "http://localhost:3000"
     ).replace(/\/+$/, "");
 
     window.open(`${frontendUrl}${values.url}?preview=true`, "_blank");
@@ -108,7 +108,7 @@ export default function CMSForm({ id }) {
     if (!url) return;
 
     const baseUrl = (
-      process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000"
+      process.env.NEXT_PUBLIC_URL || "http://localhost:3000"
     ).replace(/\/+$/, "");
 
     await navigator.clipboard.writeText(`${baseUrl}${url}`);
