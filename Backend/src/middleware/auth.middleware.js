@@ -52,6 +52,7 @@ export const protect = async (req, res, next) => {
       name: user.name,
       email: user.email,
       mobile: user.mobile,
+      
 
       role: user.role?.name,
       type: user.role?.type,

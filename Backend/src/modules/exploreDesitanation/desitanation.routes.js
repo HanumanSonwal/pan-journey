@@ -6,7 +6,7 @@ import { getHomeDestinationsController ,createDestination,
 
 const router = express.Router();
 
-router.get("/destinations", getHomeDestinationsController);
+router.get("/", getHomeDestinationsController);
 
 
 import {protect} from "../../middleware/auth.middleware.js";
@@ -22,6 +22,6 @@ router.put("/:id", protect,checkPermission("destination", "update"), updateDesti
 router.delete("/:id", protect,checkPermission("destination", "delete"), deleteDestination);
 
 // Public
-router.get("/",checkPermission("destination", "read"), getDestinations);
+router.get("/admin",checkPermission("destination", "read"), getDestinations);
 
 export default router;
