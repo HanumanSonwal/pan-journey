@@ -67,7 +67,7 @@ export default function GiftCard({ card }) {
 
         {/* Discount Badge */}
         <div className="absolute top-3 right-3 rounded-full bg-white/95 px-3 py-1 shadow-md backdrop-blur">
-          <span className="font-roboto text-[13px] font-bold text-[#0b8f67]">
+          <span className="font-roboto text-[13px] font-bold most-text-color">
             {card.discountType === "flat"
               ? `₹${card.discountValue} OFF`
               : `${card.discountValue}% OFF`}
@@ -82,12 +82,12 @@ export default function GiftCard({ card }) {
         </h3>
 
         {/* Coupon */}
-        <div className="flex items-center justify-between rounded-xl border border-dashed border-[#00A3C8] bg-[#F2FBFE] px-4 py-3">
+        <div className="flex items-center justify-between rounded-xl border border-dashed most-boder-colour  px-4 py-3">
           <span className="font-roboto text-[13px] text-gray-500">
             Coupon Code
           </span>
 
-          <span className="font-roboto text-[15px] font-bold tracking-wider text-[#00748a]">
+          <span className="font-roboto text-[15px] font-bold tracking-wider most-text-color">
             {card.code}
           </span>
         </div>
@@ -129,8 +129,8 @@ export default function GiftCard({ card }) {
         <button
           disabled={card.comingSoon}
           className={`font-roboto h-[48px] w-full rounded-xl text-[15px] font-medium text-white! transition-all duration-300 ${card.comingSoon
-              ? "cursor-not-allowed bg-gray-400"
-              : "bg-gradient-to-r from-[#6BC4F1] to-[#006D7D] hover:shadow-lg hover:brightness-110"
+            ? "cursor-not-allowed bg-gray-400"
+            : "buttion-background-color hover:shadow-lg hover:brightness-110"
             }`}
         >
           {card.comingSoon ? "Coming Soon" : "Claim Offer"}
