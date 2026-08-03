@@ -16,7 +16,7 @@ export const sendEmailOtpService = async (email) => {
     from: `"Travel App" <${process.env.GMAIL_USER}>`,
     to: normalizedEmail,
     subject: "Your OTP Code",
-    html: "Hello, this is a plain text test email.",
+    html: htmlTemplate
   });
 
   return true;
