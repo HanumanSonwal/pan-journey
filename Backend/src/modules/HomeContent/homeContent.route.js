@@ -1,75 +1,74 @@
 import express from "express";
 
 import {
+  createHomeContentController,
+  deleteHomeContentController,
+  getAdminHomeContentController,
+  getHomeContentController,
+  updateHomeContentController,
+} from "./homeContent.controller.js";
 
-createHomeContentController,
-getHomeContentController,
-updateHomeContentController,
-deleteHomeContentController,
-getAdminHomeContentController
-
-}
-from "./homeContent.controller.js";
-
-
-import {protect} from "../../middleware/auth.middleware.js";
+import { protect } from "../../middleware/auth.middleware.js";
 import { checkPermission } from "../../middleware/checkPermission.js";
-
 
 const router = express.Router();
 
+/*
+|--------------------------------------------------------------------------
+| WEBSITE
+|--------------------------------------------------------------------------
+*/
 
+router.get("/", getHomeContentController);
 
-// ADMIN CREATE
+/*
+|--------------------------------------------------------------------------
+| ADMIN
+|--------------------------------------------------------------------------
+*/
+
+/*
+ * GET ALL
+ */
+
+router.get(
+  "/admin",
+  protect,
+  checkPermission("homeContent", "read"),
+  getAdminHomeContentController,
+);
+
+/*
+ * CREATE
+ */
 
 router.post(
-"/create",
-protect,checkPermission("homeContent", "write"),
-
-createHomeContentController
+  "/",
+  protect,
+  checkPermission("homeContent", "write"),
+  createHomeContentController,
 );
 
-
-
-// WEBSITE GET
-
-router.get(
-"/",
-getHomeContentController
-);
-
-// ADMIN GET ALL
-
-router.get(
-"/admin",
-protect,
-checkPermission("homeContent.view"),
-getAdminHomeContentController
-);
-
-// ADMIN UPDATE
-
+/*
+ * UPDATE
+ */
 
 router.put(
-"/update/:id",
-protect,
-checkPermission("homeContent", "update"),
-updateHomeContentController
+  "/update/:id",
+  protect,
+  checkPermission("homeContent", "update"),
+  updateHomeContentController,
 );
 
-
-
-
-// ADMIN DELETE
-
+/*
+ * DELETE
+ */
 
 router.delete(
-"/delete/:id",
-protect,
-checkPermission("homeContent", "delete"),
-deleteHomeContentController
+  "/:id",
+  protect,
+  checkPermission("homeContent", "delete"),
+  deleteHomeContentController,
 );
-
-
 
 export default router;

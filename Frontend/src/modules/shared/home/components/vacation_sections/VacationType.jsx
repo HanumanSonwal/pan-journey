@@ -21,6 +21,8 @@ export default function VacationType({ activeTab }) {
   const { data = [] } = useDestinations(activeTab);
   const { draftSearchData } = useHotelSearchStore();
 
+  console.log("file:", data);
+
   useEffect(() => {
     setMounted(true);
   }, []);

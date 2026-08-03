@@ -9,6 +9,8 @@ export default function ImageUpload({
   value,
   onChange,
 
+   folder = "common",
+
   multiple = false,
 
   accept = "image/*",
@@ -80,6 +82,7 @@ export default function ImageUpload({
       const formData = new FormData();
 
       formData.append("file", file);
+      formData.append("folder", folder);
 
       const res = await uploadMedia.mutateAsync(formData);
 

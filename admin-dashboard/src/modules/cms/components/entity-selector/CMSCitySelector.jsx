@@ -42,7 +42,7 @@ export default function CMSCitySelector({ form }) {
     try {
       const data = await getCitiesHotelsApi(value);
 
-      const cities = data.filter((item) => item.type === "City");
+      const cities = data.filter((item) => item.type === "Hotel");
 
       setOptions(
         cities.map((item) => ({

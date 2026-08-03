@@ -8,6 +8,7 @@ export const PERMISSIONS = {
   users: ["read", "write", "update", "delete"],
 
   roles: ["read", "write", "update", "delete"],
+
   destination: ["read", "write", "update", "delete"],
 
   staff: ["read", "write", "update", "delete"],
@@ -24,7 +25,6 @@ export const PERMISSIONS = {
   reports: ["read"],
 
   cmsPages: ["read", "write", "update", "delete"],
-
 
   calendar: ["read"],
 

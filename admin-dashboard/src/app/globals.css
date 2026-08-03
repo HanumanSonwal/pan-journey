@@ -392,3 +392,25 @@ body.dark .ant-menu-item-selected {
 .ant-select-lg .ant-select-selector {
   border-radius: 10px !important;
 }
+
+/* Home Content Accordion */
+
+.home-content-collapse > .ant-collapse-item {
+  border-bottom: 1px dashed #d1d5db !important;
+}
+
+.home-content-collapse > .ant-collapse-item:last-child {
+  border-bottom: none !important;
+}
+
+.dark .home-content-collapse > .ant-collapse-item {
+  border-bottom-color: #404040 !important;
+}
+
+.home-content-collapse .ant-collapse-header {
+  padding: 18px 0 !important;
+}
+
+.home-content-collapse .ant-collapse-content-box {
+  padding: 20px 0 !important;
+}

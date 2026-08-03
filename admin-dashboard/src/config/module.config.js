@@ -39,6 +39,16 @@ export const moduleConfig = {
     actions: ["read", "write", "update", "delete"],
   },
 
+  homeContent: {
+    label: "Home Content",
+    actions: ["read", "write", "update", "delete"],
+  },
+
+  destination: {
+    label: "Destinations",
+    actions: ["read", "write", "update", "delete"],
+  },
+
   customers: {
     label: "Customers",
     actions: ["read"],

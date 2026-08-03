@@ -1,4 +1,5 @@
 import {
+  AppstoreOutlined,
   BookOutlined,
   CalendarOutlined,
   DashboardOutlined,
@@ -77,6 +78,26 @@ export const menuItems = [
         key: "/dashboard/cms/create",
         label: <Link href="/dashboard/cms/create">Create Pages</Link>,
         module: "cmsPages",
+      },
+    ],
+  },
+
+  {
+    key: "/dashboard/home-content",
+    icon: <FileTextOutlined />,
+    label: <Link href="/dashboard/home-content">Home Content</Link>,
+    module: "homeContent",
+  },
+
+  {
+    key: "/dashboard/masters",
+    icon: <AppstoreOutlined />,
+    label: "Masters",
+    children: [
+      {
+        key: "/dashboard/destinations",
+        label: <Link href="/dashboard/destinations">Destinations</Link>,
+        module: "destination",
       },
     ],
   },

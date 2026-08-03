@@ -1,7 +1,10 @@
-import { getHomeDestinations,  createDestinationService,
+import {
+  createDestinationService,
+  deleteDestinationService,
   getDestinationService,
+  getHomeDestinations,
   updateDestinationService,
-  deleteDestinationService, } from "./desitanation.service.js";
+} from "./desitanation.service.js";
 
 import { sendError, sendSuccess } from "../../utils/response/ApiResponse.js";
 export const getHomeDestinationsController = async (req, res) => {
@@ -35,9 +38,10 @@ export const createDestination = async (req, res) => {
 
     return sendSuccess(
       res,
-      201,
       "Destination created successfully",
-      data
+      data,
+      null,
+      201,
     );
   } catch (err) {
     return sendError(res, err);
@@ -50,7 +54,7 @@ export const getDestinations = async (req, res) => {
 
     const data = await getDestinationService(type);
 
-    return sendSuccess(res, 200, "Destination list", data);
+    return sendSuccess(res, "Destination list", data);
   } catch (err) {
     return sendError(res, err);
   }
@@ -58,12 +62,9 @@ export const getDestinations = async (req, res) => {
 
 export const updateDestination = async (req, res) => {
   try {
-    const data = await updateDestinationService(
-      req.params.id,
-      req.body
-    );
+    const data = await updateDestinationService(req.params.id, req.body);
 
-    return sendSuccess(res, 200, "Destination updated", data);
+    return sendSuccess(res, "Destination updated successfully", data);
   } catch (err) {
     return sendError(res, err);
   }
@@ -73,7 +74,7 @@ export const deleteDestination = async (req, res) => {
   try {
     await deleteDestinationService(req.params.id);
 
-    return sendSuccess(res, 200, "Destination deleted");
+    return sendSuccess(res, "Destination deleted successfully");
   } catch (err) {
     return sendError(res, err);
   }
