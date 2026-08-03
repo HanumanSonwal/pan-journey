@@ -14,8 +14,8 @@ export default function PaymentFooter({
 }) {
   const payableAmount = Number(
     priceSummary?.totalPayableAmountAfterDiscount ??
-      priceSummary?.totalAmount ??
-      0,
+    priceSummary?.totalAmount ??
+    0,
   );
 
   const currencySymbol = priceSummary?.currencySymbol || "₹";
@@ -66,7 +66,7 @@ export default function PaymentFooter({
           });
         }}
         icon={<LockOutlined />}
-        className="!h-[54px] w-full !rounded !bg-[#0F766E] !text-[16px] !font-semibold hover:!bg-[#0c645d]"
+        className="!h-[54px] w-full !rounded buttion-background-color !text-[16px] !font-semibold "
       >
         Pay {currencySymbol} {formatPrice(payableAmount)}
       </Button>

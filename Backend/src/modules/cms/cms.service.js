@@ -1,5 +1,8 @@
 import ApiError from "../../utils/response/ApiError.js";
+import { generateCMSSlug } from "../../utils/slug/cmsSlug.js";
 import { generateSlug } from "../../utils/slug/slugify.js";
+import { serializeCMSPage } from "./cms.serializer.js";
+import { buildCMSUrl } from "../../utils/cms/buildCMSUrl.js";
 
 import CMSPage from "./cms.model.js";
 import { CMS_TEMPLATES } from "./cms.templates.js";
@@ -11,7 +14,7 @@ export const createCMSPage = async (payload) => {
   const { entityType, entityId } = payload;
 
   // auto slug
-  let slug = payload.slug;
+  let slug = payload.slug || generateCMSSlug(payload);
 
   if (!slug) {
     // HOTEL
@@ -58,7 +61,7 @@ export const createCMSPage = async (payload) => {
 
   const page = await CMSPage.create(payload);
 
-  return page;
+  return serializeCMSPage(page);
 };
 
 /*
@@ -94,7 +97,7 @@ export const getAllCMSPages = async (query) => {
   ]);
 
   return {
-    data,
+    data: data.map((item) => serializeCMSPage(item)),
     total,
     page: Number(page),
     limit: Number(limit),
@@ -111,7 +114,7 @@ export const getCMSPageById = async (id) => {
     throw new ApiError(404, "CMS page not found");
   }
 
-  return page;
+  return serializeCMSPage(page);
 };
 
 /*
@@ -125,8 +128,11 @@ export const updateCMSPage = async (id, payload) => {
   }
 
   // regenerate slug if title changed
-  if (payload.title && !payload.slug) {
-    payload.slug = generateSlug(payload.title);
+  if (!payload.slug) {
+    payload.slug = generateCMSSlug({
+      ...page.toObject(),
+      ...payload,
+    });
   }
 
   // slug duplicate check
@@ -147,7 +153,7 @@ export const updateCMSPage = async (id, payload) => {
 
   await page.save();
 
-  return page;
+  return serializeCMSPage(page);
 };
 
 /*
@@ -188,7 +194,27 @@ export const getCMSPageBySlug = async (slug, preview = false) => {
     throw new ApiError(404, "Page not found");
   }
 
-  return page;
+  return serializeCMSPage(page);
+};
+
+/*
+PREVIEW SLUG
+*/
+export const previewCMSSlug = async (payload) => {
+  const slug = generateCMSSlug(payload);
+
+  const exists = await CMSPage.exists({ slug });
+
+  const url = buildCMSUrl({
+    ...payload,
+    slug,
+  });
+
+  return {
+    slug,
+    url,
+    available: !exists,
+  };
 };
 
 /*

@@ -253,7 +253,7 @@ body {
 
 }
 .most-text-color {
-  color: #051449;
+  color: #05144B !important;
  }
  
 .teb-bg-color {
@@ -261,15 +261,46 @@ body {
   
 }
 .buttion-background-color {
-  background-color: #051449;
+  background-color: #05144B;
 }
+.buttion-background-color.ant-btn {
+  background-color: #05144B !important;
+  border-color: #05144B !important;
+  color: #fff !important;
+}
+
+.buttion-background-color.ant-btn:hover,
+.buttion-background-color.ant-btn:focus {
+  background-color: #0C2FB1 !important;
+  border-color: #0C2FB1 !important;
+  color: #fff !important;
+}
+.box-background-color {
+  background-color: #05144B;
+}
+
 .background-color:hover {
-  background-color: #051449;
+  background-color: #05144B;
 }
 .teb-border-color {
   border-color: #051449;
 }
-
+.buttion-border-color{
+  border-color:#FDA20F;
+}
 .teb-gradient {
   background: linear-gradient(180deg, #05144B 0%, #0C2FB1 100%);
+}
+
+.most-boder-colour {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(180deg, #72C0F0 0%, #0F6A75 100%) border-box;
+}
+.most-boder-colour:hover {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(180deg, #72C0F0 0%, #0F6A75 100%) border-box;
 }

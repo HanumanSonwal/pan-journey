@@ -59,11 +59,10 @@ export default function RHFPhoneInput({
     <div className="relative">
       {/* Floating Label */}
       <label
-        className={`pointer-events-none absolute left-3 z-10 bg-white px-1 transition-all duration-200 ${
-          mobile || selectedCode
-            ? "-top-2 text-xs text-[#4A9BB5]"
+        className={`pointer-events-none absolute left-3 z-10 bg-white px-1 transition-all duration-200 ${mobile || selectedCode
+            ? "-top-2 text-xs most-text-color"
             : "top-3 text-sm text-gray-500"
-        }`}
+          }`}
       >
         {label}
       </label>
@@ -103,11 +102,10 @@ export default function RHFPhoneInput({
                           setOpen(false);
                           setSearch("");
                         }}
-                        className={`flex cursor-pointer items-center justify-between rounded px-3 py-2 transition hover:bg-gray-100 ${
-                          selectedCode === country.phoneCode
+                        className={`flex cursor-pointer items-center justify-between rounded px-3 py-2 transition hover:bg-gray-100 ${selectedCode === country.phoneCode
                             ? "bg-gray-100"
                             : ""
-                        }`}
+                          }`}
                       >
                         <div className="flex items-center gap-3">
                           <img

@@ -27,6 +27,8 @@ export default function CouponTable({
   updateStatus,
   deleteCoupon,
   handleEdit,
+  canEdit,
+  canDelete,
 }) {
   console.log("COUPONS =>", coupons);
   // ================= COLUMNS =================
@@ -203,16 +205,23 @@ export default function CouponTable({
       align: "center",
 
       render: (_, record) => (
-        <Switch
-          checked={record.isActive}
-          loading={updateStatus.isPending}
-          onChange={(checked) =>
-            updateStatus.mutate({
-              id: record._id,
-              data: { isActive: checked },
-            })
-          }
-        />
+        <Tooltip
+          title={!canEdit ? "You don't have permission to update status" : ""}
+        >
+          <Switch
+            checked={record.isActive}
+            disabled={!canEdit}
+            loading={updateStatus.isPending}
+            onChange={(checked) =>
+              updateStatus.mutate({
+                id: record._id,
+                data: {
+                  isActive: checked,
+                },
+              })
+            }
+          />
+        </Tooltip>
       ),
     },
     // ================= CREATED =================
@@ -228,40 +237,49 @@ export default function CouponTable({
 
     // ================= ACTION =================
 
-    {
-      title: "Actions",
-      width: 140,
+    ...(canEdit || canDelete
+      ? [
+          {
+            title: "Actions",
+            width: 140,
 
-      render: (_, record) => (
-        <div
-          style={{
-            display: "flex",
-            gap: 8,
-          }}
-        >
-          <Tooltip title="Edit">
-            <Button
-              icon={<EditOutlined />}
-              onClick={() => handleEdit(record)}
-            />
-          </Tooltip>
+            render: (_, record) => (
+              <div
+                style={{
+                  display: "flex",
+                  gap: 8,
+                }}
+              >
+                {canEdit && (
+                  <Tooltip title="Edit">
+                    <Button
+                      icon={<EditOutlined />}
+                      onClick={() => handleEdit(record)}
+                    />
+                  </Tooltip>
+                )}
 
-          <Popconfirm
-            title="Delete Coupon?"
-            description="This action cannot be undone."
-            onConfirm={() => deleteCoupon.mutate(record?._id)}
-          >
-            <Button
-              danger
-              icon={<DeleteOutlined />}
-              loading={
-                deleteCoupon.isPending && deleteCoupon.variables === record?._id
-              }
-            />
-          </Popconfirm>
-        </div>
-      ),
-    },
+                {canDelete && (
+                  <Popconfirm
+                    title="Delete Coupon?"
+                    description="This action cannot be undone."
+                    onConfirm={() => deleteCoupon.mutate(record._id)}
+                  >
+                    <Button
+                      danger
+                      icon={<DeleteOutlined />}
+                      loading={
+                        deleteCoupon.isPending &&
+                        deleteCoupon.variables === record._id
+                      }
+                    />
+                  </Popconfirm>
+                )}
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
   console.log("Coupons:", coupons);

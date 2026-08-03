@@ -213,7 +213,7 @@ export default function Header() {
               priority
               unoptimized
               className={`object-contain transition-all duration-300 ${isMobile
-                ? "absolute left-2 top-9 h-[50px] w-[50px]"
+                ? "absolute left-2 top-2 h-[50px] w-[50px]"
                 : "h-[100px] w-[100px]"
                 }`}
             />
@@ -246,7 +246,7 @@ export default function Header() {
             className="group hidden cursor-pointer items-center gap-2 rounded-lg border teb-border-color px-3 py-2 text-sm font-medium most-text-color  transition-all duration-300 hover:-translate-y-0.5 background-color  hover:text-white! md:flex"
           >
             {wishlistCount > 0 && (
-              <span className="ml-1 rounded-full bg-[#4A9BB5] px-2 py-0.5 text-xs font-semibold text-white transition-colors duration-300 group-hover:bg-white group-hover:text-most-text-color">
+              <span className="ml-1 rounded-full buttion-background-color px-2 py-0.5 text-xs font-semibold text-white transition-colors duration-300 group-hover:bg-white group-hover:text-most-text-color">
                 {wishlistCount}
               </span>
             )}
@@ -315,7 +315,7 @@ export default function Header() {
 
           {/* Mobile Menu */}
           <button
-            className="!text-[22px] !text-[#4A9BB5] transition-all duration-300 hover:scale-110 hover:text-gray-800! min-[901px]:hidden"
+            className="!text-[22px] most-text-color transition-all duration-300 hover:scale-110 hover:text-gray-800! min-[901px]:hidden"
             onClick={() => setMobileMenu(true)}
           >
             <MenuOutlined />
@@ -361,8 +361,8 @@ export default function Header() {
                     {/* Left Side */}
                     <div className="flex min-w-0 items-center gap-1">
                       {/* Icon */}
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F5FBFE]">
-                        <Icon size={20} className="text-[#0F6A75]" />
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl boder most-boder-colour">
+                        <Icon size={20} className="most-text-color" />
                       </div>
 
                       {/* Content */}
@@ -379,13 +379,13 @@ export default function Header() {
                   </div>
                   {/* Right Side */}
                   {item.type === "comingSoon" ? (
-                    <span className="shrink-0 rounded-full bg-[#EAF7FB] px-3 py-1 text-[11px] font-medium text-[#0F6A75]">
+                    <span className="shrink-0 rounded-full bg-[#EAF7FB] px-3 py-1 text-[11px] font-medium most-text-color">
                       Soon
                     </span>
                   ) : (
                     <ChevronRight
                       size={20}
-                      className="shrink-0 text-[#0F6A75] transition-transform duration-300 group-hover:translate-x-1"
+                      className="shrink-0 most-text-color transition-transform duration-300 group-hover:translate-x-1"
                     />
                   )}
                 </div>
@@ -412,8 +412,8 @@ export default function Header() {
             >
               <div className={drawerItemClass}>
                 <div className="flex items-center gap-1">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F5FBFE]">
-                    <Banknote size={20} className="text-[#0F6A75]" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl boder most-boder-colour">
+                    <Banknote size={20} className="most-text-color" />
                   </div>
 
                   <div className="flex-1">
@@ -439,7 +439,7 @@ export default function Header() {
           {/* Footer */}
           <div className="mt-3! border-t border-gray-200 pt-6">
             <div className="rounded-2xl bg-[#F5FBFE] p-4">
-              <h4 className="text-[15px] font-semibold text-[#0F6A75]">
+              <h4 className="text-[15px] font-semibold most-text-color">
                 PAN Journey
               </h4>
 

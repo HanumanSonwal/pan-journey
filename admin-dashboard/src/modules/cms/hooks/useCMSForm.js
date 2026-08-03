@@ -3,7 +3,7 @@
 import { App } from "antd";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { getCMSPageApi } from "../api/cms.service";
+import { getCMSPageApi, previewSlugApi } from "../api/cms.service";
 import { useCMS } from "./useCMS";
 
 export default function useCMSForm({ id, form }) {
@@ -17,6 +17,8 @@ export default function useCMSForm({ id, form }) {
     const load = async () => {
       try {
         const page = await getCMSPageApi(id);
+
+        console.log("use cms page", page);
         form.setFieldsValue({
           ...page,
           keywords: page?.keywords?.join(", "),
@@ -29,6 +31,7 @@ export default function useCMSForm({ id, form }) {
           data: page?.data,
 
           entityId: page?.entityId,
+          url: page?.url,
         });
       } catch {
         message.error("Failed to load page");
@@ -38,13 +41,54 @@ export default function useCMSForm({ id, form }) {
     load();
   }, [id, form]);
 
+  const previewSlug = async () => {
+    const values = form.getFieldsValue(true);
+
+    // Static / Marketing
+    if (
+      (values.entityType === "static" || values.entityType === "marketing") &&
+      !values.title
+    ) {
+      return;
+    }
+
+    // Hotel City
+    if (values.entityType === "hotelCity" && !values.cityMeta?.destination) {
+      return;
+    }
+
+    // Hotel
+    if (values.entityType === "hotel" && !values?.data?.hotelMeta?.hotelName) {
+      return;
+    }
+
+    try {
+      const payload = {
+        title: values.title,
+        entityType: values.entityType,
+        entityId: values.entityId,
+        data: {
+          cityMeta: values.cityMeta || null,
+          hotelMeta: values?.data?.hotelMeta || null,
+        },
+      };
+
+      const res = await previewSlugApi(payload);
+
+      form.setFieldsValue({
+        slug: res.slug,
+        url: res.url,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const handleSubmit = async (values) => {
     const formValues = form.getFieldsValue(true);
     try {
       const payload = {
         title: formValues.title,
-        slug: formValues.slug,
-        // template: formValues.template,
         entityType: formValues.entityType,
         entityId: formValues.entityId,
         metaTitle: formValues.metaTitle,
@@ -63,17 +107,25 @@ export default function useCMSForm({ id, form }) {
           id,
           data: payload,
         });
+
+        router.push("/dashboard/cms/pages");
       } else {
         await createCMS.mutateAsync(payload);
-      }
 
-      router.push("/dashboard/cms/pages");
+        form.resetFields();
+
+        form.setFieldsValue({
+          isPublished: true,
+          entityType: "static",
+        });
+      }
     } catch (err) {
       console.log(err);
     }
   };
   return {
     handleSubmit,
+    previewSlug,
     isSubmitting: createCMS.isPending || updateCMS.isPending,
   };
 }

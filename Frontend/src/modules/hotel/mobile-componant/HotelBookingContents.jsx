@@ -57,7 +57,7 @@ export default function HotelBookingContents({
                   loading={isPending}
                   disabled={!agreement}
                   onClick={handleBooking}
-                  className="!h-[44px] w-full !rounded-lg !bg-[#0f766e] !text-sm sm:!h-[48px] sm:w-auto sm:!rounded-xl sm:!text-base"
+                  className="!h-[44px] w-full !rounded-lg buttion-background-color !text-sm sm:!h-[48px] sm:w-auto sm:!rounded-xl sm:!text-base"
                 >
                   Continue To Booking
                 </Button>

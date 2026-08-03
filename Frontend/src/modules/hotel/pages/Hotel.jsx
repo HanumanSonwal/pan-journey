@@ -1,3 +1,4 @@
+
 "use client";
 
 import useIsMobile from "@/hooks/useIsMobile";
@@ -7,7 +8,14 @@ import { Modal } from "antd";
 import dayjs from "dayjs";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+
 import SidebarFilters from "../cards/SidebarFilters";
 import HotelList from "../components/hotels/HotelList";
 import SearchBar from "../components/hotels/SearchBar";
@@ -30,15 +38,18 @@ const defaultFilters = {
   locations: [],
 };
 
+const CMS_TRIGGER_OFFSET = 520;
+const STICKY_OFFSET = 108;
+
 const HotelMap = dynamic(() => import("../components/map/HotelMap"), {
   ssr: false,
 });
 
-export default function HotelContent({ initialSearchData = null, cms = null }) {
+export default function HotelContent({
+  initialSearchData = null,
+  cms = null,
+}) {
   const isMobile = useIsMobile();
-
-  console.log("HotelContent cms.slug:", cms?.slug);
-  console.log("HotelContent content:", cms?.data?.blocks?.[0]?.data?.content);
 
   const {
     draftSearchData,
@@ -47,61 +58,338 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
     setAppliedSearchData,
   } = useHotelSearchStore();
 
-  console.log("appliedSearchData in hotels", appliedSearchData);
-
   const searchParams = useSearchParams();
+
+  /* ----------------------------------
+     Refs
+  ---------------------------------- */
+
+  const hotelListRef = useRef(null);
+  const cmsTriggerRef = useRef(null);
+
+  const scrollFrameRef = useRef(null);
+  const sidebarZ0Ref = useRef(false);
+
+  /* ----------------------------------
+     States
+  ---------------------------------- */
+
   const [mounted, setMounted] = useState(false);
+
   const [filters, setFilters] = useState(defaultFilters);
+
   const [hotelsLoading, setHotelsLoading] = useState(true);
+
   const [hasHotels, setHasHotels] = useState(false);
+
   const [sort, setSort] = useState("recommended");
+
   const [mapOpen, setMapOpen] = useState(false);
+
   const [hotelsForMap, setHotelsForMap] = useState([]);
+
   const [sidebarZ0, setSidebarZ0] = useState(false);
 
-  const handleFilterChange = useCallback((updater) => {
-    setFilters(updater);
-
-    scrollToHotelList();
-  }, []);
-
-  const handleSortChange = useCallback((value) => {
-    setSort(value);
-
-    scrollToHotelList();
-  }, []);
+  /* ----------------------------------
+     Mounted
+  ---------------------------------- */
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const hotelList = document.getElementById("hotel-list-section");
-      if (!hotelList) return;
-      const rect = hotelList.getBoundingClientRect();
-      const shouldBeZ0 = rect.bottom <= 150;
-      setSidebarZ0((prev) => (prev === shouldBeZ0 ? prev : shouldBeZ0));
-    };
-    window.addEventListener("scroll", handleScroll, {
-      passive: true,
-    });
-    handleScroll();
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+  /* ----------------------------------
+     Sidebar Z-Index
+  ---------------------------------- */
+
+  const updateSidebarZIndex = useCallback((value) => {
+    if (sidebarZ0Ref.current === value) {
+      return;
+    }
+
+    sidebarZ0Ref.current = value;
+    setSidebarZ0(value);
   }, []);
+
+
+
+  const handleSearch = useCallback(
+    (searchData) => {
+      if (!searchData) return;
+
+      setDraftSearchData(searchData);
+      setAppliedSearchData(searchData);
+
+      /*
+       * New search ke time sidebar ko
+       * normal hotel-list state par reset karo.
+       */
+      updateSidebarZIndex(false);
+
+      /*
+       * Hotel list ki beginning par smoothly le jao.
+       */
+      requestAnimationFrame(() => {
+        scrollToHotelList();
+      });
+    },
+    [
+      setDraftSearchData,
+      setAppliedSearchData,
+      updateSidebarZIndex,
+    ]
+  );
+
+  /* ----------------------------------
+     FILTER
+  ---------------------------------- */
+
+  const handleFilterChange = useCallback((updater) => {
+    setFilters(updater);
+    scrollToHotelList();
+  }, []);
+
+  /* ----------------------------------
+     SORT
+  ---------------------------------- */
+
+  const handleSortChange = useCallback((value) => {
+    setSort(value);
+    scrollToHotelList();
+  }, []);
+
+  /* ----------------------------------
+     FAST SCROLL Z-INDEX
+  ---------------------------------- */
+
+  useEffect(() => {
+    if (!mounted || isMobile) return;
+
+    const checkSidebarPosition = () => {
+      scrollFrameRef.current = null;
+
+      const scrollY =
+        window.scrollY || window.pageYOffset;
+
+      const hotelElement = hotelListRef.current;
+      const cmsTrigger = cmsTriggerRef.current;
+
+      /* ----------------------------------
+         1. HOTEL LOADING
+
+         Search ke baad hotels load ho rahe
+         hain to fast scroll par sidebar
+         z-0 ho jayega.
+      ---------------------------------- */
+
+      if (hotelsLoading) {
+        updateSidebarZIndex(scrollY > 50);
+        return;
+      }
+
+      /* ----------------------------------
+         2. NO HOTEL RESULT
+      ---------------------------------- */
+
+      if (!hasHotels) {
+        updateSidebarZIndex(scrollY > 50);
+        return;
+      }
+
+      /* ----------------------------------
+         3. CMS TRIGGER
+
+         CMS actual content ki height
+         important nahi hai.
+
+         Invisible trigger CMS ke top par
+         fixed hai.
+      ---------------------------------- */
+
+      if (cmsTrigger) {
+        const triggerRect =
+          cmsTrigger.getBoundingClientRect();
+
+        const cmsReached =
+          triggerRect.top <= CMS_TRIGGER_OFFSET;
+
+        if (cmsReached) {
+          updateSidebarZIndex(true);
+          return;
+        }
+      }
+
+      /* ----------------------------------
+         4. HOTEL LIST END
+      ---------------------------------- */
+
+      if (hotelElement) {
+        const hotelRect =
+          hotelElement.getBoundingClientRect();
+
+        const hotelListFinished =
+          hotelRect.bottom <= STICKY_OFFSET;
+
+        if (hotelListFinished) {
+          updateSidebarZIndex(true);
+          return;
+        }
+      }
+
+      /* ----------------------------------
+         5. NORMAL HOTEL AREA
+      ---------------------------------- */
+
+      updateSidebarZIndex(false);
+    };
+
+    const handleScroll = () => {
+      if (scrollFrameRef.current !== null) {
+        return;
+      }
+
+      scrollFrameRef.current =
+        window.requestAnimationFrame(
+          checkSidebarPosition
+        );
+    };
+
+    window.addEventListener(
+      "scroll",
+      handleScroll,
+      {
+        passive: true,
+      }
+    );
+
+    /*
+     * Initial calculation
+     */
+    checkSidebarPosition();
+
+    return () => {
+      window.removeEventListener(
+        "scroll",
+        handleScroll
+      );
+
+      if (
+        scrollFrameRef.current !== null
+      ) {
+        window.cancelAnimationFrame(
+          scrollFrameRef.current
+        );
+
+        scrollFrameRef.current = null;
+      }
+    };
+  }, [
+    mounted,
+    isMobile,
+    hotelsLoading,
+    hasHotels,
+    updateSidebarZIndex,
+  ]);
+
+  /* ----------------------------------
+     CMS POSITION OBSERVER
+
+     CMS ki height dynamically change
+     hone par trigger ki position recalculate
+     hogi.
+  ---------------------------------- */
+
+  useEffect(() => {
+    if (!mounted || isMobile) return;
+
+    const cmsTrigger =
+      cmsTriggerRef.current;
+
+    if (!cmsTrigger) return;
+
+    const checkCmsPosition = () => {
+      if (hotelsLoading || !hasHotels) {
+        return;
+      }
+
+      const rect =
+        cmsTrigger.getBoundingClientRect();
+
+      const cmsReached =
+        rect.top <= CMS_TRIGGER_OFFSET;
+
+      updateSidebarZIndex(cmsReached);
+    };
+
+    const resizeObserver =
+      new ResizeObserver(() => {
+        if (
+          scrollFrameRef.current !== null
+        ) {
+          return;
+        }
+
+        scrollFrameRef.current =
+          window.requestAnimationFrame(() => {
+            scrollFrameRef.current = null;
+
+            checkCmsPosition();
+          });
+      });
+
+    resizeObserver.observe(cmsTrigger);
+
+    window.addEventListener(
+      "resize",
+      checkCmsPosition
+    );
+
+    checkCmsPosition();
+
+    return () => {
+      resizeObserver.disconnect();
+
+      window.removeEventListener(
+        "resize",
+        checkCmsPosition
+      );
+    };
+  }, [
+    mounted,
+    isMobile,
+    cms,
+    hotelsLoading,
+    hasHotels,
+    updateSidebarZIndex,
+  ]);
+
+  /* ----------------------------------
+     SEARCH DATA FROM URL / INITIAL DATA
+  ---------------------------------- */
 
   useEffect(() => {
     if (!mounted) return;
+
     if (initialSearchData) {
-      setDraftSearchData(initialSearchData);
-      setAppliedSearchData(initialSearchData);
+      setDraftSearchData(
+        initialSearchData
+      );
+
+      setAppliedSearchData(
+        initialSearchData
+      );
+
       return;
     }
-    const today = dayjs().startOf("day");
-    const savedCheckIn = dayjs(draftSearchData?.checkIn);
-    const savedCheckOut = dayjs(draftSearchData?.checkOut);
+
+    const today =
+      dayjs().startOf("day");
+
+    const savedCheckIn =
+      dayjs(draftSearchData?.checkIn);
+
+    const savedCheckOut =
+      dayjs(draftSearchData?.checkOut);
 
     if (
       !savedCheckIn.isValid() ||
@@ -110,32 +398,71 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
       savedCheckOut.isBefore(today)
     ) {
       setDraftSearchData({
-        checkIn: today.format("YYYY-MM-DD"),
-        checkOut: today.add(1, "day").format("YYYY-MM-DD"),
+        checkIn:
+          today.format("YYYY-MM-DD"),
+
+        checkOut:
+          today
+            .add(1, "day")
+            .format("YYYY-MM-DD"),
       });
     }
 
     const urlData = {
-      city: searchParams.get("cityName") || draftSearchData?.city || "",
+      city:
+        searchParams.get("cityName") ||
+        draftSearchData?.city ||
+        "",
+
       cityData: {
-        id: searchParams.get("cityId") || "",
-        stateName: searchParams.get("stateName") || "",
-        countryCode: searchParams.get("countryCode") || "",
+        id:
+          searchParams.get("cityId") ||
+          "",
+
+        stateName:
+          searchParams.get("stateName") ||
+          "",
+
+        countryCode:
+          searchParams.get(
+            "countryCode"
+          ) || "",
       },
 
-      checkIn: searchParams.get("checkIn") || "",
-      checkOut: searchParams.get("checkOut") || "",
+      checkIn:
+        searchParams.get("checkIn") ||
+        "",
 
-      rooms: Number(searchParams.get("rooms")) || 1,
-      adults: Number(searchParams.get("adults")) || 2,
-      children: Number(searchParams.get("children")) || 0,
+      checkOut:
+        searchParams.get("checkOut") ||
+        "",
+
+      rooms:
+        Number(
+          searchParams.get("rooms")
+        ) || 1,
+
+      adults:
+        Number(
+          searchParams.get("adults")
+        ) || 2,
+
+      children:
+        Number(
+          searchParams.get("children")
+        ) || 0,
 
       childAges: [],
-      pets: searchParams.get("pets") === "true",
+
+      pets:
+        searchParams.get("pets") ===
+        "true",
     };
+
     if (
       urlData.cityData.id &&
-      urlData.cityData.id !== draftSearchData?.cityData?.id
+      urlData.cityData.id !==
+      draftSearchData?.cityData?.id
     ) {
       setDraftSearchData(urlData);
       setAppliedSearchData(urlData);
@@ -148,137 +475,268 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
     setAppliedSearchData,
   ]);
 
-  // and useeffct
-  const handleSearch = useCallback(() => {}, []);
-  const isFilterActive = useCallback((value) => {
-    if (
-      value === "" ||
-      value === null ||
-      value === undefined ||
-      value === false
-    ) {
-      return false;
-    }
-    if (Array.isArray(value) && value.length === 0) {
-      return false;
-    }
-    return true;
-  }, []);
-  const removeFilter = useCallback((key, value) => {
-    setFilters((prev) => {
-      const updated = {
-        ...prev,
-      };
-      if (Array.isArray(updated[key])) {
-        updated[key] = updated[key].filter((v) => v !== value);
-      } else if (typeof updated[key] === "boolean") {
-        updated[key] = false;
-      } else {
-        updated[key] = "";
+  /* ----------------------------------
+     FILTER HELPERS
+  ---------------------------------- */
+
+  const isFilterActive = useCallback(
+    (value) => {
+      if (
+        value === "" ||
+        value === null ||
+        value === undefined ||
+        value === false
+      ) {
+        return false;
       }
-      return updated;
-    });
-  }, []);
+
+      if (
+        Array.isArray(value) &&
+        value.length === 0
+      ) {
+        return false;
+      }
+
+      return true;
+    },
+    []
+  );
+
+  const removeFilter = useCallback(
+    (key, value) => {
+      setFilters((prev) => {
+        const updated = {
+          ...prev,
+        };
+
+        if (
+          Array.isArray(
+            updated[key]
+          )
+        ) {
+          updated[key] =
+            updated[key].filter(
+              (v) => v !== value
+            );
+        } else if (
+          typeof updated[key] ===
+          "boolean"
+        ) {
+          updated[key] = false;
+        } else {
+          updated[key] = "";
+        }
+
+        return updated;
+      });
+    },
+    []
+  );
 
   const clearAll = useCallback(() => {
     setFilters(defaultFilters);
     scrollToHotelList();
   }, []);
 
+  /* ----------------------------------
+     ACTIVE FILTERS
+  ---------------------------------- */
+
   const activeFilters = useMemo(() => {
     return Object.entries(filters);
   }, [filters]);
-  const hasActiveFilters = useMemo(() => {
-    return activeFilters.some(([_, value]) => isFilterActive(value));
-  }, [activeFilters, isFilterActive]);
+
+  const hasActiveFilters =
+    useMemo(() => {
+      return activeFilters.some(
+        ([_, value]) =>
+          isFilterActive(value)
+      );
+    }, [
+      activeFilters,
+      isFilterActive,
+    ]);
+
+  /* ----------------------------------
+     HYDRATION
+  ---------------------------------- */
+
   if (!mounted) return null;
+
   return (
     <>
+      {/* ==================================
+          MOBILE
+      ================================== */}
+
       {isMobile ? (
-        // <HotelMobile cms={cms} />
         <HotelMobile
-          appliedSearchData={appliedSearchData}
+          appliedSearchData={
+            appliedSearchData
+          }
           filters={filters}
-          setFilters={handleFilterChange}
+          setFilters={
+            handleFilterChange
+          }
           sort={sort}
-          setSort={handleSortChange}
+          setSort={
+            handleSortChange
+          }
           mapOpen={mapOpen}
           setMapOpen={setMapOpen}
-          hotelsLoading={hotelsLoading}
+          hotelsLoading={
+            hotelsLoading
+          }
           hasHotels={hasHotels}
-          hotelsForMap={hotelsForMap}
-          setHotelsForMap={setHotelsForMap}
+          hotelsForMap={
+            hotelsForMap
+          }
+          setHotelsForMap={
+            setHotelsForMap
+          }
         />
       ) : (
-        <>
-          <div className="bg-[#edf7ff]">
-            <SearchBar searchData={draftSearchData} onSearch={handleSearch} />
+        /* ==================================
+           DESKTOP
+        ================================== */
 
-            <div className="relative mx-auto mt-[-28px] flex max-w-7xl gap-4 p-3 md:flex-nowrap">
-              {/* SIDEBAR */}
-              <div
-                className={`sticky top-[98px] max-h-[calc(100vh-40px)] w-full overflow-y-auto sm:w-64 md:w-72 ${
-                  sidebarZ0 ? "z-0" : "z-20"
+        <div className="bg-[#edf7ff]">
+
+          {/* SEARCH BAR */}
+
+          <SearchBar
+            searchData={
+              draftSearchData
+            }
+            onSearch={
+              handleSearch
+            }
+          />
+
+          <div className="relative mx-auto mt-[-28px] flex max-w-7xl gap-4 p-3 md:flex-nowrap">
+
+            {/* ==================================
+                SIDEBAR
+            ================================== */}
+
+            <div
+              className={`sticky top-[98px] max-h-[calc(100vh-40px)] w-full overflow-y-auto sm:w-64 md:w-72 ${sidebarZ0
+                  ? "z-0"
+                  : "z-20"
                 }`}
+            >
+              <SidebarFilters
+                filters={filters}
+                setFilters={
+                  handleFilterChange
+                }
+                onMapClick={() => {
+                  setMapOpen(true);
+                }}
+              />
+            </div>
+
+            {/* ==================================
+                RIGHT CONTENT
+            ================================== */}
+
+            <div className="min-w-0 flex-1">
+
+              {/* SORT BAR */}
+
+              <div
+                className={`sticky top-[98px] ${sidebarZ0
+                    ? "!-z-10"
+                    : "z-20"
+                  } bg-[#edf7ff]`}
               >
-                <SidebarFilters
-                  filters={filters}
-                  setFilters={handleFilterChange}
-                  onMapClick={() => {
-                    setMapOpen(true);
-                  }}
+                <SortBar
+                  sort={sort}
+                  setSort={
+                    handleSortChange
+                  }
                 />
               </div>
 
-              {/* RIGHT CONTENT */}
-              <div className="min-w-0 flex-1">
-                {/* SORT BAR */}
+              {/* ==================================
+                  ACTIVE FILTERS
+              ================================== */}
+
+              {hasActiveFilters && (
                 <div
-                  className={`sticky top-[98px] ${
-                    sidebarZ0 ? "!-z-10" : "z-20"
-                  } bg-[#edf7ff]`}
-                >
-                  <SortBar sort={sort} setSort={handleSortChange} />
-                </div>
-
-                {/* ACTIVE FILTERS */}
-                {hasActiveFilters && (
-                  <div
-                    className={`sticky top-[138px] min-[700px]:max-[850px]:top-[155px] ${
-                      sidebarZ0 ? "!-z-10" : "z-12"
+                  className={`sticky top-[138px] min-[700px]:max-[850px]:top-[155px] ${sidebarZ0
+                      ? "!-z-10"
+                      : "z-12"
                     } bg-[#edf7ff] !pt-[5px]`}
-                  >
-                    <div className="!mb-4 flex flex-wrap gap-2">
-                      {activeFilters.map(([key, value]) => {
-                        if (!isFilterActive(value)) return null;
+                >
+                  <div className="!mb-4 flex flex-wrap gap-2">
 
-                        if (key === "minPrice" || key === "maxPrice") {
+                    {activeFilters.map(
+                      ([key, value]) => {
+                        if (
+                          !isFilterActive(
+                            value
+                          )
+                        ) {
                           return null;
                         }
 
-                        if (Array.isArray(value)) {
-                          return value.map((v, i) => (
-                            <div
-                              key={`${key}-${i}`}
-                              className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
-                            >
-                              {v}
-                              <CloseOutlined
-                                className="cursor-pointer text-xs"
-                                onClick={() => removeFilter(key, v)}
-                              />
-                            </div>
-                          ));
+                        if (
+                          key ===
+                          "minPrice" ||
+                          key ===
+                          "maxPrice"
+                        ) {
+                          return null;
                         }
 
-                        let label = value;
+                        if (
+                          Array.isArray(
+                            value
+                          )
+                        ) {
+                          return value.map(
+                            (
+                              v,
+                              i
+                            ) => (
+                              <div
+                                key={`${key}-${i}`}
+                                className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
+                              >
+                                {v}
 
-                        if (key === "freeCancellation") {
-                          label = "Free Cancellation";
+                                <CloseOutlined
+                                  className="cursor-pointer text-xs"
+                                  onClick={() =>
+                                    removeFilter(
+                                      key,
+                                      v
+                                    )
+                                  }
+                                />
+                              </div>
+                            )
+                          );
                         }
 
-                        if (key === "starRating") {
-                          label = `${value} Star`;
+                        let label =
+                          value;
+
+                        if (
+                          key ===
+                          "freeCancellation"
+                        ) {
+                          label =
+                            "Free Cancellation";
+                        }
+
+                        if (
+                          key ===
+                          "starRating"
+                        ) {
+                          label =
+                            `${value} Star`;
                         }
 
                         return (
@@ -287,71 +745,144 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
                             className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600"
                           >
                             {label}
+
                             <CloseOutlined
                               className="cursor-pointer text-xs"
-                              onClick={() => removeFilter(key)}
+                              onClick={() =>
+                                removeFilter(
+                                  key
+                                )
+                              }
                             />
                           </div>
                         );
-                      })}
+                      }
+                    )}
 
-                      {(filters?.minPrice || filters?.maxPrice) && (
+                    {/* PRICE FILTER */}
+
+                    {(filters?.minPrice ||
+                      filters?.maxPrice) && (
                         <div className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600">
-                          ₹{filters?.minPrice || 0} - ₹
-                          {filters?.maxPrice || 50000}
+
+                          ₹
+                          {filters?.minPrice ||
+                            0}
+
+                          {" - "}
+
+                          ₹
+                          {filters?.maxPrice ||
+                            50000}
+
                           <CloseOutlined
                             className="cursor-pointer text-xs"
                             onClick={() =>
-                              setFilters((prev) => ({
-                                ...prev,
-                                minPrice: "",
-                                maxPrice: "",
-                              }))
+                              setFilters(
+                                (prev) => ({
+                                  ...prev,
+                                  minPrice:
+                                    "",
+                                  maxPrice:
+                                    "",
+                                })
+                              )
                             }
                           />
                         </div>
                       )}
 
-                      <button
-                        onClick={clearAll}
-                        className="rounded bg-red-200 px-3 py-1 text-xs text-red-600"
-                      >
-                        Clear All
-                      </button>
-                    </div>
+                    {/* CLEAR ALL */}
+
+                    <button
+                      onClick={
+                        clearAll
+                      }
+                      className="rounded bg-red-200 px-3 py-1 text-xs text-red-600"
+                    >
+                      Clear All
+                    </button>
                   </div>
-                )}
-
-                {/* HOTEL LIST */}
-                <div id="hotel-list-section">
-                  <HotelList
-                    searchData={appliedSearchData}
-                    filters={filters}
-                    sort={sort}
-                    onHotelsChange={setHotelsForMap}
-                    onLoadingChange={setHotelsLoading}
-                    onResultChange={setHasHotels}
-                  />
                 </div>
+              )}
 
-                {/* SEO CONTENT */}
+              {/* ==================================
+                  HOTEL LIST
+              ================================== */}
+
+              <div
+                id="hotel-list-section"
+                ref={hotelListRef}
+              >
+                <HotelList
+                  searchData={
+                    appliedSearchData
+                  }
+                  filters={filters}
+                  sort={sort}
+                  onHotelsChange={
+                    setHotelsForMap
+                  }
+                  onLoadingChange={
+                    setHotelsLoading
+                  }
+                  onResultChange={
+                    setHasHotels
+                  }
+                />
+              </div>
+
+              {/* ==================================
+                  CMS CONTENT
+
+                  IMPORTANT:
+                  CMS content ki actual height
+                  z-index calculation me use nahi
+                  ho rahi.
+
+                  Invisible fixed trigger CMS ke
+                  top par hai.
+              ================================== */}
+
+              <div className="relative">
+
+                {/* CMS TRIGGER */}
+
+                <div
+                  ref={cmsTriggerRef}
+                  className="pointer-events-none absolute left-0 top-0 h-[120px] w-full"
+                  aria-hidden="true"
+                />
+
+                {/* CMS */}
+
                 {cms ? (
                   <HotelsSeoSection>
-                    <CMSContentRenderer cms={cms} />
+                    <CMSContentRenderer
+                      cms={cms}
+                    />
                   </HotelsSeoSection>
                 ) : (
                   !hotelsLoading &&
                   hasHotels && (
                     <HotelsSeoSection>
-                      <DynamicSeoFallback cityName={appliedSearchData?.city} />
+                      <DynamicSeoFallback
+                        cityName={
+                          appliedSearchData?.city
+                        }
+                      />
                     </HotelsSeoSection>
                   )
                 )}
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
+
+      {/* ==================================
+          MAP MODAL
+      ================================== */}
 
       <Modal
         open={mapOpen}
@@ -359,7 +890,9 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
         closable={false}
         width="95vw"
         centered
-        onCancel={() => setMapOpen(false)}
+        onCancel={() =>
+          setMapOpen(false)
+        }
         styles={{
           body: {
             padding: 0,
@@ -367,30 +900,46 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
           },
         }}
       >
-        {/* Header */}
+        {/* HEADER */}
+
         <div className="flex items-center justify-between border-b px-4 py-3">
-          <h2 className="text-lg font-semibold md:text-xl">Hotels on Map</h2>
+
+          <h2 className="text-lg font-semibold md:text-xl">
+            Hotels on Map
+          </h2>
 
           <button
-            onClick={() => setMapOpen(false)}
+            onClick={() =>
+              setMapOpen(false)
+            }
             className="rounded-md bg-red-500 px-3 py-2 text-sm font-medium text-white hover:bg-red-600"
           >
             Close
           </button>
         </div>
 
-        {/* Content */}
+        {/* CONTENT */}
+
         <div className="flex h-[70vh] md:h-[80vh] lg:h-[85vh]">
-          {/* Map */}
+
+          {/* MAP */}
+
           <div className="flex-1">
-            <HotelMap hotels={hotelsForMap} />
+            <HotelMap
+              hotels={
+                hotelsForMap
+              }
+            />
           </div>
 
-          {/* Sidebar */}
+          {/* SIDEBAR */}
+
           <div className="hidden overflow-y-auto border-l bg-white md:block md:w-[280px] lg:w-[340px]">
             <SidebarFilters
               filters={filters}
-              setFilters={handleFilterChange}
+              setFilters={
+                handleFilterChange
+              }
               hideMapSection
             />
           </div>
@@ -399,3 +948,4 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
     </>
   );
 }
+

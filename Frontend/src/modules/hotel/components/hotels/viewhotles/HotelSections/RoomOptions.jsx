@@ -239,7 +239,7 @@ const RoomOptions = ({ ratePlans = [], supplierData = {} }) => {
                       }),
                     )
                   }
-                  className="!mt-5 !h-[48px] w-full rounded! bg-[#0f766e]! text-sm font-semibold tracking-wide text-white!"
+                  className="!mt-5 !h-[48px] w-full rounded! buttion-background-color text-sm font-semibold tracking-wide text-white!"
                 >
                   Select Room
                 </Button>

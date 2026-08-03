@@ -9,19 +9,19 @@ export const moduleConfig = {
     actions: ["read", "update"],
   },
 
-  bookings: {
-    label: "Bookings",
-    actions: ["read", "write", "update", "delete"],
-  },
+  // bookings: {
+  //   label: "Bookings",
+  //   actions: ["read", "write", "update", "delete"],
+  // },
 
   roles: {
     label: "Roles",
-    actions: ["read", "write", "update", "delete"],
+    actions: ["read", "write", "update"],
   },
 
   users: {
     label: "Users",
-    actions: ["read", "write", "update", "delete"],
+    actions: ["read", "write", "update"],
   },
 
   Markups: {
@@ -41,11 +41,11 @@ export const moduleConfig = {
 
   customers: {
     label: "Customers",
-    actions: ["read", "write", "update", "delete"],
-  },
-
-  revenue: {
-    label: "Revenue",
     actions: ["read"],
   },
+
+  // revenue: {
+  //   label: "Revenue",
+  //   actions: ["read"],
+  // },
 };

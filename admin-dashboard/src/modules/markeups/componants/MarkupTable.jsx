@@ -34,6 +34,8 @@ export default function MarkupTable({
   taxLoading,
   deleteTax,
   updateTaxStatus,
+  canEdit,
+  canDelete,
 }) {
   const renderTarget = (record) => {
     const formatDate = (date) => {
@@ -335,50 +337,62 @@ export default function MarkupTable({
         );
       },
     },
-    {
-      title: "Actions",
-      width: 180,
-      render: (_, record) => (
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          {" "}
-          {/* EDIT */}{" "}
-          <Tooltip title="Edit">
-            {" "}
-            <Button
-              icon={<EditOutlined />}
-              onClick={() => {
-                console.log(record, "record edit");
-                handleEdit(record, true);
-              }}
-            />{" "}
-          </Tooltip>{" "}
-          {/* DELETE */}{" "}
-          <Popconfirm
-            title="Delete Tax Rule?"
-            description="This action cannot be undone."
-            onConfirm={() => deleteTax.mutate(record._id)}
-          >
-            {" "}
-            <Button
-              danger
-              icon={<DeleteOutlined />}
-              loading={deleteTax.isPending}
-            />{" "}
-          </Popconfirm>{" "}
-          {/* STATUS */}{" "}
-          <Switch
-            checked={record?.isActive}
-            loading={updateTaxStatus.isPending}
-            onChange={(checked) =>
-              updateTaxStatus.mutate({
-                id: record._id,
-                data: { isActive: checked },
-              })
-            }
-          />{" "}
-        </div>
-      ),
-    },
+    ...(canEdit || canDelete
+      ? [
+          {
+            title: "Actions",
+            width: 180,
+
+            render: (_, record) => (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                }}
+              >
+                {canEdit && (
+                  <>
+                    <Tooltip title="Edit">
+                      <Button
+                        icon={<EditOutlined />}
+                        onClick={() => handleEdit(record, true)}
+                      />
+                    </Tooltip>
+
+                    <Switch
+                      checked={record?.isActive}
+                      loading={updateTaxStatus.isPending}
+                      onChange={(checked) =>
+                        updateTaxStatus.mutate({
+                          id: record._id,
+                          data: {
+                            isActive: checked,
+                          },
+                        })
+                      }
+                    />
+                  </>
+                )}
+
+                {canDelete && (
+                  <Popconfirm
+                    title="Delete Tax Rule?"
+                    description="This action cannot be undone."
+                    onConfirm={() => deleteTax.mutate(record._id)}
+                  >
+                    <Button
+                      danger
+                      icon={<DeleteOutlined />}
+                      loading={deleteTax.isPending}
+                    />
+                  </Popconfirm>
+                )}
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
   const markupColumns = [
@@ -484,47 +498,62 @@ export default function MarkupTable({
       responsive: ["md"],
       render: (val) => new Date(val).toLocaleDateString("en-IN"),
     },
-    {
-      title: "Actions",
-      width: 180,
-      render: (_, record) => (
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          {" "}
-          {/* EDIT */}{" "}
-          <Tooltip title="Edit">
-            {" "}
-            <Button
-              icon={<EditOutlined />}
-              onClick={() => handleEdit(record)}
-            />{" "}
-          </Tooltip>{" "}
-          {/* DELETE */}{" "}
-          <Popconfirm
-            title="Delete markup?"
-            description="This action cannot be undone."
-            onConfirm={() => deleteMarkup.mutate(record?._id)}
-          >
-            {" "}
-            <Button
-              danger
-              icon={<DeleteOutlined />}
-              loading={deleteMarkup.isPending}
-            />{" "}
-          </Popconfirm>{" "}
-          {/* STATUS */}{" "}
-          <Switch
-            checked={record?.isActive}
-            loading={updateStatus.isPending}
-            onChange={(checked) =>
-              updateStatus.mutate({
-                id: record?._id,
-                data: { isActive: checked },
-              })
-            }
-          />{" "}
-        </div>
-      ),
-    },
+    ...(canEdit || canDelete
+      ? [
+          {
+            title: "Actions",
+            width: 180,
+
+            render: (_, record) => (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                }}
+              >
+                {canEdit && (
+                  <>
+                    <Tooltip title="Edit">
+                      <Button
+                        icon={<EditOutlined />}
+                        onClick={() => handleEdit(record)}
+                      />
+                    </Tooltip>
+
+                    <Switch
+                      checked={record?.isActive}
+                      loading={updateStatus.isPending}
+                      onChange={(checked) =>
+                        updateStatus.mutate({
+                          id: record._id,
+                          data: {
+                            isActive: checked,
+                          },
+                        })
+                      }
+                    />
+                  </>
+                )}
+
+                {canDelete && (
+                  <Popconfirm
+                    title="Delete markup?"
+                    description="This action cannot be undone."
+                    onConfirm={() => deleteMarkup.mutate(record._id)}
+                  >
+                    <Button
+                      danger
+                      icon={<DeleteOutlined />}
+                      loading={deleteMarkup.isPending}
+                    />
+                  </Popconfirm>
+                )}
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
   return (

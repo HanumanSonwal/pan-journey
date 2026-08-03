@@ -160,13 +160,13 @@ export default function WishlistTab() {
                 {/* RIGHT */}
                 <div className="flex flex-col justify-between border-t border-[#ECECEC] px-2 py-2 md:w-[220px] md:border-t-0 md:border-l">
                   {/* ICONS + RATING */}
-                  <div className="ml-auto w-[145px] rounded-[8px] border border-[#72C0F0] bg-[#F8FDFF] px-2 py-1">
+                  <div className="ml-auto w-[145px] rounded-[8px] border most-boder-colour  px-2 py-1">
                     <div className="flex items-center justify-between">
-                      <p className="!m-0 text-[11px] font-semibold text-[#72C0F0]">
+                      <p className="!m-0 text-[11px] font-semibold most-text-color">
                         Saved Hotels
                       </p>
 
-                      <div className="flex h-[20px] min-w-[28px] items-center justify-center rounded bg-[#72C0F0] px-1 text-[10px] font-bold text-white">
+                      <div className="flex h-[20px] min-w-[28px] items-center justify-center rounded buttion-background-color px-1 text-[10px] font-bold text-white">
                         {item.hotelCount}
                       </div>
                     </div>
@@ -181,7 +181,7 @@ export default function WishlistTab() {
                           `/profile?tab=wishlist-detail&cityId=${item.cityId}`,
                         );
                       }}
-                      className="rounded-lg bg-[#72C0F0] px-5 py-2 text-sm font-semibold text-white! transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#58AEE5]"
+                      className="rounded-lg bg-[#72C0F0] px-5 py-2 text-sm font-semibold text-white! transition-all duration-300 hover:-translate-y-0.5 buttion-background-color"
                     >
                       View Hotels
                     </button>

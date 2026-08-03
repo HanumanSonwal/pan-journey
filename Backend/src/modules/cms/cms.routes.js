@@ -1,8 +1,7 @@
 import express from "express";
-
 import { protect } from "../../middleware/auth.middleware.js";
-import { validate } from "../../middleware/validate.middleware.js";
 import { checkPermission } from "../../middleware/checkPermission.js";
+import { validate } from "../../middleware/validate.middleware.js";
 
 import {
   createCMS,
@@ -45,7 +44,12 @@ router.get("/templates", getTemplates);
 ENTITY CMS
 PROTECTED
 */
-router.get("/entity/:entityType/:entityId", protect,  checkPermission("cmsPages", "read"), getCMSByEntityController);
+router.get(
+  "/entity/:entityType/:entityId",
+  protect,
+  checkPermission("cmsPages", "read"),
+  getCMSByEntityController,
+);
 
 /*
 =================================
@@ -56,27 +60,44 @@ ADMIN
 /*
 CREATE
 */
-router.post("/", protect, validate(createCMSValidation),checkPermission("cmsPages", "write"), createCMS);
+router.post(
+  "/",
+  protect,
+  validate(createCMSValidation),
+  checkPermission("cmsPages", "write"),
+  createCMS,
+);
 
 /*
 GET ALL
 ADMIN
 */
-router.get("/", protect,checkPermission("cmsPages", "read"), getAllCMS);
+router.get("/", protect, checkPermission("cmsPages", "read"), getAllCMS);
 
 /*
 GET SINGLE
 */
-router.get("/:id", protect,checkPermission("cmsPages", "read"), getSingleCMS);
+router.get("/:id", protect, checkPermission("cmsPages", "read"), getSingleCMS);
 
 /*
 UPDATE
 */
-router.put("/:id", protect, validate(updateCMSValidation),checkPermission("cmsPages", "update"), updateCMS);
+router.put(
+  "/:id",
+  protect,
+  validate(updateCMSValidation),
+  checkPermission("cmsPages", "update"),
+  updateCMS,
+);
 
 /*
 DELETE
 */
-router.delete("/:id", protect,checkPermission("cmsPages", "delete"), deleteCMS);
+router.delete(
+  "/:id",
+  protect,
+  checkPermission("cmsPages", "delete"),
+  deleteCMS,
+);
 
 export default router;

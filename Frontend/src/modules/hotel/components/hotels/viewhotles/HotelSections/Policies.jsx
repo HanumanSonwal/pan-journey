@@ -106,10 +106,10 @@ const Policies = ({ ratePlans = [] }) => {
                 key={i}
                 className={`rounded border p-4 ${color.bg} ${color.border}`}
               >
-                <div className=" items-start gap-4">
+                <div className=" items-start gap-4  !">
                   {/* Icon */}
                   <div
-                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded bg-white text-lg shadow-sm ${color.icon}`}
+                    className={`flex h-11 w-11 shrink-0 items-center justify-center most-text-color most-boder-colour rounded bg-white text-lg shadow-sm ${color.icon}`}
                   >
                     {getIcon(item.type)}
                   </div>

@@ -200,6 +200,16 @@ export default async function Page({ params, searchParams }) {
       <HotelDetails
         initialPayload={{
           hotelId,
+          hotelMeta: {
+            hotelName: cms?.data?.hotelMeta?.hotelName || hotelName,
+            hotelSlug: slug,
+            cityId: cms?.data?.cityMeta?.cityId,
+            stateName: cms?.data?.cityMeta?.stateName,
+            countryCode: cms?.data?.cityMeta?.countryCode,
+          },
+          searchContext: {
+            fullName: cms?.data?.hotelMeta?.hotelName || hotelName,
+          },
         }}
         cms={cms}
       />

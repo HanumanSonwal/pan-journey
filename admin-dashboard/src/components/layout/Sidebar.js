@@ -4,7 +4,6 @@ import { useTheme } from "@/context/ThemeContext";
 import { logoutUser } from "@/modules/auth/api/auth.service";
 import { useAuthStore } from "@/modules/auth/store/auth.store";
 import { useFilteredMenu } from "@/modules/shared/hooks/useFilteredMenu";
-import { LogoutOutlined, SettingOutlined } from "@ant-design/icons";
 import { Layout, Menu, theme } from "antd";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -26,7 +25,7 @@ const Sidebar = ({ collapsed }) => {
     token: { colorBgContainer, colorTextSecondary },
   } = theme.useToken();
 
-  const filteredItems = useFilteredMenu();
+  const { menuItems, bottomMenuItems } = useFilteredMenu();
 
   const handleLogout = async () => {
     try {
@@ -37,28 +36,13 @@ const Sidebar = ({ collapsed }) => {
   };
 
   const handleMenuClick = ({ key }) => {
-    if (key === "logout") handleLogout();
-    if (key === "profile") router.push("/profile");
-    if (key === "account") router.push("/account");
-  };
+    if (key === "logout") {
+      handleLogout();
+      return;
+    }
 
-  const bottomItems = [
-    {
-      key: "settings",
-      icon: <SettingOutlined />,
-      label: "Settings",
-      // children: [
-      //   { key: "#", label: "Profile Settings" },
-      //   { key: "#", label: "Account Settings" },
-      // ],
-    },
-    {
-      key: "logout",
-      icon: <LogoutOutlined />,
-      label: "Logout",
-      danger: true,
-    },
-  ];
+    router.push(key);
+  };
 
   return (
     <Sider
@@ -123,7 +107,7 @@ const Sidebar = ({ collapsed }) => {
             mode="inline"
             selectedKeys={[pathname]}
             defaultOpenKeys={["/dashboard/staff"]}
-            items={filteredItems}
+            items={menuItems}
             // theme={isDark ? "dark" : "light"}
             theme="dark"
             inlineCollapsed={collapsed}
@@ -137,7 +121,7 @@ const Sidebar = ({ collapsed }) => {
         <div style={{ marginTop: "auto" }}>
           <Menu
             mode="inline"
-            items={bottomItems}
+            items={bottomMenuItems}
             onClick={handleMenuClick}
             // theme={isDark ? "dark" : "light"}
             theme="dark"

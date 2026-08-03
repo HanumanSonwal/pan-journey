@@ -127,7 +127,7 @@ export default function WishlistDetailTab() {
         </h2>
         <button
           onClick={() => router.push("/profile?tab=wishlist")}
-          className="flex items-center gap-2 text-[15px] font-semibold text-[#72C0F0]!"
+          className="flex items-center gap-2 text-[15px] font-semibold ! most-text-color"
         >
           <ArrowLeftOutlined /> Back to Wishlist
         </button>
@@ -138,7 +138,7 @@ export default function WishlistDetailTab() {
         </h2>
 
         <div className="flex flex-wrap gap-2">
-          <span className="rounded-md border border-[#72C0F0] px-2 py-1 text-xs text-[#72C0F0]">
+          <span className="rounded-md border most-boder-colour px-2 py-1 text-xs most-text-color">
             {hotels.length} Saved Hotel
             {hotels.length > 1 ? "s" : ""}
           </span>
@@ -219,7 +219,7 @@ export default function WishlistDetailTab() {
                   </div>
                   <div className="flex items-end gap-3">
                     <Button
-                      className="rounded-lg! bg-[#72C0F0]! px-5! py-2! text-sm! font-semibold! text-white!"
+                      className="rounded-lg! buttion-background-color px-5! py-2! text-sm! font-semibold! text-white!"
                       onClick={() => handleViewHotel(hotel)}
                     >
                       View Hotel

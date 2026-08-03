@@ -10,7 +10,7 @@ const AboutHotel = ({ about }) => {
       {/* Header */}
       <div className="border-b border-[#e9f2f8] bg-[#f7fcff] px-5 py-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded bg-[#eaf6fd] text-[#0ea5e9]">
+          <div className="flex h-11 w-11 items-center justify-center most-boder-colour rounded most-text-color">
             <BankOutlined className="text-[18px]" />
           </div>
 
@@ -30,7 +30,7 @@ const AboutHotel = ({ about }) => {
       <div className="p-4">
         <div className="rounded border border-[#e7f3fb] bg-[#f9fcfe] p-4">
           {/* Small Label */}
-          <div className="mb-3 flex items-center gap-2 text-[#0ea5e9]">
+          <div className="mb-3 flex items-center gap-2 most-text-color ">
             <InfoCircleOutlined />
 
             <span className="!text-[15px] font-medium">Hotel Information</span>
