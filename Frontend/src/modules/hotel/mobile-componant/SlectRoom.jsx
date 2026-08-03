@@ -270,7 +270,7 @@ const SlectRoom = ({ ratePlans = [], supplierData = {} }) => {
           No rooms available
         </div>
       )}
-      <BottomNav />
+      
     </div>
 
   );

@@ -34,7 +34,7 @@ const ScrollToTopButton = () => {
       >
         {/* Animated Ring */}
         <span
-          className="absolute inset-0 animate-spin rounded-full teb-gradient"
+          className="absolute inset-0 animate-spin rounded-full buttion-background-color"
           style={{
             animationDuration: "4s",
           }}
@@ -43,7 +43,7 @@ const ScrollToTopButton = () => {
         {/* Main Button */}
         <span className="absolute inset-[4px] flex items-center justify-center overflow-hidden rounded-full buttion-background-color">
           {/* Gloss */}
-          <span className="absolute left-1/2 top-1 h-6 w-10 -translate-x-1/2 rounded-full bg-white/35 blur-sm" />
+          <span className="absolute left-1/2 top-1 h-6 w-10 -translate-x-1/2 rounded-full " />
 
           {/* Arrow */}
           <ArrowUpOutlined className="relative z-10 text-[24px] !text-white drop-shadow-lg" />
@@ -53,7 +53,7 @@ const ScrollToTopButton = () => {
         <span
           className="absolute inset-0 animate-pulse rounded-full"
           style={{
-            boxShadow: "0 0 18px rgba(12, 47, 177, 0.45)",
+            boxShadow: "0 0 18px rgba(148, 170, 249, 0.45)",
           }}
         />
       </button>

@@ -93,7 +93,7 @@ export default function ContactFormSection() {
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
         <div className="grid grid-cols-1 gap-10 min-[901px]:grid-cols-2 min-[901px]:gap-8">
           <div className="rounded bg-white p-6 shadow-[0_8px_30px_rgba(0,0,0,0.06)] lg:p-8">
-            <h2 className="mb-5 text-[18px] leading-[1.2] font-bold text-[#0f6b78] sm:text-[18px] md:text-[28px] lg:text-[32px]">
+            <h2 className="mb-5 text-[18px] leading-[1.2] font-bold most-text-color sm:text-[18px] md:text-[28px] lg:text-[32px]">
               We're Always Here To
               <br />
               Help You
@@ -108,22 +108,22 @@ export default function ContactFormSection() {
 
             {/* Quick Stats */}
             <div className="mb-7 grid grid-cols-2 gap-5">
-              <div className="rounded-lg border border-[#d7e8ee] bg-[#f8fcfd] p-3 pt-1 !pb-0">
-                <p className="!mb-2 text-[20px] font-bold text-[#0f6b78]">
+              <div className="rounded-lg border most-boder-colour p-3 pt-1 !pb-0">
+                <p className="!mb-2 text-[20px] font-bold most-text-color">
                   24/7
                 </p>
                 <p className="text-[13px] text-gray-600">Support Available</p>
               </div>
 
-              <div className="rounded-lg border border-[#d7e8ee] bg-[#f8fcfd] p-3 pt-1 !pb-0">
-                <p className="!mb-2 text-[20px] font-bold text-[#0f6b78]">
+              <div className="rounded-lg border most-boder-colour p-3 pt-1 !pb-0">
+                <p className="!mb-2 text-[20px] font-bold most-text-color">
                   &lt; 24h
                 </p>
                 <p className="text-[13px] text-gray-600">Average Response</p>
               </div>
             </div>
             {/* Business Hours */}
-            <h3 className="mb-6 text-[28px] font-semibold text-[#0f6b78] md:text-[32px]">
+            <h3 className="mb-6 text-[28px] font-semibold  md:text-[32px]">
               Business Hours
             </h3>
 
@@ -141,7 +141,7 @@ export default function ContactFormSection() {
 
             {/* Quick Contact */}
             <div className="mt-10 rounded-xl border border-[#d7e8ee] bg-white p-5 shadow-sm">
-              <h4 className="mb-3 text-lg font-semibold text-[#0f6b78]">
+              <h4 className="mb-3 text-lg font-semibold most-text-colour">
                 Customer Support Commitment
               </h4>
 
@@ -207,7 +207,7 @@ export default function ContactFormSection() {
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="w-full rounded-lg bg-gradient-to-b from-[#67b5e2] to-[#006c7a] px-8 py-3.5 font-medium text-white! transition-all duration-300 hover:-translate-y-[1px] hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
+                  className="w-full rounded-lg buttion-background-color px-8 py-3.5 font-medium text-white! transition-all duration-300 hover:-translate-y-[1px] hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {isPending ? "Submitting..." : "Submit"}
                 </button>

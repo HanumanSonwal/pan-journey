@@ -1,6 +1,7 @@
 import ComingSoonModal from "@/components/common/ComingSoonModal";
 import Footer from "@/components/common/Footer";
 import Header from "@/components/common/Header";
+import BottomNav from "@/components/common/loder/MobileBottomNav ";
 import GlobalLoginModal from "@/modules/auth/components/GlobalLoginModal";
 import ProfileCompletionHandler from "@/modules/auth/components/ProfileCompletionHandler";
 import ScrollToTopButton from "@/modules/hotel/ScrollToTopButton";
@@ -102,7 +103,7 @@ export default function RootLayout({ children }) {
                     {children}
                   </App>
                 </main>
-
+                <BottomNav />
                 <Footer />
               </Providers>
             </QueryProvider>

@@ -84,65 +84,64 @@ export default function ContactSection() {
         </div>
       </div>
 
-      
-     {/* Contact Cards */}
-<div className="absolute top-[280px] left-1/2 z-30 w-full max-w-[1400px] -translate-x-1/2 px-3">
-  {/* Mobile Scroll */}
-  <div className="overflow-x-auto min-[951px]:overflow-visible scrollbar-hide">
-    <div className="flex gap-4 min-[951px]:grid min-[951px]:grid-cols-4 md:gap-6">
-      {contactCards.map((card, index) => {
-        const Icon = card.icon;
 
-        return (
-          <Link
-            key={index}
-            href={card.href}
-            target={card.target}
-            className="group block min-w-[300px] shrink-0 min-[951px]:min-w-0"
-          >
-            <div
-              className={`rounded-md bg-white px-4 py-3 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl md:px-5 ${
-                card.cardClass || ""
-              }`}
-            >
-              {/* Header */}
-              <div className="mb-2 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Icon className="text-[20px] !text-[#2f7d8c] transition-transform duration-300 group-hover:scale-110 md:text-[24px] lg:text-[26px]" />
+      {/* Contact Cards */}
+      <div className="absolute top-[280px] left-1/2 z-30 w-full max-w-[1400px] -translate-x-1/2 px-3">
+        {/* Mobile Scroll */}
+        <div className="overflow-x-auto min-[951px]:overflow-visible scrollbar-hide">
+          <div className="flex gap-4 min-[951px]:grid min-[951px]:grid-cols-4 md:gap-6">
+            {contactCards.map((card, index) => {
+              const Icon = card.icon;
 
-                  <h3 className="m-0 text-[16px] font-medium text-[#2f7d8c] md:text-[18px]">
-                    {card.title}
-                  </h3>
-                </div>
-
-                <ArrowRightOutlined className="text-[#2f7d8c] opacity-60 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100" />
-              </div>
-
-              {/* Badge */}
-              <div className="mb-2 flex items-center justify-between gap-2">
-                <p className="mb-0! text-[12px] text-[#666] md:text-[13px]">
-                  {card.subText}
-                </p>
-
-                <span
-                  className={`shrink-0 rounded-full px-2 py-1 text-[10px] font-medium ${card.badgeColor}`}
+              return (
+                <Link
+                  key={index}
+                  href={card.href}
+                  target={card.target}
+                  className="group block min-w-[300px] shrink-0 min-[951px]:min-w-0"
                 >
-                  {card.badge}
-                </span>
-              </div>
+                  <div
+                    className={`rounded-md bg-white px-4 py-3 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl md:px-5 ${card.cardClass || ""
+                      }`}
+                  >
+                    {/* Header */}
+                    <div className="mb-2 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Icon className="text-[20px] most-text-color transition-transform duration-300 group-hover:scale-110 md:text-[24px] lg:text-[26px]" />
 
-              {/* Value */}
-              <p className="break-all text-[15px] font-medium text-[#444] md:text-[16px]">
-                {card.value}
-              </p>
-            </div>
-          </Link>
-        );
-      })}
-    </div>
-  </div>
-</div>
-           
+                        <h3 className="m-0 text-[16px] font-medium most-text-color md:text-[18px]">
+                          {card.title}
+                        </h3>
+                      </div>
+
+                      <ArrowRightOutlined className="most-text-color opacity-60 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100" />
+                    </div>
+
+                    {/* Badge */}
+                    <div className="mb-2 flex items-center justify-between gap-2">
+                      <p className="mb-0! text-[12px] text-[#666] md:text-[13px]">
+                        {card.subText}
+                      </p>
+
+                      <span
+                        className={`shrink-0 rounded-full px-2 py-1 text-[10px] font-medium ${card.badgeColor}`}
+                      >
+                        {card.badge}
+                      </span>
+                    </div>
+
+                    {/* Value */}
+                    <p className="break-all text-[15px] font-medium text-[#444] md:text-[16px]">
+                      {card.value}
+                    </p>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
     </section>
   );
 }
