@@ -29,60 +29,119 @@ export const createHomeContent = async (data) => {
 
 // GET FOR WEBSITE
 
-export const getHomeContent = async()=>{
+export const getHomeContent = async () => {
+  const data = await HomeContent.find({
+    isActive: true,
+  }).sort({
+    order: 1,
+  });
 
+  const response = {
+    banner: null,
+    placesAsPerYourVibe: {
+      title: "Places As Per Your Vibe",
+      sectionType: "vibe",
+      categories: [],
+    },
+    topRatedHotels: {
+      title: "Top Rated Hotels",
+      sectionType: "topRatedHotels",
+      items: [],
+    },
+    popularDestinations: {
+      title: "Popular Destinations",
+      sectionType: "popularDestinations",
+      categories: [],
+    },
+  };
 
-    const data = await HomeContent.find({
-        isActive:true
-    })
-    .sort({
-        order:1
-    });
+  data.forEach((item) => {
+    switch (item.sectionType) {
+      case "banner":
+        response.banner = item;
+        break;
 
+      case "vibe":
+        response.placesAsPerYourVibe.categories.push({
+          _id: item._id,
+          category: item.category,
+          items: item.items,
+          isActive: item.isActive,
+        });
+        break;
 
-    const response={
+      case "topRatedHotels":
+        response.topRatedHotels.items.push(...item.items);
+        break;
 
-        banner:[],
-        placesAsPerYourVibe:[],
-        topRatedHotels:[],
-        popularDestinations:[]
+      case "popularDestinations":
+        response.popularDestinations.categories.push({
+          _id: item._id,
+          category: item.category,
+          items: item.items,
+          isActive: item.isActive,
+        });
+        break;
+    }
+  });
 
-    };
-
-
-    data.forEach(item=>{
-
-
-        switch(item.sectionType){
-
-
-            case "banner":
-                response.banner.push(item);
-                break;
-
-
-            case "vibe":
-                response.placesAsPerYourVibe.push(item);
-                break;
-
-
-            case "topRatedHotels":
-                response.topRatedHotels.push(item);
-                break;
-
-
-            case "popularDestinations":
-                response.popularDestinations.push(item);
-                break;
-
-        }
-
-    });
-
-
-    return response;
-
+  return response;
 };
+
+// export const getHomeContent = async()=>{
+
+
+//     const data = await HomeContent.find({
+//         isActive:true
+//     })
+//     .sort({
+//         order:1
+//     });
+
+
+//     const response={
+
+//         banner:[],
+//         placesAsPerYourVibe:[],
+//         topRatedHotels:[],
+//         popularDestinations:[]
+
+//     };
+
+
+//     data.forEach(item=>{
+
+
+//         switch(item.sectionType){
+
+
+//             case "banner":
+//                 response.banner.push(item);
+//                 break;
+
+
+//             case "vibe":
+//                 response.placesAsPerYourVibe.push(item);
+//                 break;
+
+
+//             case "topRatedHotels":
+//                 response.topRatedHotels.push(item);
+//                 break;
+
+
+//             case "popularDestinations":
+//                 response.popularDestinations.push(item);
+//                 break;
+
+//         }
+
+//     });
+
+
+//     return response;
+
+// };
 
 
 

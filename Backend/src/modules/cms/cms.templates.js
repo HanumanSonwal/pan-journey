@@ -24,4 +24,5 @@ export const CMS_ENTITY_TYPES = [
   "marketing",
   "flightRoute",
   "busRoute",
+  "blog"
 ];

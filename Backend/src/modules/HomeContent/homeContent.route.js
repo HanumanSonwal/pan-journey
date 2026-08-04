@@ -43,7 +43,7 @@ getHomeContentController
 router.get(
 "/admin",
 protect,
-checkPermission("homeContent.view"),
+checkPermission("homeContent", "view"),
 getAdminHomeContentController
 );
 

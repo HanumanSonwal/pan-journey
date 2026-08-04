@@ -38,6 +38,7 @@ import tax from "./modules/tax/tax.route.js";
 import userRoutes from "./modules/user/user.routes.js";
 import homecontent from "./modules/HomeContent/homeContent.route.js";
 import wishlistRoutes from "./modules/wishlist/wishlist.routes.js";
+import theme from "./modules/theme/theme.route.js";
 import testRoutes from "./test.routes.js";
 import path from "path";
 
@@ -85,6 +86,7 @@ app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/homecontent", homecontent);
 
 app.use("/api/v1/cms", cmsRoutes);
+app.use("/api/v1/theme", theme);
 app.use("/api/v1/roles", roleRoutes);
 app.use("/api/v1/Seacrhcity", citySearch);
 app.use("/api/webhooks", gatewayroutewebhook);
