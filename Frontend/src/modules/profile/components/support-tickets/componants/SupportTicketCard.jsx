@@ -97,7 +97,7 @@ export default function SupportTicketCard({ ticket, onView }) {
 
             {/* Created Date */}
             <div className="flex items-start gap-3">
-              <div className="rounded-lg bg-blue-50 text-blue-600">
+              <div className="rounded-lg bg-blue-50 most-text-color">
                 <CalendarOutlined />
               </div>
 
@@ -131,7 +131,7 @@ export default function SupportTicketCard({ ticket, onView }) {
             type="primary"
             icon={<EyeOutlined />}
             size="large"
-            className="font-roboto mt-6 !h-[44px] !rounded-lg !border-none !bg-[#72C0F0] !font-semibold hover:!bg-[#58AEE5]"
+            className="font-roboto mt-6 !h-[44px] !rounded-lg !border-none buttion-background-color !font-semibold "
             onClick={() => onView(ticket)}
           >
             View Details

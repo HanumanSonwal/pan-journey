@@ -156,7 +156,7 @@ export default async function Page() {
 
       <NewsletterSection />
 
-      <BottomNav />
+    
     </>
   );
 }

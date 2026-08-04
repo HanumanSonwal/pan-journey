@@ -37,26 +37,32 @@ function SortBar({ sort, setSort }) {
         icon: <ArrowUpOutlined />,
       },
     ],
-    [],
+    []
   );
+
+  const handleSortChange = (value) => {
+    // same filter click => remove filter
+    if (sort === value) {
+      setSort(null);
+      return;
+    }
+
+    // different filter => apply new filter
+    setSort(value);
+  };
 
   return (
     <div className="sticky top-[98px] z-[99] overflow-visible border border-gray-200 bg-white shadow-[0_2px_10px_rgba(0,0,0,0.08)]">
-      {/* =========================
-          650px - 850px DROPDOWN
-      ========================= */}
+
+      {/* 650px - 850px */}
       <div className="relative hidden min-[650px]:max-[850px]:block">
         <button
           type="button"
-          onClick={() => setMobileSortOpen(!mobileSortOpen)}
+          onClick={() => setMobileSortOpen((prev) => !prev)}
           className="flex h-[58px] w-full items-center justify-center gap-2 bg-white px-4 text-[15px] font-medium !text-gray-700"
         >
           Sort By
-          {mobileSortOpen ? (
-            <ArrowUpOutlined />
-          ) : (
-            <ArrowDownOutlined />
-          )}
+          {mobileSortOpen ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
         </button>
 
         {mobileSortOpen && (
@@ -69,12 +75,12 @@ function SortBar({ sort, setSort }) {
                   key={tab.value}
                   type="button"
                   onClick={() => {
-                    setSort(tab.value);
+                    handleSortChange(tab.value);
                     setMobileSortOpen(false);
                   }}
-                  className={`flex h-[58px] w-full items-center justify-center gap-2 border-b border-gray-300 transition-all duration-200 ${active
-                    ? "bg-[#edf7ff]"
-                    : "bg-white hover:bg-gray-50"
+                  className={`flex h-[58px] w-full items-center justify-center gap-2 border-b border-gray-300 transition-all ${active
+                      ? "bg-[#edf7ff]"
+                      : "bg-white hover:bg-gray-50"
                     } ${index === tabs.length - 1
                       ? "border-b-0"
                       : ""
@@ -82,18 +88,18 @@ function SortBar({ sort, setSort }) {
                 >
                   <span
                     className={`text-[13px] ${active
-                      ? "text-[#4aa3df]"
-                      : "text-gray-400"
+                        ? "text-[#4aa3df]"
+                        : "text-gray-400"
                       }`}
                   >
                     {tab.icon}
                   </span>
 
-                  <div className="flex flex-wrap items-center justify-center gap-1">
+                  <div className="flex items-center gap-1">
                     <span
                       className={`text-[14px] font-medium ${active
-                        ? "text-[#4aa3df]"
-                        : "text-gray-800"
+                          ? "text-[#4aa3df]"
+                          : "text-gray-800"
                         }`}
                     >
                       {tab.label}
@@ -110,19 +116,17 @@ function SortBar({ sort, setSort }) {
         )}
       </div>
 
-      {/* =========================
-          DESKTOP + MOBILE TABS
-          (<650px and >850px)
-      ========================= */}
+
+      {/* Desktop */}
       <div className="flex items-stretch min-[650px]:max-[850px]:hidden">
-        {/* LABEL */}
+
         <div className="flex min-w-28 items-center justify-center border-r border-gray-200 px-4">
           <span className="text-[15px] font-medium !text-gray-800">
             Sort By:
           </span>
         </div>
 
-        {/* TABS */}
+
         <div className="flex flex-1">
           {tabs.map((tab, index) => {
             const active = sort === tab.value;
@@ -131,10 +135,10 @@ function SortBar({ sort, setSort }) {
               <button
                 key={tab.value}
                 type="button"
-                onClick={() => setSort(tab.value)}
-                className={`flex h-[43px] flex-1 items-center justify-center gap-2 border-r border-gray-300 transition-all duration-200 ${active
-                  ? "bg-[#edf7ff]"
-                  : "bg-white hover:bg-gray-50"
+                onClick={() => handleSortChange(tab.value)}
+                className={`flex h-[43px] flex-1 items-center justify-center gap-2 border-r border-gray-300 transition-all ${active
+                    ? "bg-[#edf7ff]"
+                    : "bg-white hover:bg-gray-50"
                   } ${index === tabs.length - 1
                     ? "!border-r-0"
                     : ""
@@ -142,34 +146,34 @@ function SortBar({ sort, setSort }) {
               >
                 <span
                   className={`text-[13px] ${active
-                    ? "text-[#4aa3df]"
-                    : "text-gray-400"
+                      ? "text-[#4aa3df]"
+                      : "text-gray-400"
                     }`}
                 >
                   {tab.icon}
                 </span>
 
-                <div className="flex flex-wrap items-center justify-center gap-1">
+                <div className="flex items-center gap-1">
                   <span
                     className={`text-[14px] font-medium ${active
-                      ? "text-[#4aa3df]"
-                      : "text-gray-800"
+                        ? "text-[#4aa3df]"
+                        : "text-gray-800"
                       }`}
                   >
                     {tab.label}
                   </span>
 
-                  {tab.sub && (
-                    <span className="text-[13px] text-gray-500">
-                      {tab.sub}
-                    </span>
-                  )}
+                  <span className="text-[13px] text-gray-500">
+                    {tab.sub}
+                  </span>
                 </div>
               </button>
             );
           })}
         </div>
+
       </div>
+
     </div>
   );
 }

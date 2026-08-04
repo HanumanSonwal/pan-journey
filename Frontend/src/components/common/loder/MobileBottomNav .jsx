@@ -58,14 +58,14 @@ export default function BottomNav() {
                 size={22}
                 strokeWidth={2}
                 className={`transition-all duration-300 ${active
-                    ? "text-[#72C0F0]"
-                    : "text-gray-700 group-hover:text-[#72C0F0]"
+                  ? "most-text-color"
+                  : "text-gray-700 group-hover:text-[#72C0F0]"
                   }`}
               />
               <span
                 className={`mt-1 font-roboto text-[12px] font-medium transition-colors duration-300 ${active
-                    ? "text-[#72C0F0]"
-                    : "text-gray-700 group-hover:text-[#72C0F0]"
+                  ? "most-text-color"
+                  : "text-gray-700 group-hover:text-[#72C0F0]"
                   }`}
               >
                 {item.name}

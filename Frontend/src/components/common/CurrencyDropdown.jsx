@@ -51,7 +51,7 @@ export default function CurrencyDropdown({
       />
 
       {/* Currency List */}
-      <div className="mt-3 max-h-[55vh] overflow-y-auto sm:max-h-80">
+      <div className="-mt- max-h-[55vh] overflow-y-auto sm:max-h-80">
         {filteredCurrencies.map((currency) => (
           <div
             key={currency.code}

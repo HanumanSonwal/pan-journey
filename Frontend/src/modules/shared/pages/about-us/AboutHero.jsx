@@ -46,7 +46,7 @@ export default function AboutHero() {
 
             {/* Right Content */}
             <div>
-              <span className="mb-3 block text-base font-medium text-sky-600 sm:text-lg">
+              <span className="mb-3 block text-base font-medium most-text-color sm:text-lg">
                 PanJourney
               </span>
 
