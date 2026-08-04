@@ -17,7 +17,7 @@ import TrustSection from "@/modules/shared/home/components/hero_section/TrustSec
 
 const SITE_URL = process.env.NEXTAUTH_URL || "https://panjourney.com";
 
-export async function generateMetadata() {
+  export async function generateMetadata() {
   const homeCms = await fetchCmsBySlug("home");
 
   const title =
