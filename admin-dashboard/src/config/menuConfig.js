@@ -83,13 +83,6 @@ export const menuItems = [
   },
 
   {
-    key: "/dashboard/home-content",
-    icon: <FileTextOutlined />,
-    label: <Link href="/dashboard/home-content">Home Content</Link>,
-    module: "homeContent",
-  },
-
-  {
     key: "/dashboard/masters",
     icon: <AppstoreOutlined />,
     label: "Masters",

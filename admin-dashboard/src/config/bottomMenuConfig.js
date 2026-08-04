@@ -6,8 +6,14 @@ export const bottomMenuItems = [
     icon: <SettingOutlined />,
     label: "Settings",
     children: [
+
       {
-        key: "/dashboard/settings/home-page",
+        key: "/dashboard/destinations",
+        label: "Destinations",
+        module: "destinationSettings",
+      },
+      {
+        key: "/dashboard/home-content",
         label: "Home Page",
         module: "homePageSettings",
       },
