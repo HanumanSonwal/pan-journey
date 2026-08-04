@@ -1,6 +1,5 @@
 "use client";
 
-import BottomNav from "@/components/common/loder/MobileBottomNav ";
 import { useWishlist } from "@/modules/wishlist/hooks/useWishlist";
 import { CheckOutlined } from "@ant-design/icons";
 import { Card, Empty } from "antd";
@@ -66,7 +65,7 @@ export default function WishlistTab() {
 
             <button
               onClick={() => router.push("/")}
-              className="rounded-lg bg-[#72C0F0] px-6 py-3 font-semibold text-white! transition hover:bg-[#58AEE5]"
+              className="rounded-lg buttion-background-color  px-6 py-3 font-semibold text-white! transition "
             >
               Explore Hotels
             </button>
@@ -192,7 +191,7 @@ export default function WishlistTab() {
           </Card>
         ))}
       </div>
-      <BottomNav />
+
     </div>
   );
 }

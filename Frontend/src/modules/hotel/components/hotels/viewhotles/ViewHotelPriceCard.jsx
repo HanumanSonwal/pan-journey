@@ -74,7 +74,7 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
         <div className="mb-3">
           <span
             className={`font-roboto rounded-full px-3 py-[6px] text-[11px] font-medium ${refundable
-              ? "bg-green-100 text-green-700"
+              ? "bg-[#FFF4D6] text-[#FDA20F]"
               : "bg-red-100 text-red-600"
               }`}
           >

@@ -239,7 +239,7 @@ export default function BookingHistoryTab({ setSelectedBooking }) {
           ))
         )}
       </div>
-      <BottomNav />
+      
     </>
   );
 }

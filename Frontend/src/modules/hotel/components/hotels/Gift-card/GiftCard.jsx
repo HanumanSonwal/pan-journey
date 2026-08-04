@@ -61,9 +61,11 @@ export default function GiftCard({ card }) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" />
 
         {/* Discount Badge */}
-        <div className="absolute top-3 right-3 rounded-full bg-gradient-to-r from-[#0BA360] to-[#3CBA92] px-3 py-1 shadow-lg">
-          <span className="font-roboto text-xs font-semibold text-white">
-            {discountLabel}
+        <div className="absolute top-3 right-3 rounded-full bg-white/95 px-3 py-1 shadow-md backdrop-blur">
+          <span className="font-roboto text-[13px] font-bold most-text-color">
+            {card.discountType === "flat"
+              ? `₹${card.discountValue} OFF`
+              : `${card.discountValue}% OFF`}
           </span>
         </div>
 
@@ -76,29 +78,14 @@ export default function GiftCard({ card }) {
       </div>
       <div className="space-y-2 p-2">
         {/* Coupon */}
-        <div className="flex items-center justify-between rounded border border-dashed border-[#00A3C8] bg-[#F2FBFE] px-2 py-2">
-          <div>
-            <p className="mb-0! font-mono text-[16px] font-bold tracking-[2px] text-[#006D7D]">
-              {card.code}
-            </p>
-          </div>
+        <div className="flex items-center justify-between rounded-xl border border-dashed most-boder-colour  px-4 py-3">
+          <span className="font-roboto text-[13px] text-gray-500">
+            Coupon Code
+          </span>
 
-          <button
-            onClick={handleCopy}
-            className="flex items-center gap-2 rounded-lg bg-[#006D7D] px-4 py-2 text-sm font-semibold text-white! transition hover:bg-[#005A66]"
-          >
-            {copied ? (
-              <>
-                <Check size={16} />
-                Copied
-              </>
-            ) : (
-              <>
-                <Copy size={16} />
-                Copy
-              </>
-            )}
-          </button>
+          <span className="font-roboto text-[15px] font-bold tracking-wider most-text-color">
+            {card.code}
+          </span>
         </div>
 
         {/* Details */}
@@ -156,11 +143,10 @@ export default function GiftCard({ card }) {
         {/* CTA */}
         <button
           disabled={card.comingSoon}
-          className={`font-roboto h-[52px] w-full rounded text-[16px] font-semibold text-white! transition-all duration-300 ${
-            card.comingSoon
-              ? "cursor-not-allowed bg-gray-400"
-              : "bg-gradient-to-r from-[#6BC4F1] to-[#006D7D] hover:scale-[1.02] hover:shadow-xl active:scale-100"
-          }`}
+          className={`font-roboto h-[48px] w-full rounded-xl text-[15px] font-medium text-white! transition-all duration-300 ${card.comingSoon
+            ? "cursor-not-allowed bg-gray-400"
+            : "buttion-background-color hover:shadow-lg hover:brightness-110"
+            }`}
         >
           {card.comingSoon ? "Coming Soon" : "Claim Offer →"}
         </button>

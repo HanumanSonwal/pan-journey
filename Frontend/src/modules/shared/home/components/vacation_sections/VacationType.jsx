@@ -126,7 +126,7 @@ export default function VacationType({ activeTab }) {
 
                     <button
                       onClick={() => handleSearch(item)}
-                      className="text-[12px] font-medium !text-[#72C0F0] lg:text-[16px]"
+                      className="text-[12px] font-medium most-text-color lg:text-[16px]"
                     >
                       View Details
                     </button>
