@@ -15,7 +15,7 @@ export const bottomMenuItems = [
       {
         key: "/dashboard/home-content",
         label: "Home Page",
-        module: "homePageSettings",
+        module: "homeContent",
       },
 
       // Future
@@ -28,7 +28,7 @@ export const bottomMenuItems = [
       //   key: "/dashboard/settings/footer",
       //   label: "Footer",
       //   module: "footerSettings",
-      // },
+      // }, 
     ],
   },
 

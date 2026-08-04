@@ -44,7 +44,7 @@ export const moduleConfig = {
     actions: ["read", "write", "update", "delete"],
   },
 
-  destination: {
+  destinationSettings: {
     label: "Destinations",
     actions: ["read", "write", "update", "delete"],
   },

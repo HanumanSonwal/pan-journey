@@ -22,6 +22,7 @@ import {
   theme,
 } from "antd";
 
+import { bottomMenuItems } from "@/config/bottomMenuConfig";
 import { menuItems } from "@/config/menuConfig";
 import { moduleConfig } from "@/config/module.config";
 import { createRole, updateRole } from "@/modules/role/api/role.service";
@@ -51,7 +52,9 @@ export default function RoleFormModal({ open, setOpen, editData }) {
     return result;
   };
 
-  const menuModules = Array.from(extractModules(menuItems));
+  const allMenus = [...menuItems, ...bottomMenuItems];
+
+  const menuModules = Array.from(extractModules(allMenus));
   const modules = menuModules.map((key) => ({
     key,
     label: moduleConfig[key]?.label || key,
