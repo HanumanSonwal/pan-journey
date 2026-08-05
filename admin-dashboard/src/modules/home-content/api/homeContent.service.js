@@ -45,7 +45,7 @@ export const updateHomeContentApi = async ({ id, data }) => {
 */
 
 export const deleteHomeContentApi = async (id) => {
-  const res = await api.delete(`/homecontent/delete/${id}`);
+  const res = await api.delete(`/homecontent/${id}`);
 
   return res?.data;
 };

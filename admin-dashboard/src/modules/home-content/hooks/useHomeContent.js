@@ -80,13 +80,17 @@ export const useHomeContent = () => {
 
   const groupedData = useMemo(() => {
     return {
-      banner: data?.banner || [],
+      banner: data.filter((item) => item.sectionType === "banner"),
 
-      vibes: data?.placesAsPerYourVibe || [],
+      vibes: data.filter((item) => item.sectionType === "vibe"),
 
-      topRatedHotels: data?.topRatedHotels || [],
+      topRatedHotels: data.filter(
+        (item) => item.sectionType === "topRatedHotels",
+      ),
 
-      popularDestinations: data?.popularDestinations || [],
+      popularDestinations: data.filter(
+        (item) => item.sectionType === "popularDestinations",
+      ),
     };
   }, [data]);
 
