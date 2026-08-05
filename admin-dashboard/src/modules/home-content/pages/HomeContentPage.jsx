@@ -85,8 +85,10 @@ export default function HomeContentPage() {
       />
 
       <PopularDestinationsSection
-        data={popularDestinations[0] || null}
+        destinations={popularDestinations}
+        onCreate={handleCreate}
         onEdit={handleEdit}
+        onDelete={handleDelete}
       />
 
       <HomeContentDrawer

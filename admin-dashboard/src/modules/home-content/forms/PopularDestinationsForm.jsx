@@ -2,15 +2,17 @@
 
 import { useEffect } from "react";
 
-import { App, Button, Card, Form, Input, Space } from "antd";
+import { App, Button, Card, Form, Input, Select, Space } from "antd";
+
+import { useDestination } from "@/modules/destination/hooks/useDestination";
 
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 
 import ImageUpload from "@/modules/shared/imageUpload/ImageUpload";
 import CitySelector from "@/modules/shared/selectors/CitySelector";
 
-import { HOME_CONTENT_SECTIONS } from "../constants/homeContent.constants";
 import TextArea from "antd/es/input/TextArea";
+import { HOME_CONTENT_SECTIONS } from "../constants/homeContent.constants";
 
 export default function PopularDestinationsForm({
   editingData,
@@ -22,8 +24,17 @@ export default function PopularDestinationsForm({
 
   const [form] = Form.useForm();
 
+  const { destinations } = useDestination(
+    {
+      type: "POPULAR_DESTINATIONS",
+    },
+    true,
+  );
+
   useEffect(() => {
     if (!editingData) {
+      form.resetFields();
+
       form.setFieldsValue({
         items: [{}],
       });
@@ -32,6 +43,7 @@ export default function PopularDestinationsForm({
     }
 
     form.setFieldsValue({
+      category: editingData.category,
       items: editingData.items,
     });
   }, [editingData, form]);
@@ -41,6 +53,7 @@ export default function PopularDestinationsForm({
       const payload = {
         sectionType: HOME_CONTENT_SECTIONS.POPULAR_DESTINATIONS,
         title: "Popular Destinations",
+        category: values.category,
         items: values.items,
       };
 
@@ -59,6 +72,11 @@ export default function PopularDestinationsForm({
 
       form.resetFields();
 
+      form.setFieldsValue({
+        category: "",
+        items: [{}],
+      });
+
       onSuccess?.();
     } catch (error) {
       console.error(error);
@@ -69,6 +87,25 @@ export default function PopularDestinationsForm({
 
   return (
     <Form layout="vertical" form={form} onFinish={handleFinish}>
+      <Form.Item
+        label="Category"
+        name="category"
+        rules={[
+          {
+            required: true,
+            message: "Please enter category",
+          },
+        ]}
+      >
+        <Select
+          size="large"
+          placeholder="Select Category"
+          options={(destinations || []).map((item) => ({
+            label: item.placeName,
+            value: item.placeName,
+          }))}
+        />
+      </Form.Item>
       <Form.List name="items">
         {(fields, { add, remove }) => (
           <>
@@ -81,27 +118,23 @@ export default function PopularDestinationsForm({
               >
                 {/* Destination */}
 
-                <Form.Item label="Destination" required>
-                  <CitySelector
-                    value={form.getFieldValue(["items", name, "cityId"])}
-                    initialLabel={form.getFieldValue(["items", name, "city"])}
-                    onChange={(city) => {
-                      form.setFields([
-                        {
-                          name: ["items", name, "name"],
-                          value: city.name,
-                        },
-                        {
-                          name: ["items", name, "city"],
-                          value: city.city,
-                        },
-                        {
-                          name: ["items", name, "cityId"],
-                          value: city.cityId,
-                        },
-                      ]);
-                    }}
-                  />
+                <Form.Item label="Destination" shouldUpdate>
+                  {() => (
+                    <CitySelector
+                      value={form.getFieldValue(["items", name, "cityId"])}
+                      initialLabel={form.getFieldValue(["items", name, "city"])}
+                      onChange={(city) => {
+                        form.setFieldValue(["items", name, "name"], city.name);
+
+                        form.setFieldValue(["items", name, "city"], city.city);
+
+                        form.setFieldValue(
+                          ["items", name, "cityId"],
+                          city.cityId,
+                        );
+                      }}
+                    />
+                  )}
                 </Form.Item>
 
                 <Form.Item
@@ -127,16 +160,7 @@ export default function PopularDestinationsForm({
                   <Input />
                 </Form.Item>
 
-                <Form.Item
-                  hidden
-                  name={[name, "cityId"]}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please select destination",
-                    },
-                  ]}
-                >
+                <Form.Item hidden name={[name, "cityId"]}>
                   <Input />
                 </Form.Item>
 
