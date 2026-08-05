@@ -53,16 +53,18 @@ CANONICAL
     cms?.data?.coverImage ||
     "/images/default-og.jpg";
 
-  const robots =
-    cms?.isPublished === false
-      ? {
-          index: false,
-          follow: false,
-        }
-      : {
-          index: true,
-          follow: true,
-        };
+  const robots = {
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: {
+      index: false,
+      follow: false,
+      noimageindex: true,
+      "max-image-preview": "none",
+      "max-snippet": -1,
+    },
+  };
 
   return {
     /*

@@ -53,6 +53,7 @@
     "razorpay": "^2.9.6",
     "redis": "^5.12.1",
     "stripe": "^22.2.2",
+    "twilio": "^6.0.2",
     "uuid": "^14.0.1"
   },
   "devDependencies": {

@@ -25,6 +25,7 @@ export const PERMISSIONS = {
   reports: ["read"],
 
   cmsPages: ["read", "write", "update", "delete"],
+    theme: ["read", "write", "update", "delete"],
 
   calendar: ["read"],
 

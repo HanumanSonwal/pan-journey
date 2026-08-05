@@ -49,9 +49,26 @@ router.post(
   createHomeContentController,
 );
 
-/*
- * UPDATE
- */
+
+
+// WEBSITE GET
+
+router.get(
+"/",
+getHomeContentController
+);
+
+// ADMIN GET ALL
+
+router.get(
+"/admin",
+protect,
+checkPermission("homeContent", "view"),
+getAdminHomeContentController
+);
+
+// ADMIN UPDATE
+
 
 router.put(
   "/update/:id",

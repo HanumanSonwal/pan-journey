@@ -22,6 +22,6 @@ router.put("/:id", protect,checkPermission("destination", "update"), updateDesti
 router.delete("/:id", protect,checkPermission("destination", "delete"), deleteDestination);
 
 // Public
-router.get("/admin",protect, checkPermission("destination", "read"), getDestinations);
+router.get("/admin",protect,checkPermission("destination", "read"), getDestinations);
 
 export default router;

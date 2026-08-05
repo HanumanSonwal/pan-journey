@@ -70,19 +70,18 @@ export async function generateMetadata({ searchParams }) {
       canonical,
     },
 
-    robots: preview
-      ? {
-          index: false,
-          follow: false,
-          googleBot: {
-            index: false,
-            follow: false,
-          },
-        }
-      : {
-          index: true,
-          follow: true,
-        },
+    robots: {
+      index: false,
+      follow: false,
+      nocache: true,
+      googleBot: {
+        index: false,
+        follow: false,
+        noimageindex: true,
+        "max-image-preview": "none",
+        "max-snippet": -1,
+      },
+    },
 
     openGraph: {
       title: buildHotelTitle(cityName),

@@ -1,5 +1,6 @@
 import Footer from "@/components/common/Footer";
 import Header from "@/components/common/Header";
+import BottomNav from "@/components/common/loder/MobileBottomNav ";
 import GlobalLoginModal from "@/modules/auth/components/GlobalLoginModal";
 import ProfileCompletionHandler from "@/modules/auth/components/ProfileCompletionHandler";
 import ScrollToTopButton from "@/modules/hotel/ScrollToTopButton";
@@ -50,9 +51,23 @@ export const metadata = {
 
   description: "Booking platform",
 
+  // robots: {
+  //   index: true,
+  //   follow: true,
+  // },
+
   robots: {
-    index: true,
-    follow: true,
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: {
+      index: false,
+      follow: false,
+      noimageindex: true,
+      "max-video-preview": -1,
+      "max-image-preview": "none",
+      "max-snippet": -1,
+    },
   },
 };
 
@@ -100,7 +115,7 @@ export default function RootLayout({ children }) {
                     {children}
                   </App>
                 </main>
-
+                <BottomNav />
                 <Footer />
               </Providers>
             </QueryProvider>

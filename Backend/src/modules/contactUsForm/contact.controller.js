@@ -10,7 +10,7 @@ import {
 
 import { sendError, sendSuccess } from "../../utils/response/ApiResponse.js";
 import { sendMail } from "../contactUsForm/mail.service.js";
-import HotelBooking from "../hotel/hotelTempBooking/hotelTempBooking.model.js";
+import HotelBooking from "../hotel/hotelTempBooking/hotelCart.model.js";
 import { contactUsTemplate } from "./contactUsTemplate.js";
 
 export const createContact = async (req, res) => {
@@ -22,12 +22,12 @@ export const createContact = async (req, res) => {
 
     // first check only booking ref
     const bookingByRef = await HotelBooking.findOne({
-      "responsePayload.BookingRefNo": payload.BookingRefNo,
+      "supplierResponse.bookingRefNo": payload.BookingRefNo,
     });
-
+console.log(bookingByRef)
     // then strict check with user
     const bookingExists = await HotelBooking.findOne({
-      "responsePayload.BookingRefNo": payload.BookingRefNo,
+      "supplierResponse.bookingRefNo": payload.BookingRefNo,
 
       // force string compare if stored as string
       UserId: req.user._id.toString(),

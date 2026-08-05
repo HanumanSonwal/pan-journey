@@ -22,7 +22,7 @@ export default function AboutContent() {
         <div className="mx-auto mt-2 max-w-3xl text-center">
           <h2 className="text-[28px] leading-[1.4] font-semibold text-[#222] sm:text-[18px] md:text-[22px] lg:text-[24px] xl:text-[29px]">
             With over{" "}
-            <span className="text-[#69AFE6]">
+            <span className="most-text-color">
               7 years of Continuous Dedication
             </span>
             , we are ready to delivering excellence through trust, quality, and

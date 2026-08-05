@@ -2,7 +2,7 @@
 
 import useIsMobile from "@/hooks/useIsMobile";
 import { Button, Drawer, Popover } from "antd";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   CHILD_AGES,
   DEFAULT_GUEST_VALUE,
@@ -59,7 +59,7 @@ function GuestsField({
       rooms,
     }));
   };
-
+  const guestContentRef = useRef(null);
   const updateRooms = (val) => {
     const rooms = Math.min(MAX_ROOMS, Math.max(1, val));
     let adults = draftGuests.adults;
@@ -87,6 +87,7 @@ function GuestsField({
   const handleChildrenChange = (val) => {
     const children = Math.min(MAX_CHILDREN, Math.max(0, val));
     let newAges = [...(draftGuests?.childAges || [])];
+
     while (newAges.length < children) {
       newAges.push("");
     }
@@ -100,7 +101,14 @@ function GuestsField({
       children,
       childAges: newAges,
     }));
-  };
+
+    requestAnimationFrame(() => {
+      guestContentRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+  }; // ✅ Ye missing tha
 
   const handleApply = useCallback(() => {
     onChange?.(draftGuests);
@@ -114,7 +122,7 @@ function GuestsField({
 
   const childAgesValid = useMemo(() => {
     return (
-      
+
       draftGuests.children === 0 ||
       draftGuests.childAges.every(
         (age) => age !== "" && age !== null && age !== undefined,
@@ -122,14 +130,14 @@ function GuestsField({
     );
   }, [draftGuests.children, draftGuests.childAges]);
   const renderDropdownContent = ({ mobile = false } = {}) => (
-    
+
     <div
+      ref={guestContentRef}
       onClick={(e) => e.stopPropagation()}
-      className={`rounded-xl bg-white p-4 ${
-        mobile ? "w-full max-w-none" : "w-[calc(100vw-32px)] max-w-[340px]"
-      }`}
+      className={`rounded-xl bg-white p-4 ${mobile ? "w-full max-w-none" : "w-[calc(100vw-32px)] max-w-[340px]"
+        }`}
     >
-      
+
       <Counter
         label="Room"
         value={draftGuests.rooms}
@@ -167,15 +175,14 @@ function GuestsField({
             </p>
           )}
           <div
-            className={`pr-1 ${
-              mobile ? "" : "max-h-[180px] overflow-y-auto sm:max-h-[220px]"
-            }`}
+            className={`pr-1 ${mobile ? "" : "max-h-[180px] overflow-y-auto sm:max-h-[220px]"
+              }`}
           >
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               {(draftGuests.childAges || []).map((age, i) => (
                 <div
                   key={i}
-                  className="flex min-w-0 items-center justify-between gap-2 rounded border border-[#e3f0f5] bg-[#fafefe] px-2.5 py-2"
+                  className="flex min-w-0 items-center justify-between gap-1 rounded border border-[#e3f0f5] bg-[#fafefe] px-0 py-2"
                 >
                   <span className="shrink-0 text-[12px] font-medium text-gray-800">
                     Child {i + 1}
@@ -184,11 +191,10 @@ function GuestsField({
                   <select
                     value={age || ""}
                     onChange={(e) => updateChildAge(i, Number(e.target.value))}
-                    className={`h-[34px] min-w-[96px] rounded border px-2 text-[12px] transition-all outline-none ${
-                      !age
-                        ? "border-red-300 bg-red-50 text-red-500"
-                        : "border-gray-300 bg-white text-gray-900"
-                    }`}
+                    className={`h-[34px] min-w-[86px] rounded border px-2 text-[12px] transition-all outline-none ${!age
+                      ? "border-red-300 bg-red-50 text-red-500"
+                      : "border-gray-300 bg-white text-gray-900"
+                      }`}
                   >
                     <option value="" disabled>
                       Select Age
@@ -235,10 +241,8 @@ function GuestsField({
         <Button
           disabled={!childAgesValid}
           onClick={handleApply}
-          className="h-[50px] w-full rounded-lg text-[15px] font-bold tracking-wide !text-white transition-all duration-300 hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
-          style={{
-            background: "linear-gradient(135deg, #72C0F0 0%, #0F6A75 100%)",
-          }}
+          className="h-[50px] w-full rounded-lg text-[15px] font-bold tracking-wide !text-white transition-all duration-300 hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 buttion-background-color"
+
         >
           APPLY
         </Button>
@@ -246,18 +250,18 @@ function GuestsField({
     </div>
   );
 
- const triggerUI = (
-  <GuestTrigger
-    variant={variant}
-    value={safeValue}
-    icon={icon}
-  />
-);
+  const triggerUI = (
+    <GuestTrigger
+      variant={variant}
+      value={safeValue}
+      icon={icon}
+    />
+  );
 
   if (isMobile) {
     return (
       <>
-      
+
         <div onClick={() => setDrawerOpen(true)} className="cursor-pointer">
           {triggerUI}
         </div>
@@ -304,11 +308,11 @@ function GuestsField({
       content={renderDropdownContent()}
     >
       <div className="cursor-pointer">
-       <GuestTrigger
-  variant={variant}
-  value={safeValue}
-  icon={icon}
-/>
+        <GuestTrigger
+          variant={variant}
+          value={safeValue}
+          icon={icon}
+        />
       </div>
     </Popover>
   );

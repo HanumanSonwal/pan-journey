@@ -83,7 +83,7 @@ export const getCitiesHotelsApi = async (searchText = "") => {
     "/Seacrhcity/destination-search",
     {
       SearchInput: searchText,
-      
+   
     },
     {
       skipToast: true,

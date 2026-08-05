@@ -64,6 +64,7 @@ const homeContentSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
+    
 
     category: {
       type: String,
@@ -71,10 +72,22 @@ const homeContentSchema = new mongoose.Schema(
       default: "",
     },
 
-    items: {
-      type: [itemSchema],
-      default: [],
-    },
+    items: [
+      {
+        name: String,
+        city: String,
+        cityId: String,
+        hotelId: String,
+
+        image: String,
+        alt: String,
+
+        description: String,
+        rating: Number
+      }
+    ],
+
+  
 
     isActive: {
       type: Boolean,

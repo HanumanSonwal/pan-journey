@@ -107,7 +107,7 @@ export default function WishlistDetailTab() {
 
             <button
               onClick={() => router.push("/")}
-              className="rounded-lg bg-[#72C0F0] px-6 py-3 font-semibold text-white! transition hover:bg-[#58AEE5]"
+              className="rounded-lg !buttion-background-color px-6 py-3 font-semibold text-white! transition "
             >
               Explore Hotels
             </button>
