@@ -177,17 +177,6 @@ export const getAdminHomeContent = async () => {
 
 // DELETE
 
-export const deleteHomeContent = async(id)=>{
-
-
-    return await HomeContent.findByIdAndUpdate(
-        id,
-        {
-            isActive:false
-        },
-        {
-            new:true
-        }
-    );
-
+export const deleteHomeContent = async (id) => {
+  return await HomeContent.findByIdAndDelete(id);
 };

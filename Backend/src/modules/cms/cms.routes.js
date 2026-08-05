@@ -12,6 +12,7 @@ import {
   getSingleCMS,
   getTemplates,
   updateCMS,
+  previewSlug
 } from "./cms.controller.js";
 
 import { createCMSValidation, updateCMSValidation } from "./cms.validation.js";
@@ -66,6 +67,13 @@ router.post(
   validate(createCMSValidation),
   checkPermission("cmsPages", "write"),
   createCMS,
+);
+
+router.post(
+  "/preview-slug",
+  protect,
+  checkPermission("cmsPages", "write"),
+  previewSlug,
 );
 
 /*
