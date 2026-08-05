@@ -23,6 +23,8 @@ export const useHomeContent = () => {
 
     queryFn: getHomeContentApi,
   });
+  console.log("DATA:", data);
+  console.log("IS ARRAY:", Array.isArray(data));
 
   /*
   |--------------------------------------------------------------------------

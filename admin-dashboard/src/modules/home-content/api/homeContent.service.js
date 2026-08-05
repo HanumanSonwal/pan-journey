@@ -11,6 +11,8 @@ export const getHomeContentApi = async () => {
     skipToast: true,
   });
 
+  console.log("HOME CONTENT RESPONSE", res.data);
+
   return res?.data?.data || [];
 };
 
