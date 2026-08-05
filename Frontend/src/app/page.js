@@ -8,7 +8,6 @@ import TopRatedHotels from "@/modules/shared/home/components/TopRatedHotels";
 import VacationSection from "@/modules/shared/home/components/vacation_sections/VacationSection";
 import WhySection from "@/modules/shared/home/components/why_sections/WhySection";
 
-import BottomNav from "@/components/common/loder/MobileBottomNav ";
 import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
 import { fetchCmsBySlug } from "@/modules/cms/services/cmsFetch";
 import ScrollToTopButton from "@/modules/hotel/ScrollToTopButton";
@@ -17,7 +16,7 @@ import TrustSection from "@/modules/shared/home/components/hero_section/TrustSec
 
 const SITE_URL = process.env.NEXTAUTH_URL || "https://panjourney.com";
 
-  export async function generateMetadata() {
+export async function generateMetadata() {
   const homeCms = await fetchCmsBySlug("home");
 
   const title =
@@ -44,12 +43,14 @@ const SITE_URL = process.env.NEXTAUTH_URL || "https://panjourney.com";
     },
 
     robots: {
-      index: true,
-      follow: true,
+      index: false,
+      follow: false,
+      nocache: true,
       googleBot: {
-        index: true,
-        follow: true,
-        "max-image-preview": "large",
+        index: false,
+        follow: false,
+        noimageindex: true,
+        "max-image-preview": "none",
         "max-snippet": -1,
       },
     },
@@ -155,8 +156,6 @@ export default async function Page() {
       {homeCms && <CMSContentRenderer cms={homeCms} />}
 
       <NewsletterSection />
-
-    
     </>
   );
 }

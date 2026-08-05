@@ -40,6 +40,18 @@ export async function generateMetadata() {
     alternates: {
       canonical,
     },
+    robots: {
+      index: false,
+      follow: false,
+      nocache: true,
+      googleBot: {
+        index: false,
+        follow: false,
+        noimageindex: true,
+        "max-image-preview": "none",
+        "max-snippet": -1,
+      },
+    },
 
     openGraph: {
       title,

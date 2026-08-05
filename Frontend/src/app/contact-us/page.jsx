@@ -21,6 +21,19 @@ export async function generateMetadata() {
       canonical: `${siteUrl}/contact-us`,
     },
 
+    robots: {
+      index: false,
+      follow: false,
+      nocache: true,
+      googleBot: {
+        index: false,
+        follow: false,
+        noimageindex: true,
+        "max-image-preview": "none",
+        "max-snippet": -1,
+      },
+    },
+
     openGraph: {
       title: contactUsCms?.metaTitle,
       description: contactUsCms?.metaDescription,
