@@ -8,37 +8,34 @@ import { useEffect, useState } from "react";
 import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
 import { buildSearchData } from "@/modules/hotel/utils/buildSearchData";
 import { navigateToHotels } from "@/modules/hotel/utils/hotelNavigation";
-import { useDestinations } from "@/modules/shared/home/hooks/useDestinations";
-import { VacationsimageMap } from "../data/VacationsData";
 
-export default function VacationType({ activeTab }) {
+export default function VacationType({ activeTab, vibes = [] }) {
   const [index, setIndex] = useState(0);
   const [perPage, setPerPage] = useState(4);
-  const [mounted, setMounted] = useState(false);
+  // const [mounted, setMounted] = useState(false);
 
   const router = useRouter();
 
-  const { data = [] } = useDestinations(activeTab);
+  const selectedCategory = vibes.find((item) => item.category === activeTab);
+
+  const data = selectedCategory?.items || [];
   const { draftSearchData } = useHotelSearchStore();
 
-  console.log("file:", data);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  // useEffect(() => {
+  //   setMounted(true);
+  // }, []);
 
   // Responsive Cards
   useEffect(() => {
-    if (!mounted) return;
-
     const updatePerPage = () => {
       const width = window.innerWidth;
+
       if (width < 640) {
-        setPerPage(data.length); // mobile
+        setPerPage(Math.max(data.length, 1));
       } else if (width < 1024) {
-        setPerPage(2); // tablet
+        setPerPage(2);
       } else {
-        setPerPage(4); // desktop FIXED (3 → 4)
+        setPerPage(4);
       }
     };
 
@@ -47,7 +44,7 @@ export default function VacationType({ activeTab }) {
     window.addEventListener("resize", updatePerPage);
 
     return () => window.removeEventListener("resize", updatePerPage);
-  }, [mounted, data.length]);
+  }, [data.length]);
 
   useEffect(() => {
     setIndex(0);
@@ -68,13 +65,13 @@ export default function VacationType({ activeTab }) {
   const visibleData =
     perPage === data.length ? data : data.slice(index, index + perPage);
 
-  if (!mounted) return null;
+  // if (!mounted) return null;
 
   const handleSearch = (item) => {
     const searchData = buildSearchData({
       baseSearchData: draftSearchData,
-      city: item.City,
-      cityId: item.id,
+      city: item.city,
+      cityId: item.cityId,
     });
 
     navigateToHotels(router, searchData);
@@ -96,22 +93,18 @@ export default function VacationType({ activeTab }) {
           {/* Mobile Scroll */}
           <div className="scrollbar-hide flex gap-3 overflow-x-auto pb-4 lg:hidden">
             {data.map((item, idx) => {
-              const image =
-                VacationsimageMap?.[activeTab]?.[
-                idx % VacationsimageMap?.[activeTab]?.length
-                ];
-
               return (
                 <div
-                  key={item.id || idx}
+                  key={item._id}
                   className="!m-0 max-w-[159px] min-w-[159px] overflow-hidden rounded-[2px] bg-white !p-0 shadow-sm transition"
                 >
                   {/* Image */}
                   <div className="relative h-[150px] overflow-hidden">
                     <Image
-                      src={image}
-                      alt={item.name}
+                      src={item.image}
+                      alt={item.alt || item.name}
                       fill
+                      sizes="(max-width: 640px) 160px, (max-width: 1024px) 50vw, 25vw"
                       className="object-cover"
                     />
                   </div>
@@ -123,12 +116,12 @@ export default function VacationType({ activeTab }) {
                     </h2>
 
                     <p className="line-clamp-1 text-[11px] leading-tight text-gray-600">
-                      {item.City}
+                      {item.city}
                     </p>
 
                     <button
                       onClick={() => handleSearch(item)}
-                      className="text-[12px] font-medium most-text-color lg:text-[16px]"
+                      className="most-text-color text-[12px] font-medium lg:text-[16px]"
                     >
                       View Details
                     </button>
@@ -143,22 +136,17 @@ export default function VacationType({ activeTab }) {
           {/* Tablet + Desktop Grid */}
           <div className="mb-8 hidden grid-cols-4 gap-4 lg:grid">
             {visibleData.map((item, idx) => {
-              const image =
-                VacationsimageMap?.[activeTab]?.[
-                (index + idx) % VacationsimageMap?.[activeTab]?.length
-                ];
-
               return (
                 <div
-                  key={item.id || idx}
+                  key={item._id}
                   className="overflow-hidden rounded-[5px] bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg"
                 >
                   <div className="relative h-[302px] overflow-hidden">
                     <Image
-                      src={image}
-                      alt={item.name}
+                      src={item.image}
+                      alt={item.alt || item.name}
                       fill
-                      priority={idx === 0}
+                      sizes="25vw"
                       className="object-cover transition duration-500 hover:scale-105"
                     />
                   </div>
@@ -169,16 +157,16 @@ export default function VacationType({ activeTab }) {
                     </h2>
 
                     <p className="mt-[-7px] text-[14px] text-gray-700">
-                      {item.City}
+                      {item.city}
                     </p>
                     <button
                       onClick={() => handleSearch(item)}
-                      className="flex w-full items-center justify-center gap-1 !text-[18px] font-medium most-text-color transition-colors duration-200 hover:!text-most-text-color"
+                      className="most-text-color hover:!text-most-text-color flex w-full items-center justify-center gap-1 !text-[18px] font-medium transition-colors duration-200"
                     >
                       View Details →
                     </button>
 
-                    <div className="mx-auto mt-1 w-36 border-b border-dotted teb-border-color" />
+                    <div className="teb-border-color mx-auto mt-1 w-36 border-b border-dotted" />
                   </div>
                 </div>
               );

@@ -81,6 +81,9 @@ export default async function Page() {
 
   console.log("homeContent", homeContent);
 
+  const { banner, placesAsPerYourVibe, topRatedHotels, popularDestinations } =
+    homeContent ?? {};
+
   const faqBlock = homeCms?.data?.blocks?.find((b) => b.type === "faq");
 
   const faqSchema = faqBlock?.data?.items?.length
@@ -147,17 +150,17 @@ export default async function Page() {
 
       <ScrollToTopButton />
       <div className="relative">
-        <Hero banner={homeContent.banner} />
+        <Hero banner={banner} />
         <TrustSection />
       </div>
 
-      <VacationSection />
+      <VacationSection vibes={placesAsPerYourVibe} />
       <Herobanner />
       <WhySection />
-      <TopRatedHotels />
+      <TopRatedHotels hotels={topRatedHotels} />
       <ComingSoonSection />
       <TestimonialsSection />
-      <DestinationsSection />
+      <DestinationsSection destinations={popularDestinations} />
 
       {homeCms && <CMSContentRenderer cms={homeCms} />}
 

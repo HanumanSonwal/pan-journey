@@ -7,6 +7,7 @@ import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
 import { navigateToHotels } from "@/modules/hotel/utils/hotelNavigation";
 import { HOME_TABS } from "@/modules/shared/config/homeTabs";
 import styles from "@/modules/shared/home/components/styles/Hero.module.css";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Tabs from "./Tabs";
@@ -24,7 +25,7 @@ export default function Hero({ banner }) {
 
   const router = useRouter();
 
-  const bannerItem = banner?.items?.[0];
+  const bannerItem = banner?.items?.[0] ?? {};
 
   const { draftSearchData, applySearch } = useHotelSearchStore();
 
@@ -48,7 +49,17 @@ export default function Hero({ banner }) {
       className="relative w-full overflow-visible bg-[#EDF7FF]"
     >
       {/* Hero Background */}
-      <div className={styles.heroBg} />
+      <div className={styles.heroBg}>
+        <Image
+          src={bannerItem.image || "/images/homepage/Banner-1.webp"}
+          alt={bannerItem.alt || "PAN Journey"}
+          fill
+          priority
+          quality={90}
+          sizes="100vw"
+          className="object-cover"
+        />
+      </div>
 
       {/* Search Card */}
       <div className="!2xl:max-w-[99%] absolute top-18 left-1/2 z-20 w-[95%] -translate-x-1/2 sm:top-10 sm:w-[94%] md:top-12 md:w-[92%] lg:top-[56%] lg:w-[94%] xl:top-[61%] xl:w-[82%] 2xl:top-[66%]">

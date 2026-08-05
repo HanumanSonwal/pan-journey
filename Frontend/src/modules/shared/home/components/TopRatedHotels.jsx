@@ -2,19 +2,18 @@
 
 import Image from "next/image";
 
-import { Card, Rate, Spin } from "antd";
+import { Card, Rate } from "antd";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
 import { buildSearchData } from "@/modules/hotel/utils/buildSearchData";
 import { navigateToHotels } from "@/modules/hotel/utils/hotelNavigation";
-import { useDestinations } from "@/modules/shared/home/hooks/useDestinations";
 import { useRouter } from "next/navigation";
 
-export default function TopRatedHotels() {
-  const { data = [], isLoading } = useDestinations("Toprated");
+export default function TopRatedHotels({ hotels }) {
+  const data = hotels?.items || [];
 
-  console.log("top rated", data);
+  console.log("TopRatedHotels data", data);
   const { draftSearchData } = useHotelSearchStore();
   const router = useRouter();
   const [perRow, setPerRow] = useState(4);
@@ -50,9 +49,11 @@ export default function TopRatedHotels() {
   }, []);
 
   // DATA
-  const topData = useMemo(() => data.slice(0, 10), [data]);
+  const middle = Math.ceil(data.length / 2);
 
-  const bottomData = useMemo(() => data.slice(10, 20), [data]);
+  const topData = useMemo(() => data.slice(0, middle), [data, middle]);
+
+  const bottomData = useMemo(() => data.slice(middle), [data, middle]);
 
   // AUTO SLIDE TOP
   useEffect(() => {
@@ -114,21 +115,12 @@ export default function TopRatedHotels() {
   const handleSearch = (hotel) => {
     const searchData = buildSearchData({
       baseSearchData: draftSearchData,
-      city: hotel.name,
-      cityId: hotel.id,
+      city: hotel.city,
+      cityId: hotel.cityId,
     });
 
     navigateToHotels(router, searchData);
   };
-
-  // LOADING
-  if (isLoading) {
-    return (
-      <div className="flex h-[500px] items-center justify-center bg-[#EDF7FF]">
-        <Spin size="large" />
-      </div>
-    );
-  }
 
   // CARD
   const renderCard = (hotel, idx) => (
@@ -149,12 +141,12 @@ export default function TopRatedHotels() {
           <div className="relative h-[180px] overflow-hidden sm:h-[180px] md:h-[210px] lg:h-[240px]">
             <Image
               src={hotel.image}
-              alt={hotel.name}
+              alt={hotel.alt || hotel.name}
               fill
               priority={idx < 2}
               loading={idx < 2 ? "eager" : "lazy"}
-              quality={80}
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              quality={75}
+              sizes="(max-width:768px) 50vw,(max-width:1200px) 33vw,20vw"
               className="object-cover transition duration-500 hover:scale-105"
             />
           </div>
@@ -166,7 +158,7 @@ export default function TopRatedHotels() {
           </h3>
 
           <p className="mt-1 line-clamp-2 flex-1 text-[10px] leading-4 text-gray-500 sm:text-sm sm:leading-6">
-            {hotel.desc}
+            {hotel.description}
           </p>
           <div className="scale-75 sm:scale-90 lg:scale-100">
             <Rate disabled allowHalf defaultValue={hotel.rating} />
@@ -178,7 +170,7 @@ export default function TopRatedHotels() {
 
   return (
     <div className="!mt-[-10px] bg-[#EDF7FF] px-0 py-8 md:py-12">
-      <div className="mx-auto w-full rounded-lg teb-gradient  px-0 py-10 sm:rounded-xl sm:px-0 md:rounded-2xl md:px-8 md:py-14 lg:w-[85.87%] lg:rounded-3xl lg:px-8 xl:px-10">
+      <div className="teb-gradient mx-auto w-full rounded-lg px-0 py-10 sm:rounded-xl sm:px-0 md:rounded-2xl md:px-8 md:py-14 lg:w-[85.87%] lg:rounded-3xl lg:px-8 xl:px-10">
         {/* HEADING */}
         <div className="mb-8 text-center text-white md:mb-10">
           <h2 className="text-2xl font-bold sm:text-3xl lg:text-4xl">

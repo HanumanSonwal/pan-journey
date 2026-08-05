@@ -1,4 +1,4 @@
-.heroBg {
+/* .heroBg {
   background-image: url("/images/homepage/Banner-1.webp");
   background-size: cover;
   background-position: center;
@@ -8,12 +8,26 @@
   display: flex;
   align-items: center;
   justify-content: center;
+} */
+
+.heroBg {
+  position: relative;
+
+  overflow: hidden;
+
+  height: 40vh;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
 }
 .heroBg img {
   width: 100%;
-  max-width: 1164px;
+  /* max-width: 1164px; */
   height: 340px;
-  object-fit: contain;
+  /* object-fit: contain; */
 }
 /* ===================== Mobile ===================== */
 
