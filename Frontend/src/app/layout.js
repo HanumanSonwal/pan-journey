@@ -14,6 +14,7 @@ import { Geist, Geist_Mono, Jost, Roboto } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import Providers from "./providers";
+import { Suspense } from "react";
 
 /* Fonts */
 const geistSans = Geist({
@@ -115,7 +116,9 @@ export default function RootLayout({ children }) {
                     {children}
                   </App>
                 </main>
-                <BottomNav />
+                <Suspense fallback={null}>
+                  <BottomNav />
+                </Suspense>
                 <Footer />
               </Providers>
             </QueryProvider>
