@@ -8,7 +8,7 @@ import ContactMapSection from "@/modules/shared/pages/contact-us/ContactMapSecti
 export async function generateMetadata() {
   const contactUsCms = await fetchCmsBySlug("contact-us");
 
-  console.log("contactUsCms", contactUsCms.metaTitle);
+  
 
   const siteUrl = process.env.NEXTAUTH_URL;
 
