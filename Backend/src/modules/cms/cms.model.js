@@ -44,6 +44,10 @@ const cmsSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+     Description: {
+      type: String,
+      default: "",
+    },
 
     keywords: [
       {

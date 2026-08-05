@@ -20,6 +20,7 @@ import Text from "antd/es/typography/Text";
 import { debounce } from "lodash";
 import { useEffect, useMemo } from "react";
 import useCMSForm from "../hooks/useCMSForm";
+import ImageUpload from "./../../shared/imageUpload/ImageUpload"; // apne path ke hisab se
 import CMSBlocksBuilder from "./CMSBlocksBuilder";
 import CMSSeoFields from "./CMSSeoFields";
 import CMSCitySelector from "./entity-selector/CMSCitySelector";
@@ -185,6 +186,10 @@ export default function CMSForm({ id }) {
                     value: "marketing",
                     label: "Marketing",
                   },
+                  {
+                    value: "blog",
+                    label: "Blogs",
+                  },
                 ]}
               />
             </Form.Item>
@@ -250,6 +255,40 @@ export default function CMSForm({ id }) {
                   <CMSHotelSelector form={form} />
                 </Col>
               </Row>
+            )}
+            {entityType === "blog" && (
+              <>
+                <Form.Item
+                  name="description"
+                  label="Description"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter description",
+                    },
+                  ]}
+                >
+                  <Input.TextArea
+                    rows={4}
+                    placeholder="Enter short description"
+                    showCount
+                    maxLength={500}
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  name={["blogMeta", "featuredImage"]}
+                  label="Featured Image"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please upload featured image",
+                    },
+                  ]}
+                >
+                  <ImageUpload />
+                </Form.Item>
+              </>
             )}
 
             {showEntityId && (
