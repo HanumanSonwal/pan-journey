@@ -17,12 +17,14 @@ const FORM_MAP = {
   bus: BusSearchForm,
 };
 
-export default function Hero() {
+export default function Hero({ banner }) {
   const [activeTab, setActiveTab] = useState(
     HOME_TABS.find((t) => t.enabled)?.key,
   );
 
   const router = useRouter();
+
+  const bannerItem = banner?.items?.[0];
 
   const { draftSearchData, applySearch } = useHotelSearchStore();
 
