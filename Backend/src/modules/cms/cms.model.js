@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-import { CMS_ENTITY_TYPES, CMS_TEMPLATES } from "./cms.templates.js";
+import { CMS_ENTITY_TYPES } from "./cms.templates.js";
 
 const cmsSchema = new mongoose.Schema(
   {
@@ -44,7 +44,11 @@ const cmsSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-     Description: {
+    description: {
+      type: String,
+      default: "",
+    },
+    featuredImage: {
       type: String,
       default: "",
     },
@@ -61,6 +65,10 @@ const cmsSchema = new mongoose.Schema(
     },
 
     data: {
+      type: mongoose.Schema.Types.Mixed,
+      default: {},
+    },
+    categoryId: {
       type: mongoose.Schema.Types.Mixed,
       default: {},
     },

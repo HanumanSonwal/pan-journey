@@ -39,10 +39,12 @@ export const createCMSValidation = Joi.object({
 
   metaTitle: Joi.string().allow(""),
   metaDescription: Joi.string().allow(""),
-  Description: Joi.string().allow(""),
+  description: Joi.string().allow(""),
+  featuredImage: Joi.string().allow(""),
   keywords: Joi.array().items(Joi.string()),
   schema: Joi.any(),
   data: Joi.object(),
+  categoryId: Joi.string().allow(""),
   isPublished: Joi.boolean(),
 });
 
