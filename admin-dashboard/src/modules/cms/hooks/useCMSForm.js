@@ -9,7 +9,7 @@ import { useCMS } from "./useCMS";
 export default function useCMSForm({ id, form }) {
   const router = useRouter();
   const { message } = App.useApp();
-  const { createCMS, updateCMS } = useCMS();
+const { createCMS, updateCMS } = useCMS({}, false);
 
   useEffect(() => {
     if (!id) return;
@@ -90,10 +90,13 @@ export default function useCMSForm({ id, form }) {
       const payload = {
         title: formValues.title,
         entityType: formValues.entityType,
+        description: formValues.description,
+      featuredImage: formValues?.blogMeta?.featuredImage,
         entityId: formValues.entityId,
         metaTitle: formValues.metaTitle,
         metaDescription: formValues.metaDescription,
         isPublished: formValues.isPublished,
+         categoryId: formValues.categoryId,
         keywords:
           formValues?.keywords?.split(",")?.map((item) => item.trim()) || [],
         data: {

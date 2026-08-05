@@ -6,17 +6,16 @@ import {
   updateCMSPageApi,
 } from "../api/cms.service";
 
-export const useCMS = (params = {}) => {
+export const useCMS = (params = {}, enabled = true) => {
   const queryClient = useQueryClient();
 
   /*
   GET
   */
-  const { data, isLoading } = useQuery({
+   const { data, isLoading } = useQuery({
     queryKey: ["cmsPages", params],
-
     queryFn: () => getCMSPagesApi(params),
-
+    enabled,
     keepPreviousData: true,
   });
 

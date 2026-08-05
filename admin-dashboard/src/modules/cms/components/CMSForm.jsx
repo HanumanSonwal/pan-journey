@@ -1,5 +1,6 @@
 "use client";
 
+import { useDestination } from "@/modules/destination/hooks/useDestination";
 import { usePermission } from "@/modules/shared/hooks/usePermission";
 import { CopyOutlined } from "@ant-design/icons";
 import {
@@ -25,12 +26,19 @@ import CMSBlocksBuilder from "./CMSBlocksBuilder";
 import CMSSeoFields from "./CMSSeoFields";
 import CMSCitySelector from "./entity-selector/CMSCitySelector";
 import CMSHotelSelector from "./entity-selector/CMSHotelSelector";
+
 CopyOutlined;
 
 export default function CMSForm({ id }) {
   const { message } = App.useApp();
   const [form] = Form.useForm();
   const entityType = Form.useWatch("entityType", form);
+  const { destinations } = useDestination(
+    {
+      type: "Blogs",
+    },
+   entityType === "blog",
+  );
   const title = Form.useWatch("title", form);
   const hotelMeta = Form.useWatch(["data", "hotelMeta"], form);
   const cityMeta = Form.useWatch("cityMeta", form);
@@ -64,7 +72,11 @@ export default function CMSForm({ id }) {
   useEffect(() => {
     if (id) return;
 
-    if (entityType === "static" || entityType === "marketing") {
+    if (
+      entityType === "static" ||
+      entityType === "marketing" ||
+      entityType === "blog"
+    ) {
       if (title) {
         debouncedPreview();
       }
@@ -256,6 +268,7 @@ export default function CMSForm({ id }) {
                 </Col>
               </Row>
             )}
+
             {entityType === "blog" && (
               <>
                 <Form.Item
@@ -273,6 +286,27 @@ export default function CMSForm({ id }) {
                     placeholder="Enter short description"
                     showCount
                     maxLength={500}
+                  />
+                </Form.Item>
+                <Form.Item
+                  name="categoryId"
+                  label="Select Blog Category"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please select a blog category",
+                    },
+                  ]}
+                >
+                  <Select
+                    size="large"
+                    placeholder="Select Blog Category"
+                    allowClear
+                    options={(destinations || []).map((item) => ({
+                      label: item.placeName,
+                      value: item._id, // Recommend _id
+                      // value: item.placeName // Agar backend name expect karta hai to ye use karo
+                    }))}
                   />
                 </Form.Item>
 
