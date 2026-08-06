@@ -154,7 +154,7 @@ const ViewHotelPriceCard = ({ ratePlans = [], supplierData = {} }) => {
                   </p>
                 </div>
 
-                <h2 className="text-[30px] leading-none font-bold text-[#0f172a]">
+                <h2 className="text-[26px] leading-none font-bold text-[#FF0000]">
                   {currencySymbol} {formatPrice(totalPrice)}
                 </h2>
               </div>
