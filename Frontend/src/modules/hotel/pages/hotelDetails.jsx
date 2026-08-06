@@ -1,7 +1,12 @@
 "use client";
 
-import { HeartOutlined, ShareAltOutlined } from "@ant-design/icons";
-import { Card } from "antd";
+import {
+  HeartFilled,
+  HeartOutlined,
+  ShareAltOutlined,
+} from "@ant-design/icons";
+import { Card, message } from "antd";
+import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import HotelDetailsSkeleton from "@/components/common/loder/HotelDetailsSkeleton";
@@ -12,9 +17,7 @@ import { useHotelDetails } from "@/modules/hotel/hooks/useHotelDetails";
 import { useSelectedHotelStore } from "@/modules/hotel/store/selectedHotel.store";
 import { useToggleWishlist } from "@/modules/wishlist/hooks/useToggleWishlist";
 import { useWishlistIds } from "@/modules/wishlist/hooks/useWishlistIds";
-import { HeartFilled } from "@ant-design/icons";
-import { message } from "antd";
-import { useSearchParams } from "next/navigation";
+
 import SearchBar from "../components/hotels/SearchBar";
 import HotelSectionsContent from "../components/hotels/viewhotles/HotelSectionsContent";
 import HotelSectionsTabs from "../components/hotels/viewhotles/HotelSectionsTabs";
@@ -23,6 +26,7 @@ import ViewHotelInfo from "../components/hotels/viewhotles/ViewHotelInfo";
 import ViewHotelModal from "../components/hotels/viewhotles/ViewHotelModal";
 import ViewHotelPriceCard from "../components/hotels/viewhotles/ViewHotelPriceCard";
 import ViewHotelTabs from "../components/hotels/viewhotles/ViewHotelTabs";
+
 import HotelCmsSection from "../sections/HotelCmsSection";
 import RelatedHotels from "../sections/RelatedHotels";
 import DynamicHotelSeoFallback from "../seo/DynamicHotelSeoFallback";
@@ -37,20 +41,29 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   const { selectedHotel } = useSelectedHotelStore();
   const { appliedSearchData } = useHotelSearchStore();
   const { setBookingData } = useHotelBookingStore();
+
   const [activeTab, setActiveTab] = useState("Rooms");
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [sessionExpired] = useState(false);
   const [reloadingHotels] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
   const { requireAuth } = useAuthGuard();
   const { mutateAsync } = useToggleWishlist();
   const { data: wishlistData } = useWishlistIds();
+
   const searchParams = useSearchParams();
   const isMobile = useIsMobile();
+
   const hid = searchParams.get("hid");
   const cityIdParam = searchParams.get("cityId");
   const stateNameParam = searchParams.get("stateName");
   const countryCodeParam = searchParams.get("countryCode");
   const hotelSlugParam = searchParams.get("hotelSlug");
+
+  /* -------------------------------------------------------------------------- */
+  /*                                HOTEL PAYLOAD                               */
+  /* -------------------------------------------------------------------------- */
 
   const payload = useMemo(() => {
     return buildHotelDetailsPayload({
@@ -74,19 +87,31 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     hotelSlugParam,
   ]);
 
+  /* -------------------------------------------------------------------------- */
+  /*                                  WISHLIST                                  */
+  /* -------------------------------------------------------------------------- */
+
   const wishlistIds = useMemo(
     () => new Set(wishlistData || []),
     [wishlistData],
   );
+
   const hotelId = payload?.hotelId?.toString();
+
   const isWishlisted = hotelId ? wishlistIds.has(hotelId) : false;
 
+  /* -------------------------------------------------------------------------- */
+  /*                               HOTEL DETAILS                                */
+  /* -------------------------------------------------------------------------- */
+
   const isValidPayload = payload?.hotelId && payload?.hotelMeta?.cityId;
+
   const { data, isLoading, isFetching, refetch } = useHotelDetails(
     isValidPayload ? payload : null,
   );
 
   const showSkeleton = isLoading || isFetching;
+
   const hotelData = data ?? {};
   const supplierData = hotelData?.supplierResponse ?? {};
 
@@ -96,14 +121,14 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     RatePlanRecommendations,
   } = supplierData;
 
-  console.log("supplierData", supplierData);
-  console.log("RatePlanRecommendations", supplierData?.RatePlanRecommendations);
-
   const ratePlans = Array.isArray(RatePlanRecommendations)
     ? RatePlanRecommendations
     : [];
+
   const firstRatePlan = ratePlans[0] || null;
+
   const pricing = firstRatePlan?.PricingBreakdown ?? {};
+
   const {
     basePrice = 0,
     platformFeeAndTax = 0,
@@ -118,19 +143,44 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     : [];
 
   const hotelImages = HotelGallery;
-
   const hotelDetails = supplierData;
 
-  const handleReloadHotels = async () => {
-    await refetch();
-  };
+  /* -------------------------------------------------------------------------- */
+  /*                                  SCROLL                                    */
+  /* -------------------------------------------------------------------------- */
 
-  console.log("Rate Plans", ratePlans);
-  console.log("Pricing", pricing);
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrolled = window.scrollY > 5;
+
+      setIsScrolled((prev) => {
+        if (prev !== scrolled) {
+          return scrolled;
+        }
+
+        return prev;
+      });
+    };
+
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  /* -------------------------------------------------------------------------- */
+  /*                              BOOKING STORE                                 */
+  /* -------------------------------------------------------------------------- */
 
   useEffect(() => {
     if (!supplierData?.HotelKey) return;
     if (!hotelData?.searchKey) return;
+
     setBookingData({
       supplierData,
       searchData: appliedSearchData,
@@ -152,34 +202,17 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     appliedSearchData,
     setBookingData,
   ]);
-  const [isScrolled, setIsScrolled] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrolled = window.scrollY > 5;
+  /* -------------------------------------------------------------------------- */
+  /*                                  ACTIONS                                   */
+  /* -------------------------------------------------------------------------- */
 
-      setIsScrolled((prev) => {
-        if (prev !== scrolled) {
-          return scrolled;
-        }
-        return prev;
-      });
-    };
+  const handleReloadHotels = async () => {
+    await refetch();
+  };
 
-    handleScroll(); // Initial check
-
-    window.addEventListener("scroll", handleScroll, {
-      passive: true,
-    });
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
   const handleWishlist = () => {
     requireAuth(async () => {
-      console.log("payload", payload);
-      console.log("payload.hotelId", payload?.hotelId);
       try {
         const wishlistPayload = buildWishlistPayload({
           hotelId: payload?.hotelId,
@@ -191,7 +224,7 @@ function HotelDetails({ initialPayload = null, cms = null }) {
             platformFeeAndTax,
           },
         });
-        console.log("Wishlist Payload", wishlistPayload);
+
         await mutateAsync(wishlistPayload);
 
         message.success(
@@ -212,6 +245,10 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   };
 
   const handleSearch = useCallback(() => {}, []);
+
+  /* -------------------------------------------------------------------------- */
+  /*                                MOBILE                                      */
+  /* -------------------------------------------------------------------------- */
 
   if (isMobile === null) {
     return <HotelDetailsSkeleton />;
@@ -234,148 +271,196 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     );
   }
 
+  /* -------------------------------------------------------------------------- */
+  /*                                DESKTOP                                     */
+  /*                         1024PX AND ABOVE                                   */
+  /* -------------------------------------------------------------------------- */
+
   return (
-    <>
-      <div className="min-h-screen w-full bg-[#eaf3f9]">
-        <SearchBar searchData={supplierData} onSearch={handleSearch} />
-        <div
-          className={`relative mx-auto w-full max-w-7xl ${
-            isScrolled ? "z-0" : "z-[820]"
-          }`}
-        >
-          <div className="-mt-3">
-            {showSkeleton ? (
-              <HotelDetailsSkeleton />
-            ) : (
-              <Card className="overflow-visible rounded-md border-0 p-3 shadow-lg sm:p-6">
-                {/* HEADER */}
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-                      <h1 className="text-[18px] leading-tight font-semibold text-[#303030] sm:text-[26px]">
-                        {supplierData?.HotelName || "Hotel Name"}
-                      </h1>
+    <div className="min-h-screen w-full bg-[#eaf3f9]">
+      {/* SEARCH BAR */}
+      <SearchBar searchData={supplierData} onSearch={handleSearch} />
 
-                      {(supplierData?.City || supplierData?.Country) && (
-                        <span className="lg:!mb-0m most-text-color !mb-4 w-fit rounded-full bg-[#eef8fd] px-2 py-1 text-[11px] font-medium sm:!mb-3 sm:px-3 sm:text-sm md:!mb-4 xl:!mb-0">
-                          {[supplierData?.City, supplierData?.Country]
-                            .filter(Boolean)
-                            .join(", ")}
-                        </span>
-                      )}
-                    </div>
-                  </div>
+      {/* MAIN CONTAINER */}
+      <div
+        className={`relative mx-auto w-full max-w-7xl px-3 sm:px-4 md:px-5 lg:px-6 xl:px-0 ${
+          isScrolled ? "z-0" : "z-[820]"
+        }`}
+      >
+        <div className="-mt-3">
+          {showSkeleton ? (
+            <HotelDetailsSkeleton />
+          ) : (
+            <Card className="overflow-visible rounded-md border-0 p-3 shadow-lg sm:p-4 md:p-5 lg:p-5 xl:p-6">
+              {/* ---------------------------------------------------------------- */}
+              {/* HEADER                                                          */}
+              {/* ---------------------------------------------------------------- */}
 
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    <button
-                      onClick={handleWishlist}
-                      className="group flex h-9 w-9 items-center justify-center rounded-full border bg-white transition-all duration-200 hover:shadow-md active:scale-95 sm:h-11 sm:w-11"
-                    >
-                      <span
-                        className={`inline-flex items-center justify-center transition-all duration-300 ${
-                          isWishlisted
-                            ? "scale-110 text-red-500"
-                            : "text-gray-700 group-hover:scale-110"
-                        }`}
-                      >
-                        {isWishlisted ? (
-                          <HeartFilled className="text-[16px] sm:text-[20px]" />
-                        ) : (
-                          <HeartOutlined className="text-[16px] sm:text-[20px]" />
-                        )}
+              <div className="flex min-w-0 items-start justify-between gap-3 lg:gap-4">
+                {/* HOTEL NAME + LOCATION */}
+                <div className="min-w-0 flex-1">
+                  <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
+                    <h1 className="min-w-0 truncate text-[20px] leading-tight font-semibold text-[#303030] lg:text-[23px] xl:text-[26px]">
+                      {supplierData?.HotelName || "Hotel Name"}
+                    </h1>
+
+                    {(supplierData?.City || supplierData?.Country) && (
+                      <span className="most-text-color max-w-full shrink-0 rounded-full bg-[#eef8fd] px-2 py-1 text-[11px] font-medium lg:px-3 lg:text-xs xl:text-sm">
+                        {[supplierData?.City, supplierData?.Country]
+                          .filter(Boolean)
+                          .join(", ")}
                       </span>
-                    </button>
+                    )}
+                  </div>
+                </div>
 
-                    <button
-                      onClick={handleShare}
-                      className="flex h-9 w-9 items-center justify-center rounded-full border bg-white transition-all duration-200 hover:shadow-md active:scale-95 sm:h-11 sm:w-11"
+                {/* ACTION BUTTONS */}
+                <div className="flex shrink-0 items-center gap-2 lg:gap-2.5">
+                  <button
+                    type="button"
+                    onClick={handleWishlist}
+                    aria-label="Wishlist"
+                    className="group flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white transition-all duration-200 hover:shadow-md active:scale-95 lg:h-10 lg:w-10 xl:h-11 xl:w-11"
+                  >
+                    <span
+                      className={`inline-flex items-center justify-center transition-all duration-300 ${
+                        isWishlisted
+                          ? "scale-110 text-red-500"
+                          : "text-gray-700 group-hover:scale-110"
+                      } `}
                     >
-                      <ShareAltOutlined className="text-[16px] sm:text-[19px]" />
-                    </button>
-                  </div>
+                      {isWishlisted ? (
+                        <HeartFilled className="text-[16px] lg:text-[18px] xl:text-[20px]" />
+                      ) : (
+                        <HeartOutlined className="text-[16px] lg:text-[18px] xl:text-[20px]" />
+                      )}
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleShare}
+                    aria-label="Share hotel"
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white transition-all duration-200 hover:shadow-md active:scale-95 lg:h-10 lg:w-10 xl:h-11 xl:w-11"
+                  >
+                    <ShareAltOutlined className="text-[16px] lg:text-[18px] xl:text-[19px]" />
+                  </button>
                 </div>
-
-                {/* GALLERY + PRICE */}
-                <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:items-start">
-                  <div className="self-start lg:col-span-2">
-                    <ViewHotelGallery
-                      images={hotelImages}
-                      onOpen={() => setIsGalleryOpen(true)}
-                    />
-
-                    <div className="mt-6">
-                      <ViewHotelTabs supplierData={supplierData} />
-                    </div>
-                  </div>
-
-                  <div className="lg:col-span-1">
-                    <ViewHotelPriceCard
-                      ratePlans={ratePlans}
-                      supplierData={supplierData}
-                    />
-                  </div>
-                </div>
-
-                {/* INFO */}
-                <div className="mt-6">
-                  <ViewHotelInfo supplierData={supplierData} />
-                </div>
-              </Card>
-            )}
-          </div>
-
-          {/* TABS */}
-          {!showSkeleton && (
-            <>
-              <div className="mt-6">
-                <HotelSectionsTabs
-                  activeTab={activeTab}
-                  setActiveTab={setActiveTab}
-                />
               </div>
 
-              {/* CONTENT */}
-              <div className="mt-4">
-                <HotelSectionsContent
-                  activeTab={activeTab}
-                  supplierData={supplierData}
-                  ratePlans={ratePlans}
-                  amenities={amenities}
-                  hotelDetails={hotelDetails}
-                />
-              </div>
+              {/* ---------------------------------------------------------------- */}
+              {/* GALLERY + PRICE CARD                                            */}
+              {/* ---------------------------------------------------------------- */}
 
-              {/* CMS */}
-              <HotelCmsSection>
-                {cms ? (
-                  <CMSContentRenderer cms={cms} />
-                ) : (
-                  <DynamicHotelSeoFallback
-                    hotelName={supplierData?.HotelName}
-                    cityName={supplierData?.City}
+              <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)] lg:items-start lg:gap-5 xl:gap-6">
+                {/* LEFT SIDE */}
+                <div className="min-w-0 self-start">
+                  <ViewHotelGallery
+                    images={hotelImages}
+                    onOpen={() => setIsGalleryOpen(true)}
                   />
-                )}
-              </HotelCmsSection>
 
-              {/* RELATED */}
-              <RelatedHotels
-                cityId={appliedSearchData?.cityData?.id}
-                cityName={appliedSearchData?.city}
-                searchData={appliedSearchData}
-                currentHotelId={payload?.hotelId}
-              />
-            </>
+                  <div className="mt-5 lg:mt-6">
+                    <ViewHotelTabs supplierData={supplierData} />
+                  </div>
+                </div>
+
+                {/* RIGHT SIDE */}
+                <div className="min-w-0 lg:sticky lg:top-24">
+                  <ViewHotelPriceCard
+                    ratePlans={ratePlans}
+                    supplierData={supplierData}
+                  />
+                </div>
+              </div>
+
+              {/* ---------------------------------------------------------------- */}
+              {/* HOTEL INFO                                                       */}
+              {/* ---------------------------------------------------------------- */}
+
+              <div className="mt-5 lg:mt-6">
+                <ViewHotelInfo supplierData={supplierData} />
+              </div>
+            </Card>
           )}
         </div>
 
-        {/* MODALS (always outside) */}
-        <ViewHotelModal
-          open={isGalleryOpen}
-          images={hotelImages}
-          onClose={() => setIsGalleryOpen(false)}
-        />
+        {/* -------------------------------------------------------------------- */}
+        {/* HOTEL SECTION TABS                                                   */}
+        {/* -------------------------------------------------------------------- */}
+
+        {!showSkeleton && (
+          <>
+            <div className="mt-3 lg:mt-6">
+              <HotelSectionsTabs
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+              />
+            </div>
+
+            {/* ---------------------------------------------------------------- */}
+            {/* CONTENT                                                          */}
+            {/* ---------------------------------------------------------------- */}
+
+            <div className="mt-0">
+              <HotelSectionsContent
+                activeTab={activeTab}
+                supplierData={supplierData}
+                ratePlans={ratePlans}
+                amenities={amenities}
+                hotelDetails={hotelDetails}
+              />
+            </div>
+
+            {/* ---------------------------------------------------------------- */}
+            {/* CMS                                                              */}
+            {/* ---------------------------------------------------------------- */}
+
+            <HotelCmsSection>
+              {cms ? (
+                <CMSContentRenderer cms={cms} />
+              ) : (
+                <DynamicHotelSeoFallback
+                  hotelName={supplierData?.HotelName}
+                  cityName={supplierData?.City}
+                />
+              )}
+            </HotelCmsSection>
+
+            {/* ---------------------------------------------------------------- */}
+            {/* RELATED HOTELS                                                   */}
+            {/* ---------------------------------------------------------------- */}
+
+            <RelatedHotels
+              cityId={appliedSearchData?.cityData?.id}
+              cityName={appliedSearchData?.city}
+              searchData={appliedSearchData}
+              currentHotelId={payload?.hotelId}
+            />
+          </>
+        )}
       </div>
-    </>
+
+      {/* ---------------------------------------------------------------------- */}
+      {/* GALLERY MODAL                                                         */}
+      {/* ---------------------------------------------------------------------- */}
+
+      <ViewHotelModal
+        open={isGalleryOpen}
+        images={hotelImages}
+        onClose={() => setIsGalleryOpen(false)}
+      />
+
+      {/* ---------------------------------------------------------------------- */}
+      {/* SESSION EXPIRED MODAL                                                 */}
+      {/* ---------------------------------------------------------------------- */}
+
+      <SessionExpiredModal
+        open={sessionExpired}
+        loading={reloadingHotels}
+        onReload={handleReloadHotels}
+      />
+    </div>
   );
 }
 

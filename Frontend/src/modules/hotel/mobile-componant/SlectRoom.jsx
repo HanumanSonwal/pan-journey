@@ -1,6 +1,5 @@
 "use client";
 
-import BottomNav from "@/components/common/loder/MobileBottomNav ";
 import { useAuthGuard } from "@/modules/auth/hooks/useAuthGuard";
 import { useHotelBookingStore } from "@/modules/hotel/store/booking.store";
 import { Button } from "antd";
@@ -79,7 +78,7 @@ const SlectRoom = ({ ratePlans = [], supplierData = {} }) => {
                 <div className="flex flex-wrap gap-2">
                   <span
                     className={`font-roboto rounded-full p-1 py-1 text-xs font-semibold ${refundable
-                      ? "bg-green-100 text-green-700"
+                      ? "bg-[#FFF4D6] text-[#FDA20F]"
                       : "bg-red-100 text-red-600"
                       }`}
                   >
@@ -270,7 +269,7 @@ const SlectRoom = ({ ratePlans = [], supplierData = {} }) => {
           No rooms available
         </div>
       )}
-      
+
     </div>
 
   );
