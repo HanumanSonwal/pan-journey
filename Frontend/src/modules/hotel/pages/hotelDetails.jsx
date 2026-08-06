@@ -114,8 +114,8 @@ function HotelDetails({ initialPayload = null, cms = null }) {
 
   const amenities = Amenities
     ? Amenities.split(",")
-      .map((item) => item.trim())
-      .filter(Boolean)
+        .map((item) => item.trim())
+        .filter(Boolean)
     : [];
 
   const hotelImages = HotelGallery;
@@ -156,27 +156,27 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-  const handleScroll = () => {
-    const scrolled = window.scrollY > 5;
+    const handleScroll = () => {
+      const scrolled = window.scrollY > 5;
 
-    setIsScrolled((prev) => {
-      if (prev !== scrolled) {
-        return scrolled;
-      }
-      return prev;
+      setIsScrolled((prev) => {
+        if (prev !== scrolled) {
+          return scrolled;
+        }
+        return prev;
+      });
+    };
+
+    handleScroll(); // Initial check
+
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
     });
-  };
 
-  handleScroll(); // Initial check
-
-  window.addEventListener("scroll", handleScroll, {
-    passive: true,
-  });
-
-  return () => {
-    window.removeEventListener("scroll", handleScroll);
-  };
-}, []);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   const handleWishlist = () => {
     requireAuth(async () => {
       console.log("payload", payload);
@@ -212,7 +212,7 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     });
   };
 
-  const handleSearch = useCallback(() => { }, []);
+  const handleSearch = useCallback(() => {}, []);
 
   if (isMobile === null) {
     return <HotelDetailsSkeleton />;
@@ -239,11 +239,11 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     <>
       <div className="min-h-screen w-full bg-[#eaf3f9]">
         <SearchBar searchData={supplierData} onSearch={handleSearch} />
-<div
-  className={`relative mx-auto w-full max-w-7xl ${
-    isScrolled ? "z-0" : "z-[820]"
-  }`}
->
+        <div
+          className={`relative mx-auto w-full max-w-7xl ${
+            isScrolled ? "z-0" : "z-[820]"
+          }`}
+        >
           <div className="-mt-3">
             {showSkeleton ? (
               <HotelDetailsSkeleton />
@@ -258,7 +258,7 @@ function HotelDetails({ initialPayload = null, cms = null }) {
                       </h1>
 
                       {(supplierData?.City || supplierData?.Country) && (
-                        <span className="lg:!mb-0m !mb-4 w-fit rounded-full bg-[#eef8fd] px-2 py-1 text-[11px] font-medium most-text-color sm:!mb-3 sm:px-3 sm:text-sm md:!mb-4 xl:!mb-0">
+                        <span className="lg:!mb-0m most-text-color !mb-4 w-fit rounded-full bg-[#eef8fd] px-2 py-1 text-[11px] font-medium sm:!mb-3 sm:px-3 sm:text-sm md:!mb-4 xl:!mb-0">
                           {[supplierData?.City, supplierData?.Country]
                             .filter(Boolean)
                             .join(", ")}
@@ -273,10 +273,11 @@ function HotelDetails({ initialPayload = null, cms = null }) {
                       className="group flex h-9 w-9 items-center justify-center rounded-full border bg-white transition-all duration-200 hover:shadow-md active:scale-95 sm:h-11 sm:w-11"
                     >
                       <span
-                        className={`inline-flex items-center justify-center transition-all duration-300 ${isWishlisted
-                          ? "scale-110 text-red-500"
-                          : "text-gray-700 group-hover:scale-110"
-                          }`}
+                        className={`inline-flex items-center justify-center transition-all duration-300 ${
+                          isWishlisted
+                            ? "scale-110 text-red-500"
+                            : "text-gray-700 group-hover:scale-110"
+                        }`}
                       >
                         {isWishlisted ? (
                           <HeartFilled className="text-[16px] sm:text-[20px]" />
@@ -285,7 +286,6 @@ function HotelDetails({ initialPayload = null, cms = null }) {
                         )}
                       </span>
                     </button>
-
                     <button
                       onClick={handleShare}
                       className="flex h-9 w-9 items-center justify-center rounded-full border bg-white transition-all duration-200 hover:shadow-md active:scale-95 sm:h-11 sm:w-11"
