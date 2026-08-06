@@ -31,7 +31,7 @@ export default function CTABlock({ data }) {
           {data?.buttonText && (
             <Link
               href={data?.buttonLink || "#"}
-              className="inline-flex items-center justify-center rounded-lg bg-[#67a8e8] px-8 py-3.5 text-sm font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-[#4f97dd]"
+              className="inline-flex items-center justify-center rounded-lg buttion-background-color px-8 py-3.5 text-sm font-semibold !text-white transition-all duration-300 hover:scale-105 !hover:bg-[#4f97dd]"
             >
               {data.buttonText}
             </Link>
