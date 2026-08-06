@@ -156,53 +156,17 @@ const CATEGORIES = [
 
 const BlogCard = ({ blog, onClick }) => {
   return (
-
-    <article
-      className="
-        group
-        overflow-hidden
-        rounded-[18px]
-        border
-        border-gray-100
-        bg-white
-        shadow-[0_4px_18px_rgba(0,0,0,0.06)]
-        transition-all
-        duration-300
-        hover:-translate-y-1
-        hover:shadow-[0_12px_30px_rgba(0,0,0,0.10)]
-      "
-    >
+    <article className="group overflow-hidden rounded-[18px] border border-gray-100 bg-white shadow-[0_4px_18px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(0,0,0,0.10)]">
       {/* IMAGE */}
       <div className="relative h-[210px] w-full overflow-hidden">
         <img
           src={blog.image}
           alt={blog.title}
-          className="
-            h-full
-            w-full
-            object-cover
-            transition-transform
-            duration-500
-            group-hover:scale-[1.05]
-          "
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.05]"
         />
 
         {/* CATEGORY */}
-        <span
-          className="
-            absolute
-            left-4
-            top-4
-            rounded-full
-            bg-white/95
-            px-3
-            py-1.5
-            text-[11px]
-            font-bold
-            most-text-color
-            shadow-sm
-          "
-        >
+        <span className="most-text-color absolute top-4 left-4 rounded-full bg-white/95 px-3 py-1.5 text-[11px] font-bold shadow-sm">
           {blog.category}
         </span>
       </div>
@@ -223,40 +187,19 @@ const BlogCard = ({ blog, onClick }) => {
         </div>
 
         {/* TITLE */}
-        <h3
-          className="
-            mt-3
-            line-clamp-2
-            min-h-[52px]
-            text-[19px]
-            font-bold
-            leading-[1.35]
-            
-            transition-colors
-            duration-200
-            group-hover:most-text-color
-          "
-        >
+        <h3 className="group-hover:most-text-color mt-3 line-clamp-2 min-h-[52px] text-[19px] leading-[1.35] font-bold transition-colors duration-200">
           {blog.title}
         </h3>
 
         {/* DESCRIPTION */}
-        <p
-          className="
-            mt-2
-            line-clamp-2
-            text-[14px]
-            leading-6
-            text-gray-500
-          "
-        >
+        <p className="mt-2 line-clamp-2 text-[14px] leading-6 text-gray-500">
           {blog.description}
         </p>
 
         {/* FOOTER */}
         <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-4">
           <div className="flex min-w-0 items-center gap-2">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#eef6fb] text-[13px] most-text-color">
+            <span className="most-text-color flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#eef6fb] text-[13px]">
               <UserOutlined />
             </span>
 
@@ -275,21 +218,7 @@ const BlogCard = ({ blog, onClick }) => {
           <button
             type="button"
             onClick={() => onClick(blog)}
-            className="
-              flex
-              shrink-0
-              items-center
-              gap-1.5
-              border-0
-              bg-transparent
-              p-0
-              text-[13px]
-              font-bold
-              most-text-color
-              transition-all
-              duration-200
-              hover:gap-2.5
-            "
+            className="most-text-color flex shrink-0 items-center gap-1.5 border-0 bg-transparent p-0 text-[13px] font-bold transition-all duration-200 hover:gap-2.5"
           >
             Read More
             <ArrowRightOutlined />
@@ -307,8 +236,7 @@ const BlogCard = ({ blog, onClick }) => {
 const BlogPage = () => {
   const router = useRouter();
 
-  const [activeCategory, setActiveCategory] =
-    useState("All");
+  const [activeCategory, setActiveCategory] = useState("All");
 
   const [search, setSearch] = useState("");
 
@@ -317,37 +245,24 @@ const BlogPage = () => {
   /* ------------------------------------------------------------------------ */
 
   const filteredBlogs = useMemo(() => {
-    const searchValue = search
-      .trim()
-      .toLowerCase();
+    const searchValue = search.trim().toLowerCase();
 
     return BLOGS.filter((blog) => {
       const categoryMatch =
-        activeCategory === "All" ||
-        blog.category === activeCategory;
+        activeCategory === "All" || blog.category === activeCategory;
 
       const searchMatch =
         !searchValue ||
-        blog.title
-          .toLowerCase()
-          .includes(searchValue) ||
-        blog.description
-          .toLowerCase()
-          .includes(searchValue) ||
-        blog.category
-          .toLowerCase()
-          .includes(searchValue) ||
-        blog.location
-          .toLowerCase()
-          .includes(searchValue);
+        blog.title.toLowerCase().includes(searchValue) ||
+        blog.description.toLowerCase().includes(searchValue) ||
+        blog.category.toLowerCase().includes(searchValue) ||
+        blog.location.toLowerCase().includes(searchValue);
 
       return categoryMatch && searchMatch;
     });
   }, [activeCategory, search]);
 
-  const featuredBlog =
-    BLOGS.find((blog) => blog.featured) ||
-    BLOGS[0];
+  const featuredBlog = BLOGS.find((blog) => blog.featured) || BLOGS[0];
 
   /* ------------------------------------------------------------------------ */
   /*                           BLOG OPEN                                      */
@@ -361,9 +276,7 @@ const BlogPage = () => {
      * router.push(`/blog/${blog.id}`);
      */
 
-    router.push(
-      `/blog/${blog.id}`,
-    );
+    router.push(`/blog/${blog.id}`);
   };
 
   return (
@@ -373,13 +286,7 @@ const BlogPage = () => {
         {/* HERO                                                                 */}
         {/* ==================================================================== */}
 
-        <section
-          className="
-          relative
-          overflow-hidden
-          bg-[#092f49]
-        "
-        >
+        <section className="relative overflow-hidden bg-[#092f49]">
           {/* BACKGROUND IMAGE */}
           <div className="absolute inset-0">
             <img
@@ -393,108 +300,31 @@ const BlogPage = () => {
           <div className="absolute inset-0 bg-[#06283d]/75" />
 
           {/* HERO CONTENT */}
-          <div
-            className="
-            relative
-            mx-auto
-            flex
-            min-h-[390px]
-            w-full
-            max-w-7xl
-            flex-col
-            items-center
-            justify-center
-            px-4
-            py-16
-            text-center
-            sm:px-6
-            lg:px-8
-          "
-          >
-            <span
-              className="
-              rounded-full
-              bg-white/10
-              px-4
-              py-2
-              text-[12px]
-              font-semibold
-              tracking-wider
-              text-white
-              uppercase
-              backdrop-blur-sm
-            "
-            >
+          <div className="relative mx-auto flex min-h-[390px] w-full max-w-7xl flex-col items-center justify-center px-4 py-16 text-center sm:px-6 lg:px-8">
+            <span className="rounded-full bg-white/10 px-4 py-2 text-[12px] font-semibold tracking-wider text-white uppercase backdrop-blur-sm">
               PAN JOURNEY TRAVEL BLOG
             </span>
 
-            <h1
-              className="
-              mt-5
-              max-w-4xl
-              text-[34px]
-              font-bold
-              leading-[1.12]
-              tracking-tight
-              text-white
-              sm:text-[44px]
-              lg:text-[52px]
-            "
-            >
+            <h1 className="mt-5 max-w-4xl text-[34px] leading-[1.12] font-bold tracking-tight text-white sm:text-[44px] lg:text-[52px]">
               Explore. Discover.
-              <span className="block most-text-color">
-                Travel More.
-              </span>
+              <span className="most-text-color block">Travel More.</span>
             </h1>
 
-            <p
-              className="
-              mt-4
-              max-w-2xl
-              text-[14px]
-              leading-6
-              text-white/80
-              sm:text-[16px]
-            "
-            >
-              Discover travel inspiration, destination
-              guides, hotel tips and useful ideas to
-              make your next journey unforgettable.
+            <p className="mt-4 max-w-2xl text-[14px] leading-6 text-white/80 sm:text-[16px]">
+              Discover travel inspiration, destination guides, hotel tips and
+              useful ideas to make your next journey unforgettable.
             </p>
 
             {/* SEARCH */}
-            <div
-              className="
-              mt-7
-              flex
-              w-full
-              max-w-[650px]
-              flex-col
-              gap-2
-              rounded-[14px]
-              bg-white
-              p-2
-              shadow-[0_12px_35px_rgba(0,0,0,0.18)]
-              sm:flex-row
-            "
-            >
+            <div className="mt-7 flex w-full max-w-[650px] flex-col gap-2 rounded-[14px] bg-white p-2 shadow-[0_12px_35px_rgba(0,0,0,0.18)] sm:flex-row">
               <Input
                 allowClear
                 size="large"
                 value={search}
-                onChange={(event) =>
-                  setSearch(event.target.value)
-                }
-                prefix={
-                  <SearchOutlined className="text-gray-400" />
-                }
+                onChange={(event) => setSearch(event.target.value)}
+                prefix={<SearchOutlined className="text-gray-400" />}
                 placeholder="Search travel articles..."
-                className="
-                !h-[46px]
-                !border-none
-                !shadow-none
-                sm:flex-1
-              "
+                className="!h-[46px] !border-none !shadow-none sm:flex-1"
               />
 
               <Button
@@ -502,23 +332,11 @@ const BlogPage = () => {
                 size="large"
                 icon={<SearchOutlined />}
                 onClick={() => {
-                  document
-                    .getElementById(
-                      "latest-articles",
-                    )
-                    ?.scrollIntoView({
-                      behavior: "smooth",
-                    });
+                  document.getElementById("latest-articles")?.scrollIntoView({
+                    behavior: "smooth",
+                  });
                 }}
-                className="
-                !h-[46px]
-                !rounded-[10px]
-                buttion-background-color
-                !border-none
-                !px-6
-                !font-semibold
-                !text-white
-              "
+                className="buttion-background-color !h-[46px] !rounded-[10px] !border-none !px-6 !font-semibold !text-white"
               >
                 Search
               </Button>
@@ -530,25 +348,11 @@ const BlogPage = () => {
         {/* MAIN                                                                  */}
         {/* ==================================================================== */}
 
-        <div
-          className="
-          mx-auto
-          w-full
-          max-w-7xl
-          px-3
-          py-8
-          sm:px-5
-          md:py-10
-          lg:px-6
-          xl:px-0
-        "
-        >
-          
-
+        <div className="mx-auto w-full max-w-7xl px-3 py-8 sm:px-5 md:py-10 lg:px-6 xl:px-0">
           <section className="mt-10">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-[12px] font-bold tracking-wider most-text-color uppercase">
+                <p className="most-text-color text-[12px] font-bold tracking-wider uppercase">
                   Explore
                 </p>
 
@@ -562,44 +366,28 @@ const BlogPage = () => {
                 onChange={setActiveCategory}
                 className="w-full sm:w-[190px]"
                 size="large"
-                options={CATEGORIES.map(
-                  (category) => ({
-                    value: category,
-                    label: category,
-                  }),
-                )}
+                options={CATEGORIES.map((category) => ({
+                  value: category,
+                  label: category,
+                }))}
               />
             </div>
 
             {/* DESKTOP CATEGORY BUTTONS */}
             <div className="mt-5 hidden flex-wrap gap-2 sm:flex">
               {CATEGORIES.map((category) => {
-                const active =
-                  activeCategory === category;
+                const active = activeCategory === category;
 
                 return (
                   <button
                     key={category}
                     type="button"
-                    onClick={() =>
-                      setActiveCategory(
-                        category,
-                      )
-                    }
-                    className={`
-                    rounded-full
-                    border
-                    px-5
-                    py-2.5
-                    text-[13px]
-                    font-semibold
-                    transition-all
-                    duration-200
-                    ${active
+                    onClick={() => setActiveCategory(category)}
+                    className={`rounded-full border px-5 py-2.5 text-[13px] font-semibold transition-all duration-200 ${
+                      active
                         ? "buttion-background-color border-transparent !text-white shadow-sm"
-                        : "border-gray-200 bg-white text-[#555] hover:border-[#008cff] hover:most-text-color"
-                      }
-                  `}
+                        : "hover:most-text-color border-gray-200 bg-white text-[#555] hover:border-[#008cff]"
+                    } `}
                   >
                     {category}
                   </button>
@@ -612,13 +400,10 @@ const BlogPage = () => {
           {/* LATEST ARTICLES                                                    */}
           {/* ================================================================== */}
 
-          <section
-            id="latest-articles"
-            className="mt-10 scroll-mt-24"
-          >
+          <section id="latest-articles" className="mt-10 scroll-mt-24">
             <div className="mb-5 flex items-end justify-between gap-4">
               <div>
-                <p className="text-[12px] font-bold tracking-wider most-text-color uppercase">
+                <p className="most-text-color text-[12px] font-bold tracking-wider uppercase">
                   Latest
                 </p>
 
@@ -633,15 +418,7 @@ const BlogPage = () => {
             </div>
 
             {filteredBlogs.length > 0 ? (
-              <div
-                className="
-                grid
-                grid-cols-1
-                gap-5
-                md:grid-cols-2
-                lg:grid-cols-3
-              "
-              >
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
                 {filteredBlogs.map((blog) => (
                   <BlogCard
                     key={blog.id}
@@ -652,7 +429,7 @@ const BlogPage = () => {
               </div>
             ) : (
               <div className="rounded-[18px] bg-white px-5 py-16 text-center shadow-sm">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#eef6fb] text-xl most-text-color">
+                <div className="most-text-color mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#eef6fb] text-xl">
                   <SearchOutlined />
                 </div>
 
@@ -661,8 +438,7 @@ const BlogPage = () => {
                 </h3>
 
                 <p className="mt-1 text-sm text-gray-500">
-                  Try another search or choose a
-                  different category.
+                  Try another search or choose a different category.
                 </p>
 
                 <Button
@@ -684,7 +460,7 @@ const BlogPage = () => {
 
           <section className="mt-12">
             <div className="mb-5">
-              <p className="text-[12px] font-bold tracking-wider most-text-color uppercase">
+              <p className="most-text-color text-[12px] font-bold tracking-wider uppercase">
                 Inspiration
               </p>
 
@@ -729,28 +505,12 @@ const BlogPage = () => {
                 <button
                   key={destination.name}
                   type="button"
-                  className="
-                  group
-                  relative
-                  h-[145px]
-                  overflow-hidden
-                  rounded-[15px]
-                  border-0
-                  bg-gray-200
-                  text-left
-                "
+                  className="group relative h-[145px] overflow-hidden rounded-[15px] border-0 bg-gray-200 text-left"
                 >
                   <img
                     src={destination.image}
                     alt={destination.name}
-                    className="
-                    h-full
-                    w-full
-                    object-cover
-                    transition-transform
-                    duration-500
-                    group-hover:scale-[1.07]
-                  "
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.07]"
                   />
 
                   <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
@@ -766,8 +526,6 @@ const BlogPage = () => {
           {/* ================================================================== */}
           {/* NEWSLETTER                                                         */}
           {/* ================================================================== */}
-
-
         </div>
       </main>
       <NewsletterSection />

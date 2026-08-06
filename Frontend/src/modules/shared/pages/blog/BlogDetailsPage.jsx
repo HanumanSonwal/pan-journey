@@ -1,4 +1,3 @@
-
 "use client";
 
 import {
@@ -23,14 +22,11 @@ const JaipurBlogPage = () => {
       if (navigator.share) {
         await navigator.share({
           title: "Jaipur – The Pink City",
-          text:
-            "Discover Jaipur, the Pink City of India, its royal heritage, forts, palaces and colourful markets.",
+          text: "Discover Jaipur, the Pink City of India, its royal heritage, forts, palaces and colourful markets.",
           url: window.location.href,
         });
       } else {
-        await navigator.clipboard.writeText(
-          window.location.href,
-        );
+        await navigator.clipboard.writeText(window.location.href);
       }
     } catch {
       // Share cancelled
@@ -66,7 +62,6 @@ const JaipurBlogPage = () => {
             className="mb-8 flex w-fit items-center gap-2 border-0 bg-transparent p-0 text-sm font-semibold text-white/80 transition-all duration-200 hover:text-white"
           >
             <ArrowLeftOutlined />
-
             Back to Blogs
           </button>
 
@@ -78,16 +73,16 @@ const JaipurBlogPage = () => {
 
           {/* TITLE */}
 
-          <h1 className="mt-5 max-w-4xl text-[34px] font-bold leading-[1.15] tracking-tight text-white sm:text-[44px] lg:text-[54px]">
+          <h1 className="mt-5 max-w-4xl text-[34px] leading-[1.15] font-bold tracking-tight text-white sm:text-[44px] lg:text-[54px]">
             Jaipur – The Pink City
           </h1>
 
           {/* DESCRIPTION */}
 
           <p className="mt-5 max-w-3xl text-[14px] leading-7 text-white/75 sm:text-[16px]">
-            Discover the royal charm of Jaipur, explore magnificent
-            forts and palaces, colourful markets, rich culture and
-            unforgettable experiences in the Pink City of India.
+            Discover the royal charm of Jaipur, explore magnificent forts and
+            palaces, colourful markets, rich culture and unforgettable
+            experiences in the Pink City of India.
           </p>
 
           {/* META */}
@@ -99,8 +94,7 @@ const JaipurBlogPage = () => {
             </span>
 
             <span className="flex items-center gap-1.5">
-              <ClockCircleOutlined />
-              6 min read
+              <ClockCircleOutlined />6 min read
             </span>
 
             <span className="flex items-center gap-1.5">
@@ -123,13 +117,11 @@ const JaipurBlogPage = () => {
       <main className="bg-[#f8fafc]">
         <div className="mx-auto w-full max-w-7xl px-3 py-8 sm:px-5 sm:py-10 lg:px-6 xl:px-0">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
-
             {/* ====================================================== */}
             {/* ARTICLE                                                 */}
             {/* ====================================================== */}
 
             <article className="min-w-0 overflow-hidden rounded-[20px] border border-gray-100 bg-white shadow-[0_5px_22px_rgba(0,0,0,0.05)]">
-
               {/* MAIN IMAGE */}
 
               <div className="relative h-[250px] overflow-hidden sm:h-[400px] lg:h-[520px]">
@@ -145,15 +137,13 @@ const JaipurBlogPage = () => {
               {/* ARTICLE CONTENT */}
 
               <div className="px-5 py-7 sm:px-8 sm:py-10 lg:px-12 lg:py-12">
-
                 {/* INTRO */}
 
-                <p className="text-[17px] font-medium leading-8 text-[#374151] sm:text-[18px]">
-                  Jaipur, popularly known as the Pink City, is one
-                  of the most beautiful destinations in Rajasthan.
-                  The city is famous for its royal palaces,
-                  magnificent forts, colourful markets, traditional
-                  culture and delicious Rajasthani cuisine.
+                <p className="text-[17px] leading-8 font-medium text-[#374151] sm:text-[18px]">
+                  Jaipur, popularly known as the Pink City, is one of the most
+                  beautiful destinations in Rajasthan. The city is famous for
+                  its royal palaces, magnificent forts, colourful markets,
+                  traditional culture and delicious Rajasthani cuisine.
                 </p>
 
                 <div className="my-8 h-px bg-gray-100" />
@@ -163,23 +153,21 @@ const JaipurBlogPage = () => {
                 {/* ================================================== */}
 
                 <section>
-                  <h2 className="text-[23px] font-bold leading-tight text-[#172033] sm:text-[30px]">
+                  <h2 className="text-[23px] leading-tight font-bold text-[#172033] sm:text-[30px]">
                     Discover the Royal Heritage of Jaipur
                   </h2>
 
                   <p className="mt-5 text-[15px] leading-8 text-gray-600 sm:text-[16px]">
-                    Jaipur is a perfect destination for travellers
-                    who want to experience the royal history of
-                    Rajasthan. The city was founded by Maharaja Sawai
-                    Jai Singh II and is known for its impressive
-                    architecture and planned streets.
+                    Jaipur is a perfect destination for travellers who want to
+                    experience the royal history of Rajasthan. The city was
+                    founded by Maharaja Sawai Jai Singh II and is known for its
+                    impressive architecture and planned streets.
                   </p>
 
                   <p className="mt-4 text-[15px] leading-8 text-gray-600 sm:text-[16px]">
-                    Walking through the old city, you can see
-                    beautiful pink buildings, traditional shops,
-                    local markets and historic landmarks that tell
-                    the story of Rajasthan's royal past.
+                    Walking through the old city, you can see beautiful pink
+                    buildings, traditional shops, local markets and historic
+                    landmarks that tell the story of Rajasthan's royal past.
                   </p>
                 </section>
 
@@ -188,7 +176,7 @@ const JaipurBlogPage = () => {
                 {/* ================================================== */}
 
                 <section className="mt-10">
-                  <h2 className="text-[23px] font-bold leading-tight text-[#172033] sm:text-[30px]">
+                  <h2 className="text-[23px] leading-tight font-bold text-[#172033] sm:text-[30px]">
                     Amber Fort
                   </h2>
 
@@ -201,17 +189,16 @@ const JaipurBlogPage = () => {
                   </div>
 
                   <p className="mt-5 text-[15px] leading-8 text-gray-600 sm:text-[16px]">
-                    Amber Fort is one of Jaipur's most famous
-                    attractions. Located on a hilltop, the fort
-                    offers spectacular views of the surrounding
-                    landscape and showcases beautiful Rajput and
+                    Amber Fort is one of Jaipur's most famous attractions.
+                    Located on a hilltop, the fort offers spectacular views of
+                    the surrounding landscape and showcases beautiful Rajput and
                     Mughal architecture.
                   </p>
 
                   <p className="mt-4 text-[15px] leading-8 text-gray-600 sm:text-[16px]">
-                    Visitors can explore the grand courtyards,
-                    detailed carvings, royal rooms and beautiful
-                    mirror work inside the fort.
+                    Visitors can explore the grand courtyards, detailed
+                    carvings, royal rooms and beautiful mirror work inside the
+                    fort.
                   </p>
                 </section>
 
@@ -219,9 +206,9 @@ const JaipurBlogPage = () => {
 
                 <div className="mt-7 rounded-[14px] border-l-4 border-[#008cff] bg-[#eef7fd] px-5 py-4">
                   <p className="text-[14px] leading-7 text-[#31536a]">
-                    <strong>Travel Tip:</strong>{" "}
-                    Visit Amber Fort early in the morning to avoid
-                    large crowds and enjoy the pleasant weather.
+                    <strong>Travel Tip:</strong> Visit Amber Fort early in the
+                    morning to avoid large crowds and enjoy the pleasant
+                    weather.
                   </p>
                 </div>
 
@@ -230,7 +217,7 @@ const JaipurBlogPage = () => {
                 {/* ================================================== */}
 
                 <section className="mt-10">
-                  <h2 className="text-[23px] font-bold leading-tight text-[#172033] sm:text-[30px]">
+                  <h2 className="text-[23px] leading-tight font-bold text-[#172033] sm:text-[30px]">
                     Hawa Mahal
                   </h2>
 
@@ -243,17 +230,15 @@ const JaipurBlogPage = () => {
                   </div>
 
                   <p className="mt-5 text-[15px] leading-8 text-gray-600 sm:text-[16px]">
-                    Hawa Mahal is one of the most recognizable
-                    landmarks of Jaipur. Its unique five-storey
-                    structure features hundreds of small windows
-                    designed to allow cool air to pass through the
-                    building.
+                    Hawa Mahal is one of the most recognizable landmarks of
+                    Jaipur. Its unique five-storey structure features hundreds
+                    of small windows designed to allow cool air to pass through
+                    the building.
                   </p>
 
                   <p className="mt-4 text-[15px] leading-8 text-gray-600 sm:text-[16px]">
-                    The beautiful pink and red sandstone facade makes
-                    Hawa Mahal one of the most photographed places in
-                    the city.
+                    The beautiful pink and red sandstone facade makes Hawa Mahal
+                    one of the most photographed places in the city.
                   </p>
                 </section>
 
@@ -262,21 +247,20 @@ const JaipurBlogPage = () => {
                 {/* ================================================== */}
 
                 <section className="mt-10">
-                  <h2 className="text-[23px] font-bold leading-tight text-[#172033] sm:text-[30px]">
+                  <h2 className="text-[23px] leading-tight font-bold text-[#172033] sm:text-[30px]">
                     City Palace
                   </h2>
 
                   <p className="mt-5 text-[15px] leading-8 text-gray-600 sm:text-[16px]">
-                    City Palace is another important attraction in
-                    Jaipur. The palace complex combines traditional
-                    Rajput architecture with Mughal influences.
+                    City Palace is another important attraction in Jaipur. The
+                    palace complex combines traditional Rajput architecture with
+                    Mughal influences.
                   </p>
 
                   <p className="mt-4 text-[15px] leading-8 text-gray-600 sm:text-[16px]">
-                    Visitors can explore beautiful courtyards,
-                    museums, royal rooms and historic collections
-                    while learning more about Jaipur's royal
-                    heritage.
+                    Visitors can explore beautiful courtyards, museums, royal
+                    rooms and historic collections while learning more about
+                    Jaipur's royal heritage.
                   </p>
                 </section>
 
@@ -285,20 +269,19 @@ const JaipurBlogPage = () => {
                 {/* ================================================== */}
 
                 <section className="mt-10">
-                  <h2 className="text-[23px] font-bold leading-tight text-[#172033] sm:text-[30px]">
+                  <h2 className="text-[23px] leading-tight font-bold text-[#172033] sm:text-[30px]">
                     Jaipur Local Markets
                   </h2>
 
                   <p className="mt-5 text-[15px] leading-8 text-gray-600 sm:text-[16px]">
-                    Jaipur is also famous for its colourful markets.
-                    Johari Bazaar, Bapu Bazaar and Tripolia Bazaar
-                    are great places to experience local shopping.
+                    Jaipur is also famous for its colourful markets. Johari
+                    Bazaar, Bapu Bazaar and Tripolia Bazaar are great places to
+                    experience local shopping.
                   </p>
 
                   <p className="mt-4 text-[15px] leading-8 text-gray-600 sm:text-[16px]">
-                    You can find traditional jewellery, handicrafts,
-                    textiles, footwear, pottery and many other
-                    Rajasthani products.
+                    You can find traditional jewellery, handicrafts, textiles,
+                    footwear, pottery and many other Rajasthani products.
                   </p>
                 </section>
 
@@ -307,21 +290,19 @@ const JaipurBlogPage = () => {
                 {/* ================================================== */}
 
                 <section className="mt-10">
-                  <h2 className="text-[23px] font-bold leading-tight text-[#172033] sm:text-[30px]">
+                  <h2 className="text-[23px] leading-tight font-bold text-[#172033] sm:text-[30px]">
                     Rajasthani Food You Must Try
                   </h2>
 
                   <p className="mt-5 text-[15px] leading-8 text-gray-600 sm:text-[16px]">
-                    A trip to Jaipur is incomplete without trying
-                    traditional Rajasthani food. Dal Baati Churma,
-                    Gatte Ki Sabzi, Ker Sangri and traditional sweets
-                    are popular choices.
+                    A trip to Jaipur is incomplete without trying traditional
+                    Rajasthani food. Dal Baati Churma, Gatte Ki Sabzi, Ker
+                    Sangri and traditional sweets are popular choices.
                   </p>
 
                   <p className="mt-4 text-[15px] leading-8 text-gray-600 sm:text-[16px]">
-                    Local restaurants and traditional dining
-                    experiences offer a great way to enjoy the
-                    flavours of Rajasthan.
+                    Local restaurants and traditional dining experiences offer a
+                    great way to enjoy the flavours of Rajasthan.
                   </p>
                 </section>
 
@@ -368,9 +349,7 @@ const JaipurBlogPage = () => {
                     </div>
 
                     <div>
-                      <p className="text-[12px] text-gray-400">
-                        Written by
-                      </p>
+                      <p className="text-[12px] text-gray-400">Written by</p>
 
                       <p className="text-[15px] font-bold text-[#172033]">
                         Pan Journey
@@ -407,7 +386,7 @@ const JaipurBlogPage = () => {
                   <Button
                     type="primary"
                     onClick={() => router.push("/")}
-                    className="!h-[44px] !rounded-lg buttion-background-color !border-none !font-semibold !text-white"
+                    className="buttion-background-color !h-[44px] !rounded-lg !border-none !font-semibold !text-white"
                   >
                     Explore Pan Journey
                   </Button>
@@ -421,11 +400,10 @@ const JaipurBlogPage = () => {
 
             <aside className="hidden lg:block">
               <div className="sticky top-[100px] space-y-5">
-
                 {/* TABLE OF CONTENTS */}
 
                 <div className="rounded-[18px] border border-gray-100 bg-white p-5 shadow-[0_5px_20px_rgba(0,0,0,0.04)]">
-                  <p className="text-[11px] font-bold tracking-wider most-text-color uppercase">
+                  <p className="most-text-color text-[11px] font-bold tracking-wider uppercase">
                     In This Article
                   </p>
 
@@ -444,7 +422,7 @@ const JaipurBlogPage = () => {
                     ].map((item) => (
                       <div
                         key={item}
-                        className="rounded-lg px-3 py-2.5 text-[13px] leading-5 text-gray-500 transition-colors hover:bg-[#f1f8fc] hover:most-text-color"
+                        className="hover:most-text-color rounded-lg px-3 py-2.5 text-[13px] leading-5 text-gray-500 transition-colors hover:bg-[#f1f8fc]"
                       >
                         {item}
                       </div>
@@ -459,13 +437,13 @@ const JaipurBlogPage = () => {
                     PAN JOURNEY
                   </p>
 
-                  <h3 className="mt-2 text-[21px] font-bold leading-tight">
+                  <h3 className="mt-2 text-[21px] leading-tight font-bold">
                     Plan your next journey with confidence.
                   </h3>
 
                   <p className="mt-3 text-[13px] leading-6 text-white/70">
-                    Discover destinations, compare stays and find
-                    travel inspiration for your next trip.
+                    Discover destinations, compare stays and find travel
+                    inspiration for your next trip.
                   </p>
 
                   <Button
@@ -491,5 +469,3 @@ const JaipurBlogPage = () => {
 };
 
 export default JaipurBlogPage;
-
-
