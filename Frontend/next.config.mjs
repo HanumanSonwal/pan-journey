@@ -14,6 +14,14 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "pix8.agoda.net",
+      },
+      {
+        protocol: "https",
+        hostname: "q-xx.bstatic.com",
+      },
+      {
+        protocol: "https",
         hostname: "images.unsplash.com",
       },
 

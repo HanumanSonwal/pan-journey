@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const destinationSchema = new mongoose.Schema(
+const masterDataSchema = new mongoose.Schema(
   {
     type: {
       type: String,
@@ -24,6 +24,6 @@ const destinationSchema = new mongoose.Schema(
   }
 );
 
-destinationSchema.index({ type: 1, placeName: 1 }, { unique: true });
+masterDataSchema.index({ type: 1, placeName: 1 }, { unique: true });
 
-export default mongoose.model("Destination", destinationSchema);
+export default mongoose.model("MasterData", masterDataSchema);

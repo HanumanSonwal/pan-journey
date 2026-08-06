@@ -1,7 +1,4 @@
-import { supplierAPI } from "../../../config/supplierApi.js";
 import { getAuthHeader } from "../../../config/supplierAuth.service.js";
-import HotelCache from "../hotelCache.model.js";
-import { searchHotelsFromSupplier } from "../searchservice.js";
 
 export const fetchHotelDetailsFromSupplier = async ({
   hotelId,
@@ -9,112 +6,99 @@ export const fetchHotelDetailsFromSupplier = async ({
   searchContext,
 }) => {
   try {
-    let hotel = null;
-    let activeCache = null;
+    console.log("========== HOTEL DETAILS DUMMY MODE ==========");
+    console.log("Hotel ID:", hotelId);
+    console.log("Hotel Meta:", hotelMeta);
+    console.log("Search Context:", searchContext);
 
-    const supplierSearchCityId = `99${hotelId}`;
+    // Dummy Search Key
+    const searchKey = "DUMMY_SEARCH_KEY";
 
-    console.log("========== HOTEL DETAILS DEBUG START ==========");
-    console.log("Incoming hotelId:", hotelId);
-    console.log("Incoming hotelMeta:", hotelMeta);
-    console.log("Generated supplierSearchCityId:", supplierSearchCityId);
-    console.log("Incoming searchContext:", searchContext);
-
-    // STEP 1 → direct hotelId lookup
-    console.log("🔍 Looking hotel in cache by hotelId...");
-
-    const cacheLookup = {
-      "hotels.hotelId": String(hotelId),
-      checkInDate: searchContext.CheckInDate,
-      checkOutDate: searchContext.CheckOutDate,
-      roomCount: Number(searchContext.RoomCount || 1),
-    };
-
-    console.log("🔍 Looking hotel in cache:", cacheLookup);
-
-    activeCache = await HotelCache.findOne(cacheLookup);
-    console.log("📦 CACHE FOUND:", !!activeCache);
-
-    // STEP 2 → if cache found, find hotel
-    if (activeCache) {
-      hotel = activeCache.hotels.find((h) => h.hotelId === String(hotelId));
-
-      console.log("🏨 Hotel found inside cache:", !!hotel);
-    }
-
-    // STEP 3 → fallback search
-    if (!activeCache || !hotel) {
-      console.log("⚠️ Cache miss → running search fallback");
-
-      const searchPayload = {
-        id: supplierSearchCityId, // supplier search cityId
-        fullName: searchContext.fullName,
-        CheckInDate: searchContext.CheckInDate,
-        CheckOutDate: searchContext.CheckOutDate,
-        RoomCount: searchContext.RoomCount || 1,
-        stateName: hotelMeta.stateName,
-        cityName: hotelMeta.cityName,
-        countryCode: hotelMeta.countryCode,
-        filters: {},
-        sort: "",
-        pagination: {
-          page: 1,
-          limit: 10,
-        },
-      };
-
-      console.log("📤 Search API Payload:", searchPayload);
-
-      await searchHotelsFromSupplier(searchPayload);
-
-      console.log("🔄 Search completed. Re-checking cache...");
-
-      // STEP 4 → refresh cache
-      const cacheLookup = {
-        cityId: supplierSearchCityId,
-        checkInDate: searchContext.CheckInDate,
-        checkOutDate: searchContext.CheckOutDate,
-        roomCount: searchContext.RoomCount || 1,
-      };
-
-      console.log("🔍 Cache Recheck Query:", cacheLookup);
-
-      const caches = await HotelCache.find(cacheLookup);
-
-      console.log("Total matched:", caches.length);
-
-      activeCache = caches[0];
-
-      if (!activeCache) {
-        throw new Error("Search ran but cache not created");
-      }
-      // STEP 5 → find hotel again
-      hotel = activeCache.hotels.find((h) => h.hotelId === String(hotelId));
-
-      if (!hotel) {
-        throw new Error("Hotel not found even after cache refresh");
-      }
-      console.log("✅ Hotel found after fallback search");
-    }
-    // STEP 6 → supplier keys
-    const supplierHotelKey = hotel.hotelkey;
-    const searchKey = activeCache.searchKey;
-
-    // STEP 7 → supplier payload
+    // Dummy Supplier Payload (sirf log ke liye)
     const payload = {
       ...getAuthHeader(),
-      HotelKey: supplierHotelKey,
+      HotelKey: "DUMMY_HOTEL_KEY",
       SearchKey: searchKey,
     };
 
-    console.log("📤 Supplier Details Payload:", payload);
-    // STEP 8 → call supplier details API
-    const { data } = await supplierAPI.post(
-      "/JSONService/HotelDetails",
-      payload,
-    );
-    console.log("✅ Supplier Details API Success");
-    console.log("========== HOTEL DETAILS DEBUG END ==========");
+    console.log("Dummy Supplier Payload:", payload);
+
+    // ==========================
+    // DUMMY HOTEL DETAILS
+    // ==========================
+    const data = {
+      AboutHotel: "Hotel White Park",
+      Address:
+        "No14, Kumarappa Street, Periamet, Park Town, Chennai 600003",
+      City: "Chennai",
+      Country: "India",
+      HotelName: "Hotel White Park",
+      HotelImage:
+        "https://pix8.agoda.net/hotelImages/218/2188651/2188651_17042214340052551906.jpg?ca=6&ce=1&s=312x",
+
+      HotelGallery: [
+        {
+          ImageDesc: "Front View",
+          ImageURL:
+            "https://pix8.agoda.net/hotelImages/218/2188651/2188651_17042214340052551906.jpg?ca=6&ce=1&s=312x",
+        },
+        {
+          ImageDesc: "Room",
+          ImageURL:
+            "https://q-xx.bstatic.com/xdata/images/hotel/max300/92116957.jpg?k=a90e689ead210c2412194124445978bc33d1fff895811af4c0b4da4490dbc44e&o=&s=312x",
+        },
+        {
+          ImageDesc: "Lobby",
+          ImageURL:
+            "https://q-xx.bstatic.com/xdata/images/hotel/max300/91310782.jpg?k=4c85e12d0f69d0b2f769e118608fccc410f808bfbb6abb8bf0dfb1c35bc001cf&o=&s=312x",
+        },
+      ],
+
+      Amenities:
+        "Free WiFi,Restaurant,24 Hours Reception,Room Service,Laundry,Parking,Airport Transfer",
+
+      RatePlanRecommendations: [
+        {
+          RecommendationId: "REC001",
+          BasicAmount: 4326.69,
+          GST: 157.56,
+          Tax: "664",
+          ServiceFeeAmount: 100,
+          TotalAmount: 5138.69,
+
+          RatePlanDetails: [
+            {
+              RateplanId: "RATE001",
+              Inclusion: "Room Only",
+              Refundable: "True",
+              CCRequired: true,
+              RoomAvailability: true,
+
+              CancellationPolicy:
+                "Free cancellation before check-in.",
+
+              RoomDetails: [
+                {
+                  GroupID: "1",
+                  GroupName: "Deluxe",
+                  HotelRoomTypeDesc: "Deluxe Room",
+                  SmokingAllowed: false,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+
+      ResponseHeader: {
+        ErrorCode: "0000",
+        ErrorDesc: "SUCCESS",
+        StatusId: "11",
+      },
+    };
+
+    console.log("Returning Dummy Hotel Details");
+    console.log("========== HOTEL DETAILS END ==========");
 
     return {
       success: true,
@@ -124,6 +108,6 @@ export const fetchHotelDetailsFromSupplier = async ({
       supplierResponse: data,
     };
   } catch (error) {
-    throw new Error(error.message || "Supplier HotelDetails API failed");
+    throw new Error(error.message || "Dummy Hotel Details API Failed");
   }
 };

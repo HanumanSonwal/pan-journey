@@ -9,7 +9,7 @@ export const PERMISSIONS = {
 
   roles: ["read", "write", "update", "delete"],
 
-  destination: ["read", "write", "update", "delete"],
+  masterData: ["read", "write", "update", "delete"],
 
   staff: ["read", "write", "update", "delete"],
 
