@@ -1,15 +1,14 @@
 "use client";
 
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-
 import { App, Button, Empty, Popconfirm, Table, Tag, Tooltip } from "antd";
 
-import { DESTINATION_TYPES } from "../constants/destination.constants";
+import { MASTER_DATA_TYPES } from "../constants/masterData.constants";
 
-export default function DestinationTable({
-  destinations,
+export default function MasterDataTable({
+  masterData,
   isLoading,
-  deleteDestination,
+  deleteMasterData,
   canEdit,
   canDelete,
   onEdit,
@@ -18,11 +17,14 @@ export default function DestinationTable({
 
   const getTypeColor = (type) => {
     switch (type) {
-      case DESTINATION_TYPES.YOUR_VIBE:
+      case MASTER_DATA_TYPES.VACATION_TYPES:
         return "blue";
 
-      case DESTINATION_TYPES.POPULAR_DESTINATIONS:
+      case MASTER_DATA_TYPES.DESTINATIONS:
         return "green";
+
+      case MASTER_DATA_TYPES.BLOG_CATEGORIES:
+        return "purple";
 
       default:
         return "default";
@@ -31,11 +33,14 @@ export default function DestinationTable({
 
   const getTypeLabel = (type) => {
     switch (type) {
-      case DESTINATION_TYPES.YOUR_VIBE:
-        return "Your Vibe";
+      case MASTER_DATA_TYPES.VACATION_TYPES:
+        return "Vacation Type";
 
-      case DESTINATION_TYPES.POPULAR_DESTINATIONS:
-        return "Popular Destinations";
+      case MASTER_DATA_TYPES.DESTINATIONS:
+        return "Destination";
+
+      case MASTER_DATA_TYPES.BLOG_CATEGORIES:
+        return "Blog Category";
 
       default:
         return type;
@@ -44,16 +49,15 @@ export default function DestinationTable({
 
   const columns = [
     {
-      title: "Place Name",
+      title: "Name",
       dataIndex: "placeName",
       key: "placeName",
     },
 
     {
-      title: "Type",
+      title: "Category",
       dataIndex: "type",
       key: "type",
-
       render: (value) => (
         <Tag color={getTypeColor(value)}>{getTypeLabel(value)}</Tag>
       ),
@@ -63,7 +67,6 @@ export default function DestinationTable({
       title: "Status",
       dataIndex: "isActive",
       key: "isActive",
-
       render: (value) =>
         value ? (
           <Tag color="green">Active</Tag>
@@ -76,7 +79,6 @@ export default function DestinationTable({
       title: "Updated",
       dataIndex: "updatedAt",
       key: "updatedAt",
-
       render: (value) => new Date(value).toLocaleDateString("en-IN"),
     },
 
@@ -105,14 +107,14 @@ export default function DestinationTable({
 
                 {canDelete && (
                   <Popconfirm
-                    title="Delete destination?"
+                    title="Delete this item?"
                     okText="Yes"
                     cancelText="No"
                     onConfirm={async () => {
                       try {
-                        await deleteDestination.mutateAsync(record._id);
+                        await deleteMasterData.mutateAsync(record._id);
 
-                        message.success("Destination deleted successfully");
+                        message.success("Item deleted successfully");
                       } catch {}
                     }}
                   >
@@ -120,8 +122,8 @@ export default function DestinationTable({
                       danger
                       icon={<DeleteOutlined />}
                       loading={
-                        deleteDestination.isPending &&
-                        deleteDestination.variables === record._id
+                        deleteMasterData.isPending &&
+                        deleteMasterData.variables === record._id
                       }
                     />
                   </Popconfirm>
@@ -140,10 +142,10 @@ export default function DestinationTable({
       size="middle"
       loading={isLoading}
       columns={columns}
-      dataSource={destinations}
+      dataSource={masterData}
       pagination={false}
       locale={{
-        emptyText: <Empty description="No destinations found" />,
+        emptyText: <Empty description="No master data found" />,
       }}
     />
   );

@@ -10,22 +10,13 @@ import "@/styles/cms-content.css";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { App } from "antd";
 import "antd/dist/reset.css";
-import { Geist, Geist_Mono, Jost, Roboto } from "next/font/google";
+import { Jost, Roboto } from "next/font/google";
 import Script from "next/script";
+import { Suspense } from "react";
 import "./globals.css";
 import Providers from "./providers";
-import { Suspense } from "react";
 
 /* Fonts */
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -77,7 +68,7 @@ export default function RootLayout({ children }) {
     <html
       suppressHydrationWarning
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${roboto.variable} ${jost.variable} h-full antialiased`}
+      className={`${roboto.variable} ${jost.variable} h-full antialiased`}
     >
       <head>
         {/* Viewport */}

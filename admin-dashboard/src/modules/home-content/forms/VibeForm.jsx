@@ -10,7 +10,7 @@ import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 
 import { HOME_CONTENT_SECTIONS } from "../constants/homeContent.constants";
 
-import { useDestination } from "@/modules/destination/hooks/useDestination";
+import { useMasterData } from "@/modules/master-data/hooks/useMasterData";
 
 export default function VibeForm({
   editingData,
@@ -24,7 +24,7 @@ export default function VibeForm({
 
   const [form] = Form.useForm();
 
-  const { destinations } = useDestination(
+  const { destinations } = useMasterData(
     {
       type: "YOUR_VIBE",
     },

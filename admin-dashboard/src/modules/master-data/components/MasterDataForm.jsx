@@ -1,34 +1,31 @@
 "use client";
 
+import { Button, Drawer, Form, Input, Select, Space } from "antd";
 import { useEffect } from "react";
 
-import { Button, Drawer, Form, Input, Select, Space } from "antd";
+import {
+  MASTER_DATA_LABELS,
+  MASTER_DATA_TYPE_OPTIONS,
+  MASTER_DATA_TYPES,
+} from "../constants/masterData.constants";
 
-import { DESTINATION_TYPE_OPTIONS } from "../constants/destination.constants";
-
-export default function DestinationForm({
+export default function MasterDataForm({
   open,
   onClose,
-  editingDestination,
+  editingMasterData,
   selectedType,
-  createDestination,
-  updateDestination,
+  createMasterData,
+  updateMasterData,
 }) {
   const [form] = Form.useForm();
-
-  /*
-  -----------------------------------
-  Prefill
-  -----------------------------------
-  */
 
   useEffect(() => {
     if (!open) return;
 
-    if (!editingDestination) {
+    if (!editingMasterData) {
       form.resetFields();
 
-      if (selectedType !== "all") {
+      if (selectedType !== MASTER_DATA_TYPES.ALL) {
         form.setFieldValue("type", selectedType);
       }
 
@@ -36,74 +33,70 @@ export default function DestinationForm({
     }
 
     form.setFieldsValue({
-      placeName: editingDestination.placeName,
-      type: editingDestination.type,
+      placeName: editingMasterData.placeName,
+      type: editingMasterData.type,
     });
-  }, [open, editingDestination, selectedType, form]);
-
-  /*
------------------------------------
-Submit
------------------------------------
-*/
+  }, [open, editingMasterData, selectedType, form]);
 
   const handleFinish = async (values) => {
     try {
       const payload = {
         ...values,
-        type: selectedType === "all" ? values.type : selectedType,
+        type:
+          selectedType === MASTER_DATA_TYPES.ALL ? values.type : selectedType,
       };
 
-      if (editingDestination) {
-        await updateDestination.mutateAsync({
-          id: editingDestination._id,
+      if (editingMasterData) {
+        await updateMasterData.mutateAsync({
+          id: editingMasterData._id,
           data: payload,
         });
       } else {
-        await createDestination.mutateAsync(payload);
+        await createMasterData.mutateAsync(payload);
       }
 
       form.resetFields();
-
       onClose();
     } catch (error) {
       console.error(error);
     }
   };
 
+  const currentLabel = MASTER_DATA_LABELS[selectedType] || "Master Data";
+
   return (
     <Drawer
-      // destroyOnHidden
       size={420}
       open={open}
       onClose={onClose}
-      title={editingDestination ? "Edit Destination" : "Add Destination"}
+      title={editingMasterData ? `Edit ${currentLabel}` : `Add ${currentLabel}`}
     >
       <Form layout="vertical" form={form} onFinish={handleFinish}>
         <Form.Item
-          label="Place Name"
+          label="Name"
           name="placeName"
           rules={[
             {
               required: true,
-              message: "Please enter place name",
+              message: "Please enter name",
             },
           ]}
         >
-          <Input size="large" placeholder="Enter place name" />
+          <Input size="large" placeholder={`Enter ${currentLabel}`} />
         </Form.Item>
 
-        {selectedType === "all" && !editingDestination && (
+        {selectedType === MASTER_DATA_TYPES.ALL && !editingMasterData && (
           <Form.Item
-            label="Type"
+            label="Category"
             name="type"
             rules={[
               {
                 required: true,
+                message: "Please select category",
               },
             ]}
           >
-            <Select size="large" options={DESTINATION_TYPE_OPTIONS} />
+            <Select size="large" options={MASTER_DATA_TYPE_OPTIONS} />
           </Form.Item>
         )}
 
@@ -118,9 +111,9 @@ Submit
           <Button
             type="primary"
             htmlType="submit"
-            loading={createDestination.isPending || updateDestination.isPending}
+            loading={createMasterData.isPending || updateMasterData.isPending}
           >
-            {editingDestination ? "Update" : "Create"}
+            {editingMasterData ? "Update" : "Create"}
           </Button>
         </Space>
       </Form>

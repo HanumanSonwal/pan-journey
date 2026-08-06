@@ -35,6 +35,14 @@ const nextConfig = {
         hostname: "pix8.agoda.net",
       },
     ],
+
+    formats: ["image/avif", "image/webp"],
+
+    minimumCacheTTL: 60 * 60 * 24 * 30,
+
+    deviceSizes: [320, 420, 640, 768, 1024, 1200, 1440, 1920],
+
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
 };
 

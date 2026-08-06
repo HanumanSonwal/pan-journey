@@ -44,8 +44,8 @@ export const moduleConfig = {
     actions: ["read", "write", "update", "delete"],
   },
 
-  destinationSettings: {
-    label: "Destinations",
+  masterData: {
+    label: "master-data",
     actions: ["read", "write", "update", "delete"],
   },
 

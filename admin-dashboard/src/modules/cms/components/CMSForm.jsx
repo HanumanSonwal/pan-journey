@@ -1,6 +1,6 @@
 "use client";
 
-import { useDestination } from "@/modules/destination/hooks/useDestination";
+import { useMasterData } from "@/modules/master-data/hooks/useMasterData";
 import { usePermission } from "@/modules/shared/hooks/usePermission";
 import { CopyOutlined } from "@ant-design/icons";
 import {
@@ -33,12 +33,16 @@ export default function CMSForm({ id }) {
   const { message } = App.useApp();
   const [form] = Form.useForm();
   const entityType = Form.useWatch("entityType", form);
-  const { destinations } = useDestination(
+  const { masterData } = useMasterData(
     {
-      type: "Blogs",
+      type: "BLOGS",
     },
-   entityType === "blog",
+    entityType === "blog",
   );
+
+  console.log("CMSForm masterData", masterData);
+
+
   const title = Form.useWatch("title", form);
   const hotelMeta = Form.useWatch(["data", "hotelMeta"], form);
   const cityMeta = Form.useWatch("cityMeta", form);
@@ -302,10 +306,9 @@ export default function CMSForm({ id }) {
                     size="large"
                     placeholder="Select Blog Category"
                     allowClear
-                    options={(destinations || []).map((item) => ({
+                    options={(masterData || []).map((item) => ({
                       label: item.placeName,
-                      value: item._id, // Recommend _id
-                      // value: item.placeName // Agar backend name expect karta hai to ye use karo
+                      value: item._id,
                     }))}
                   />
                 </Form.Item>
