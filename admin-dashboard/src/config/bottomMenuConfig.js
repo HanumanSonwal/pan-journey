@@ -18,6 +18,12 @@ export const bottomMenuItems = [
         module: "homeContent",
       },
 
+      {
+        key: "/dashboard/theme",
+        label: "Theme settings",
+        module: "themeSettings",
+      }
+
       // Future
       // {
       //   key: "/dashboard/settings/seo",

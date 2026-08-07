@@ -49,6 +49,11 @@ export const moduleConfig = {
     actions: ["read", "write", "update", "delete"],
   },
 
+  themeSettings: {
+    label: "Theme Settings",
+    actions: ["read", "write", "update", "delete"],
+  },
+
   customers: {
     label: "Customers",
     actions: ["read"],
