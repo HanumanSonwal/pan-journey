@@ -15,7 +15,7 @@
   --theme-primary: #FDA20F;
 
   /* Secondary */
-  --theme-secondary: #05144B;
+  --theme-secondary: #05144B !important;
 
   /* Hover */
   --theme-hover: #0C2FB1;
@@ -323,7 +323,7 @@ body {
 }
 
 .background-color:hover {
-  background-color: var(--theme-secondary);
+  background-color: var(--theme-secondary)!important;;
 }
 
 /* Border */
@@ -364,3 +364,11 @@ body {
       var(--theme-border-gradient-end) 100%
     ) border-box;
 }
+.most-image-color{
+  filter: brightness(0) saturate(100%) invert(10%) sepia(80%) saturate(3000%) hue-rotate(210deg) brightness(80%);
+}
+
+/* .defoult-image-color{
+   brightness(0) invert(1)
+} */
+

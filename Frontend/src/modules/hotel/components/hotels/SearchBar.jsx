@@ -3,7 +3,7 @@
 import {
   CalendarOutlined,
   EditOutlined,
-  TeamOutlined
+  TeamOutlined,
 } from "@ant-design/icons";
 
 import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
@@ -46,7 +46,7 @@ export default function SearchBar({ onSearch }) {
   return (
     <>
       {/* // <div className="sticky top-0 z-5 bg-[#72C0F0] shadow"> */}
-      <div className="sticky top-0 z-5 hidden buttion-background-color shadow md:block">
+      <div className="buttion-background-color sticky top-0 z-5 hidden shadow md:block">
         <div className="px-2 py-1 pb-8 md:px-6">
           <div className="mx-auto max-w-[1250px]">
             {/* Heading */}
@@ -62,7 +62,6 @@ export default function SearchBar({ onSearch }) {
             <div className="grid grid-cols-1 items-center gap-2 md:grid-cols-12">
               <div className="min-w-0 md:col-span-3 lg:col-span-4">
                 <DestinationSearchField
-
                   error={destinationError}
                   value={{
                     city: draftSearchData?.city,
@@ -97,7 +96,7 @@ export default function SearchBar({ onSearch }) {
               <div className="relative z-50 min-w-0 md:col-span-3 lg:col-span-3">
                 <DateRangeField
                   icon={
-                    <CalendarOutlined className="text-gray-400 text-[18px]" />
+                    <CalendarOutlined className="text-[18px] text-gray-400" />
                   }
                   variant="compact"
                   open={dateOpen}
@@ -129,9 +128,7 @@ export default function SearchBar({ onSearch }) {
 
               <div className="relative z-40 min-w-0 md:col-span-4 lg:col-span-3">
                 <GuestsField
-                  icon={
-                    <TeamOutlined className="text-gray-400 text-[18px]" />
-                  }
+                  icon={<TeamOutlined className="text-[18px] text-gray-400" />}
                   variant="compact"
                   open={guestOpen}
                   setOpen={setGuestOpen}
@@ -146,7 +143,7 @@ export default function SearchBar({ onSearch }) {
                 <button
                   type="button"
                   onClick={handleSearch}
-                  className="h-[50px] w-full  rounded-[25px] bg-[#1856b8] text-sm font-semibold  !text-white transition-all duration-200 active:scale-[0.98]"
+                  className="teb-bg-color h-[50px] w-full rounded-[25px] text-sm font-semibold !text-white transition-all duration-200 active:scale-[0.98]"
                 >
                   SEARCH
                 </button>

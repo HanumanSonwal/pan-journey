@@ -310,7 +310,7 @@ function SidebarFilters({
           <div className="absolute inset-0 flex items-center justify-center">
             <button
               type="button"
-              className="cursor-pointer rounded border border-[#0B6CFF] bg-white px-2 py-1 text-[10px] font-semibold text-[#0B6CFF] shadow-md transition-all duration-200 hover:bg-[#0B6CFF] hover:text-white sm:px-3 sm:py-1.5 sm:text-[11px] md:px-4 md:py-2 md:text-xs lg:px-5 lg:py-2.5 lg:text-sm"
+            className="buttion-background-color most-boder-colour most-text-color background-color cursor-pointer rounded border bg-white px-2 py-1 text-[10px] font-semibold shadow-md transition-all duration-200 sm:px-3 sm:py-1.5 sm:text-[11px] md:px-4 md:py-2 md:text-xs lg:px-5 lg:py-2.5 lg:text-sm"
             >
               Explore on Map
             </button>
