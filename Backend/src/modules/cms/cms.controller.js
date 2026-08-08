@@ -48,6 +48,7 @@ export const getCMSBySlug = asyncHandler(async (req, res) => {
   const data = await getCMSPageBySlug(req.params.slug, preview);
   sendSuccess(res, "CMS page fetched successfully", data);
 });
+ 
 
 export const getTemplates = asyncHandler(async (req, res) => {
   const data = await getCMSTemplates();

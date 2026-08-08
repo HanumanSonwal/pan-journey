@@ -176,7 +176,7 @@ GET BY SLUG
 */
 export const getCMSPageBySlug = async (slug, preview = false) => {
   console.log("CMS SLUG:", slug, "PREVIEW:", preview);
-
+ 
   const filter = preview
     ? {
         slug,
@@ -185,17 +185,18 @@ export const getCMSPageBySlug = async (slug, preview = false) => {
         slug,
         isPublished: true,
       };
-
+ 
   const page = await CMSPage.findOne(filter);
-
+ 
   console.log("CMS PAGE:", page);
-
+ 
   if (!page) {
     throw new ApiError(404, "Page not found");
   }
-
+ 
   return serializeCMSPage(page);
 };
+ 
 
 /*
 PREVIEW SLUG
