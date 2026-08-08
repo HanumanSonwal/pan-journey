@@ -45,7 +45,7 @@ export default function CMSPageLayout({ children, cms }) {
 
       <div
         style={{
-          paddingBottom: 80,
+          paddingBottom: 0,
         }}
       >
         {children}

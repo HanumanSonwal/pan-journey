@@ -455,11 +455,6 @@ function HotelDetails({ initialPayload = null, cms = null }) {
       {/* SESSION EXPIRED MODAL                                                 */}
       {/* ---------------------------------------------------------------------- */}
 
-      <SessionExpiredModal
-        open={sessionExpired}
-        loading={reloadingHotels}
-        onReload={handleReloadHotels}
-      />
     </div>
   );
 }

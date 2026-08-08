@@ -20,20 +20,22 @@ import NewsletterSection from "../../home/components/NewsletterSection";
 const BLOGS = [
   {
     id: 1,
-    title: "10 Best Places to Visit in India for Your Next Vacation",
+    slug: "jaipur-pink-city",
+    title: "Jaipur – The Pink City",
     description:
-      "Discover beautiful destinations, unforgettable experiences, and the best places to explore across India.",
+      "Discover the royal charm of Jaipur, magnificent forts, colourful markets, rich culture and unforgettable experiences in the Pink City of India.",
     category: "Destinations",
     author: "Pan Journey",
     date: "05 Aug 2026",
     readTime: "6 min read",
-    location: "India",
+    location: "Jaipur, Rajasthan",
     image:
-      "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&w=1200&q=85",
     featured: true,
   },
   {
     id: 2,
+    slug: "perfect-weekend-getaway",
     title: "How to Plan the Perfect Weekend Getaway",
     description:
       "A simple guide to planning a relaxing and memorable weekend trip without spending too much.",
@@ -47,6 +49,7 @@ const BLOGS = [
   },
   {
     id: 3,
+    slug: "top-beach-destinations",
     title: "Top Beach Destinations for a Relaxing Holiday",
     description:
       "From peaceful beaches to exciting coastal cities, explore destinations perfect for your next escape.",
@@ -60,6 +63,7 @@ const BLOGS = [
   },
   {
     id: 4,
+    slug: "travel-on-a-budget",
     title: "Travel on a Budget: Smart Ways to Save Money",
     description:
       "Learn practical tips that can help you save money on hotels, transport, food, and activities.",
@@ -73,6 +77,7 @@ const BLOGS = [
   },
   {
     id: 5,
+    slug: "best-hill-stations",
     title: "Best Hill Stations to Escape the Summer Heat",
     description:
       "Planning a cool mountain vacation? These hill stations are perfect for your next summer trip.",
@@ -86,6 +91,7 @@ const BLOGS = [
   },
   {
     id: 6,
+    slug: "hotel-booking-tips",
     title: "Hotel Booking Tips Every Traveller Should Know",
     description:
       "Before booking your next hotel, check these important things to get a better stay and better value.",
@@ -99,6 +105,7 @@ const BLOGS = [
   },
   {
     id: 7,
+    slug: "family-vacation-guide",
     title: "A Complete Guide to Planning a Family Vacation",
     description:
       "Everything you need to know to plan a comfortable and enjoyable family holiday.",
@@ -112,6 +119,7 @@ const BLOGS = [
   },
   {
     id: 8,
+    slug: "hidden-travel-gems",
     title: "Hidden Travel Gems You Should Explore",
     description:
       "Move beyond the usual tourist destinations and discover some beautiful lesser-known places.",
@@ -125,6 +133,7 @@ const BLOGS = [
   },
   {
     id: 9,
+    slug: "things-to-pack",
     title: "Things to Pack Before Every Trip",
     description:
       "A useful packing checklist to make sure you never forget the essentials on your next journey.",
@@ -137,10 +146,6 @@ const BLOGS = [
       "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=1000&q=80",
   },
 ];
-
-/* -------------------------------------------------------------------------- */
-/*                              CATEGORIES                                    */
-/* -------------------------------------------------------------------------- */
 
 const CATEGORIES = [
   "All",
@@ -156,24 +161,27 @@ const CATEGORIES = [
 
 const BlogCard = ({ blog, onClick }) => {
   return (
-    <article className="group overflow-hidden rounded-[18px] border border-gray-100 bg-white shadow-[0_4px_18px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(0,0,0,0.10)]">
+    <article
+      onClick={() => onClick(blog)}
+      className="group cursor-pointer overflow-hidden rounded-[18px] border border-gray-100 bg-white shadow-[0_4px_18px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(0,0,0,0.10)]"
+    >
       {/* IMAGE */}
-      <div className="relative h-[210px] w-full overflow-hidden">
+      <div className="relative h-[210px] w-full overflow-hidden !bg-black">
         <img
           src={blog.image}
           alt={blog.title}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.05]"
         />
 
-        {/* CATEGORY */}
-        <span className="most-text-color absolute top-4 left-4 rounded-full bg-white/95 px-3 py-1.5 text-[11px] font-bold shadow-sm">
+        <span className="most-text-color most-boder-colour absolute top-4 left-4 rounded-full bg-white/95 px-3 py-1.5 text-[11px] font-bold shadow-sm">
           {blog.category}
         </span>
+
+        <div className="absolute inset-0 bg-black/0 transition-all duration-300 group-hover:bg-black/10" />
       </div>
 
       {/* CONTENT */}
       <div className="p-5">
-        {/* META */}
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] text-gray-400">
           <span className="flex items-center gap-1">
             <CalendarOutlined />
@@ -186,18 +194,15 @@ const BlogCard = ({ blog, onClick }) => {
           </span>
         </div>
 
-        {/* TITLE */}
         <h3 className="group-hover:most-text-color mt-3 line-clamp-2 min-h-[52px] text-[19px] leading-[1.35] font-bold transition-colors duration-200">
           {blog.title}
         </h3>
 
-        {/* DESCRIPTION */}
         <p className="mt-2 line-clamp-2 text-[14px] leading-6 text-gray-500">
           {blog.description}
         </p>
 
-        {/* FOOTER */}
-        <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-4">
+        <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-4 ">
           <div className="flex min-w-0 items-center gap-2">
             <span className="most-text-color flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#eef6fb] text-[13px]">
               <UserOutlined />
@@ -217,7 +222,10 @@ const BlogCard = ({ blog, onClick }) => {
 
           <button
             type="button"
-            onClick={() => onClick(blog)}
+            onClick={(event) => {
+              event.stopPropagation();
+              onClick(blog);
+            }}
             className="most-text-color flex shrink-0 items-center gap-1.5 border-0 bg-transparent p-0 text-[13px] font-bold transition-all duration-200 hover:gap-2.5"
           >
             Read More
@@ -230,19 +238,14 @@ const BlogCard = ({ blog, onClick }) => {
 };
 
 /* -------------------------------------------------------------------------- */
-/*                              BLOG PAGE                                      */
+/*                              BLOG PAGE                                     */
 /* -------------------------------------------------------------------------- */
 
 const BlogPage = () => {
   const router = useRouter();
 
   const [activeCategory, setActiveCategory] = useState("All");
-
   const [search, setSearch] = useState("");
-
-  /* ------------------------------------------------------------------------ */
-  /*                            FILTER BLOGS                                  */
-  /* ------------------------------------------------------------------------ */
 
   const filteredBlogs = useMemo(() => {
     const searchValue = search.trim().toLowerCase();
@@ -262,44 +265,29 @@ const BlogPage = () => {
     });
   }, [activeCategory, search]);
 
-  const featuredBlog = BLOGS.find((blog) => blog.featured) || BLOGS[0];
-
   /* ------------------------------------------------------------------------ */
-  /*                           BLOG OPEN                                      */
+  /*                         OPEN BLOG DETAIL                                 */
   /* ------------------------------------------------------------------------ */
 
   const handleBlogClick = (blog) => {
-    /*
-     * If you already have a dynamic blog route,
-     * replace this with:
-     *
-     * router.push(`/blog/${blog.id}`);
-     */
-
-    router.push(`/blog/${blog.id}`);
+    router.push(`/blog/${blog.slug}`);
   };
 
   return (
     <>
       <main className="min-h-screen w-full bg-[#f6f9fb]">
-        {/* ==================================================================== */}
-        {/* HERO                                                                 */}
-        {/* ==================================================================== */}
-
+        {/* HERO */}
         <section className="relative overflow-hidden bg-[#092f49]">
-          {/* BACKGROUND IMAGE */}
           <div className="absolute inset-0">
             <img
-              src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1800&q=80"
-              alt="Travel"
-              className="h-full w-full object-cover opacity-25"
+              src="https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&w=1200&q=85"
+              alt="Travel Blog"
+              className="h-full w-full object-cover opacity-90"
             />
           </div>
 
-          {/* OVERLAY */}
-          <div className="absolute inset-0 bg-[#06283d]/75" />
+          <div className="absolute inset-0 bg-[#06283d]/30" />
 
-          {/* HERO CONTENT */}
           <div className="relative mx-auto flex min-h-[390px] w-full max-w-7xl flex-col items-center justify-center px-4 py-16 text-center sm:px-6 lg:px-8">
             <span className="rounded-full bg-white/10 px-4 py-2 text-[12px] font-semibold tracking-wider text-white uppercase backdrop-blur-sm">
               PAN JOURNEY TRAVEL BLOG
@@ -315,7 +303,6 @@ const BlogPage = () => {
               useful ideas to make your next journey unforgettable.
             </p>
 
-            {/* SEARCH */}
             <div className="mt-7 flex w-full max-w-[650px] flex-col gap-2 rounded-[14px] bg-white p-2 shadow-[0_12px_35px_rgba(0,0,0,0.18)] sm:flex-row">
               <Input
                 allowClear
@@ -344,11 +331,9 @@ const BlogPage = () => {
           </div>
         </section>
 
-        {/* ==================================================================== */}
-        {/* MAIN                                                                  */}
-        {/* ==================================================================== */}
-
+        {/* MAIN */}
         <div className="mx-auto w-full max-w-7xl px-3 py-8 sm:px-5 md:py-10 lg:px-6 xl:px-0">
+          {/* CATEGORY */}
           <section className="mt-10">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
@@ -373,7 +358,6 @@ const BlogPage = () => {
               />
             </div>
 
-            {/* DESKTOP CATEGORY BUTTONS */}
             <div className="mt-5 hidden flex-wrap gap-2 sm:flex">
               {CATEGORIES.map((category) => {
                 const active = activeCategory === category;
@@ -386,8 +370,8 @@ const BlogPage = () => {
                     className={`rounded-full border px-5 py-2.5 text-[13px] font-semibold transition-all duration-200 ${
                       active
                         ? "buttion-background-color border-transparent !text-white shadow-sm"
-                        : "hover:most-text-color border-gray-200 bg-white text-[#555] hover:border-[#008cff]"
-                    } `}
+                        : "border-gray-200 bg-white text-[#555] hover:border-[#008cff] hover:text-[#008cff]"
+                    }`}
                   >
                     {category}
                   </button>
@@ -396,10 +380,7 @@ const BlogPage = () => {
             </div>
           </section>
 
-          {/* ================================================================== */}
-          {/* LATEST ARTICLES                                                    */}
-          {/* ================================================================== */}
-
+          {/* ARTICLES */}
           <section id="latest-articles" className="mt-10 scroll-mt-24">
             <div className="mb-5 flex items-end justify-between gap-4">
               <div>
@@ -454,10 +435,7 @@ const BlogPage = () => {
             )}
           </section>
 
-          {/* ================================================================== */}
-          {/* POPULAR DESTINATIONS                                               */}
-          {/* ================================================================== */}
-
+          {/* POPULAR DESTINATIONS */}
           <section className="mt-12">
             <div className="mb-5">
               <p className="most-text-color text-[12px] font-bold tracking-wider uppercase">
@@ -522,12 +500,9 @@ const BlogPage = () => {
               ))}
             </div>
           </section>
-
-          {/* ================================================================== */}
-          {/* NEWSLETTER                                                         */}
-          {/* ================================================================== */}
         </div>
       </main>
+
       <NewsletterSection />
     </>
   );

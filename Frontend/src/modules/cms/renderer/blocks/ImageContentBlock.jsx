@@ -18,7 +18,7 @@ export default function ImageContentBlock({ data }) {
   return (
     <section
       style={{
-        padding: "80px 20px",
+        padding: "10px 20px 40px 20px",
         background: "#fff",
       }}
     >
@@ -84,7 +84,8 @@ export default function ImageContentBlock({ data }) {
             )}
 
             {data?.buttonText && (
-              <Link className="buttion-background-color"
+              <Link
+                className="buttion-background-color"
                 href={data?.buttonLink || "#"}
                 style={{
                   display: "inline-flex",
@@ -95,7 +96,7 @@ export default function ImageContentBlock({ data }) {
                   padding: "0 24px",
                   borderRadius: 14,
                   textDecoration: "none",
-                 
+
                   color: "#fff",
                   fontWeight: 600,
                   boxShadow: "0 12px 28px rgba(37,99,235,.24)",
