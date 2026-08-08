@@ -213,7 +213,7 @@ export default function DateRangeField({
           </div>
           {/* NIGHTS */}
           {nights > 0 && (
-            <div className="ml-5 rounded-md bg-[#05144B] px-2 py-1 text-[10px] font-semibold text-white">
+            <div className="ml-5 rounded-md buttion-background-color px-2 py-1 text-[10px] font-semibold text-white">
               {nights}N
             </div>
           )}

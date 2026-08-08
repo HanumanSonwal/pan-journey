@@ -320,7 +320,7 @@ body {
 }
 
 .background-color:hover {
-  background-color: var(--theme-secondary);
+  background-color: var(--theme-secondary) !important;
 }
 
 /* Border */

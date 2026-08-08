@@ -62,7 +62,7 @@ export default function ImageContentBlock({ data }) {
             {data?.title && (
               <h2
                 style={{
-                  fontSize: "clamp(2rem,4vw,3rem)",
+                  fontSize: "clamp(2rem,2vw,2rem)",
                   fontWeight: 700,
                   marginBottom: 20,
                   color: "#0f172a",
@@ -84,7 +84,7 @@ export default function ImageContentBlock({ data }) {
             )}
 
             {data?.buttonText && (
-              <Link
+              <Link className="buttion-background-color"
                 href={data?.buttonLink || "#"}
                 style={{
                   display: "inline-flex",
@@ -95,7 +95,7 @@ export default function ImageContentBlock({ data }) {
                   padding: "0 24px",
                   borderRadius: 14,
                   textDecoration: "none",
-                  background: "linear-gradient(90deg,#2563eb,#1d4ed8)",
+                 
                   color: "#fff",
                   fontWeight: 600,
                   boxShadow: "0 12px 28px rgba(37,99,235,.24)",
