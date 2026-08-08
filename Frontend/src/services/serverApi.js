@@ -5,4 +5,5 @@ const baseURL =
 
 export const serverApi = axios.create({
   baseURL,
+  timeout: 5000,
 });

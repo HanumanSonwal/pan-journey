@@ -1,9 +1,13 @@
-import { api } from "@/services/axios";
+import { serverApi } from "@/services/serverApi";
 
-export const getTheme = async () => {
-  const { data } = await api.get("/theme");
+export const getThemeServer = async () => {
+  try {
+    const { data } = await serverApi.get("/theme");
 
-  console.log("THEME DATA =>", data);
+    return data?.data ?? null;
+  } catch (error) {
+    console.error("Server Theme Fetch Error:", error);
 
-  return data?.data || null;
+    return null;
+  }
 };

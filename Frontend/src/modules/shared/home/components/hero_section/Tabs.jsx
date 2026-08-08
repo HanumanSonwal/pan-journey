@@ -1,7 +1,6 @@
 "use client";
 
 import { Tooltip } from "antd";
-import Image from "next/image";
 
 export default function Tabs({ tabs, activeTab, setActiveTab }) {
   return (
@@ -28,16 +27,19 @@ export default function Tabs({ tabs, activeTab, setActiveTab }) {
                   : "cursor-pointer hover:scale-105 hover:shadow-lg"
               } `}
             >
-              <Image
-                src={tab.icon}
-                alt={tab.label}
-                width={40}
-                height={40}
-                className="h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10"
+              <div
+                className={`h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 ${
+                  isActive ? "theme-icon-white" : "theme-icon-secondary"
+                }`}
                 style={{
-                  filter: isActive
-                    ? "brightness(0) invert(1)"
-                    : "brightness(0) saturate(100%) invert(10%) sepia(80%) saturate(3000%) hue-rotate(210deg) brightness(80%)",
+                  maskImage: `url(${tab.icon})`,
+                  WebkitMaskImage: `url(${tab.icon})`,
+                  maskRepeat: "no-repeat",
+                  WebkitMaskRepeat: "no-repeat",
+                  maskPosition: "center",
+                  WebkitMaskPosition: "center",
+                  maskSize: "contain",
+                  WebkitMaskSize: "contain",
                 }}
               />
             </button>

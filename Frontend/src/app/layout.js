@@ -15,6 +15,10 @@ import Script from "next/script";
 import { Suspense } from "react";
 import "./globals.css";
 import Providers from "./providers";
+import { getThemeCSSVariables } from "@/modules/theme/theme.variables";
+import { getThemeServer } from "@/modules/theme/api/theme.service";
+
+
 
 /* Fonts */
 
@@ -63,12 +67,16 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const theme = await getThemeServer();
+
+  const themeVariables = getThemeCSSVariables(theme);
   return (
     <html
       suppressHydrationWarning
       lang="en"
       className={`${roboto.variable} ${jost.variable} h-full antialiased`}
+      style={themeVariables}
     >
       <head>
         {/* Viewport */}

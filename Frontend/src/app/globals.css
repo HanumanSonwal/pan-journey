@@ -12,31 +12,31 @@
      ========================== */
 
   /* Primary */
-  --theme-primary: #FDA20F;
+  --theme-primary: #fda20f;
 
   /* Secondary */
-  --theme-secondary: #05144B;
+  --theme-secondary: #05144b;
 
   /* Hover */
-  --theme-hover: #0C2FB1;
+  --theme-hover: #0c2fb1;
 
   /* Text */
-  --theme-text-primary: #05144B;
-  --theme-text-secondary: #FDA20F;
+  --theme-text-primary: #05144b;
+  --theme-text-secondary: #fda20f;
 
   /* Border */
   --theme-border: #051449;
 
   /* White */
-  --theme-white: #FFFFFF;
+  --theme-white: #ffffff;
 
   /* Gradient */
-  --theme-gradient-start: #05144B;
-  --theme-gradient-end: #0C2FB1;
+  --theme-gradient-start: #05144b;
+  --theme-gradient-end: #0c2fb1;
 
   /* Border Gradient */
-  --theme-border-gradient-start: #72C0F0;
-  --theme-border-gradient-end: #0F6A75;
+  --theme-border-gradient-start: #72c0f0;
+  --theme-border-gradient-end: #0f6a75;
 }
 
 @theme inline {
@@ -278,9 +278,6 @@ body {
   overscroll-behavior-x: contain !important;
 }
 
-
-
-
 /* ==========================================================================
    WEBSITE THEME
    ========================================================================== */
@@ -353,14 +350,23 @@ body {
   border: 1px solid transparent;
 
   background:
+    linear-gradient(var(--theme-white), var(--theme-white)) padding-box,
     linear-gradient(
-      var(--theme-white),
-      var(--theme-white)
-    ) padding-box,
+        180deg,
+        var(--theme-border-gradient-start) 0%,
+        var(--theme-border-gradient-end) 100%
+      )
+      border-box;
+}
 
-    linear-gradient(
-      180deg,
-      var(--theme-border-gradient-start) 0%,
-      var(--theme-border-gradient-end) 100%
-    ) border-box;
+.theme-icon-primary {
+  background-color: var(--theme-primary);
+}
+
+.theme-icon-secondary {
+  background-color: var(--theme-secondary);
+}
+
+.theme-icon-white {
+  background-color: var(--theme-white);
 }
