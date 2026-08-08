@@ -126,7 +126,7 @@ export default function TopRatedHotels({ hotels }) {
   const renderCard = (hotel, idx) => (
     <div
       onClick={() => handleSearch(hotel)}
-      key={hotel.id}
+      key={hotel._id}
       className="flex w-1/2 flex-shrink-0 px-1 md:w-1/3 lg:w-1/4 xl:w-1/5"
     >
       <Card
@@ -161,7 +161,7 @@ export default function TopRatedHotels({ hotels }) {
             {hotel.description}
           </p>
           <div className="scale-75 sm:scale-90 lg:scale-100">
-            <Rate disabled allowHalf defaultValue={hotel.rating} />
+            <Rate disabled allowHalf value={hotel.rating} />
           </div>
         </div>
       </Card>
@@ -174,7 +174,7 @@ export default function TopRatedHotels({ hotels }) {
         {/* HEADING */}
         <div className="mb-8 text-center text-white md:mb-10">
           <h2 className="text-2xl font-bold sm:text-3xl lg:text-4xl">
-            Top Rated Hotels
+            {hotels?.title || "Top Rated Hotels"}
           </h2>
 
           <p className="mx-auto mt-3 max-w-3xl text-sm leading-6 opacity-90 sm:text-base lg:text-lg">

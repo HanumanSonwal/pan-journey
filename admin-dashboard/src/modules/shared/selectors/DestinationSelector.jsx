@@ -3,7 +3,7 @@
 import { Select } from "antd";
 import { useEffect, useState } from "react";
 
-import { getDestinationsApi } from "@/modules/destination/api/destination.service";
+import { getDestinationsApi } from "@/modules/master-data/api/destination.service";
 
 export default function DestinationSelector({
   type,

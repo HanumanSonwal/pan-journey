@@ -4,7 +4,7 @@ const destinationSchema = new mongoose.Schema(
   {
     type: {
       type: String,
-      enum: ["YOUR_VIBE", "POPULAR_DESTINATIONS","Blogs"],
+      enum: ["YOUR_VIBE", "POPULAR_DESTINATIONS","BLOGS"],
       required: true,
     },
 

@@ -8,15 +8,21 @@ export const bottomMenuItems = [
     children: [
 
       {
-        key: "/dashboard/destinations",
-        label: "Destinations",
-        module: "destinationSettings",
+        key: "/dashboard/master-data",
+        label: "master-data settings",
+        module: "masterData",
       },
       {
         key: "/dashboard/home-content",
-        label: "Home Page",
+        label: "Home-Page settings",
         module: "homeContent",
       },
+
+      {
+        key: "/dashboard/theme",
+        label: "Theme settings",
+        module: "themeSettings",
+      }
 
       // Future
       // {

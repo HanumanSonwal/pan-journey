@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 import { App, Button, Card, Form, Input, Select, Space } from "antd";
 
-import { useDestination } from "@/modules/destination/hooks/useDestination";
+import { useMasterData } from "@/modules/master-data/hooks/useMasterData";
 
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 
@@ -24,7 +24,7 @@ export default function PopularDestinationsForm({
 
   const [form] = Form.useForm();
 
-  const { destinations } = useDestination(
+  const { destinations } = useMasterData(
     {
       type: "POPULAR_DESTINATIONS",
     },

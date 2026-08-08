@@ -2,8 +2,41 @@
 @config "../../tailwind.config.js";
 
 :root {
+  /* Existing Variables */
+
   --background: #ffffff;
   --foreground: #171717;
+
+  /* ==========================
+      Website Theme Variables
+     ========================== */
+
+  /* Primary */
+  --theme-primary: #FDA20F;
+
+  /* Secondary */
+  --theme-secondary: #05144B;
+
+  /* Hover */
+  --theme-hover: #0C2FB1;
+
+  /* Text */
+  --theme-text-primary: #05144B;
+  --theme-text-secondary: #FDA20F;
+
+  /* Border */
+  --theme-border: #051449;
+
+  /* White */
+  --theme-white: #FFFFFF;
+
+  /* Gradient */
+  --theme-gradient-start: #05144B;
+  --theme-gradient-end: #0C2FB1;
+
+  /* Border Gradient */
+  --theme-border-gradient-start: #72C0F0;
+  --theme-border-gradient-end: #0F6A75;
 }
 
 @theme inline {
@@ -19,8 +52,6 @@
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
   font-family: var(--font-roboto), sans-serif;
 }
 
@@ -246,61 +277,90 @@ body {
   -webkit-overflow-scrolling: touch !important;
   overscroll-behavior-x: contain !important;
 }
- 
-/* THEM ON WEB SITE CODE */
-.teb-text-color {
-  color: #FDA20F;
 
+
+
+
+/* ==========================================================================
+   WEBSITE THEME
+   ========================================================================== */
+
+/* Text */
+
+.teb-text-color {
+  color: var(--theme-primary);
 }
+
 .most-text-color {
-  color: #05144B !important;
- }
- 
+  color: var(--theme-text-primary) !important;
+}
+
+/* Background */
+
 .teb-bg-color {
-  background-color: #FDA20F;
-  
+  background-color: var(--theme-primary);
 }
+
 .buttion-background-color {
-  background-color: #05144B;
+  background-color: var(--theme-secondary);
 }
+
 .buttion-background-color.ant-btn {
-  background-color: #05144B !important;
-  border-color: #05144B !important;
-  color: #fff !important;
+  background-color: var(--theme-secondary) !important;
+  border-color: var(--theme-secondary) !important;
+  color: var(--theme-white) !important;
 }
 
 .buttion-background-color.ant-btn:hover,
 .buttion-background-color.ant-btn:focus {
-  background-color: #0C2FB1 !important;
-  border-color: #0C2FB1 !important;
-  color: #fff !important;
+  background-color: var(--theme-hover) !important;
+  border-color: var(--theme-hover) !important;
+  color: var(--theme-white) !important;
 }
+
 .box-background-color {
-  background-color: #05144B;
+  background-color: var(--theme-secondary);
 }
 
 .background-color:hover {
-  background-color: #05144B;
-}
-.teb-border-color {
-  border-color: #051449;
-}
-.buttion-border-color{
-  border-color:#FDA20F;
-}
-.teb-gradient {
-  background: linear-gradient(180deg, #05144B 0%, #0C2FB1 100%);
+  background-color: var(--theme-secondary);
 }
 
-.most-boder-colour {
-  border: 1px solid transparent;
-  background:
-    linear-gradient(#fff, #fff) padding-box,
-    linear-gradient(180deg, #72C0F0 0%, #0F6A75 100%) border-box;
+/* Border */
+
+.teb-border-color {
+  border-color: var(--theme-border);
 }
+
+.buttion-border-color {
+  border-color: var(--theme-primary);
+}
+
+/* Gradient */
+
+.teb-gradient {
+  background: linear-gradient(
+    180deg,
+    var(--theme-gradient-start) 0%,
+    var(--theme-gradient-end) 100%
+  );
+}
+
+/* Gradient Border */
+
+.most-boder-colour,
 .most-boder-colour:hover {
   border: 1px solid transparent;
+
   background:
-    linear-gradient(#fff, #fff) padding-box,
-    linear-gradient(180deg, #72C0F0 0%, #0F6A75 100%) border-box;
+    linear-gradient(
+      var(--theme-white),
+      var(--theme-white)
+    ) padding-box,
+
+    linear-gradient(
+      180deg,
+      var(--theme-border-gradient-start) 0%,
+      var(--theme-border-gradient-end) 100%
+    ) border-box;
 }
