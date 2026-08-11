@@ -267,21 +267,22 @@ export const getAllBlogsService = async (query) => {
       throw new ApiError(404, "Blog not found");
     }
 
-    let categoryName = null;
+if (!blog.categoryId) {
+  throw new ApiError(404, "Blog category not found");
+}
 
-    if (blog.categoryId) {
-      const category = await MasterData.findById(blog.categoryId)
-        .select("placeName")
-        .lean();
+const category = await MasterData.findById(blog.categoryId)
+  .select("placeName")
+  .lean();
 
-      categoryName = category?.placeName || null;
-    }
+if (!category) {
+  throw new ApiError(404, "Blog category not found");
+}
 
-    return {
-      ...blog,
-      categoryName,
-    };
-  }
+return {
+  ...blog,
+  categoryName: category.placeName,
+};}
 
   // -------------------------------
   // Blog Listing
@@ -320,9 +321,15 @@ export const getAllBlogsService = async (query) => {
   }, {});
 
   // Add category name in response
-  const result = blogs.map((blog) => ({
+  const result = blogs
+  .filter((blog) => {
+    const categoryId = blog.categoryId?.toString();
+
+    return categoryId && categoryMap[categoryId];
+  })
+  .map((blog) => ({
     ...blog,
-    categoryName: categoryMap[blog.categoryId?.toString()] || null,
+    categoryName: categoryMap[blog.categoryId.toString()],
   }));
 
   return {
