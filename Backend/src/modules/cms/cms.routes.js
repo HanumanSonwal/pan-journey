@@ -8,6 +8,7 @@ import {
   deleteCMS,
   getAllCMS,
   getCMSByEntityController,
+  getAllBlogsController,
   getCMSBySlug,
   getSingleCMS,
   getTemplates,
@@ -18,6 +19,8 @@ import {
 import { createCMSValidation, updateCMSValidation } from "./cms.validation.js";
 
 const router = express.Router();
+
+router.get("/blogs", getAllBlogsController);
 
 /*
 =================================
@@ -80,6 +83,8 @@ router.post(
 GET ALL
 ADMIN
 */
+
+
 router.get("/", protect, checkPermission("cmsPages", "read"), getAllCMS);
 
 /*
@@ -107,5 +112,7 @@ router.delete(
   checkPermission("cmsPages", "delete"),
   deleteCMS,
 );
+
+// router.get("/blogs", getAllBlogsController);
 
 export default router;

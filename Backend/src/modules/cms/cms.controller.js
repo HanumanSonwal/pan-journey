@@ -11,6 +11,7 @@ import {
   getCMSTemplates,
   updateCMSPage,
   previewCMSSlug,
+  getAllBlogsService
 } from "./cms.service.js";
 
 export const createCMS = asyncHandler(async (req, res) => {
@@ -58,4 +59,12 @@ export const getCMSByEntityController = asyncHandler(async (req, res) => {
   const { entityType, entityId } = req.params;
   const data = await getCMSByEntity(entityType, entityId);
   sendSuccess(res, "CMS entity fetched successfully", data);
+});
+
+
+//get all blogs website
+export const getAllBlogsController = asyncHandler(async (req, res) => {
+  const data = await getAllBlogsService(req.query);
+
+  sendSuccess(res, "Blogs fetched successfully", data);
 });

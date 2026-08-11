@@ -15,7 +15,7 @@ import contactUs from "./modules/contactUsForm/contact.routes.js";
 import newsletter from "./modules/contactUsForm/newsletter.routes.js";
 import currencyRoutes from "./modules/currencyConverter/currency.route.js";
 import dashboardhotelsearch from "./modules/dashboardHotels/hotel.routes.js";
-import destinationRoutes from "./modules/exploreDesitanation/desitanation.routes.js";
+import masterRoutes from "./modules/master-data/masterData.routes.js";
 import grievanceRedressal from "./modules/grievanceRedressal/grievanceRedressal.routes.js";
 import hotelSearch from "./modules/hotel/hotel.route.js";
 import hotelCancellation from "./modules/hotel/hotelCancellation/cancellation.route.js";
@@ -103,7 +103,7 @@ app.use("/api/v1", testRoutes);
 app.use("/api/v1/newsletter", newsletter);
 app.use("/api/v1", invoiceRoutes);
 
-app.use("/api/v1/destinations", destinationRoutes);
+app.use("/api/v1/masterData", masterRoutes);
 app.use("/api/v1/customer", customerProfileRoutes);
 app.use("/api/v1", countryRoutes);
 app.use("/api/v1/states", stateRoutes);

@@ -56,6 +56,10 @@ export default function CMSFilters({
             value: "marketing",
             label: "Marketing",
           },
+           {
+            value: "blog",
+            label: "Blogs",
+          },
         ]}
       />
     </Space>
