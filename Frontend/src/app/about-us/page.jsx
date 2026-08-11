@@ -106,7 +106,6 @@ export default async function AboutUsPage() {
 
   return (
     <>
-      FAQ Schema
       {faqSchema && (
         <script
           type="application/ld+json"

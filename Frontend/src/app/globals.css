@@ -291,7 +291,13 @@ body {
 .most-text-color {
   color: var(--theme-text-primary) !important;
 }
+.most-text-color {
+  color: var(--theme-text-primary) !important;
+}
 
+.hover-most-text-color:hover {
+  color: var(--theme-text-primary) !important;
+}
 /* Background */
 
 .teb-bg-color {
