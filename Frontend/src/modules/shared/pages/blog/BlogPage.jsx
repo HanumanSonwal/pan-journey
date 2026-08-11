@@ -3,152 +3,19 @@
 import {
   ArrowRightOutlined,
   CalendarOutlined,
-  ClockCircleOutlined,
-  EnvironmentOutlined,
   SearchOutlined,
   UserOutlined,
 } from "@ant-design/icons";
+
 import { Button } from "antd";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useState } from "react";
+
 import NewsletterSection from "../../home/components/NewsletterSection";
 
-/* -------------------------------------------------------------------------- */
-/*                              BLOG DATA                                     */
-/* -------------------------------------------------------------------------- */
-
-const BLOGS = [
-  {
-    id: 1,
-    title: "10 Best Places to Visit in India for Your Next Vacation",
-    description:
-      "Discover beautiful destinations, unforgettable experiences, and the best places to explore across India.",
-    category: "Destinations",
-    author: "Pan Journey",
-    date: "05 Aug 2026",
-    readTime: "6 min read",
-    location: "India",
-    image:
-      "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1200&q=80",
-    featured: true,
-  },
-  {
-    id: 2,
-    title: "How to Plan the Perfect Weekend Getaway",
-    description:
-      "A simple guide to planning a relaxing and memorable weekend trip without spending too much.",
-    category: "Travel Tips",
-    author: "Pan Journey",
-    date: "03 Aug 2026",
-    readTime: "5 min read",
-    location: "India",
-    image:
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1000&q=80",
-  },
-  {
-    id: 3,
-    title: "Top Beach Destinations for a Relaxing Holiday",
-    description:
-      "From peaceful beaches to exciting coastal cities, explore destinations perfect for your next escape.",
-    category: "Destinations",
-    author: "Pan Journey",
-    date: "01 Aug 2026",
-    readTime: "7 min read",
-    location: "Goa",
-    image:
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=80",
-  },
-  {
-    id: 4,
-    title: "Travel on a Budget: Smart Ways to Save Money",
-    description:
-      "Learn practical tips that can help you save money on hotels, transport, food, and activities.",
-    category: "Budget Travel",
-    author: "Pan Journey",
-    date: "29 Jul 2026",
-    readTime: "5 min read",
-    location: "India",
-    image:
-      "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1000&q=80",
-  },
-  {
-    id: 5,
-    title: "Best Hill Stations to Escape the Summer Heat",
-    description:
-      "Planning a cool mountain vacation? These hill stations are perfect for your next summer trip.",
-    category: "Destinations",
-    author: "Pan Journey",
-    date: "26 Jul 2026",
-    readTime: "6 min read",
-    location: "Himachal Pradesh",
-    image:
-      "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1000&q=80",
-  },
-  {
-    id: 6,
-    title: "Hotel Booking Tips Every Traveller Should Know",
-    description:
-      "Before booking your next hotel, check these important things to get a better stay and better value.",
-    category: "Hotels",
-    author: "Pan Journey",
-    date: "24 Jul 2026",
-    readTime: "4 min read",
-    location: "India",
-    image:
-      "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1000&q=80",
-  },
-  {
-    id: 7,
-    title: "A Complete Guide to Planning a Family Vacation",
-    description:
-      "Everything you need to know to plan a comfortable and enjoyable family holiday.",
-    category: "Travel Tips",
-    author: "Pan Journey",
-    date: "20 Jul 2026",
-    readTime: "8 min read",
-    location: "India",
-    image:
-      "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1000&q=80",
-  },
-  {
-    id: 8,
-    title: "Hidden Travel Gems You Should Explore",
-    description:
-      "Move beyond the usual tourist destinations and discover some beautiful lesser-known places.",
-    category: "Destinations",
-    author: "Pan Journey",
-    date: "18 Jul 2026",
-    readTime: "6 min read",
-    location: "India",
-    image:
-      "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1000&q=80",
-  },
-  {
-    id: 9,
-    title: "Things to Pack Before Every Trip",
-    description:
-      "A useful packing checklist to make sure you never forget the essentials on your next journey.",
-    category: "Travel Tips",
-    author: "Pan Journey",
-    date: "15 Jul 2026",
-    readTime: "4 min read",
-    location: "Worldwide",
-    image:
-      "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=1000&q=80",
-  },
-];
-
-/* -------------------------------------------------------------------------- */
-/*                              CATEGORIES                                    */
-/* -------------------------------------------------------------------------- */
-
-const CATEGORIES = [
-  "All",
-  "Destinations",
-  "Travel Tips",
-  "Hotels",
-  "Budget Travel",
-];
+import { useBlogCategories } from "@/modules/blog/hooks/useBlogCategories";
+import { useBlogs } from "@/modules/blog/hooks/useBlogs";
+import { mapBlog } from "@/modules/blog/utils/blogMapper";
 
 /* -------------------------------------------------------------------------- */
 /*                              BLOG CARD                                     */
@@ -179,11 +46,6 @@ const BlogCard = ({ blog, onClick }) => {
             <CalendarOutlined />
             {blog.date}
           </span>
-
-          <span className="flex items-center gap-1">
-            <ClockCircleOutlined />
-            {blog.readTime}
-          </span>
         </div>
 
         {/* TITLE */}
@@ -206,11 +68,6 @@ const BlogCard = ({ blog, onClick }) => {
             <div className="min-w-0">
               <p className="truncate text-[12px] font-semibold text-[#555]">
                 {blog.author}
-              </p>
-
-              <p className="flex items-center gap-1 text-[11px] text-gray-400">
-                <EnvironmentOutlined />
-                {blog.location}
               </p>
             </div>
           </div>
@@ -236,49 +93,47 @@ const BlogCard = ({ blog, onClick }) => {
 const BlogPage = () => {
   const router = useRouter();
 
-  const [activeCategory, setActiveCategory] = useState("All");
-
+  const [activeCategory, setActiveCategory] = useState(null);
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
 
-  /* ------------------------------------------------------------------------ */
-  /*                            FILTER BLOGS                                  */
-  /* ------------------------------------------------------------------------ */
+  /* -------------------------------------------------------------------------- */
+  /*                              CATEGORIES                                    */
+  /* -------------------------------------------------------------------------- */
 
-  const filteredBlogs = useMemo(() => {
-    const searchValue = search.trim().toLowerCase();
+  const { data: categoryResponse, isLoading: categoriesLoading } =
+    useBlogCategories();
 
-    return BLOGS.filter((blog) => {
-      const categoryMatch =
-        activeCategory === "All" || blog.category === activeCategory;
+  const categories = categoryResponse?.data?.data || [];
 
-      const searchMatch =
-        !searchValue ||
-        blog.title.toLowerCase().includes(searchValue) ||
-        blog.description.toLowerCase().includes(searchValue) ||
-        blog.category.toLowerCase().includes(searchValue) ||
-        blog.location.toLowerCase().includes(searchValue);
+  /* -------------------------------------------------------------------------- */
+  /*                                BLOGS                                       */
+  /* -------------------------------------------------------------------------- */
 
-      return categoryMatch && searchMatch;
-    });
-  }, [activeCategory, search]);
+  const {
+    data: blogsResponse,
+    isLoading: blogsLoading,
+    isFetching: blogsFetching,
+  } = useBlogs({
+    categoryId: activeCategory,
+    search,
+    page,
+    limit: 10,
+  });
 
-  const featuredBlog = BLOGS.find((blog) => blog.featured) || BLOGS[0];
+  const blogs = blogsResponse?.data?.data?.blogs || [];
 
-  /* ------------------------------------------------------------------------ */
-  /*                           BLOG OPEN                                      */
-  /* ------------------------------------------------------------------------ */
+  const pagination = blogsResponse?.data?.data?.pagination || {};
+
+  const mappedBlogs = blogs.map(mapBlog);
+
+  /* -------------------------------------------------------------------------- */
+  /*                              BLOG OPEN                                     */
+  /* -------------------------------------------------------------------------- */
 
   const handleBlogClick = (blog) => {
-    /*
-     * If you already have a dynamic blog route,
-     * replace this with:
-     *
-     * router.push(`/blog/${blog.id}`);
-     */
-
-    router.push(`/blog/${blog.id}`);
+    router.push(`/blog/${blog.slug}`);
   };
-
   return (
     <>
       <main className="min-h-screen w-full bg-[#f6f9fb]">
@@ -343,11 +198,13 @@ const BlogPage = () => {
                 <input
                   type="text"
                   value={search}
-                  onChange={(event) => setSearch(event.target.value)}
+                  onChange={(event) => {
+                    setSearch(event.target.value);
+                    setPage(1);
+                  }}
                   placeholder="Search travel articles..."
                   className="h-full flex-1 border-none bg-transparent px-2 text-[14px] outline-none"
                 />
-
                 <div className="mx-3 h-7 w-px bg-gray-400" />
 
                 <button
@@ -366,21 +223,41 @@ const BlogPage = () => {
 
             {/* DESKTOP CATEGORY BUTTONS */}
             <div className="hidden flex-wrap gap-2 sm:flex">
-              {CATEGORIES.map((category) => {
-                const active = activeCategory === category;
+              {/* ALL */}
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveCategory(null);
+                  setPage(1);
+                }}
+                className={`rounded-full border px-5 py-2.5 text-[13px] font-semibold transition-all duration-200 ${
+                  activeCategory === null
+                    ? "buttion-background-color border-transparent !text-white shadow-sm"
+                    : "hover:most-text-color border-gray-200 bg-white text-[#555] hover:border-[#008cff]"
+                }`}
+              >
+                All
+              </button>
+
+              {/* API CATEGORIES */}
+              {categories.map((category) => {
+                const active = activeCategory === category._id;
 
                 return (
                   <button
-                    key={category}
+                    key={category._id}
                     type="button"
-                    onClick={() => setActiveCategory(category)}
+                    onClick={() => {
+                      setActiveCategory(category._id);
+                      setPage(1);
+                    }}
                     className={`rounded-full border px-5 py-2.5 text-[13px] font-semibold transition-all duration-200 ${
                       active
                         ? "buttion-background-color border-transparent !text-white shadow-sm"
                         : "hover:most-text-color border-gray-200 bg-white text-[#555] hover:border-[#008cff]"
-                    } `}
+                    }`}
                   >
-                    {category}
+                    {category.placeName}
                   </button>
                 );
               })}
@@ -400,19 +277,33 @@ const BlogPage = () => {
               </div>
 
               <span className="hidden text-sm text-gray-400 sm:block">
-                {filteredBlogs.length} articles
+                {pagination.total || 0} articles
               </span>
             </div>
 
-            {filteredBlogs.length > 0 ? (
-              <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-                {filteredBlogs.map((blog) => (
-                  <BlogCard
-                    key={blog.id}
-                    blog={blog}
-                    onClick={handleBlogClick}
-                  />
-                ))}
+            {blogsLoading ? (
+              <div className="py-16 text-center text-gray-500">
+                Loading articles...
+              </div>
+            ) : mappedBlogs.length > 0 ? (
+              <div className="relative">
+                {blogsFetching && (
+                  <div className="absolute inset-0 z-10 flex items-start justify-center bg-white/40 pt-10 backdrop-blur-[1px]">
+                    <span className="rounded-full bg-white px-4 py-2 text-sm text-gray-500 shadow">
+                      Loading...
+                    </span>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+                  {mappedBlogs.map((blog) => (
+                    <BlogCard
+                      key={blog.id}
+                      blog={blog}
+                      onClick={handleBlogClick}
+                    />
+                  ))}
+                </div>
               </div>
             ) : (
               <div className="rounded-[18px] bg-white px-5 py-16 text-center shadow-sm">
@@ -431,7 +322,8 @@ const BlogPage = () => {
                 <Button
                   onClick={() => {
                     setSearch("");
-                    setActiveCategory("All");
+                    setActiveCategory(null);
+                    setPage(1);
                   }}
                   className="mt-4 !rounded-lg"
                 >
