@@ -1,4 +1,5 @@
-import BlogPage from "@/modules/shared/pages/blog/BlogPage";
+import BlogPage from "@/modules/blog/pages/BlogPage";
+
 
 export default function Blog() {
   return <BlogPage />;

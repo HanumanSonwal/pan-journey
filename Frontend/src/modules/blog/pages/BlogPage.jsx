@@ -3,6 +3,7 @@
 import {
   ArrowRightOutlined,
   CalendarOutlined,
+  CloseCircleFilled,
   SearchOutlined,
   UserOutlined,
 } from "@ant-design/icons";
@@ -11,11 +12,11 @@ import { Button } from "antd";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import NewsletterSection from "../../home/components/NewsletterSection";
 
 import { useBlogCategories } from "@/modules/blog/hooks/useBlogCategories";
 import { useBlogs } from "@/modules/blog/hooks/useBlogs";
 import { mapBlog } from "@/modules/blog/utils/blogMapper";
+import NewsletterSection from "@/modules/shared/home/components/NewsletterSection";
 
 /* -------------------------------------------------------------------------- */
 /*                              BLOG CARD                                     */
@@ -203,8 +204,24 @@ const BlogPage = () => {
                     setPage(1);
                   }}
                   placeholder="Search travel articles..."
-                  className="h-full flex-1 border-none bg-transparent px-2 text-[14px] outline-none"
+                  className="h-full min-w-0 flex-1 border-none bg-transparent px-2 text-[14px] outline-none"
                 />
+
+                {/* CLEAR SEARCH */}
+                {search && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearch("");
+                      setPage(1);
+                    }}
+                    className="mr-2 flex shrink-0 items-center justify-center border-0 bg-transparent p-0 text-gray-400 transition-colors hover:text-gray-600"
+                    aria-label="Clear search"
+                  >
+                    <CloseCircleFilled className="text-[18px]" />
+                  </button>
+                )}
+
                 <div className="mx-3 h-7 w-px bg-gray-400" />
 
                 <button
@@ -214,7 +231,8 @@ const BlogPage = () => {
                       behavior: "smooth",
                     });
                   }}
-                  className="border-0 bg-transparent p-1"
+                  className="flex shrink-0 items-center justify-center border-0 bg-transparent p-1"
+                  aria-label="Search articles"
                 >
                   <SearchOutlined className="text-[24px] text-[#222]" />
                 </button>
