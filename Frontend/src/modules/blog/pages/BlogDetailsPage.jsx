@@ -9,7 +9,6 @@ import {
 import { Button } from "antd";
 import { useRouter } from "next/navigation";
 
-
 import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
 import NewsletterSection from "@/modules/shared/home/components/NewsletterSection";
 
@@ -123,47 +122,43 @@ const BlogDetailsPage = ({ blog }) => {
       {/* ============================================================ */}
 
       <main className="bg-[#f8fafc]">
-        <div className="mx-auto w-full max-w-7xl px-3 py-8 sm:px-5 sm:py-10 lg:px-6 xl:px-0">
-          <article className="min-w-0 overflow-hidden rounded-[20px] border border-gray-100 bg-white shadow-[0_5px_22px_rgba(0,0,0,0.05)]">
-            {/* CMS CONTENT */}
+        <article className="min-w-0 overflow-hidden rounded-[20px] border border-gray-100 bg-white shadow-[0_5px_22px_rgba(0,0,0,0.05)]">
+          {/* CMS CONTENT */}
 
-            <div className="px-5 py-7 sm:px-8 sm:py-10 lg:px-12 lg:py-12">
-              <CMSContentRenderer cms={blog} />
+          <CMSContentRenderer cms={blog} />
 
-              {/* AUTHOR */}
+          {/* AUTHOR */}
 
-              <div className="mt-10 flex flex-col gap-4 rounded-[18px] border border-gray-100 bg-[#fafcff] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#eaf6ff] text-lg text-[#008cff]">
-                    <UserOutlined />
-                  </div>
-
-                  <div>
-                    <p className="text-[12px] text-gray-400">Written by</p>
-
-                    <p className="text-[15px] font-bold text-[#172033]">
-                      {authorName}
-                    </p>
-
-                    <p className="text-[12px] text-gray-400">
-                      Travel & Destination Guide
-                    </p>
-                  </div>
-                </div>
-
-                <Button
-                  onClick={handleShare}
-                  icon={<ShareAltOutlined />}
-                  className="!h-[42px] !rounded-lg !border-gray-200 !font-semibold"
-                >
-                  Share Article
-                </Button>
+          <div className="mt-10 flex flex-col gap-4 rounded-[18px] border border-gray-100 bg-[#fafcff] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#eaf6ff] text-lg text-[#008cff]">
+                <UserOutlined />
               </div>
 
-              {/* BOTTOM NAVIGATION */}
+              <div>
+                <p className="text-[12px] text-gray-400">Written by</p>
+
+                <p className="text-[15px] font-bold text-[#172033]">
+                  {authorName}
+                </p>
+
+                <p className="text-[12px] text-gray-400">
+                  Travel & Destination Guide
+                </p>
+              </div>
             </div>
-          </article>
-        </div>
+
+            <Button
+              onClick={handleShare}
+              icon={<ShareAltOutlined />}
+              className="!h-[42px] !rounded-lg !border-gray-200 !font-semibold"
+            >
+              Share Article
+            </Button>
+          </div>
+
+          {/* BOTTOM NAVIGATION */}
+        </article>
       </main>
 
       <NewsletterSection />

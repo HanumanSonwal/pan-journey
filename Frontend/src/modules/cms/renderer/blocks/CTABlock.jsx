@@ -7,34 +7,46 @@ export default function CTABlock({ data }) {
 
   return (
     <section
-      className="relative overflow-hidden py-16 md:py-20 lg:py-24"
+      className="relative overflow-hidden py-10 sm:py-6 md:py-6"
       style={{
-        background: backgroundImage
-          ? `linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.55)), url("${backgroundImage}") center/cover no-repeat`
-          : "linear-gradient(135deg,#0f172a,#1e293b)",
+        backgroundImage: backgroundImage
+          ? `url("${backgroundImage}")`
+          : "linear-gradient(135deg, #0f172a, #1e293b)",
+        backgroundPosition: "center",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
       }}
     >
-      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-[900px] text-center">
-          {data?.title && (
-            <h2 className="mb-5 text-[28px] leading-tight font-bold text-white md:text-[38px] lg:text-[48px]">
-              {data.title}
-            </h2>
-          )}
+      {/* BACKGROUND OVERLAY */}
+      {backgroundImage && <div className="absolute inset-0 bg-black/40" />}
 
-          {data?.description && (
-            <p className="mx-auto mb-8 max-w-[750px] text-[15px] leading-[1.9] text-white/90 md:text-[17px]">
-              {data.description}
-            </p>
-          )}
+      <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+        <div className="flex min-h-[150px] items-center justify-between gap-8 md:min-h-[150px] lg:gap-12">
+          {/* LEFT CONTENT */}
+          <div className="max-w-[800px]">
+            {data?.title && (
+              <h2 className="mb-3 text-[26px] leading-[1.2] font-bold text-white sm:text-[30px] md:text-[36px]">
+                {data.title}
+              </h2>
+            )}
 
+            {data?.description && (
+              <p className="max-w-[720px] text-[14px] leading-6 text-white/90 sm:text-[15px] sm:leading-7 md:text-[16px]">
+                {data.description}
+              </p>
+            )}
+          </div>
+
+          {/* RIGHT BUTTON */}
           {data?.buttonText && (
-            <Link
-              href={data?.buttonLink || "#"}
-              className="inline-flex items-center justify-center rounded-lg buttion-background-color px-8 py-3.5 text-sm font-semibold !text-white transition-all duration-300 hover:scale-105 !hover:bg-[#4f97dd]"
-            >
-              {data.buttonText}
-            </Link>
+            <div className="shrink-0">
+              <Link
+                href={data?.buttonLink || "#"}
+                className="buttion-background-color inline-flex min-w-[150px] items-center justify-center rounded-lg px-7 py-3.5 text-sm font-semibold !text-white shadow-lg transition-all duration-300 hover:scale-[1.03] hover:shadow-xl"
+              >
+                {data.buttonText}
+              </Link>
+            </div>
           )}
         </div>
       </div>

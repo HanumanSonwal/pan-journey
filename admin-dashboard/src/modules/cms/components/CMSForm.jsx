@@ -42,7 +42,6 @@ export default function CMSForm({ id }) {
 
   console.log("CMSForm masterData", masterData);
 
-
   const title = Form.useWatch("title", form);
   const hotelMeta = Form.useWatch(["data", "hotelMeta"], form);
   const cityMeta = Form.useWatch("cityMeta", form);
@@ -214,7 +213,32 @@ export default function CMSForm({ id }) {
               Select what kind of page you want to create.
             </Text>
 
-            <Row gutter={16}>
+            <Row gutter={16} className="mt-4">
+              {entityType === "blog" && (
+                <Col xs={24} md={24}>
+                  <Form.Item
+                    name="categoryId"
+                    label="Select Blog Category"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please select a blog category",
+                      },
+                    ]}
+                  >
+                    <Select
+                      size="large"
+                      placeholder="Select Blog Category"
+                      allowClear
+                      options={(masterData || []).map((item) => ({
+                        label: item.placeName,
+                        value: item._id,
+                      }))}
+                    />
+                  </Form.Item>
+                </Col>
+              )}
+
               <Col xs={24} md={12}>
                 <Form.Item
                   name="title"
@@ -276,23 +300,6 @@ export default function CMSForm({ id }) {
             {entityType === "blog" && (
               <>
                 <Form.Item
-                  name="description"
-                  label="Description"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please enter description",
-                    },
-                  ]}
-                >
-                  <Input.TextArea
-                    rows={4}
-                    placeholder="Enter short description"
-                    showCount
-                    maxLength={500}
-                  />
-                </Form.Item>
-                <Form.Item
                   name="categoryId"
                   label="Select Blog Category"
                   rules={[
@@ -310,6 +317,23 @@ export default function CMSForm({ id }) {
                       label: item.placeName,
                       value: item._id,
                     }))}
+                  />
+                </Form.Item>
+                <Form.Item
+                  name="description"
+                  label="Description"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter description",
+                    },
+                  ]}
+                >
+                  <Input.TextArea
+                    rows={4}
+                    placeholder="Enter short description"
+                    showCount
+                    maxLength={500}
                   />
                 </Form.Item>
 
