@@ -6,8 +6,10 @@ import {
   CalendarFilled,
   FieldTimeOutlined,
   HeartFilled,
-  HeartOutlined, SendOutlined, ShareAltOutlined,
-  TeamOutlined
+  HeartOutlined,
+  SendOutlined,
+  ShareAltOutlined,
+  TeamOutlined,
 } from "@ant-design/icons";
 import { Drawer } from "antd";
 import dayjs from "dayjs";
@@ -182,19 +184,18 @@ function HotelDetailsMobile({
                 {/* Rating */}
                 <div className="flex items-center gap-2">
                   {/* Rating Box */}
-                  <span className="bg-[#0B5CB5] text-white text-[14px] font-bold 
-                   px-3 py-2 rounded-[10px]">
+                  <span className="rounded-[10px] bg-[#0B5CB5] px-3 py-2 text-[14px] font-bold text-white">
                     4.4
                   </span>
 
                   {/* Review Text */}
                   <div className="flex flex-col">
                     <div className="flex items-center gap-1">
-                      <span className="text-[14px] font-bold most-text-color">
+                      <span className="most-text-color text-[14px] font-bold">
                         Very Good
                       </span>
 
-                      <span className="text-gray-500 text-[14px] font-medium">
+                      <span className="text-[14px] font-medium text-gray-500">
                         ({supplierData?.ReviewCount || "1200"} Ratings)
                       </span>
                     </div>
@@ -205,9 +206,7 @@ function HotelDetailsMobile({
                   </div>
                 </div>
 
-
-
-                <div className="mt-3 flex items-center justify-between rounded-xl border border-gray-200 bg-white p-0 shadow-sm px-1">
+                <div className="mt-3 flex items-center justify-between rounded-xl border border-gray-200 bg-white p-0 px-1 shadow-sm">
                   {/* Left */}
                   <div className="flex items-center gap-3">
                     {/* Map Image */}
@@ -220,8 +219,8 @@ function HotelDetailsMobile({
                     </div>
 
                     {/* Address */}
-                    <div className="flex flex-col ">
-                      <h3 className="m-0 text-[18px] font-bold leading-[1.3] text-[#1F2937]">
+                    <div className="flex flex-col">
+                      <h3 className="m-0 text-[18px] leading-[1.3] font-bold text-[#1F2937]">
                         {supplierData?.City || "East Delhi"}
                       </h3>
 
@@ -232,9 +231,9 @@ function HotelDetailsMobile({
                   </div>
 
                   {/* Right */}
-                  <button className="flex h-9 w-9 items-center justify-center rounded-full most-boder-colour bg-[#EAF6FF]">
+                  <button className=" flex h-9 w-9 items-center justify-center rounded-full  most">
                     <SendOutlined
-                      className="!most-text-color"
+                      className="most-text-color"
                       style={{
                         fontSize: "16px",
                         transform: "rotate(-45deg)",
@@ -247,21 +246,21 @@ function HotelDetailsMobile({
                 {/* Travel Dates & Guests */}
                 <div className="mt-4 border-t border-gray-300 pt-4">
                   {/* Heading */}
-                  <div className="flex items-center justify-between ">
+                  <div className="flex items-center justify-between">
                     <h3 className="text-[18px] font-bold text-black">
                       Travel Dates & Guests
                     </h3>
 
                     <button
                       type="button"
-                      className="text-[16px] font-medium most-text-color"
+                      className="most-text-color text-[16px] font-medium"
                     >
                       View Calendar
                     </button>
                   </div>
 
                   {/* Check-in / Check-out */}
-                  <div className="flex items-center gap-5 mb-3">
+                  <div className="mb-3 flex items-center gap-5">
                     <div className="flex items-center gap-2">
                       <span className="h-2.5 w-2.5 rounded-full bg-gray-400"></span>
 
@@ -287,15 +286,19 @@ function HotelDetailsMobile({
                     <div className="flex-1">
                       <div className="flex h-[43px] items-center gap-3 rounded-[9px] border border-gray-300 px-3">
                         {/* Calendar Icon */}
-                        <CalendarFilled className="text-[20px] text-gray-900 " />
+                        <CalendarFilled className="text-[20px] text-gray-900" />
 
-                        <span className="text-[14px] font-medium most-text-color">
+                        <span className="most-text-color text-[12px] font-medium">
                           {appliedSearchData?.checkIn
-                            ? dayjs(appliedSearchData.checkIn).format("DD MMM, ddd")
+                            ? dayjs(appliedSearchData.checkIn).format(
+                                "DD MMM, ddd",
+                              )
                             : "30 Jul, Thu"}
                           {" - "}
                           {appliedSearchData?.checkOut
-                            ? dayjs(appliedSearchData.checkOut).format("DD MMM, ddd")
+                            ? dayjs(appliedSearchData.checkOut).format(
+                                "DD MMM, ddd",
+                              )
                             : "31 Jul, Fri"}
                         </span>
                       </div>
@@ -307,7 +310,7 @@ function HotelDetailsMobile({
                         {/* User Icon */}
                         <TeamOutlined className="text-[20px] text-gray-900" />
 
-                        <span className="text-[14px] font-medium most-text-color">
+                        <span className="most-text-color text-[14px] font-medium">
                           {appliedSearchData?.guests || 2} Guests/
                           {appliedSearchData?.rooms || 1} Room
                         </span>
@@ -326,8 +329,6 @@ function HotelDetailsMobile({
                     </p>
                   </div>
                 </div>
-
-
               </div>
               {/* Price Card */}
               <div className="mt-6">
@@ -428,9 +429,8 @@ function HotelDetailsMobile({
             </div>
           </div>
         </>
-      )
-      }
-    </div >
+      )}
+    </div>
   );
 }
 

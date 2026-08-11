@@ -24,8 +24,6 @@ const nextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
-
-      // Hotel API Images
       {
         protocol: "https",
         hostname: "i.travelapi.com",
@@ -38,9 +36,11 @@ const nextConfig = {
         protocol: "https",
         hostname: "placehold.co",
       },
+
+      // GRN Connect
       {
         protocol: "https",
-        hostname: "pix8.agoda.net",
+        hostname: "images.grnconnect.com",
       },
     ],
   },
