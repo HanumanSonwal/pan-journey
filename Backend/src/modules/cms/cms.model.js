@@ -17,7 +17,11 @@ const cmsSchema = new mongoose.Schema(
       lowercase: true,
       unique: true,
     },
-
+createdBy: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "User",
+  default: null,
+},
     entityType: {
       type: String,
       required: true,

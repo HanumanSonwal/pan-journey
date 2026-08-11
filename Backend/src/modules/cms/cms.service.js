@@ -4,7 +4,7 @@ import { generateSlug } from "../../utils/slug/slugify.js";
 import { serializeCMSPage } from "./cms.serializer.js";
 import { buildCMSUrl } from "../../utils/cms/buildCMSUrl.js";
 import MasterData from "../master-data/masterData.model.js";
-
+import User from "../user/user.model.js";
 import CMSPage from "./cms.model.js";
 import { CMS_TEMPLATES } from "./cms.templates.js";
 
@@ -241,7 +241,6 @@ export const getCMSTemplates = async () => {
 //get all blogs  for website
 // cms.service.js
 
-
 export const getAllBlogsService = async (query) => {
   const { page = 1, limit = 10, categoryId, slug } = query;
 
@@ -267,22 +266,35 @@ export const getAllBlogsService = async (query) => {
       throw new ApiError(404, "Blog not found");
     }
 
-if (!blog.categoryId) {
-  throw new ApiError(404, "Blog category not found");
-}
+    if (!blog.categoryId) {
+      throw new ApiError(404, "Blog category not found");
+    }
 
-const category = await MasterData.findById(blog.categoryId)
-  .select("placeName")
-  .lean();
+    const category = await MasterData.findById(blog.categoryId)
+      .select("placeName")
+      .lean();
 
-if (!category) {
-  throw new ApiError(404, "Blog category not found");
-}
+    if (!category) {
+      throw new ApiError(404, "Blog category not found");
+    }
 
-return {
-  ...blog,
-  categoryName: category.placeName,
-};}
+    // Get createdBy user
+    let createdByName = null;
+
+    if (blog.createdBy) {
+      const user = await User.findById(blog.createdBy)
+        .select("name")
+        .lean();
+
+      createdByName = user?.name || null;
+    }
+
+    return {
+      ...blog,
+      createdByName,
+      categoryName: category.placeName,
+    };
+  }
 
   // -------------------------------
   // Blog Listing
@@ -291,14 +303,16 @@ return {
 
   const blogs = await CMSPage.find(filter)
     .select(
-      "title slug description featuredImage categoryId createdAt"
+      "title slug description featuredImage categoryId createdAt createdBy"
     )
     .sort({ createdAt: -1 })
     .skip((Number(page) - 1) * Number(limit))
     .limit(Number(limit))
     .lean();
 
-  // Get unique category ids
+  // -------------------------------
+  // Category IDs
+  // -------------------------------
   const categoryIds = [
     ...new Set(
       blogs
@@ -307,30 +321,66 @@ return {
     ),
   ];
 
-  // Fetch category names
+  // -------------------------------
+  // Categories
+  // -------------------------------
   const categories = await MasterData.find({
     _id: { $in: categoryIds },
   })
     .select("_id placeName")
     .lean();
 
-  // Create category map
   const categoryMap = categories.reduce((acc, item) => {
     acc[item._id.toString()] = item.placeName;
     return acc;
   }, {});
 
-  // Add category name in response
-  const result = blogs
-  .filter((blog) => {
-    const categoryId = blog.categoryId?.toString();
+  // -------------------------------
+  // CreatedBy User IDs
+  // -------------------------------
+  const userIds = [
+    ...new Set(
+      blogs
+        .map((blog) => blog.createdBy?.toString())
+        .filter(Boolean)
+    ),
+  ];
 
-    return categoryId && categoryMap[categoryId];
+  // -------------------------------
+  // Users
+  // -------------------------------
+  const users = await User.find({
+    _id: { $in: userIds },
   })
-  .map((blog) => ({
-    ...blog,
-    categoryName: categoryMap[blog.categoryId.toString()],
-  }));
+    .select("_id name")
+    .lean();
+
+  const userMap = users.reduce((acc, user) => {
+    acc[user._id.toString()] = user.name;
+    return acc;
+  }, {});
+
+  // -------------------------------
+  // Final Result
+  // -------------------------------
+  const result = blogs
+    .filter((blog) => {
+      const categoryId = blog.categoryId?.toString();
+
+      // Category nahi hai ya delete ho chuki hai
+      if (!categoryId || !categoryMap[categoryId]) {
+        return false;
+      }
+
+      return true;
+    })
+    .map((blog) => ({
+      ...blog,
+      createdByName:
+        userMap[blog.createdBy?.toString()] || null,
+      categoryName:
+        categoryMap[blog.categoryId.toString()],
+    }));
 
   return {
     blogs: result,
@@ -342,3 +392,103 @@ return {
     },
   };
 };
+// export const getAllBlogsService = async (query) => {
+//   const { page = 1, limit = 10, categoryId, slug } = query;
+
+//   const filter = {
+//     entityType: "blog",
+//     isPublished: true,
+//   };
+
+//   // Category Filter
+//   if (categoryId) {
+//     filter.categoryId = categoryId;
+//   }
+
+//   // -------------------------------
+//   // Single Blog By Slug
+//   // -------------------------------
+//   if (slug) {
+//     filter.slug = slug;
+
+//     const blog = await CMSPage.findOne(filter).lean();
+
+//     if (!blog) {
+//       throw new ApiError(404, "Blog not found");
+//     }
+
+// if (!blog.categoryId) {
+//   throw new ApiError(404, "Blog category not found");
+// }
+
+// const category = await MasterData.findById(blog.categoryId)
+//   .select("placeName")
+//   .lean();
+
+// if (!category) {
+//   throw new ApiError(404, "Blog category not found");
+// }
+
+// return {
+//   ...blog,
+//   categoryName: category.placeName,
+// };}
+
+//   // -------------------------------
+//   // Blog Listing
+//   // -------------------------------
+//   const total = await CMSPage.countDocuments(filter);
+
+//   const blogs = await CMSPage.find(filter)
+//     .select(
+//       "title slug description featuredImage categoryId createdAt createdBy"
+//     )
+//     .sort({ createdAt: -1 })
+//     .skip((Number(page) - 1) * Number(limit))
+//     .limit(Number(limit))
+//     .lean();
+
+//   // Get unique category ids
+//   const categoryIds = [
+//     ...new Set(
+//       blogs
+//         .map((blog) => blog.categoryId?.toString())
+//         .filter(Boolean)
+//     ),
+//   ];
+
+//   // Fetch category names
+//   const categories = await MasterData.find({
+//     _id: { $in: categoryIds },
+//   })
+//     .select("_id placeName")
+//     .lean();
+
+//   // Create category map
+//   const categoryMap = categories.reduce((acc, item) => {
+//     acc[item._id.toString()] = item.placeName;
+//     return acc;
+//   }, {});
+
+//   // Add category name in response
+//   const result = blogs
+//   .filter((blog) => {
+//     const categoryId = blog.categoryId?.toString();
+
+//     return categoryId && categoryMap[categoryId];
+//   })
+//   .map((blog) => ({
+//     ...blog,
+//     categoryName: categoryMap[blog.categoryId.toString()],
+//   }));
+
+//   return {
+//     blogs: result,
+//     pagination: {
+//       total,
+//       page: Number(page),
+//       limit: Number(limit),
+//       totalPages: Math.ceil(total / Number(limit)),
+//     },
+//   };
+// };

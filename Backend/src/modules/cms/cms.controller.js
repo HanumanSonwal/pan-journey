@@ -15,7 +15,13 @@ import {
 } from "./cms.service.js";
 
 export const createCMS = asyncHandler(async (req, res) => {
-  const data = await createCMSPage(req.body);
+  const payload = {
+    ...req.body,
+    createdBy: req.user.id,
+  };
+
+  const data = await createCMSPage(payload);
+
   sendSuccess(res, "CMS page created successfully", data);
 });
 export const getAllCMS = asyncHandler(async (req, res) => {
