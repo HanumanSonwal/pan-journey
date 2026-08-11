@@ -288,32 +288,32 @@ const BlogPage = () => {
 
         <section className="relative overflow-hidden">
           {/* BACKGROUND IMAGE */}
-  <div className="absolute inset-0 overflow-hidden">
-  <img
-    src="/images/heroimage.jpg"
-    alt="Travel"
-    className="h-full w-full object-cover object-center"
-  />
+          <div className="absolute inset-0 overflow-hidden">
+            <img
+              src="/images/heroimage.jpg"
+              alt="Travel"
+              className="h-full w-full object-cover object-center"
+            />
 
-  {/* White filter on image */}
-  <div className="absolute inset-0 bg-white/30" />
-</div>
+            {/* White filter on image */}
+            <div className="absolute inset-0 bg-white/30" />
+          </div>
 
           {/* OVERLAY */}
           <div className="absolute inset-0" />
 
           {/* HERO CONTENT */}
           <div className="relative mx-auto flex min-h-[300px] w-full max-w-7xl flex-col items-start justify-center px-4 py-10 text-left sm:px-6 lg:px-8">
-            <span className="rounded-full bg-white/10 px-4 py-2 text-[12px] font-semibold tracking-wider text-white uppercase backdrop-blur-sm">
+            <span className="rounded-full bg-white/8 px-4 py-2 text-[12px] font-semibold tracking-wider text-white uppercase backdrop-blur-sm">
               PAN JOURNEY TRAVEL BLOG
             </span>
 
-            <h1 className="mt-4 max-w-4xl text-[34px] leading-[1.12] font-bold tracking-tight text-white sm:text-[44px] lg:text-[52px]">
+            <h1 className="mt-4 max-w-4xl !text-[39px] leading-[1.12] font-bold tracking-tight text-black sm:text-[44px] lg:text-[52px]">
               Explore. Discover.
               <span className="most-text-color block">Travel More.</span>
             </h1>
 
-            <p className="mt-3 max-w-2xl text-[14px] leading-6 text-white/80 sm:text-[16px]">
+            <p className="mt-3 max-w-2xl text-[14px] leading-6 text-black sm:text-[16px]">
               Discover travel inspiration, destination guides, hotel tips and
               useful ideas to make your next journey unforgettable.
             </p>
@@ -330,7 +330,7 @@ const BlogPage = () => {
           <section className="mt-10">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="most-text-color text-[12px] font-bold tracking-wider uppercase">
+                <p className="!most-text-color text-[12px] font-bold tracking-wider uppercase">
                   Explore
                 </p>
 

@@ -2,7 +2,9 @@
 
 import useIsMobile from "@/hooks/useIsMobile";
 import { Button, Drawer, Popover } from "antd";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { usePathname } from "next/navigation";
+
 import {
   CHILD_AGES,
   DEFAULT_GUEST_VALUE,
@@ -10,6 +12,7 @@ import {
   MAX_CHILDREN,
   MAX_ROOMS,
 } from "./constants";
+
 import Counter from "./Counter";
 import GuestTrigger from "./GuestTrigger";
 
@@ -34,11 +37,20 @@ function GuestsField({
   const isMobile = useIsMobile();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  const pathname = usePathname();
+
+  // ------------------------------------------------------------
+  // ONLY HOME PAGE
+  // ------------------------------------------------------------
+  const isHomePage =
+    pathname === "/" ||
+    pathname === "/home";
+
   useEffect(() => {
     if (open) {
       setDraftGuests(safeValue);
     }
-  }, [open]);
+  }, [open, safeValue]);
 
   const update = useCallback((key, val) => {
     setDraftGuests((prev) => ({
@@ -46,11 +58,23 @@ function GuestsField({
       [key]: val,
     }));
   }, []);
+
+  // ------------------------------------------------------------
+  // ADULTS
+  // ------------------------------------------------------------
+
   const updateAdults = (val) => {
-    const adults = Math.min(MAX_ADULTS, Math.max(1, val));
+    const adults = Math.min(
+      MAX_ADULTS,
+      Math.max(1, val),
+    );
+
     const rooms = Math.min(
       MAX_ROOMS,
-      Math.max(Math.ceil(adults / 2), draftGuests.rooms),
+      Math.max(
+        Math.ceil(adults / 2),
+        draftGuests.rooms,
+      ),
     );
 
     setDraftGuests((prev) => ({
@@ -59,13 +83,23 @@ function GuestsField({
       rooms,
     }));
   };
-  const guestContentRef = useRef(null);
+
+  // ------------------------------------------------------------
+  // ROOMS
+  // ------------------------------------------------------------
+
   const updateRooms = (val) => {
-    const rooms = Math.min(MAX_ROOMS, Math.max(1, val));
+    const rooms = Math.min(
+      MAX_ROOMS,
+      Math.max(1, val),
+    );
+
     let adults = draftGuests.adults;
+
     if (adults < rooms) {
       adults = rooms;
     }
+
     if (adults > rooms * 2) {
       adults = rooms * 2;
     }
@@ -77,16 +111,33 @@ function GuestsField({
     }));
   };
 
+  // ------------------------------------------------------------
   // CHILD AGE
+  // ------------------------------------------------------------
+
   const updateChildAge = (index, age) => {
-    const newAges = [...(draftGuests?.childAges || [])];
+    const newAges = [
+      ...(draftGuests?.childAges || []),
+    ];
+
     newAges[index] = age;
+
     update("childAges", newAges);
   };
 
+  // ------------------------------------------------------------
+  // CHILDREN
+  // ------------------------------------------------------------
+
   const handleChildrenChange = (val) => {
-    const children = Math.min(MAX_CHILDREN, Math.max(0, val));
-    let newAges = [...(draftGuests?.childAges || [])];
+    const children = Math.min(
+      MAX_CHILDREN,
+      Math.max(0, val),
+    );
+
+    let newAges = [
+      ...(draftGuests?.childAges || []),
+    ];
 
     while (newAges.length < children) {
       newAges.push("");
@@ -102,15 +153,33 @@ function GuestsField({
       childAges: newAges,
     }));
 
-    requestAnimationFrame(() => {
-      guestContentRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
+    // ----------------------------------------------------------
+    // AUTO SCROLL ONLY ON HOME PAGE
+    // ----------------------------------------------------------
+
+    if (isHomePage && children > 0) {
+      requestAnimationFrame(() => {
+        const element = document.getElementById(
+          "guest-content",
+        );
+
+        if (element) {
+          element.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+          });
+        }
       });
-    });
-  }; // ✅ Ye missing tha
+    }
+  };
+
+  // ------------------------------------------------------------
+  // APPLY
+  // ------------------------------------------------------------
 
   const handleApply = useCallback(() => {
+    if (!childAgesValid) return;
+
     onChange?.(draftGuests);
 
     if (isMobile) {
@@ -118,26 +187,49 @@ function GuestsField({
     } else {
       setOpen?.(false);
     }
-  }, [draftGuests, isMobile, onChange, setOpen]);
+  }, [
+    draftGuests,
+    isMobile,
+    onChange,
+    setOpen,
+  ]);
+
+  // ------------------------------------------------------------
+  // CHILD AGE VALIDATION
+  // ------------------------------------------------------------
 
   const childAgesValid = useMemo(() => {
     return (
-
       draftGuests.children === 0 ||
       draftGuests.childAges.every(
-        (age) => age !== "" && age !== null && age !== undefined,
+        (age) =>
+          age !== "" &&
+          age !== null &&
+          age !== undefined,
       )
     );
-  }, [draftGuests.children, draftGuests.childAges]);
-  const renderDropdownContent = ({ mobile = false } = {}) => (
+  }, [
+    draftGuests.children,
+    draftGuests.childAges,
+  ]);
 
+  // ------------------------------------------------------------
+  // DROPDOWN CONTENT
+  // ------------------------------------------------------------
+
+  const renderDropdownContent = ({
+    mobile = false,
+  } = {}) => (
     <div
-      ref={guestContentRef}
+      id="guest-content"
       onClick={(e) => e.stopPropagation()}
-      className={`rounded-xl bg-white p-4 ${mobile ? "w-full max-w-none" : "w-[calc(100vw-32px)] max-w-[340px]"
-        }`}
+      className={`rounded-xl bg-white p-4 ${
+        mobile
+          ? "w-full max-w-none"
+          : "w-[calc(100vw-32px)] max-w-[340px]"
+      }`}
     >
-
+      {/* ROOM */}
       <Counter
         label="Room"
         value={draftGuests.rooms}
@@ -146,6 +238,7 @@ function GuestsField({
         onChange={updateRooms}
       />
 
+      {/* ADULTS */}
       <Counter
         label="Adults"
         value={draftGuests.adults}
@@ -163,51 +256,65 @@ function GuestsField({
         max={MAX_CHILDREN}
         onChange={handleChildrenChange}
       />
+
       {/* CHILD AGES */}
       {draftGuests.children > 0 && (
         <div className="mt-4 border-t pt-4">
           <p className="mb-3 text-sm font-semibold text-black">
             Age of Children
           </p>
+
           {!childAgesValid && (
             <p className="mb-3 text-xs font-medium text-red-500">
               Please select age for all children
             </p>
           )}
+
           <div
-            className={`pr-1 ${mobile ? "" : "max-h-[180px] overflow-y-auto sm:max-h-[220px]"
-              }`}
+            className={`pr-1 ${
+              mobile
+                ? ""
+                : "max-h-[180px] overflow-y-auto sm:max-h-[220px]"
+            }`}
           >
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-              {(draftGuests.childAges || []).map((age, i) => (
-                <div
-                  key={i}
-                  className="flex min-w-0 items-center justify-between gap-1 rounded border border-[#e3f0f5] bg-[#fafefe] px-0 py-2"
-                >
-                  <span className="shrink-0 text-[12px] font-medium text-gray-800">
-                    Child {i + 1}
-                  </span>
-
-                  <select
-                    value={age || ""}
-                    onChange={(e) => updateChildAge(i, Number(e.target.value))}
-                    className={`h-[34px] min-w-[86px] rounded border px-2 text-[12px] transition-all outline-none ${!age
-                      ? "border-red-300 bg-red-50 text-red-500"
-                      : "border-gray-300 bg-white text-gray-900"
-                      }`}
+              {(draftGuests.childAges || []).map(
+                (age, i) => (
+                  <div
+                    key={i}
+                    className="flex min-w-0 items-center justify-between gap-1 rounded border border-[#e3f0f5] bg-[#fafefe] px-0 py-2"
                   >
-                    <option value="" disabled>
-                      Select Age
-                    </option>
+                    <span className="shrink-0 text-[12px] font-medium text-gray-800">
+                      Child {i + 1}
+                    </span>
 
-                    {CHILD_AGES.map((a) => (
-                      <option key={a} value={a}>
-                        {a} yrs
+                    <select
+                      value={age || ""}
+                      onChange={(e) =>
+                        updateChildAge(
+                          i,
+                          Number(e.target.value),
+                        )
+                      }
+                      className={`h-[34px] min-w-[86px] rounded border px-2 text-[12px] transition-all outline-none ${
+                        !age
+                          ? "border-red-300 bg-red-50 text-red-500"
+                          : "border-gray-300 bg-white text-gray-900"
+                      }`}
+                    >
+                      <option value="" disabled>
+                        Select Age
                       </option>
-                    ))}
-                  </select>
-                </div>
-              ))}
+
+                      {CHILD_AGES.map((a) => (
+                        <option key={a} value={a}>
+                          {a} yrs
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ),
+              )}
             </div>
           </div>
         </div>
@@ -219,7 +326,12 @@ function GuestsField({
           <input
             type="checkbox"
             checked={draftGuests.pets || false}
-            onChange={(e) => update("pets", e.target.checked)}
+            onChange={(e) =>
+              update(
+                "pets",
+                e.target.checked,
+              )
+            }
             className="mt-1 cursor-pointer"
           />
 
@@ -236,19 +348,21 @@ function GuestsField({
       </div>
 
       {/* APPLY */}
-
       <div className="sticky bottom-0 -mx-4 mt-4 -mb-4 bg-white p-4">
         <Button
           disabled={!childAgesValid}
           onClick={handleApply}
-          className="h-[50px] w-full rounded-lg text-[15px] font-bold tracking-wide !text-white transition-all duration-300 hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 buttion-background-color"
-
+          className="buttion-background-color h-[50px] w-full rounded-lg text-[15px] font-bold tracking-wide !text-white transition-all duration-300 hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
         >
           APPLY
         </Button>
       </div>
     </div>
   );
+
+  // ------------------------------------------------------------
+  // TRIGGER
+  // ------------------------------------------------------------
 
   const triggerUI = (
     <GuestTrigger
@@ -258,11 +372,17 @@ function GuestsField({
     />
   );
 
+  // ------------------------------------------------------------
+  // MOBILE
+  // ------------------------------------------------------------
+
   if (isMobile) {
     return (
       <>
-
-        <div onClick={() => setDrawerOpen(true)} className="cursor-pointer">
+        <div
+          onClick={() => setDrawerOpen(true)}
+          className="cursor-pointer"
+        >
           {triggerUI}
         </div>
 
@@ -292,11 +412,18 @@ function GuestsField({
             </div>
           }
         >
-          {renderDropdownContent({ mobile: true })}
+          {renderDropdownContent({
+            mobile: true,
+          })}
         </Drawer>
       </>
     );
   }
+
+  // ------------------------------------------------------------
+  // DESKTOP
+  // ------------------------------------------------------------
+
   return (
     <Popover
       trigger="click"
