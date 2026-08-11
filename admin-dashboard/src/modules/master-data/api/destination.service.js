@@ -7,7 +7,7 @@ import api from "@/services/api";
 */
 
 export const getDestinationsApi = async (params = {}) => {
-  const res = await api.get("/destinations/admin", {
+  const res = await api.get("/masterData/admin", {
     params,
     skipToast: true,
   });
@@ -22,7 +22,7 @@ export const getDestinationsApi = async (params = {}) => {
 */
 
 export const createDestinationApi = async (payload) => {
-  const res = await api.post("/destinations/createDestination", payload);
+  const res = await api.post("/masterData/createDestination", payload);
 
   return res?.data;
 };
