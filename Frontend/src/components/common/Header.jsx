@@ -171,7 +171,7 @@ export default function Header() {
   ];
 
   const navLinkClass =
-    "relative transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#051449] after:transition-all after:duration-300 hover:text-[#051449] hover:after:w-full";
+    "relative transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[var(--theme-secondary)] after:transition-all after:duration-300 hover-most-text-color hover:after:w-full";
 
   const desktopNavigationItems = navigationItems.filter((item) => item.desktop);
 

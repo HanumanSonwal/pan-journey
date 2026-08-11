@@ -14,7 +14,7 @@ function FooterColumn({ title, links }) {
           <li key={item.label}>
             <Link
               href={item.href}
-              className="relative inline-block transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[#0f766e] after:transition-all after:duration-300 hover:text-[#0f766e] hover:after:w-full"
+              className="relative inline-block transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0  after:bg-[var(--theme-secondary)] after:transition-all after:duration-300 hover-most-text-color hover:after:w-full"
             >
               {item.label}
             </Link>
