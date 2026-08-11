@@ -2,7 +2,7 @@ export const footerData = {
   company: [
     { label: "About Us", href: "/about-us" },
     { label: "Contact Us", href: "/contact-us" },
-    { label: "Partner With Us", href: "#" },
+    // { label: "Partner With Us", href: "#" },
     { label: "Blog", href: "#" },
   ],
 

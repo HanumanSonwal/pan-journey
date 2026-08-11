@@ -288,16 +288,16 @@ const BlogPage = () => {
 
         <section className="relative overflow-hidden">
           {/* BACKGROUND IMAGE */}
-  <div className="absolute inset-0 overflow-hidden">
-  <img
-    src="/images/heroimage.jpg"
-    alt="Travel"
-    className="h-full w-full object-cover object-center"
-  />
+          <div className="absolute inset-0 overflow-hidden">
+            <img
+              src="/images/heroimage.jpg"
+              alt="Travel"
+              className="h-full w-full object-cover object-center"
+            />
 
-  {/* White filter on image */}
-  <div className="absolute inset-0 bg-white/30" />
-</div>
+            {/* White filter on image */}
+            <div className="absolute inset-0 bg-white/30" />
+          </div>
 
           {/* OVERLAY */}
           <div className="absolute inset-0" />

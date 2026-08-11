@@ -116,7 +116,7 @@ const JaipurBlogPage = () => {
 
       <main className="bg-[#f8fafc]">
         <div className="mx-auto w-full max-w-7xl px-3 py-8 sm:px-5 sm:py-10 lg:px-6 xl:px-0">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
+          <div className="gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
             {/* ====================================================== */}
             {/* ARTICLE                                                 */}
             {/* ====================================================== */}
@@ -310,34 +310,6 @@ const JaipurBlogPage = () => {
                 {/* QUICK CHECKLIST                                      */}
                 {/* ================================================== */}
 
-                <div className="mt-10 rounded-[18px] bg-[#f7fafc] p-5 sm:p-7">
-                  <h3 className="text-[20px] font-bold text-[#172033]">
-                    Jaipur Travel Checklist
-                  </h3>
-
-                  <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                    {[
-                      "Visit Amber Fort",
-                      "Explore Hawa Mahal",
-                      "Visit City Palace",
-                      "Explore local markets",
-                      "Try traditional Rajasthani food",
-                      "Enjoy a Jaipur sunset",
-                    ].map((item) => (
-                      <div
-                        key={item}
-                        className="flex items-center gap-3 rounded-lg bg-white px-4 py-3 text-[13px] text-gray-600 shadow-sm"
-                      >
-                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#e9f6ff] text-[11px] font-bold text-[#008cff]">
-                          ✓
-                        </span>
-
-                        {item}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
                 {/* ================================================== */}
                 {/* AUTHOR                                               */}
                 {/* ================================================== */}
@@ -397,64 +369,6 @@ const JaipurBlogPage = () => {
             {/* ====================================================== */}
             {/* SIDEBAR                                                 */}
             {/* ====================================================== */}
-
-            <aside className="hidden lg:block">
-              <div className="sticky top-[100px] space-y-5">
-                {/* TABLE OF CONTENTS */}
-
-                <div className="rounded-[18px] border border-gray-100 bg-white p-5 shadow-[0_5px_20px_rgba(0,0,0,0.04)]">
-                  <p className="most-text-color text-[11px] font-bold tracking-wider uppercase">
-                    In This Article
-                  </p>
-
-                  <h3 className="mt-1 text-[18px] font-bold text-[#172033]">
-                    Jaipur Travel Guide
-                  </h3>
-
-                  <div className="mt-4 space-y-1">
-                    {[
-                      "Royal Heritage",
-                      "Amber Fort",
-                      "Hawa Mahal",
-                      "City Palace",
-                      "Local Markets",
-                      "Rajasthani Food",
-                    ].map((item) => (
-                      <div
-                        key={item}
-                        className="hover:most-text-color rounded-lg px-3 py-2.5 text-[13px] leading-5 text-gray-500 transition-colors hover:bg-[#f1f8fc]"
-                      >
-                        {item}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* PAN JOURNEY CARD */}
-
-                <div className="overflow-hidden rounded-[18px] bg-[#092f49] p-6 text-white">
-                  <p className="text-[11px] font-bold tracking-wider text-white/60 uppercase">
-                    PAN JOURNEY
-                  </p>
-
-                  <h3 className="mt-2 text-[21px] leading-tight font-bold">
-                    Plan your next journey with confidence.
-                  </h3>
-
-                  <p className="mt-3 text-[13px] leading-6 text-white/70">
-                    Discover destinations, compare stays and find travel
-                    inspiration for your next trip.
-                  </p>
-
-                  <Button
-                    onClick={() => router.push("/")}
-                    className="mt-5 !h-[42px] !rounded-lg !border-none !bg-white !px-5 !font-semibold !text-[#092f49]"
-                  >
-                    Explore Pan Journey
-                  </Button>
-                </div>
-              </div>
-            </aside>
           </div>
         </div>
       </main>
@@ -462,6 +376,8 @@ const JaipurBlogPage = () => {
       {/* ============================================================ */}
       {/* NEWSLETTER                                                   */}
       {/* ============================================================ */}
+
+      
 
       <NewsletterSection />
     </>
