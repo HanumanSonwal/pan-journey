@@ -12,7 +12,6 @@ import { Button } from "antd";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-
 import { useBlogCategories } from "@/modules/blog/hooks/useBlogCategories";
 import { useBlogs } from "@/modules/blog/hooks/useBlogs";
 import { mapBlog } from "@/modules/blog/utils/blogMapper";
@@ -144,11 +143,11 @@ const BlogPage = () => {
 
         <section className="relative overflow-hidden">
           {/* BACKGROUND IMAGE */}
-          <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute inset-0 overflow-hidden bg-[#092f49]">
             <img
               src="/images/heroimage.jpg"
               alt="Travel"
-              className="h-full w-full object-cover object-center"
+              className="h-full w-full object-cover object-center !opacity-50"
             />
 
             {/* White filter on image */}
@@ -164,12 +163,12 @@ const BlogPage = () => {
               PAN JOURNEY TRAVEL BLOG
             </span>
 
-            <h1 className="mt-4 max-w-4xl !text-[39px] leading-[1.12] font-bold tracking-tight text-black sm:text-[44px] lg:text-[52px]">
+            <h1 className="!mt-4 max-w-4xl !text-[30px] leading-[1.12] font-bold tracking-tight text-white sm:text-[44px] lg:text-[52px]">
               Explore. Discover.
               <span className="most-text-color block">Travel More.</span>
             </h1>
 
-            <p className="mt-3 max-w-2xl text-[14px] leading-6 text-black sm:text-[16px]">
+            <p className="mt-3 max-w-2xl text-[14px] leading-6 text-white/34 sm:text-[16px]">
               Discover travel inspiration, destination guides, hotel tips and
               useful ideas to make your next journey unforgettable.
             </p>
