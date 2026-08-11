@@ -241,17 +241,194 @@ export const getCMSTemplates = async () => {
 //get all blogs  for website
 // cms.service.js
 
+// export const getAllBlogsService = async (query) => {
+//   const { page = 1, limit = 10, categoryId, slug } = query;
+
+//   const filter = {
+//     entityType: "blog",
+//     isPublished: true,
+//   };
+
+//   // Category Filter
+//   if (categoryId) {
+//     filter.categoryId = categoryId;
+//   }
+
+//   // -------------------------------
+//   // Single Blog By Slug
+//   // -------------------------------
+//   if (slug) {
+//     filter.slug = slug;
+
+//     const blog = await CMSPage.findOne(filter).lean();
+
+//     if (!blog) {
+//       throw new ApiError(404, "Blog not found");
+//     }
+
+//     if (!blog.categoryId) {
+//       throw new ApiError(404, "Blog category not found");
+//     }
+
+//     const category = await MasterData.findById(blog.categoryId)
+//       .select("placeName")
+//       .lean();
+
+//     if (!category) {
+//       throw new ApiError(404, "Blog category not found");
+//     }
+
+//     // Get createdBy user
+//     let createdByName = null;
+
+//     if (blog.createdBy) {
+//       const user = await User.findById(blog.createdBy)
+//         .select("name")
+//         .lean();
+
+//       createdByName = user?.name || null;
+//     }
+
+//     return {
+//       ...blog,
+//       createdByName,
+//       categoryName: category.placeName,
+//     };
+//   }
+
+//   // -------------------------------
+//   // Blog Listing
+//   // -------------------------------
+//   const total = await CMSPage.countDocuments(filter);
+
+//   const blogs = await CMSPage.find(filter)
+//     .select(
+//       "title slug description featuredImage categoryId createdAt createdBy"
+//     )
+//     .sort({ createdAt: -1 })
+//     .skip((Number(page) - 1) * Number(limit))
+//     .limit(Number(limit))
+//     .lean();
+
+//   // -------------------------------
+//   // Category IDs
+//   // -------------------------------
+//   const categoryIds = [
+//     ...new Set(
+//       blogs
+//         .map((blog) => blog.categoryId?.toString())
+//         .filter(Boolean)
+//     ),
+//   ];
+
+//   // -------------------------------
+//   // Categories
+//   // -------------------------------
+//   const categories = await MasterData.find({
+//     _id: { $in: categoryIds },
+//   })
+//     .select("_id placeName")
+//     .lean();
+
+//   const categoryMap = categories.reduce((acc, item) => {
+//     acc[item._id.toString()] = item.placeName;
+//     return acc;
+//   }, {});
+
+//   // -------------------------------
+//   // CreatedBy User IDs
+//   // -------------------------------
+//   const userIds = [
+//     ...new Set(
+//       blogs
+//         .map((blog) => blog.createdBy?.toString())
+//         .filter(Boolean)
+//     ),
+//   ];
+
+//   // -------------------------------
+//   // Users
+//   // -------------------------------
+//   const users = await User.find({
+//     _id: { $in: userIds },
+//   })
+//     .select("_id name")
+//     .lean();
+
+//   const userMap = users.reduce((acc, user) => {
+//     acc[user._id.toString()] = user.name;
+//     return acc;
+//   }, {});
+
+//   // -------------------------------
+//   // Final Result
+//   // -------------------------------
+//   const result = blogs
+//     .filter((blog) => {
+//       const categoryId = blog.categoryId?.toString();
+
+//       // Category nahi hai ya delete ho chuki hai
+//       if (!categoryId || !categoryMap[categoryId]) {
+//         return false;
+//       }
+
+//       return true;
+//     })
+//     .map((blog) => ({
+//       ...blog,
+//       createdByName:
+//         userMap[blog.createdBy?.toString()] || null,
+//       categoryName:
+//         categoryMap[blog.categoryId.toString()],
+//     }));
+
+//   return {
+//     blogs: result,
+//     pagination: {
+//       total,
+//       page: Number(page),
+//       limit: Number(limit),
+//       totalPages: Math.ceil(total / Number(limit)),
+//     },
+//   };
+// };
+
 export const getAllBlogsService = async (query) => {
-  const { page = 1, limit = 10, categoryId, slug } = query;
+  const {
+    page = 1,
+    limit = 10,
+    categoryId,
+    slug,
+    search,
+  } = query;
 
   const filter = {
     entityType: "blog",
     isPublished: true,
   };
 
+  // -------------------------------
   // Category Filter
+  // -------------------------------
   if (categoryId) {
     filter.categoryId = categoryId;
+  }
+
+  // -------------------------------
+  // Search Filter
+  // -------------------------------
+  if (search?.trim()) {
+    const searchText = search.trim();
+
+    filter.$or = [
+      {
+        title: {
+          $regex: searchText,
+          $options: "i",
+        },
+      },
+     
+    ];
   }
 
   // -------------------------------
@@ -278,7 +455,6 @@ export const getAllBlogsService = async (query) => {
       throw new ApiError(404, "Blog category not found");
     }
 
-    // Get createdBy user
     let createdByName = null;
 
     if (blog.createdBy) {
@@ -367,7 +543,7 @@ export const getAllBlogsService = async (query) => {
     .filter((blog) => {
       const categoryId = blog.categoryId?.toString();
 
-      // Category nahi hai ya delete ho chuki hai
+      // Category deleted/missing => don't show blog
       if (!categoryId || !categoryMap[categoryId]) {
         return false;
       }
