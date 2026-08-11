@@ -48,7 +48,7 @@ const BlogDetailsPage = ({ blog }) => {
       {/* ============================================================ */}
       {/* HERO                                                         */}
       {/* ============================================================ */}
-
+      {/* HERO */}
       <section className="relative overflow-hidden bg-[#092f49]">
         {/* BACKGROUND IMAGE */}
         <div className="absolute inset-0">
@@ -56,52 +56,47 @@ const BlogDetailsPage = ({ blog }) => {
             <img
               src={blog.featuredImage}
               alt={blog.title}
-              className="h-full w-full object-cover opacity-35"
+              className="h-full w-full object-cover opacity-50"
             />
           )}
         </div>
 
         {/* OVERLAY */}
-        <div className="absolute inset-0 bg-[#06283d]/80" />
+        <div className="absolute inset-0 bg-[#06283d]/30" />
 
         {/* HERO CONTENT */}
-        <div className="relative mx-auto flex min-h-[430px] w-full max-w-7xl flex-col justify-center px-4 py-16 sm:px-6 lg:px-8">
+        <div className="relative mx-auto flex min-h-[320px] w-full max-w-7xl flex-col justify-center px-4 py-10 sm:px-6 lg:px-8">
           {/* BACK BUTTON */}
-
           <button
             type="button"
             onClick={() => router.push("/blog")}
-            className="mb-8 flex w-fit items-center gap-2 border-0 bg-transparent p-0 text-sm font-semibold text-white/80 transition-all duration-200 hover:text-white"
+            className="most-text-color !mb-5 flex w-fit cursor-pointer items-center gap-2 border-0 bg-transparent p-0 text-sm font-semibold transition-all duration-200 hover:text-white"
           >
             <ArrowLeftOutlined />
             Back to Blogs
           </button>
 
           {/* CATEGORY */}
-
           {blog?.categoryName && (
-            <span className="w-fit rounded-full bg-white/10 px-4 py-2 text-[11px] font-bold tracking-wider text-white uppercase backdrop-blur-sm">
+            <span className="w-fit rounded-full bg-white/10 px-4 py-1.5 text-[11px] font-bold tracking-wider text-white uppercase backdrop-blur-sm">
               {blog.categoryName}
             </span>
           )}
 
           {/* TITLE */}
-
-          <h1 className="mt-5 max-w-4xl text-[34px] leading-[1.15] font-bold tracking-tight text-white sm:text-[44px] lg:text-[54px]">
+          <h1 className="!mt-4 max-w-4xl !text-[30px] leading-[1.15] font-bold tracking-tight text-white sm:text-[40px] lg:text-[48px]">
             {blog.title}
           </h1>
 
           {/* DESCRIPTION */}
-
           {blog?.description && (
-            <p className="mt-5 max-w-3xl text-[14px] leading-7 text-white/75 sm:text-[16px]">
+            <p className="mt-3 max-w-3xl text-[14px] leading-6 text-white/75 sm:text-[15px]">
               {blog.description}
             </p>
           )}
 
           {/* META */}
-
-          <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3 text-[12px] text-white/70">
+          <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12px] text-white/70">
             {formattedDate && (
               <span className="flex items-center gap-1.5">
                 <CalendarOutlined />

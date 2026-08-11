@@ -1,4 +1,5 @@
 "use client";
+
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "next/link";
@@ -16,91 +17,55 @@ export default function ImageContentBlock({ data }) {
   const isRight = data?.layout === "right";
 
   return (
-    <section
-      style={{
-        padding: "80px 20px",
-        background: "#fff",
-      }}
-    >
-      <div className="container px-14 py-[-3]">
+    <section className="w-full bg-white px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-16">
+      <div className="mx-auto w-full max-w-7xl">
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))",
-            gap: 48,
-            alignItems: "center",
-          }}
+          className={`grid grid-cols-1 items-center gap-8 sm:gap-10 lg:grid-cols-2 lg:gap-12 ${
+            isRight ? "lg:[&>div:first-child]:order-2" : ""
+          }`}
         >
           {/* IMAGE */}
-
           <div
-            style={{
-              order: isRight ? 2 : 1,
-            }}
+            className={`w-full ${
+              isRight ? "lg:order-2" : "lg:order-1"
+            }`}
           >
             {data?.image && (
-              <img
-                src={encodeURI(data.image)}
-                alt={data?.title || "section"}
-                style={{
-                  width: "100%",
-                  borderRadius: 24,
-                  objectFit: "cover",
-                  boxShadow: "0 20px 50px rgba(15,23,42,.12)",
-                }}
-              />
+              <div className="w-full overflow-hidden rounded-[18px] sm:rounded-[22px] lg:rounded-[24px]">
+                <img
+                  src={encodeURI(data.image)}
+                  alt={data?.title || "section"}
+                  className="block h-auto max-h-[420px] w-full object-cover shadow-[0_15px_40px_rgba(15,23,42,0.12)] sm:max-h-[460px] lg:max-h-[520px]"
+                />
+              </div>
             )}
           </div>
 
           {/* CONTENT */}
-
           <div
-            style={{
-              order: isRight ? 1 : 2,
-            }}
+            className={`w-full ${
+              isRight ? "lg:order-1" : "lg:order-2"
+            }`}
           >
+            {/* TITLE */}
             {data?.title && (
-              <h2
-                style={{
-                  fontSize: "clamp(2rem,2vw,2rem)",
-                  fontWeight: 700,
-                  marginBottom: 20,
-                  color: "#0f172a",
-                }}
-              >
+              <h2 className="mb-4 text-[26px] leading-[1.2] font-bold text-[#0f172a] sm:mb-5 sm:text-[32px] lg:text-[38px]">
                 {data.title}
               </h2>
             )}
 
+            {/* CONTENT */}
             {data?.content && (
-              <div
-                style={{
-                  color: "#475569",
-                  lineHeight: 1.9,
-                }}
-              >
+              <div className="text-[14px] leading-7 text-[#475569] sm:text-[15px] sm:leading-7 lg:text-[16px] lg:leading-8">
                 <EditorContent editor={editor} />
               </div>
             )}
 
+            {/* BUTTON */}
             {data?.buttonText && (
               <Link
-                className="buttion-background-color"
                 href={data?.buttonLink || "#"}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  minWidth: 170,
-                  height: 50,
-                  padding: "0 24px",
-                  borderRadius: 14,
-                  textDecoration: "none",
-
-                  color: "#fff",
-                  fontWeight: 600,
-                  boxShadow: "0 12px 28px rgba(37,99,235,.24)",
-                }}
+                className="buttion-background-color mt-6 inline-flex h-[46px] min-w-[150px] items-center justify-center rounded-[10px] px-5 text-[14px] font-semibold !text-white no-underline shadow-[0_10px_25px_rgba(37,99,235,0.18)] transition-all duration-200 hover:-translate-y-0.5 sm:mt-7 sm:h-[50px] sm:min-w-[170px] sm:rounded-[12px] sm:px-6 sm:text-[15px]"
               >
                 {data.buttonText}
               </Link>
