@@ -6,7 +6,10 @@ export const getThemeServer = async () => {
 
     return data?.data ?? null;
   } catch (error) {
-    console.error("Server Theme Fetch Error:", error);
+    console.error(
+      "Server Theme Fetch Error:",
+      error?.response?.data || error?.message,
+    );
 
     return null;
   }

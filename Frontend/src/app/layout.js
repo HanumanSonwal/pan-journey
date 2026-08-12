@@ -4,6 +4,7 @@ import BottomNav from "@/components/common/loder/MobileBottomNav ";
 import GlobalLoginModal from "@/modules/auth/components/GlobalLoginModal";
 import ProfileCompletionHandler from "@/modules/auth/components/ProfileCompletionHandler";
 import ScrollToTopButton from "@/modules/hotel/ScrollToTopButton";
+
 import { getThemeServer } from "@/modules/theme/api/theme.service";
 import { getThemeCSSVariables } from "@/modules/theme/theme.variables";
 
@@ -19,6 +20,10 @@ import { Suspense } from "react";
 import "./globals.css";
 import AppProviders from "./providers";
 
+/* -------------------------------------------------------------------------- */
+/* Fonts                                                                      */
+/* -------------------------------------------------------------------------- */
+
 const roboto = Roboto({
   variable: "--font-roboto",
   subsets: ["latin"],
@@ -31,6 +36,16 @@ const jost = Jost({
   subsets: ["latin"],
   weight: ["400", "500", "700"],
 });
+
+/* -------------------------------------------------------------------------- */
+/* IMPORTANT: Always fetch latest theme on server                             */
+/* -------------------------------------------------------------------------- */
+
+export const dynamic = "force-dynamic";
+
+/* -------------------------------------------------------------------------- */
+/* Metadata                                                                   */
+/* -------------------------------------------------------------------------- */
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXTAUTH_URL || "http://localhost:3000"),
@@ -58,8 +73,19 @@ export const metadata = {
   },
 };
 
+/* -------------------------------------------------------------------------- */
+/* Root Layout                                                                */
+/* -------------------------------------------------------------------------- */
+
 export default async function RootLayout({ children }) {
+  /*
+   * Fetch theme on the server BEFORE rendering the page.
+   */
   const theme = await getThemeServer();
+
+  /*
+   * Convert API theme object into CSS variables.
+   */
   const themeVariables = getThemeCSSVariables(theme);
 
   return (
@@ -74,6 +100,7 @@ export default async function RootLayout({ children }) {
 
         <link rel="preload" as="image" href="/images/homepage/home.svg" />
 
+        {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-DYY7076V0W"
           strategy="afterInteractive"
