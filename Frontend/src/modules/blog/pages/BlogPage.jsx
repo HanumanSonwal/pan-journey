@@ -75,7 +75,7 @@ const BlogCard = ({ blog, onClick }) => {
           <button
             type="button"
             onClick={() => onClick(blog)}
-            className="most-text-color flex shrink-0 items-center gap-1.5 border-0 bg-transparent p-0 text-[13px] font-bold transition-all duration-200 hover:gap-2.5"
+            className="most-text-color flex shrink-0 cursor-pointer items-center gap-1.5 border-0 bg-transparent p-0 text-[13px] font-bold transition-all duration-200 hover:gap-2.5"
           >
             Read More
             <ArrowRightOutlined />
@@ -365,7 +365,7 @@ const BlogPage = () => {
               </h2>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+            <div className="grid grid-cols-2 gap-3 pb-10 sm:grid-cols-3 lg:grid-cols-6">
               {[
                 {
                   name: "Goa",

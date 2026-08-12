@@ -197,10 +197,11 @@ export default function Header() {
 
       {/* Navbar */}
       <header
-        className={`flex justify-between bg-white shadow-sm ${isMobile
-          ? "h-14 px-5 py-1 pt-0"
-          : "h-18 px-6 py-1 pt-0 md:px-10  lg:px-8 xl:px-30 2xl:px-30"
-          }`}
+        className={`flex justify-between bg-white shadow-sm ${
+          isMobile
+            ? "h-14 px-5 py-1 pt-0"
+            : "h-18 px-6 py-1 pt-0 md:px-10 lg:px-8 xl:px-30 2xl:px-30"
+        }`}
       >
         {/* Logo */}
         <div className={isMobile ? "" : "flex items-center justify-start"}>
@@ -212,18 +213,23 @@ export default function Header() {
               height={110}
               priority
               unoptimized
-              className={`object-contain transition-all duration-300 ${isMobile
-                ? "absolute left-2 top-2 h-[50px] w-[50px]"
-                : "h-[100px] w-[100px]"
-                }`}
+              className={`object-contain transition-all duration-300 ${
+                isMobile
+                  ? "absolute top-2 left-2 h-[50px] w-[50px]"
+                  : "h-[100px] w-[100px]"
+              }`}
             />
           </Link>
         </div>
 
-        <nav className="hidden min-[901px]:flex items-center justify-center gap-7 lg:gap-4 xl:gap-7 2xl:gap-7 font-roboto text-gray-900">
+        <nav className="font-roboto hidden items-center justify-center gap-7 text-gray-900 min-[901px]:flex lg:gap-4 xl:gap-7 2xl:gap-7">
           {desktopNavigationItems.map((item) =>
             item.type === "comingSoon" ? (
-              <Tooltip key={item.id} title="Coming Soon" color="most-text-color">
+              <Tooltip
+                key={item.id}
+                title="Coming Soon"
+                color="most-text-color"
+              >
                 <span className={navLinkClass}>{item.label}</span>
               </Tooltip>
             ) : (
@@ -243,10 +249,10 @@ export default function Header() {
                 router.push("/profile?tab=wishlist");
               })
             }
-            className="group hidden cursor-pointer items-center gap-2 rounded-lg border teb-border-color px-3 py-2 text-sm font-medium most-text-color  transition-all duration-300 hover:-translate-y-0.5 background-color  hover:text-white! md:flex"
+            className="group teb-border-color most-text-color background-color hidden cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-all duration-300 hover:-translate-y-0.5 hover:text-white! md:flex"
           >
             {wishlistCount > 0 && (
-              <span className="ml-1 rounded-full buttion-background-color px-2 py-0.5 text-xs font-semibold text-white transition-colors duration-300 group-hover:bg-white group-hover:text-most-text-color">
+              <span className="buttion-background-color group-hover:text-most-text-color ml-1 rounded-full px-2 py-0.5 text-xs font-semibold text-white transition-colors duration-300 group-hover:bg-white">
                 {wishlistCount}
               </span>
             )}
@@ -260,7 +266,7 @@ export default function Header() {
             getPopupContainer={(trigger) => trigger.parentElement}
             popupRender={() => currencyDropdownContent}
           >
-            <button className="group hidden cursor-pointer items-center gap-2 rounded-lg border teb-border-color px-3 py-2 text-sm font-medium most-text-color  transition-all duration-300 hover:-translate-y-0.5 background-color  hover:text-white! md:flex">
+            <button className="group teb-border-color most-text-color background-color hidden cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-all duration-300 hover:-translate-y-0.5 hover:text-white! md:flex">
               <span>{hydrated ? selectedCurrency?.symbol : "₹"}</span>
               <span className="max-w-20 truncate">
                 {hydrated ? selectedCurrency?.code : "INR"}
@@ -273,13 +279,14 @@ export default function Header() {
           {!session ? (
             <button
               onClick={() => setOpen(true)}
-              className={`buttion-background-color flex items-center rounded-lg text-white! transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg ${isMobile
-                ? "gap-3 px-4 py-2 text-[13px]"
-                : "gap-2 px-3 py-2 text-sm"
-                }`}
+              className={`buttion-background-color flex items-center rounded-lg text-white! transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg ${
+                isMobile
+                  ? "gap-3 px-4 py-2 text-[13px]"
+                  : "gap-2 px-3 py-2 text-sm"
+              }`}
             >
               <UserOutlined
-                className={isMobile ? "text-[12px]" : "text-[18px] "}
+                className={isMobile ? "text-[12px]" : "text-[18px]"}
               />
 
               {!isMobile && <span>Login</span>}
@@ -289,8 +296,9 @@ export default function Header() {
               <div className="flex cursor-pointer items-center gap-2 transition-all duration-300 hover:scale-105">
                 {/* ✅ PERFECT ROUND AVATAR */}
                 <div
-                  className={`flex items-center justify-center overflow-hidden rounded-full border-2 teb-border-color bg-gray-100 transition-all duration-300 ${isMobile ? "h-7! w-7!" : "h-9 w-9"
-                    }`}
+                  className={`teb-border-color flex items-center justify-center overflow-hidden rounded-full border-2 bg-gray-100 transition-all duration-300 ${
+                    isMobile ? "h-7! w-7!" : "h-9 w-9"
+                  }`}
                 >
                   {user?.image ? (
                     <Image
@@ -302,8 +310,9 @@ export default function Header() {
                     />
                   ) : (
                     <span
-                      className={`font-semibold text-[#4A9BB5] ${isMobile ? "text-xs" : "text-sm"
-                        }`}
+                      className={`font-semibold text-[#4A9BB5] ${
+                        isMobile ? "text-xs" : "text-sm"
+                      }`}
                     >
                       {getInitials(user?.name)}
                     </span>
@@ -315,7 +324,7 @@ export default function Header() {
 
           {/* Mobile Menu */}
           <button
-            className="!text-[22px] most-text-color transition-all duration-300 hover:scale-110 hover:text-gray-800! min-[901px]:hidden"
+            className="most-text-color !text-[22px] transition-all duration-300 hover:scale-110 hover:text-gray-800! min-[901px]:hidden"
             onClick={() => setMobileMenu(true)}
           >
             <MenuOutlined />
@@ -361,7 +370,7 @@ export default function Header() {
                     {/* Left Side */}
                     <div className="flex min-w-0 items-center gap-1">
                       {/* Icon */}
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl boder most-boder-colour">
+                      <div className="boder most-boder-colour flex h-10 w-10 shrink-0 items-center justify-center rounded-xl">
                         <Icon size={20} className="most-text-color" />
                       </div>
 
@@ -379,13 +388,13 @@ export default function Header() {
                   </div>
                   {/* Right Side */}
                   {item.type === "comingSoon" ? (
-                    <span className="shrink-0 rounded-full bg-[#EAF7FB] px-3 py-1 text-[11px] font-medium most-text-color">
+                    <span className="most-text-color shrink-0 rounded-full bg-[#EAF7FB] px-3 py-1 text-[11px] font-medium">
                       Soon
                     </span>
                   ) : (
                     <ChevronRight
                       size={20}
-                      className="shrink-0 most-text-color transition-transform duration-300 group-hover:translate-x-1"
+                      className="most-text-color shrink-0 transition-transform duration-300 group-hover:translate-x-1"
                     />
                   )}
                 </div>
@@ -412,7 +421,7 @@ export default function Header() {
             >
               <div className={drawerItemClass}>
                 <div className="flex items-center gap-1">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl boder most-boder-colour">
+                  <div className="boder most-boder-colour flex h-10 w-10 items-center justify-center rounded-xl">
                     <Banknote size={20} className="most-text-color" />
                   </div>
 
@@ -429,8 +438,9 @@ export default function Header() {
 
                 <ChevronRight
                   size={20}
-                  className={` transition-transform duration-300 ${mobileCurrencyOpen ? "rotate-90" : ""
-                    }`}
+                  className={`transition-transform duration-300 ${
+                    mobileCurrencyOpen ? "rotate-90" : ""
+                  }`}
                 />
               </div>
             </Dropdown>
@@ -439,7 +449,7 @@ export default function Header() {
           {/* Footer */}
           <div className="mt-3! border-t border-gray-200 pt-6">
             <div className="rounded-2xl bg-[#F5FBFE] p-4">
-              <h4 className="text-[15px] font-semibold most-text-color">
+              <h4 className="most-text-color text-[15px] font-semibold">
                 PAN Journey
               </h4>
 

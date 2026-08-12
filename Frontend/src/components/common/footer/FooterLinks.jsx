@@ -71,14 +71,14 @@ export default function FooterLinks() {
         <div className="mt-6 space-y-2 text-sm">
           <a
             href="mailto:support@panjourney.com"
-            className="block font-medium text-[#0f6b78] transition-colors hover:text-[#0c5863]"
+            className="block font-medium most-text-color transition-colors hover:text-[#0c5863]"
           >
             support@panjourney.com
           </a>
 
           <a
             href="tel:+91 9876543210"
-            className="block font-medium text-[#0f6b78] transition-colors hover:text-[#0c5863]"
+            className="block font-medium most-text-color transition-colors hover:text-[#0c5863]"
           >
             +91 9876543210
           </a>
@@ -86,15 +86,15 @@ export default function FooterLinks() {
 
         {/* Trust badges */}
         <div className="mt-6 flex flex-wrap gap-2">
-          <span className="rounded-full bg-[#eef5fa] px-3 py-1 text-xs font-medium text-[#0f6b78]">
+          <span className="rounded-full bg-[#eef5fa] px-3 py-1 text-xs font-medium most-text-color">
             Secure Payments
           </span>
 
-          <span className="rounded-full bg-[#eef5fa] px-3 py-1 text-xs font-medium text-[#0f6b78]">
+          <span className="rounded-full bg-[#eef5fa] px-3 py-1 text-xs font-medium most-text-color">
             24×7 Support
           </span>
 
-          <span className="rounded-full bg-[#eef5fa] px-3 py-1 text-xs font-medium text-[#0f6b78]">
+          <span className="rounded-full bg-[#eef5fa] px-3 py-1 text-xs font-medium most-text-color">
             Verified Hotels
           </span>
         </div>

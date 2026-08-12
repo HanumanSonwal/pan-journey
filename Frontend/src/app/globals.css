@@ -336,7 +336,7 @@ body {
 }
 
 .buttion-border-color {
-  border-color: var(--theme-primary);
+  border-color: var(--theme-primary) !important;
 }
 
 /* Gradient */
@@ -350,19 +350,18 @@ body {
 }
 
 /* Gradient Border */
-
 .most-boder-colour,
 .most-boder-colour:hover {
-  border: 1px solid transparent;
+  border: 1px solid transparent !important;
 
   background:
     linear-gradient(var(--theme-white), var(--theme-white)) padding-box,
     linear-gradient(
-        180deg,
-        var(--theme-border-gradient-start) 0%,
-        var(--theme-border-gradient-end) 100%
-      )
-      border-box;
+      180deg,
+      var(--theme-border-gradient-start) 0%,
+      var(--theme-border-gradient-end) 100%
+    )
+    border-box !important;
 }
 
 .theme-icon-primary {
