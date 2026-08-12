@@ -1,34 +1,13 @@
 "use client";
 
-import { LoadingOutlined } from "@ant-design/icons";
-import { Spin } from "antd";
-
 export default function BookingWebsiteLoader() {
   return (
     <div
-      className="
-        fixed inset-0
-        z-[999999]
-        flex flex-col items-center justify-center
-        bg-white
-        backdrop-blur-sm
-        animate-fadeIn
-      "
+      className="fixed inset-0 z-[999999] flex items-center justify-center bg-white"
+      role="status"
+      aria-label="Loading"
     >
-      <Spin
-        size="large"
-        indicator={
-          <LoadingOutlined
-            spin
-            style={{
-              fontSize: 46,
-              color: "#0077b6",
-            }}
-          />
-        }
-      />
-
-
+      <div className="h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-[#0077b6]" />
     </div>
   );
 }
