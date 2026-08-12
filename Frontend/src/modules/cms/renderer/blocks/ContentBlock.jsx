@@ -23,7 +23,7 @@ export default function ContentBlock({ content }) {
   if (!editor) return null;
 
   return (
-    <section className="cms-content-block">
+    <section className="cms-content-block ">
       <div className="cms-content-wrapper">
         <EditorContent editor={editor} />
       </div>

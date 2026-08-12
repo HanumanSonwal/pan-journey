@@ -1,6 +1,5 @@
 "use client";
 
-import BottomNav from "@/components/common/loder/MobileBottomNav ";
 import {
   CalendarOutlined,
   CheckCircleFilled,
@@ -89,10 +88,11 @@ export default function BookingHistoryTab({ setSelectedBooking }) {
                 <button
                   key={tab.label}
                   onClick={() => setActiveFilter(tab.label)}
-                  className={`flex items-center gap-2 text-[16px] font-medium transition-all ${active
-                    ? "text-[#4A9BB5]"
-                    : "text-gray-700 hover:text-[#4A9BB5]"
-                    }`}
+                  className={`flex items-center gap-2 text-[16px] font-medium transition-all ${
+                    active
+                      ? "text-[#4A9BB5]"
+                      : "text-gray-700 hover:text-[#4A9BB5]"
+                  }`}
                 >
                   <span className="text-[15px]">{tab.icon}</span>
 
@@ -136,7 +136,7 @@ export default function BookingHistoryTab({ setSelectedBooking }) {
               <div className="flex flex-col gap-5 p-5 xl:flex-row xl:items-center xl:justify-between">
                 <div className="flex min-w-0 flex-1 items-start gap-4">
                   <div className="flex h-[48px] w-[48px] shrink-0 items-center justify-center rounded bg-[#edf7ff]">
-                    <CalendarOutlined className="text-[28px] most-text-color" />
+                    <CalendarOutlined className="most-text-color text-[28px]" />
                   </div>
 
                   <div className="min-w-0">
@@ -145,7 +145,7 @@ export default function BookingHistoryTab({ setSelectedBooking }) {
                     </h3>
 
                     <div className="mt-2 flex flex-wrap items-center gap-3">
-                      <div className="rounded-full border most-boder-colour px-3 py-[3px] text-[12px] font-medium most-text-color">
+                      <div className="most-boder-colour most-text-color rounded-full border px-3 py-[3px] text-[12px] font-medium">
                         {item?.status}
                       </div>
 
@@ -178,7 +178,7 @@ export default function BookingHistoryTab({ setSelectedBooking }) {
                       `/profile?tab=booking-details&bookingRefNo=${item.bookingId}`,
                     );
                   }}
-                  className="h-10 cursor-pointer rounded buttion-background-color text-[14px]! font-semibold text-white! transition-all  md:w-[120px] md:text-[14px] lg:w-[150px]"
+                  className="buttion-background-color h-10 cursor-pointer rounded text-[14px]! font-semibold text-white! transition-all md:w-[120px] md:text-[14px] lg:w-[150px]"
                 >
                   View Booking
                 </button>
@@ -229,7 +229,7 @@ export default function BookingHistoryTab({ setSelectedBooking }) {
                 {/* DOWNLOAD */}
 
                 <div className="flex items-center justify-center p-5">
-                  <button className="flex h-10 min-w-[190px] items-center justify-center gap-2 rounded border border-[#244734] px-4 text-[14px]! font-medium text-[#244734]! transition-all hover:bg-[#244734] hover:text-white!">
+                  <button className="most-text-color background-color !buttion-border-color flex h-10 min-w-[190px] items-center justify-center gap-2 rounded border px-4 text-[14px]! font-medium transition-all hover:text-white!">
                     <DownloadOutlined />
                     Download Invoice
                   </button>
@@ -239,7 +239,6 @@ export default function BookingHistoryTab({ setSelectedBooking }) {
           ))
         )}
       </div>
-      
     </>
   );
 }

@@ -155,7 +155,7 @@ export default function DateRangeField({
       <div className="relative h-[65px] rounded-md border border-[#d9d9d9] bg-white px-2 py-3 transition-all hover:border-[#0077b6]">
         {/* DISPLAY */}
         <div
-          className="flex h-full cursor-pointer items-center gap-1"
+          className="flex h-full cursor-pointer items-center gap-0"
           onClick={() => setOpen(true)}
         >
 
