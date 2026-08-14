@@ -7,8 +7,8 @@ import bookingData from "./data/Busflightherodata";
 
 export default function ComingSoonSection() {
   return (
-    <section className="mt-[-10px] overflow-hidden bg-[#EDF7FF] !px-0 sm:!px-0 md:!px-1 lg:!px-1 xl:!px-1 2xl:!px-0 md:pt-12  lg:pt-16">
-      <div className="mx-auto w-full  px-1 sm:px-2 lg:w-[87%] xl:w-[86.72%]">
+    <section className="background-color-bg mt-[-10px] overflow-hidden !px-0 sm:!px-0 md:!px-1 md:pt-12 lg:!px-1 lg:pt-16 xl:!px-1 2xl:!px-0">
+      <div className="mx-auto w-full px-1 sm:px-2 lg:w-[87%] xl:w-[86.72%]">
         {/* Cards */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8 xl:gap-10">
           {bookingData.map((item) => (
@@ -26,7 +26,7 @@ export default function ComingSoonSection() {
 
                 {/* Coming Soon Tag */}
                 <div className="absolute top-0 left-0 z-10">
-                  <span className="rounded-br-xl teb-gradient  px-3 py-2 text-[11px] text-white sm:px-4 sm:py-2 sm:text-sm lg:px-5 lg:py-3 lg:text-base">
+                  <span className="teb-gradient rounded-br-xl px-3 py-2 text-[11px] text-white sm:px-4 sm:py-2 sm:text-sm lg:px-5 lg:py-3 lg:text-base">
                     Coming Soon
                   </span>
                 </div>

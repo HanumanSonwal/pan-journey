@@ -46,7 +46,7 @@ export default function SearchBar({ onSearch }) {
   return (
     <>
       {/* // <div className="sticky top-0 z-5 bg-[#72C0F0] shadow"> */}
-      <div className="buttion-background-color sticky top-0 z-5 hidden shadow md:block">
+      <div className="navbar-background-color sticky top-0 z-5 hidden shadow md:block">
         <div className="px-2 py-1 pb-8 md:px-6">
           <div className="mx-auto max-w-[1250px]">
             {/* Heading */}
@@ -143,7 +143,7 @@ export default function SearchBar({ onSearch }) {
                 <button
                   type="button"
                   onClick={handleSearch}
-                  className="teb-bg-color h-[50px] w-full rounded-[25px] text-sm font-semibold !text-white transition-all duration-200 active:scale-[0.98]"
+                  className=" h-[50px] w-full rounded-[25px] text-sm font-semibold navbar-buttion-background-color !text-white transition-all duration-200 active:scale-[0.98]"
                 >
                   SEARCH
                 </button>
@@ -153,7 +153,7 @@ export default function SearchBar({ onSearch }) {
         </div>
       </div>
 
-      <div className="sticky top-0 z-30 bg-[#eef6fd] p-1 md:hidden">
+      <div className="background-color-bg sticky top-0 z-30 p-1 md:hidden">
         <div className="rounded border border-gray-200 bg-white p-2 shadow-sm">
           <div className="flex items-start justify-between">
             <div className="min-w-0">

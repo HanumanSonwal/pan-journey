@@ -169,7 +169,7 @@ export default function TopRatedHotels({ hotels }) {
   );
 
   return (
-    <div className="!mt-[-10px] bg-[#EDF7FF] px-0 py-8 md:py-12">
+    <div className="background-color-bg !mt-[-10px] px-0 py-8 md:py-12">
       <div className="teb-gradient mx-auto w-full rounded-lg px-0 py-10 sm:rounded-xl sm:px-0 md:rounded-2xl md:px-8 md:py-14 lg:w-[85.87%] lg:rounded-3xl lg:px-8 xl:px-10">
         {/* HEADING */}
         <div className="mb-8 text-center text-white md:mb-10">

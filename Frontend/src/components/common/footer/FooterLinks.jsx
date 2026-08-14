@@ -14,7 +14,7 @@ function FooterColumn({ title, links }) {
           <li key={item.label}>
             <Link
               href={item.href}
-              className="relative inline-block transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0  after:bg-[var(--theme-secondary)] after:transition-all after:duration-300 hover-most-text-color hover:after:w-full"
+              className="hover-most-text-color relative inline-block transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[var(--theme-secondary)] after:transition-all after:duration-300 hover:after:w-full"
             >
               {item.label}
             </Link>
@@ -61,24 +61,24 @@ export default function FooterLinks() {
           />
         </div>
 
-        <p className="text-[15px] leading-7 text-gray-600">
+        <p className="footer-backgound-color text-[15px] leading-7">
           PAN Journey helps travelers discover and book hotels with ease,
           offering secure payments, verified stays, and dedicated customer
           support.
         </p>
 
         {/* Contact */}
-        <div className="mt-6 space-y-2 text-sm">
+        <div className="footer-backgound-color mt-6 space-y-2 text-sm">
           <a
             href="mailto:support@panjourney.com"
-            className="block font-medium most-text-color transition-colors hover:text-[#0c5863]"
+            className="!most-text-color block font-medium transition-colors hover:text-[#0c5863]"
           >
             support@panjourney.com
           </a>
 
           <a
             href="tel:+91 9876543210"
-            className="block font-medium most-text-color transition-colors hover:text-[#0c5863]"
+            className="!most-text-color block font-medium transition-colors hover:text-[#0c5863]"
           >
             +91 9876543210
           </a>
@@ -86,21 +86,21 @@ export default function FooterLinks() {
 
         {/* Trust badges */}
         <div className="mt-6 flex flex-wrap gap-2">
-          <span className="rounded-full bg-[#eef5fa] px-3 py-1 text-xs font-medium most-text-color">
+          <span className="most-text-color rounded-full bg-[#eef5fa] px-3 py-1 text-xs font-medium">
             Secure Payments
           </span>
 
-          <span className="rounded-full bg-[#eef5fa] px-3 py-1 text-xs font-medium most-text-color">
+          <span className="most-text-color rounded-full bg-[#eef5fa] px-3 py-1 text-xs font-medium">
             24×7 Support
           </span>
 
-          <span className="rounded-full bg-[#eef5fa] px-3 py-1 text-xs font-medium most-text-color">
+          <span className="most-text-color rounded-full bg-[#eef5fa] px-3 py-1 text-xs font-medium">
             Verified Hotels
           </span>
         </div>
 
         {/* Small trust text */}
-        <p className="mt-5 text-xs leading-6 text-gray-500">
+        <p className="footer-backgound-color mt-5 text-xs leading-6">
           Trusted platform for discovering and booking hotels with a seamless
           and secure travel experience.
         </p>

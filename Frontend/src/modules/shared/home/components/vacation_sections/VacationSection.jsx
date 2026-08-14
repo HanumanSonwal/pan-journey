@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ButtonTab from "./ButtonTab";
 import HotelType from "./VacationType";
 
@@ -21,7 +21,7 @@ export default function VacationSection({ vibes }) {
   // }, [categories]);
 
   return (
-    <SectionWrapper className="bg-[#edf7ff] pt-32 md:pt-36 lg:pt-24 xl:pt-22">
+    <SectionWrapper className="background-color-bg pt-32 md:pt-36 lg:pt-24 xl:pt-22">
       {/* Heading */}
       <div className="!mt-[124px]">
         <SectionHeading title={vibes?.title || "Places As Per Your Vibe"} />

@@ -78,7 +78,7 @@ function SortBar({ sort, setSort }) {
                     setMobileSortOpen(false);
                   }}
                   className={`flex h-[58px] w-full items-center justify-center gap-2 border-b border-gray-300 transition-all ${
-                    active ? "bg-[#edf7ff]" : "bg-white hover:bg-gray-50"
+                    active ? "" : "bg-white hover:bg-gray-50"
                   } ${index === tabs.length - 1 ? "border-b-0" : ""}`}
                 >
                   <span
@@ -125,7 +125,7 @@ function SortBar({ sort, setSort }) {
                 type="button"
                 onClick={() => handleSortChange(tab.value)}
                 className={`flex h-[43px] flex-1 items-center justify-center gap-2 border-r border-gray-300 transition-all ${
-                  active ? "bg-[#edf7ff]" : "bg-white hover:bg-gray-50"
+                  active ? "!background-color-bg" : "bg-white hover:bg-gray-50"
                 } ${index === tabs.length - 1 ? "!border-r-0" : ""}`}
               >
                 <span
