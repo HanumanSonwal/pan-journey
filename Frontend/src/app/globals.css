@@ -315,7 +315,9 @@ body {
 }
 
 .buttion-background-color.ant-btn:hover,
-.buttion-background-color.ant-btn:focus {
+.buttion-background-color.ant-btn:focus,
+.buttion-background-color.ant-btn:active {
+  background: var(--theme-hover) !important;
   background-color: var(--theme-hover) !important;
   border-color: var(--theme-hover) !important;
   color: var(--theme-white) !important;
@@ -357,11 +359,11 @@ body {
   background:
     linear-gradient(var(--theme-white), var(--theme-white)) padding-box,
     linear-gradient(
-      180deg,
-      var(--theme-border-gradient-start) 0%,
-      var(--theme-border-gradient-end) 100%
-    )
-    border-box !important;
+        180deg,
+        var(--theme-border-gradient-start) 0%,
+        var(--theme-border-gradient-end) 100%
+      )
+      border-box !important;
 }
 
 .theme-icon-primary {
@@ -370,8 +372,21 @@ body {
 
 .theme-icon-secondary {
   background-color: var(--theme-secondary);
-}
+}   
 
 .theme-icon-white {
   background-color: var(--theme-white);
+}
+.background-color-bg {
+  background-color: #dbe9ff;
+}        
+.footer-backgound-color {
+  background-color: #e8edff;
+  color: black;
+}
+.navbar-background-color {
+  background-color: #4c72c5;
+}
+.navbar-buttion-background-color {
+  background-color: #0c5863;
 }

@@ -129,7 +129,7 @@ export default function Footer() {
   return (
     <footer
       id="site-footer"
-      className="bg-gray-100 px-10 pt-10 text-gray-700"
+      className="footer-backgound-color px-10 pt-10 "
     >
       <FooterLinks />
       <FooterBottom />

@@ -56,7 +56,7 @@ export default function HotelCheckoutContent({
   const seconds = String(timeLeft % 60).padStart(2, "0");
 
   return (
-    <div className="min-h-screen bg-[#eef6fd]">
+    <div className="min-h-screen background-color-bg">
       {/* Top Background */}
       <div className="relative overflow-hidden">
         <BackgroundSection />
@@ -65,7 +65,7 @@ export default function HotelCheckoutContent({
       {/* Main Content */}
       <div className="relative z-20 mx-auto !-mt-10 max-w-[1320px] px-3 md:!-mt-12 md:px-5">
         {/* HEADER */}
-        <div className="mb-4 rounded-[5px] border border-[#d8edf9] bg-white px-5 py-4 shadow-md">
+        <div className="mb-4 rounded-[5px] border border-[#d8edf9] background-color-bg px-5 py-4 shadow-md">
           <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
             <div>
               <Title
