@@ -16,6 +16,9 @@ export default function DateRangeField({
   const end = value?.[1] || dayjs().add(1, "day");
   const nights = start && end ? Math.max(0, end.diff(start, "day")) : 0;
   const [isMobile, setIsMobile] = useState(false);
+  const [activeField, setActiveField] = useState(null);
+
+  console.log("date active", activeField);
 
   useEffect(() => {
     const checkScreen = () => {
@@ -34,10 +37,23 @@ export default function DateRangeField({
 
   const picker = (
     <RangePicker
-      // DateRangePicker
       open={open}
       onOpenChange={(nextOpen) => {
         setOpen?.(nextOpen);
+      }}
+      onCalendarChange={(dates, dateStrings, info) => {
+        console.log("calendar change:", dates);
+        console.log("range:", info?.range);
+
+        // User selected Check In
+        if (info?.range === "start") {
+          setActiveField("checkOut");
+        }
+
+        // User selected Check Out
+        if (info?.range === "end") {
+          setActiveField(null);
+        }
       }}
       inputReadOnly
       value={value}
@@ -45,22 +61,6 @@ export default function DateRangeField({
       allowClear={false}
       format="DD MMM YYYY"
       placement="bottomLeft"
-      classNames={{
-        popup: {
-          root: "premium-hotel-calendar",
-        },
-      }}
-      renderExtraFooter={() =>
-        isMobile ? (
-          <button
-            type="button"
-            onClick={() => setOpen(false)}
-            className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-700 text-white! hover:bg-gray-800"
-          >
-            ✕
-          </button>
-        ) : null
-      }
       onChange={(dates) => {
         if (!dates) return;
 
@@ -68,9 +68,15 @@ export default function DateRangeField({
 
         if (dates?.[0] && dates?.[1]) {
           requestAnimationFrame(() => {
+            setActiveField(null);
             setOpen?.(false);
           });
         }
+      }}
+      classNames={{
+        popup: {
+          root: "premium-hotel-calendar",
+        },
       }}
       className="absolute top-[-20px] right-2 h-0 w-0 -translate-x-1/2 opacity-0 lg:left-0 lg:translate-x-0"
     />
@@ -83,58 +89,32 @@ export default function DateRangeField({
     return (
       <div
         className="relative h-[50px] w-full cursor-pointer rounded border border-gray-300 bg-white px-3 transition-all hover:border-[#0077b6]"
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          setActiveField("checkIn");
+          setOpen?.(true);
+        }}
       >
-        
         {/* FULL WIDTH WRAPPER */}
-        {/* FULL WIDTH WRAPPER */}
-<div className="flex h-full w-full items-center justify-between gap-2">
+        <div className="mb-2 flex items-center justify-between px-1">
+          <span
+            className={`text-[14px] transition-all ${
+              activeField === "checkIn"
+                ? "font-bold text-[#05144B] underline decoration-2 underline-offset-4"
+                : "font-semibold text-[#222]"
+            }`}
+          >
+            Check In
+          </span>
 
-  {/* ICON */}
-  {icon && (
-    <div className="flex shrink-0 items-center">
-      {icon}
-    </div>
-  )}
-
-  {/* CHECK IN */}
-  <div className="flex flex-1 flex-col justify-center leading-tight">
-            <span className="text-[9px] leading-none text-gray-500">
-              Check In
-            </span>
-            <div className="mt-[2px] flex items-center gap-1">
-              <span className="font-jost! text-[18px] leading-none font-semibold! text-black">
-                {start?.format("DD")}
-              </span>
-              <span className="text-[10px] leading-none text-gray-600">
-                {start?.format("MMM")}
-              </span>
-            </div>
-          </div>
-          {/* CENTER */}
-          <div className="flex flex-col items-center px-1">
-            <div className="h-[1px] w-4 bg-gray-300" />
-            {nights > 0 && (
-              <span className="mt-[2px] text-[8px] leading-none font-semibold text-[#0077b6]">
-                {nights}N
-              </span>
-            )}
-          </div>
-
-          {/* CHECK OUT */}
-          <div className="flex flex-1 flex-col items-end justify-center leading-tight">
-            <span className="text-[9px] leading-none text-gray-500">
-              Check Out
-            </span>
-            <div className="mt-[2px] flex items-center gap-1">
-              <span className="text-[18px] leading-none font-bold text-black">
-                {end?.format("DD")}
-              </span>
-              <span className="text-[10px] leading-none text-gray-600">
-                {end?.format("MMM")}
-              </span>
-            </div>
-          </div>
+          <span
+            className={`text-[14px] transition-all ${
+              activeField === "checkOut"
+                ? "font-bold text-[#05144B] underline decoration-2 underline-offset-4"
+                : "font-semibold text-[#222]"
+            }`}
+          >
+            Check Out
+          </span>
         </div>
 
         {/* PICKER */}
@@ -148,17 +128,38 @@ export default function DateRangeField({
   // =========================
   return (
     <>
-      <span className="mb-2 block text-[14px] font-semibold text-[#222]">
-        Check In - Check Out
-      </span>
+      <div className="mb-2 flex items-center justify-between px-1">
+        <span
+          className={`text-[14px] transition-all ${
+            activeField === "checkIn"
+              ? "font-bold text-[#05144B] underline decoration-2 underline-offset-4"
+              : "font-semibold text-[#222]"
+          }`}
+        >
+          Check In
+        </span>
 
+        <span
+          className={`text-[14px] transition-all ${
+            activeField === "checkOut"
+              ? "font-bold text-[#05144B] underline decoration-2 underline-offset-4"
+              : "font-semibold text-[#222]"
+          }`}
+        >
+          Check Out
+        </span>
+      </div>
       <div className="relative h-[65px] rounded-md border border-[#d9d9d9] bg-white px-2 py-3 transition-all hover:border-[#0077b6]">
         {/* DISPLAY */}
         <div
           className="flex h-full cursor-pointer items-center gap-0"
-          onClick={() => setOpen(true)}
-        >
+          onClick={() => {
+            console.log("DATE FIELD CLICK");
 
+            setActiveField("checkIn");
+            setOpen?.(true);
+          }}
+        >
           {icon}
 
           {/* CHECK IN */}
@@ -170,7 +171,7 @@ export default function DateRangeField({
 
               <div className="mt-2 flex flex-col leading-none">
                 <span className="text-[12px] font-semibold text-[#444]">
-                  {start?.format("MMM")}     {start?.format("YY")}
+                  {start?.format("MMM")} {start?.format("YY")}
                 </span>
 
                 {/* <span className="text-[16px] text-[#666]">
@@ -198,7 +199,7 @@ export default function DateRangeField({
 
               <div className="mt-2 flex flex-col leading-none">
                 <span className="text-[12px] font-semibold text-[#444]">
-                  {end?.format("MMM")}  {end?.format("YY")}
+                  {end?.format("MMM")} {end?.format("YY")}
                 </span>
 
                 {/* <span className="text-[12px] text-[#666]">
@@ -213,7 +214,7 @@ export default function DateRangeField({
           </div>
           {/* NIGHTS */}
           {nights > 0 && (
-            <div className="ml-5 rounded-md buttion-background-color px-2 py-1 text-[10px] font-semibold text-white">
+            <div className="buttion-background-color ml-5 rounded-md px-2 py-1 text-[10px] font-semibold text-white">
               {nights}N
             </div>
           )}
