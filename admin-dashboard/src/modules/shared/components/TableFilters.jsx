@@ -2,26 +2,45 @@
 
 import { ClearOutlined } from "@ant-design/icons";
 import { Button, Col, Input, Row, Select } from "antd";
+
 const { Search } = Input;
 
 export default function TableFilters({
   search,
   setSearch,
+
+  searchPlaceholder = "Search...",
+
   status,
   setStatus,
+
+  statusOptions = [
+    {
+      label: "Active",
+      value: true,
+    },
+    {
+      label: "Inactive",
+      value: false,
+    },
+  ],
+
   isLoading = false,
+
   roleId,
   setRoleId,
+
   hasActiveFilters,
   roleOptions = [],
+
   onReset,
 }) {
-  console.log("roleOptions props", roleOptions);
   return (
     <Row gutter={[16, 16]} style={{ marginBottom: 20 }}>
+      {/* Search */}
       <Col xs={24} md={8}>
         <Search
-          placeholder="Search..."
+          placeholder={searchPlaceholder}
           allowClear
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -30,6 +49,7 @@ export default function TableFilters({
         />
       </Col>
 
+      {/* Status */}
       <Col xs={24} md={5}>
         <Select
           placeholder="Status"
@@ -37,19 +57,11 @@ export default function TableFilters({
           style={{ width: "100%" }}
           value={status}
           onChange={setStatus}
-          options={[
-            {
-              label: "Active",
-              value: true,
-            },
-            {
-              label: "Inactive",
-              value: false,
-            },
-          ]}
+          options={statusOptions}
         />
       </Col>
 
+      {/* Role */}
       {setRoleId && (
         <Col xs={24} md={5}>
           <Select
@@ -63,11 +75,8 @@ export default function TableFilters({
         </Col>
       )}
 
+      {/* Reset */}
       <Col xs={24} md={4}>
-        {/* <Button block onClick={onReset}>
-          Reset Filters
-        </Button> */}
-
         <Button
           block
           className="text-red-500!"

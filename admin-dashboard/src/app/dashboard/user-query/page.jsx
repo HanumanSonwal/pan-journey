@@ -40,12 +40,29 @@ export default function CustomersPage() {
     search: debouncedSearch,
     page,
     limit,
-    isActive: status,
+    status,
   });
 
   // SECOND: mutation
   const { mutate: updateStatus, isPending } = useUpdateContactStatus();
-  const statusOptions = ["Open", "In Progress", "Resolved", "Closed"];
+  const statusOptions = [
+    {
+      label: "Open",
+      value: "Open",
+    },
+    {
+      label: "In Progress",
+      value: "In Progress",
+    },
+    {
+      label: "Resolved",
+      value: "Resolved",
+    },
+    {
+      label: "Closed",
+      value: "Closed",
+    },
+  ];
   // THIRD: sync local table state
   useEffect(() => {
     setTableData(data?.data?.contacts || []);
@@ -61,18 +78,19 @@ export default function CustomersPage() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "Open":
+      case "open":
         return "blue";
-      case "In Progress":
+      case "in-progress":
         return "orange";
-      case "Resolved":
+      case "resolved":
         return "green";
-      case "Closed":
+      case "closed":
         return "red";
       default:
         return "default";
     }
   };
+
   const columns = [
     {
       title: "Name",
@@ -184,8 +202,10 @@ export default function CustomersPage() {
                   });
                 }}
                 options={statusOptions.map((item) => ({
-                  value: item,
-                  label: <Tag color={getStatusColor(item)}>{item}</Tag>,
+                  value: item.value,
+                  label: (
+                    <Tag color={getStatusColor(item.value)}>{item.label}</Tag>
+                  ),
                 }))}
               />
             ),
@@ -210,6 +230,11 @@ export default function CustomersPage() {
           <TableFilters
             search={search}
             setSearch={setSearch}
+            searchPlaceholder="Search by Email or BookingRefNo"
+            statusOptions={statusOptions.map((item) => ({
+              value: item.value,
+              label: <Tag color={getStatusColor(item.value)}>{item.label}</Tag>,
+            }))}
             status={status}
             setStatus={setStatus}
             hasActiveFilters={hasActiveFilters}

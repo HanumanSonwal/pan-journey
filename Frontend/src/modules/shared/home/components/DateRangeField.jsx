@@ -17,6 +17,7 @@ export default function DateRangeField({
   const nights = start && end ? Math.max(0, end.diff(start, "day")) : 0;
   const [isMobile, setIsMobile] = useState(false);
   const [activeField, setActiveField] = useState(null);
+  const [pickerKey, setPickerKey] = useState(0);
 
   console.log("date active", activeField);
 
@@ -37,22 +38,18 @@ export default function DateRangeField({
 
   const picker = (
     <RangePicker
+      key={pickerKey}
       open={open}
       onOpenChange={(nextOpen) => {
         setOpen?.(nextOpen);
-      }}
-      onCalendarChange={(dates, dateStrings, info) => {
-        console.log("calendar change:", dates);
-        console.log("range:", info?.range);
 
-        // User selected Check In
-        if (info?.range === "start") {
-          setActiveField("checkOut");
-        }
-
-        // User selected Check Out
-        if (info?.range === "end") {
+        if (!nextOpen) {
           setActiveField(null);
+        }
+      }}
+      onCalendarChange={(dates) => {
+        if (dates?.[0]) {
+          setActiveField("checkOut");
         }
       }}
       inputReadOnly
@@ -61,6 +58,11 @@ export default function DateRangeField({
       allowClear={false}
       format="DD MMM YYYY"
       placement="bottomLeft"
+      classNames={{
+        popup: {
+          root: "premium-hotel-calendar",
+        },
+      }}
       onChange={(dates) => {
         if (!dates) return;
 
@@ -72,11 +74,6 @@ export default function DateRangeField({
             setOpen?.(false);
           });
         }
-      }}
-      classNames={{
-        popup: {
-          root: "premium-hotel-calendar",
-        },
       }}
       className="absolute top-[-20px] right-2 h-0 w-0 -translate-x-1/2 opacity-0 lg:left-0 lg:translate-x-0"
     />
@@ -91,6 +88,7 @@ export default function DateRangeField({
         className="relative h-[50px] w-full cursor-pointer rounded border border-gray-300 bg-white px-3 transition-all hover:border-[#0077b6]"
         onClick={() => {
           setActiveField("checkIn");
+          setPickerKey((prev) => prev + 1);
           setOpen?.(true);
         }}
       >
@@ -154,9 +152,8 @@ export default function DateRangeField({
         <div
           className="flex h-full cursor-pointer items-center gap-0"
           onClick={() => {
-            console.log("DATE FIELD CLICK");
-
             setActiveField("checkIn");
+            setPickerKey((prev) => prev + 1);
             setOpen?.(true);
           }}
         >
