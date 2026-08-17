@@ -40,12 +40,29 @@ export default function CustomersPage() {
     search: debouncedSearch,
     page,
     limit,
-    isActive: status,
+    status,
   });
 
   // SECOND: mutation
   const { mutate: updateStatus, isPending } = useUpdateContactStatus();
-  const statusOptions = ["Open", "In Progress", "Resolved", "Closed"];
+  const statusOptions = [
+    {
+      label: "Open",
+      value: "Open",
+    },
+    {
+      label: "In Progress",
+      value: "In-Progress",
+    },
+    {
+      label: "Resolved",
+      value: "Resolved",
+    },
+    {
+      label: "Closed",
+      value: "Closed",
+    },
+  ];
   // THIRD: sync local table state
   useEffect(() => {
     setTableData(data?.data?.contacts || []);
@@ -63,7 +80,7 @@ export default function CustomersPage() {
     switch (status) {
       case "Open":
         return "blue";
-      case "In Progress":
+      case "In-Progress":
         return "orange";
       case "Resolved":
         return "green";
@@ -73,6 +90,7 @@ export default function CustomersPage() {
         return "default";
     }
   };
+
   const columns = [
     {
       title: "Name",
@@ -97,12 +115,18 @@ export default function CustomersPage() {
         </Typography.Text>
       ),
     },
-    {
-      title: "Type",
-      dataIndex: "Type",
-      width: 120,
-      render: (value) => <Tag color="magenta">{value || "-"}</Tag>,
-    },
+   {
+  title: "Type",
+  dataIndex: "Type",
+  width: 120,
+  render: (value) => (
+    <Tag color="magenta">
+      {value
+        ? value.charAt(0).toUpperCase() + value.slice(1)
+        : "-"}
+    </Tag>
+  ),
+},
     {
       title: "Ticket ID",
       dataIndex: "ticketId",
@@ -184,8 +208,10 @@ export default function CustomersPage() {
                   });
                 }}
                 options={statusOptions.map((item) => ({
-                  value: item,
-                  label: <Tag color={getStatusColor(item)}>{item}</Tag>,
+                  value: item.value,
+                  label: (
+                    <Tag color={getStatusColor(item.value)}>{item.label}</Tag>
+                  ),
                 }))}
               />
             ),
@@ -210,6 +236,11 @@ export default function CustomersPage() {
           <TableFilters
             search={search}
             setSearch={setSearch}
+            searchPlaceholder="Search by Email or BookingRefNo"
+            statusOptions={statusOptions.map((item) => ({
+              value: item.value,
+              label: <Tag color={getStatusColor(item.value)}>{item.label}</Tag>,
+            }))}
             status={status}
             setStatus={setStatus}
             hasActiveFilters={hasActiveFilters}

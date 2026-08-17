@@ -16,16 +16,21 @@ export const PERMISSIONS = {
   Markups: ["read", "write", "update", "delete"],
 
   couponCodes: ["read", "write", "update", "delete"],
+
   homeContent: ["read", "write", "update", "delete"],
+
+  masterData: ["read", "write", "update", "delete"],
 
   services: ["read", "write", "update", "delete"],
 
   customers: ["read", "write", "update", "delete"],
 
+  themeSettings: ["read", "write", "update", "delete"],
+
   reports: ["read"],
 
   cmsPages: ["read", "write", "update", "delete"],
-    theme: ["read", "write", "update", "delete"],
+  theme: ["read", "write", "update", "delete"],
 
   calendar: ["read"],
 

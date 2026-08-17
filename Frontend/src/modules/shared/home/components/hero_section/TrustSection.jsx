@@ -75,7 +75,7 @@ export default function TrustSection() {
   }
 
   return (
-    <section className="absolute top-100 left-1/2 z-20 w-[92%] -translate-x-1/2 -translate-y-2 overflow-hidden rounded-lg border border-[#e5e7eb] bg-[#fafafa] min-[1000px]:w-[90%] min-[1200px]:w-[86%] sm:w-[94%] xl:w-[82%] 2xl:w-[82%]">
+    <section className="absolute top-100 left-1/2 z-10 w-[92%] -translate-x-1/2 -translate-y-2 overflow-hidden rounded-lg border border-[#e5e7eb] bg-[#fafafa] min-[1000px]:w-[90%] min-[1200px]:w-[86%] sm:w-[94%] xl:w-[82%] 2xl:w-[82%]">
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
         {trustItems.map((item, index) => (
           <div

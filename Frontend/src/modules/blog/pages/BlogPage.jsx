@@ -214,7 +214,7 @@ const BlogPage = () => {
                       setSearch("");
                       setPage(1);
                     }}
-                    className="mr-2 flex shrink-0 items-center justify-center border-0 bg-transparent p-0 text-gray-400 transition-colors hover:text-gray-600"
+                    className="mr-2 cursor-pointer flex shrink-0 items-center justify-center border-0 bg-transparent p-0 text-gray-400 transition-colors hover:text-gray-600"
                     aria-label="Clear search"
                   >
                     <CloseCircleFilled className="text-[18px]" />

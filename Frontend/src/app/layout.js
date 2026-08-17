@@ -4,23 +4,25 @@ import BottomNav from "@/components/common/loder/MobileBottomNav ";
 import GlobalLoginModal from "@/modules/auth/components/GlobalLoginModal";
 import ProfileCompletionHandler from "@/modules/auth/components/ProfileCompletionHandler";
 import ScrollToTopButton from "@/modules/hotel/ScrollToTopButton";
-import LoaderProvider from "@/providers/LoaderProvider";
-import QueryProvider from "@/providers/QueryProvider";
+
+import { getThemeServer } from "@/modules/theme/api/theme.service";
+import { getThemeCSSVariables } from "@/modules/theme/theme.variables";
+
 import "@/styles/cms-content.css";
-import { AntdRegistry } from "@ant-design/nextjs-registry";
-import { App } from "antd";
+
+import { App as AntdApp } from "antd";
 import "antd/dist/reset.css";
+
 import { Jost, Roboto } from "next/font/google";
 import Script from "next/script";
 import { Suspense } from "react";
+
 import "./globals.css";
-import Providers from "./providers";
-import { getThemeCSSVariables } from "@/modules/theme/theme.variables";
-import { getThemeServer } from "@/modules/theme/api/theme.service";
+import AppProviders from "./providers";
 
-
-
-/* Fonts */
+/* -------------------------------------------------------------------------- */
+/* Fonts                                                                      */
+/* -------------------------------------------------------------------------- */
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -28,15 +30,23 @@ const roboto = Roboto({
   weight: ["400", "500", "600", "700"],
   display: "swap",
 });
+
 const jost = Jost({
   variable: "--font-jost",
   subsets: ["latin"],
   weight: ["400", "500", "700"],
 });
 
-/*
-ROOT METADATA
-*/
+/* -------------------------------------------------------------------------- */
+/* IMPORTANT: Always fetch latest theme on server                             */
+/* -------------------------------------------------------------------------- */
+
+export const dynamic = "force-dynamic";
+
+/* -------------------------------------------------------------------------- */
+/* Metadata                                                                   */
+/* -------------------------------------------------------------------------- */
+
 export const metadata = {
   metadataBase: new URL(process.env.NEXTAUTH_URL || "http://localhost:3000"),
 
@@ -47,15 +57,11 @@ export const metadata = {
 
   description: "Booking platform",
 
-  // robots: {
-  //   index: true,
-  //   follow: true,
-  // },
-
   robots: {
     index: false,
     follow: false,
     nocache: true,
+
     googleBot: {
       index: false,
       follow: false,
@@ -67,10 +73,21 @@ export const metadata = {
   },
 };
 
+/* -------------------------------------------------------------------------- */
+/* Root Layout                                                                */
+/* -------------------------------------------------------------------------- */
+
 export default async function RootLayout({ children }) {
+  /*
+   * Fetch theme on the server BEFORE rendering the page.
+   */
   const theme = await getThemeServer();
 
+  /*
+   * Convert API theme object into CSS variables.
+   */
   const themeVariables = getThemeCSSVariables(theme);
+
   return (
     <html
       suppressHydrationWarning
@@ -79,10 +96,8 @@ export default async function RootLayout({ children }) {
       style={themeVariables}
     >
       <head>
-        {/* Viewport */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        {/* Preload */}
         <link rel="preload" as="image" href="/images/homepage/home.svg" />
 
         {/* Google Analytics */}
@@ -94,7 +109,11 @@ export default async function RootLayout({ children }) {
         <Script id="google-analytics" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
+
+            function gtag() {
+              dataLayer.push(arguments);
+            }
+
             gtag('js', new Date());
             gtag('config', 'G-DYY7076V0W');
           `}
@@ -102,27 +121,26 @@ export default async function RootLayout({ children }) {
       </head>
 
       <body className="flex min-h-full flex-col">
-        <LoaderProvider>
-          <AntdRegistry>
-            <QueryProvider>
-              <Providers>
-                <Header />
-                <ScrollToTopButton />
-                <ProfileCompletionHandler />
-                <main className="flex-1">
-                  <App>
-                    <GlobalLoginModal />
-                    {children}
-                  </App>
-                </main>
-                <Suspense fallback={null}>
-                  <BottomNav />
-                </Suspense>
-                <Footer />
-              </Providers>
-            </QueryProvider>
-          </AntdRegistry>
-        </LoaderProvider>
+        <AppProviders>
+          <Header />
+
+          <ScrollToTopButton />
+
+          <ProfileCompletionHandler />
+
+          <main className="flex-1">
+            <AntdApp>
+              <GlobalLoginModal />
+              {children}
+            </AntdApp>
+          </main>
+
+          <Suspense fallback={null}>
+            <BottomNav />
+          </Suspense>
+
+          <Footer />
+        </AppProviders>
       </body>
     </html>
   );

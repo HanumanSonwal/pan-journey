@@ -8,6 +8,7 @@ import HotelCard from "../../cards/HotelCard";
 import { useInfiniteHotels } from "../../hooks/useInfiniteHotels";
 import { buildHotelPayload } from "../../utils/buildHotelPayload";
 import { mapHotelsForCard } from "../../utils/mapHotelsForCard";
+import HotelNotFound from "./HotelNotFound";
 
 function HotelList({
   searchData,
@@ -64,11 +65,7 @@ function HotelList({
       (entries) => {
         const entry = entries[0];
 
-        if (
-          entry.isIntersecting &&
-          hasNextPage &&
-          !isFetchingNextPage
-        ) {
+        if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
           fetchNextPage();
         }
       },
@@ -84,11 +81,7 @@ function HotelList({
       observer.unobserve(target);
       observer.disconnect();
     };
-  }, [
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  ]);
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   /* =========================================================
      RAW HOTELS
@@ -96,9 +89,7 @@ function HotelList({
 
   const hotels = useMemo(() => {
     const allHotels =
-      data?.pages?.flatMap(
-        (page) => page?.data?.hotels || [],
-      ) || [];
+      data?.pages?.flatMap((page) => page?.data?.hotels || []) || [];
 
     /*
       IMPORTANT:
@@ -108,10 +99,7 @@ function HotelList({
     return Array.from(
       new Map(
         allHotels.map((hotel, index) => [
-          hotel?.hotelId ||
-            hotel?.id ||
-            hotel?.HotelId ||
-            `hotel-${index}`,
+          hotel?.hotelId || hotel?.id || hotel?.HotelId || `hotel-${index}`,
           hotel,
         ]),
       ).values(),
@@ -173,79 +161,39 @@ function HotelList({
           [],
 
         hotelImages:
-          mappedHotel?.hotelImages ??
-          originalHotel?.hotelImages ??
-          [],
+          mappedHotel?.hotelImages ?? originalHotel?.hotelImages ?? [],
 
-        photos:
-          mappedHotel?.photos ??
-          originalHotel?.photos ??
-          [],
+        photos: mappedHotel?.photos ?? originalHotel?.photos ?? [],
 
-        gallery:
-          mappedHotel?.gallery ??
-          originalHotel?.gallery ??
-          [],
+        gallery: mappedHotel?.gallery ?? originalHotel?.gallery ?? [],
       };
     });
-  }, [
-    hotels,
-    currencySymbol,
-    searchKey,
-  ]);
+  }, [hotels, currencySymbol, searchKey]);
 
   /* =========================================================
      DEBUG API
   ========================================================= */
 
   useEffect(() => {
-    console.log(
-      "================ HOTEL LIST API ================",
-    );
+    console.log("================ HOTEL LIST API ================");
 
-    console.log(
-      "TOTAL RAW HOTELS 👉",
-      hotels.length,
-    );
+    console.log("TOTAL RAW HOTELS 👉", hotels.length);
 
-    console.log(
-      "FIRST RAW HOTEL 👉",
-      hotels[0],
-    );
+    console.log("FIRST RAW HOTEL 👉", hotels[0]);
 
-    console.log(
-      "FIRST RAW HOTEL IMAGES 👉",
-      hotels[0]?.images,
-    );
+    console.log("FIRST RAW HOTEL IMAGES 👉", hotels[0]?.images);
 
-    console.log(
-      "FIRST RAW HOTEL HOTELIMAGES 👉",
-      hotels[0]?.hotelImages,
-    );
+    console.log("FIRST RAW HOTEL HOTELIMAGES 👉", hotels[0]?.hotelImages);
 
-    console.log(
-      "FIRST RAW HOTEL PHOTOS 👉",
-      hotels[0]?.photos,
-    );
+    console.log("FIRST RAW HOTEL PHOTOS 👉", hotels[0]?.photos);
 
-    console.log(
-      "FIRST RAW HOTEL GALLERY 👉",
-      hotels[0]?.gallery,
-    );
+    console.log("FIRST RAW HOTEL GALLERY 👉", hotels[0]?.gallery);
 
-    console.log(
-      "FIRST MAPPED HOTEL 👉",
-      mappedHotels[0],
-    );
+    console.log("FIRST MAPPED HOTEL 👉", mappedHotels[0]);
 
-    console.log(
-      "FIRST MAPPED HOTEL IMAGES 👉",
-      mappedHotels[0]?.images,
-    );
+    console.log("FIRST MAPPED HOTEL IMAGES 👉", mappedHotels[0]?.images);
 
-    console.log(
-      "================================================",
-    );
+    console.log("================================================");
   }, [hotels, mappedHotels]);
 
   /* =========================================================
@@ -257,9 +205,7 @@ function HotelList({
   }, [mappedHotels, onHotelsChange]);
 
   useEffect(() => {
-    onResultChange?.(
-      mappedHotels.length > 0,
-    );
+    onResultChange?.(mappedHotels.length > 0);
   }, [mappedHotels, onResultChange]);
 
   /* =========================================================
@@ -275,12 +221,7 @@ function HotelList({
   ========================================================= */
 
   if (isError) {
-    return (
-      <div className="flex w-full items-center justify-center py-10 text-sm text-red-500">
-        {error?.message ||
-          "Failed to fetch hotels"}
-      </div>
-    );
+    return <HotelNotFound type="error" />;
   }
 
   /* =========================================================
@@ -288,11 +229,7 @@ function HotelList({
   ========================================================= */
 
   if (!mappedHotels.length) {
-    return (
-      <div className="flex w-full items-center justify-center py-10 text-sm text-gray-500">
-        No hotels found
-      </div>
-    );
+    return <HotelNotFound type="not-found" />;
   }
 
   /* =========================================================
@@ -303,40 +240,24 @@ function HotelList({
     <div className="w-full space-y-4">
       {/* HOTELS */}
 
-      {mappedHotels.map(
-        (hotel, index) => (
-          <HotelCard
-            key={
-              hotel?.id ||
-              hotel?.hotelId ||
-              index
-            }
-            hotel={hotel}
-            wishlistIds={
-              wishlistIds
-            }
-          />
-        ),
-      )}
+      {mappedHotels.map((hotel, index) => (
+        <HotelCard
+          key={hotel?.id || hotel?.hotelId || index}
+          hotel={hotel}
+          wishlistIds={wishlistIds}
+        />
+      ))}
 
       {/* LOAD MORE */}
 
-      <div
-        ref={loadMoreRef}
-        className="flex justify-center py-6"
-      >
+      <div ref={loadMoreRef} className="flex justify-center py-6">
         {isFetchingNextPage && (
-          <div className="text-sm text-gray-500">
-            Loading more hotels...
-          </div>
+          <div className="text-sm text-gray-500">Loading more hotels...</div>
         )}
 
-        {!hasNextPage &&
-          !isFetchingNextPage && (
-            <div className="text-sm text-gray-400">
-              No more hotels
-            </div>
-          )}
+        {!hasNextPage && !isFetchingNextPage && (
+          <div className="text-sm text-gray-400">No more hotels</div>
+        )}
       </div>
     </div>
   );
