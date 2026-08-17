@@ -78,12 +78,16 @@ export const getAllContactsAdmin = async (req, res) => {
   try {
     const result = await getAllContactsAdminService(req.query);
 
-    return sendSuccess(res, "Contacts fetched successfully", result);
+    const message =
+      result.contacts.length === 0
+        ? "No matching contacts found"
+        : "Contacts fetched successfully";
+
+    return sendSuccess(res, message, result);
   } catch (error) {
     return sendError(res, error.message, 500);
   }
 };
-
 // GET SINGLE CONTACT
 export const getSingleContact = async (req, res) => {
   try {
