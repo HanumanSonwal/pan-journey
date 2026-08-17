@@ -25,15 +25,30 @@ export const createMasterData = async (req, res) => {
 
 export const getMasterData = async (req, res) => {
   try {
-    const { type } = req.query;
+    const { data, meta } = await getMasterDataService(req.query);
 
-    const data = await getMasterDataService(type);
-
-    return sendSuccess(res, "Master data list", data);
-  } catch (err) {
-    return sendError(res, err);
+    return sendSuccess(
+      res,
+      "Master data fetched successfully",
+      data,
+      meta
+    );
+  } catch (error) {
+    return sendError(res, error.message);
   }
 };
+
+// export const getMasterData = async (req, res) => {
+//   try {
+//     const { type } = req.query;
+
+//     const data = await getMasterDataService(type);
+
+//     return sendSuccess(res, "Master data list", data);
+//   } catch (err) {
+//     return sendError(res, err);
+//   }
+// };
 
 export const updateMasterData = async (req, res) => {
   try {

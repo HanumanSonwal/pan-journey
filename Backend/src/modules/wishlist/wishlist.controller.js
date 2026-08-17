@@ -37,14 +37,7 @@ export const getWishlistCity = asyncHandler(async (req, res) => {
 
   sendSuccess(res, "Wishlist city fetched", data);
 });
-// export const getWishlistCity = asyncHandler(async (req, res) => {
-//   const { cityId } = req.params;
-//   if (!cityId) {
-//     throw new Error("City id is required");
-//   }
-//   const data = await getWishlistCityService(req.user._id, cityId);
-//   sendSuccess(res, "Wishlist city fetched", data);
-// });
+
 
 export const checkWishlist = asyncHandler(async (req, res) => {
   const { hotelId } = req.params;

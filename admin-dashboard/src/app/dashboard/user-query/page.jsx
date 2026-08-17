@@ -115,12 +115,18 @@ export default function CustomersPage() {
         </Typography.Text>
       ),
     },
-    {
-      title: "Type",
-      dataIndex: "Type",
-      width: 120,
-      render: (value) => <Tag color="magenta">{value || "-"}</Tag>,
-    },
+   {
+  title: "Type",
+  dataIndex: "Type",
+  width: 120,
+  render: (value) => (
+    <Tag color="magenta">
+      {value
+        ? value.charAt(0).toUpperCase() + value.slice(1)
+        : "-"}
+    </Tag>
+  ),
+},
     {
       title: "Ticket ID",
       dataIndex: "ticketId",
