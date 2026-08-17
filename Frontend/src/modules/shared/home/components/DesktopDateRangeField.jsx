@@ -38,9 +38,7 @@ export default function DesktopDateRangeField({
 
   const toCalendarDate = (date) => {
     if (!date) return null;
-
     const d = dayjs(date);
-
     return new CalendarDate(d.year(), d.month() + 1, d.date());
   };
 
@@ -68,9 +66,7 @@ export default function DesktopDateRangeField({
 
   const handleOpen = () => {
     setActiveField("checkIn");
-
     setCalendarKey((prev) => prev + 1);
-
     setOpen?.(true);
   };
 
@@ -373,7 +369,7 @@ export default function DesktopDateRangeField({
           <div className="absolute top-[58px] left-1/2 z-[999999] w-[calc(100vw-16px)] max-w-[720px] -translate-x-1/2 rounded-xl border border-gray-200 bg-white p-3 shadow-2xl sm:p-4">
             {/* ACTIVE FIELD */}
 
-            <div className="mb-3 flex items-center justify-between border-b border-gray-200 px-1 pb-3 sm:mb-4">
+            {/* <div className="mb-3 flex items-center justify-between border-b border-gray-200 px-1 pb-3 sm:mb-4">
               <span
                 className={`text-[12px] sm:text-[14px] ${
                   activeField === "checkIn"
@@ -395,7 +391,7 @@ export default function DesktopDateRangeField({
               >
                 Check Out
               </span>
-            </div>
+            </div> */}
 
             {calendar}
           </div>
@@ -412,7 +408,7 @@ export default function DesktopDateRangeField({
     <>
       {/* ================= LABELS ================= */}
 
-      <div className="mb-2 flex items-center justify-between px-1">
+      <div className="mb-2 flex items-center justify-evenly ">
         <span
           className={`text-[12px] transition-all sm:text-[13px] lg:text-[14px] ${
             activeField === "checkIn"
@@ -424,7 +420,7 @@ export default function DesktopDateRangeField({
         </span>
 
         <span
-          className={`text-[12px] transition-all sm:text-[13px] lg:text-[14px] ${
+          className={`text-[12px] ml-5! transition-all sm:text-[13px] lg:text-[14px] ${
             activeField === "checkOut"
               ? "font-bold text-[#05144B] underline decoration-2 underline-offset-4"
               : "font-semibold text-[#222]"
@@ -518,7 +514,7 @@ export default function DesktopDateRangeField({
             <div className="absolute top-[68px] left-1/2 z-[999999] w-[calc(100vw-16px)] max-w-[720px] -translate-x-1/2 rounded-xl border border-gray-200 bg-white p-3 shadow-2xl sm:p-4">
               {/* ================= ACTIVE FIELD ================= */}
 
-              <div className="mb-3 flex items-center justify-between border-b border-gray-200 px-1 pb-3 sm:mb-4">
+              {/* <div className="mb-3 flex items-center justify-between border-b border-gray-200 px-1 pb-3 sm:mb-4">
                 <span
                   className={`text-[12px] transition-all sm:text-[14px] ${
                     activeField === "checkIn"
@@ -540,7 +536,7 @@ export default function DesktopDateRangeField({
                 >
                   Check Out
                 </span>
-              </div>
+              </div> */}
 
               {calendar}
             </div>

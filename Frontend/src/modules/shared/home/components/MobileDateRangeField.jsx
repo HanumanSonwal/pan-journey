@@ -11,7 +11,7 @@ import {
 import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
 
 import dayjs from "dayjs";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useState } from "react";
 
 export default function MobileDateRangeField({
@@ -29,11 +29,15 @@ export default function MobileDateRangeField({
 
   const [activeField, setActiveField] = useState(null);
 
+  // Temporary selection inside popup
+  const [selectedCheckIn, setSelectedCheckIn] = useState(null);
+  const [selectedCheckOut, setSelectedCheckOut] = useState(null);
+
   const todayDate = today(getLocalTimeZone());
 
-  // ================================
-  // CONVERSION
-  // ================================
+  // ==========================================
+  // DAYJS -> CALENDAR DATE
+  // ==========================================
 
   const toCalendarDate = (date) => {
     if (!date) return null;
@@ -43,86 +47,170 @@ export default function MobileDateRangeField({
     return new CalendarDate(d.year(), d.month() + 1, d.date());
   };
 
+  // ==========================================
+  // CALENDAR DATE -> DAYJS
+  // ==========================================
+
   const toDayjs = (date) => {
     if (!date) return null;
 
     return dayjs(
-      `${date.year}-${String(date.month).padStart(2, "0")}-${String(
-        date.day,
-      ).padStart(2, "0")}`,
+      `${date.year}-${String(date.month).padStart(
+        2,
+        "0",
+      )}-${String(date.day).padStart(2, "0")}`,
     );
   };
 
-  const checkInValue = toCalendarDate(value?.[0]);
-  const checkOutValue = toCalendarDate(value?.[1]);
-
-  // ================================
+  // ==========================================
   // OPEN
-  // ================================
+  // ==========================================
 
   const handleOpen = () => {
     setActiveField("checkIn");
+
+    // Existing selected dates ko temporary state me load karo
+    setSelectedCheckIn(toCalendarDate(value?.[0]));
+
+    setSelectedCheckOut(toCalendarDate(value?.[1]));
+
     setOpen?.(true);
   };
 
-  // ================================
+  // ==========================================
+  // CLOSE
+  // ==========================================
+
+  const handleClose = () => {
+    setActiveField(null);
+    setSelectedCheckIn(null);
+    setSelectedCheckOut(null);
+
+    setOpen?.(false);
+  };
+
+  // ==========================================
   // DATE SELECT
-  // ================================
+  // ==========================================
 
   const handleDateChange = (date) => {
     if (!date) return;
 
-    const selectedDate = toDayjs(date);
-
+    // ========================================
     // CHECK IN
+    // ========================================
+
     if (activeField === "checkIn") {
-      onChange?.([selectedDate, value?.[1] || null]);
+      setSelectedCheckIn(date);
+      setSelectedCheckOut(null);
 
       setActiveField("checkOut");
 
       return;
     }
 
+    // ========================================
     // CHECK OUT
-    if (activeField === "checkOut") {
-      const checkIn = value?.[0];
+    // ========================================
 
-      if (checkIn && selectedDate.isBefore(dayjs(checkIn), "day")) {
+    if (activeField === "checkOut") {
+      if (!selectedCheckIn) return;
+
+      // Checkout cannot be before checkin
+      if (date.compare(selectedCheckIn) < 0) {
         return;
       }
 
-      onChange?.([checkIn, selectedDate]);
+      setSelectedCheckOut(date);
+    }
+  };
+
+  // ==========================================
+  // NEXT / DONE
+  // ==========================================
+
+  const handleNext = () => {
+    // First step
+    if (activeField === "checkIn") {
+      if (!selectedCheckIn) return;
+
+      setActiveField("checkOut");
+
+      return;
+    }
+
+    // Second step
+    if (activeField === "checkOut" && selectedCheckIn && selectedCheckOut) {
+      const checkIn = toDayjs(selectedCheckIn);
+      const checkOut = toDayjs(selectedCheckOut);
+
+      onChange?.([checkIn, checkOut]);
 
       setActiveField(null);
+
+      setSelectedCheckIn(null);
+      setSelectedCheckOut(null);
+
       setOpen?.(false);
     }
   };
 
-  // ================================
+  // ==========================================
+  // MIN DATE
+  // ==========================================
+
+  const calendarMinDate =
+    activeField === "checkOut" && selectedCheckIn ? selectedCheckIn : todayDate;
+
+  // ==========================================
+  // DATE STATE
+  // ==========================================
+
+  const isSameDate = (date1, date2) => {
+    if (!date1 || !date2) return false;
+
+    return (
+      date1.year === date2.year &&
+      date1.month === date2.month &&
+      date1.day === date2.day
+    );
+  };
+
+  const isBetweenRange = (date) => {
+    if (!selectedCheckIn || !selectedCheckOut) {
+      return false;
+    }
+
+    return (
+      date.compare(selectedCheckIn) > 0 && date.compare(selectedCheckOut) < 0
+    );
+  };
+
+  // ==========================================
   // CALENDAR
-  // ================================
+  // ==========================================
 
   const calendar = (
     <Calendar
       aria-label="Hotel date"
       value={
         activeField === "checkIn"
-          ? checkInValue || undefined
-          : checkOutValue || undefined
+          ? selectedCheckIn || undefined
+          : selectedCheckOut || undefined
       }
-      minValue={
-        activeField === "checkOut" && checkInValue ? checkInValue : todayDate
-      }
+      minValue={calendarMinDate}
       onChange={handleDateChange}
       className="w-full"
     >
-      {/* HEADER */}
+      {/* ======================================
+          HEADER
+      ====================================== */}
 
       <div className="mb-4 flex items-center">
         <Button
           slot="previous"
           aria-label="Previous month"
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-[#F5F7FF] text-[#05144B] hover:bg-[#E8F0FF]"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-[#F5F7FF] text-[#05144B] transition hover:bg-[#E8F0FF] active:scale-95"
         >
           <ChevronLeft size={19} />
         </Button>
@@ -132,73 +220,93 @@ export default function MobileDateRangeField({
         <Button
           slot="next"
           aria-label="Next month"
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-[#F5F7FF] text-[#05144B] hover:bg-[#E8F0FF]"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-[#F5F7FF] text-[#05144B] transition hover:bg-[#E8F0FF] active:scale-95"
         >
           <ChevronRight size={19} />
         </Button>
       </div>
 
-      {/* SINGLE CALENDAR */}
+      {/* ======================================
+          SINGLE CALENDAR
+      ====================================== */}
 
       <CalendarGrid className="w-full">
         {(date) => (
           <CalendarCell
             date={date}
-            className={({ isSelected, isDisabled }) =>
-              `flex h-10 w-10 items-center justify-center rounded-full text-[13px] font-medium outline-none ${
-                isSelected
-                  ? "bg-[#05144B] text-white"
-                  : "text-[#222] hover:bg-[#EEF3FF]"
-              } ${
-                isDisabled
-                  ? "cursor-not-allowed text-gray-300"
-                  : "cursor-pointer"
-              } `
-            }
+            className={({ isDisabled }) => {
+              const isCheckIn = isSameDate(date, selectedCheckIn);
+
+              const isCheckOut = isSameDate(date, selectedCheckOut);
+
+              const isRange = isBetweenRange(date);
+
+              // CHECK IN / CHECK OUT
+              if (isCheckIn || isCheckOut) {
+                return `flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-[#05144B] text-[13px] font-semibold text-white`;
+              }
+
+              // BETWEEN RANGE
+              if (isRange) {
+                return `flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-[#E8F0FF] text-[13px] font-medium text-[#05144B]`;
+              }
+
+              // DISABLED
+              if (isDisabled) {
+                return `flex h-10 w-10 items-center justify-center rounded-full text-[13px] font-medium text-gray-300`;
+              }
+
+              // NORMAL
+              return `flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-[13px] font-medium text-[#222] transition hover:bg-[#EEF3FF]`;
+            }}
           />
         )}
       </CalendarGrid>
     </Calendar>
   );
 
-  // ================================
-  // DEFAULT UI
-  // ================================
+  // ==========================================
+  // DEFAULT FIELD
+  // ==========================================
 
   return (
     <>
+      {/* LABEL */}
+
       <div className="mb-2 flex items-center justify-between px-1">
         <span
-          className={`text-[14px] ${
+          className={`text-[14px] transition-all ${
             activeField === "checkIn"
               ? "font-bold text-[#05144B] underline decoration-2 underline-offset-4"
               : "font-semibold text-[#222]"
-          }`}
+          } `}
         >
           Check In
         </span>
 
         <span
-          className={`text-[14px] ${
+          className={`text-[14px] transition-all ${
             activeField === "checkOut"
               ? "font-bold text-[#05144B] underline decoration-2 underline-offset-4"
               : "font-semibold text-[#222]"
-          }`}
+          } `}
         >
           Check Out
         </span>
       </div>
 
-      <div className="relative z-[99999]">
+      {/* FIELD */}
+
+      <div className="relative z-[99999] w-full">
         <div
-          className="flex h-[65px] cursor-pointer items-center rounded-md border border-[#d9d9d9] bg-white px-2 py-3"
+          className="flex h-[65px] w-full cursor-pointer items-center rounded-md border border-[#d9d9d9] bg-white px-2 py-3"
           onClick={handleOpen}
         >
           {icon}
 
           {/* CHECK IN */}
 
-          <div className="flex flex-col justify-center">
+          <div className="flex min-w-0 flex-1 flex-col justify-center">
             <div className="flex items-start gap-1">
               <span className="text-[26px] leading-none font-semibold text-[#222]">
                 {start.format("DD")}
@@ -211,20 +319,20 @@ export default function MobileDateRangeField({
               </div>
             </div>
 
-            <span className="mt-2 text-[12px] font-medium text-[#777] uppercase">
+            <span className="mt-2 truncate text-[12px] font-medium text-[#777] uppercase">
               {start.format("dddd")}
             </span>
           </div>
 
           {/* ARROW */}
 
-          <div className="mx-4">
-            <span className="text-[28px] text-[#05144B]">→</span>
+          <div className="mx-3 shrink-0">
+            <span className="text-[26px] text-[#05144B]">→</span>
           </div>
 
           {/* CHECK OUT */}
 
-          <div className="flex flex-col items-end justify-center">
+          <div className="flex min-w-0 flex-1 flex-col items-end justify-center">
             <div className="flex items-start gap-1">
               <span className="text-[26px] leading-none font-semibold text-[#222]">
                 {end.format("DD")}
@@ -237,19 +345,23 @@ export default function MobileDateRangeField({
               </div>
             </div>
 
-            <span className="mt-2 text-[12px] font-medium text-[#777] uppercase">
+            <span className="mt-2 truncate text-[12px] font-medium text-[#777] uppercase">
               {end.format("dddd")}
             </span>
           </div>
 
+          {/* NIGHTS */}
+
           {nights > 0 && (
-            <div className="buttion-background-color ml-5 rounded-md px-2 py-1 text-[10px] font-semibold text-white">
+            <div className="buttion-background-color ml-2 hidden rounded-md px-2 py-1 text-[10px] font-semibold text-white sm:block">
               {nights}N
             </div>
           )}
         </div>
 
-        {/* MOBILE POPUP */}
+        {/* ======================================
+            MOBILE BOTTOM SHEET
+        ====================================== */}
 
         {open && (
           <>
@@ -257,75 +369,72 @@ export default function MobileDateRangeField({
 
             <div
               className="fixed inset-0 z-[999998] bg-black/40"
-              onClick={() => {
-                setActiveField(null);
-                setOpen?.(false);
-              }}
+              onClick={handleClose}
             />
 
-            {/* POPUP */}
+            {/* BOTTOM SHEET */}
 
-            <div className="fixed top-1/2 left-1/2 z-[999999] w-[calc(100vw-24px)] max-w-[390px] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white p-4 shadow-2xl">
-              {/* HEADER */}
+            <div className="fixed bottom-0 left-0 z-[999999] w-full animate-[slideUp_0.25s_ease-out] rounded-t-2xl bg-white px-4 pt-3 pb-5 shadow-[0_-8px_30px_rgba(0,0,0,0.18)]">
+              {/* DRAG HANDLE */}
 
-              <div className="mb-4 flex items-center justify-between border-b border-gray-200 px-1 pb-3">
-                <span
-                  className={
-                    activeField === "checkIn"
-                      ? "font-bold text-[#05144B] underline decoration-2 underline-offset-4"
-                      : "font-medium text-gray-500"
-                  }
+              <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-gray-300" />
+
+              {/* TOP */}
+
+              <div className="mb-4 flex items-center justify-between border-b border-gray-200 pb-3">
+                <div className="flex items-center gap-5">
+                  <span
+                    className={`text-[14px] ${
+                      activeField === "checkIn"
+                        ? "font-bold text-[#05144B] underline decoration-2 underline-offset-4"
+                        : "font-medium text-gray-500"
+                    } `}
+                  >
+                    Check In
+                  </span>
+
+                  <span className="text-gray-300">→</span>
+
+                  <span
+                    className={`text-[14px] ${
+                      activeField === "checkOut"
+                        ? "font-bold text-[#05144B] underline decoration-2 underline-offset-4"
+                        : "font-medium text-gray-500"
+                    } `}
+                  >
+                    Check Out
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleClose}
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-600"
                 >
-                  Check In
-                </span>
-
-                <span className="text-gray-300">→</span>
-
-                <span
-                  className={
-                    activeField === "checkOut"
-                      ? "font-bold text-[#05144B] underline decoration-2 underline-offset-4"
-                      : "font-medium text-gray-500"
-                  }
-                >
-                  Check Out
-                </span>
+                  <X size={17} />
+                </button>
               </div>
 
-              {/* SINGLE CALENDAR */}
+              {/* CALENDAR */}
 
               {calendar}
 
-              {/* BUTTON */}
+              {/* ==================================
+                  NEXT / DONE
+              ================================== */}
 
-              <div className="mt-4">
-                {activeField === "checkIn" ? (
-                  <button
-                    type="button"
-                    disabled={!value?.[0]}
-                    onClick={() => {
-                      setActiveField("checkOut");
-                    }}
-                    className="w-full rounded-lg bg-[#05144B] py-3 text-sm font-semibold text-white disabled:opacity-40"
-                  >
-                    Next
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    disabled={!value?.[1]}
-                    onClick={() => {
-                      if (value?.[0] && value?.[1]) {
-                        setActiveField(null);
-                        setOpen?.(false);
-                      }
-                    }}
-                    className="w-full rounded-lg bg-[#05144B] py-3 text-sm font-semibold text-white disabled:opacity-40"
-                  >
-                    Done
-                  </button>
-                )}
-              </div>
+              <button
+                type="button"
+                disabled={
+                  activeField === "checkIn"
+                    ? !selectedCheckIn
+                    : !selectedCheckOut
+                }
+                onClick={handleNext}
+                className="mt-4 w-full rounded-xl bg-[#05144B] py-3.5 text-sm font-semibold text-white! transition hover:bg-[#0C2FB1] disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                {activeField === "checkIn" ? "Next" : "Done"}
+              </button>
             </div>
           </>
         )}
