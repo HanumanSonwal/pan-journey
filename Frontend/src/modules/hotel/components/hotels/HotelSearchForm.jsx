@@ -68,7 +68,7 @@ export default function HotelSearchForm({
         </div>
 
         {/* Date */}
-        <div className="relative z-50 w-full">
+        <div className="relative z-[100] w-full">
           <DateRangeField
             icon={<CalendarOutlined className="text-[18px] text-gray-400" />}
             variant="default"

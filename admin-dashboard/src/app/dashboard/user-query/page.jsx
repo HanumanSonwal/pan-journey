@@ -52,7 +52,7 @@ export default function CustomersPage() {
     },
     {
       label: "In Progress",
-      value: "In Progress",
+      value: "In-Progress",
     },
     {
       label: "Resolved",
@@ -78,13 +78,13 @@ export default function CustomersPage() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "open":
+      case "Open":
         return "blue";
-      case "in-progress":
+      case "In-Progress":
         return "orange";
-      case "resolved":
+      case "Resolved":
         return "green";
-      case "closed":
+      case "Closed":
         return "red";
       default:
         return "default";
