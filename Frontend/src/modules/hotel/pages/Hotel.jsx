@@ -477,7 +477,7 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
 
             <div
               className={`sticky top-[98px] max-h-[calc(100vh-40px)] w-full overflow-y-auto sm:w-64 md:w-72 ${
-                sidebarZ0 ? "z-0" : "z-20"
+                sidebarZ0 ? "z-0" : "!z-20"
               }`}
             >
               <SidebarFilters
@@ -498,7 +498,7 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
 
               <div
                 className={`sticky top-[98px] ${
-                  sidebarZ0 ? "!-z-10" : "z-20"
+                  sidebarZ0 ? "!-z-10" : "!z-20"
                 } bg-[#edf7ff]`}
               >
                 <SortBar sort={sort} setSort={handleSortChange} />
