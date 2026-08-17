@@ -295,12 +295,12 @@ body {
   color: var(--theme-text-primary) !important;
 }
 
-.hover-most-text-color:hover {
+.header-hover-most-text-color:hover {
   color: var(--theme-text-primary) !important;
 }
 /* Background */
 
-.teb-bg-color {
+.teb-boder-colour {
   background-color: var(--theme-primary);
 }
 
@@ -372,14 +372,14 @@ body {
 
 .theme-icon-secondary {
   background-color: var(--theme-secondary);
-}   
+}
 
 .theme-icon-white {
   background-color: var(--theme-white);
 }
 .background-color-bg {
   background-color: #dbe9ff;
-}        
+}
 .footer-backgound-color {
   background-color: #e8edff;
   color: black;

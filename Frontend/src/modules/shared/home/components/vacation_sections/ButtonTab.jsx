@@ -18,7 +18,7 @@ export default function ButtonTab({ tabs = [], activeTab, setActiveTab }) {
 
             {/* ONLY active underline */}
             {activeTab === tab.category && (
-              <span className="teb-bg-color absolute bottom-1 left-0 !h-[4px] w-full rounded-full shadow-[0_4px_6px_var(--teb-shadow)] sm:h-[2px]" />
+              <span className="teb-boder-colour absolute bottom-1 left-0 !h-[4px] w-full rounded-full shadow-[0_4px_6px_var(--teb-shadow)] sm:h-[2px]" />
             )}
           </button>
         ))}
