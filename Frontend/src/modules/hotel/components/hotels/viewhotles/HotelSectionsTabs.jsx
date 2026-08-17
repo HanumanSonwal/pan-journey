@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -162,10 +160,11 @@ const HotelSectionsTabs = ({ activeTab = "Rooms", setActiveTab }) => {
 
       <div
         ref={ref}
-        className={`z-[8] w-full border border-gray-200 bg-white text-[#0ea5e9] shadow-[0_8px_20px_rgba(14,165,233,0.25)] ${isFixed
-          ? "fixed top-[55px] left-0 w-full sm:top-[55px] md:top-[100px] lg:top-[100px] xl:top-[100px]"
-          : "relative"
-          }`}
+        className={`z-[8] w-full border border-gray-200 bg-white text-[#0ea5e9] shadow-[0_8px_20px_rgba(14,165,233,0.25)] ${
+          isFixed
+            ? "fixed top-[55px] left-0 w-full sm:top-[55px] md:top-[100px] lg:top-[100px] xl:top-[100px]"
+            : "relative"
+        }`}
       >
         <div className="scrollbar-hide flex overflow-x-auto">
           {tabs.map((tab) => {
@@ -175,15 +174,16 @@ const HotelSectionsTabs = ({ activeTab = "Rooms", setActiveTab }) => {
               <button
                 key={tab}
                 onClick={() => handleScrollTo(tab)}
-                className={`font-roboto relative min-w-max flex-1 px-6 py-5 text-[15px] font-bold whitespace-nowrap transition ${active
-                  ? "teb-text-color"
-                  : "!text-gray-900 hover:text-[#0ea5e9]"
-                  }`}
+                className={`font-roboto relative min-w-max flex-1 px-6 py-5 text-[15px] font-bold whitespace-nowrap transition ${
+                  active
+                    ? "teb-text-color"
+                    : "!text-gray-900 hover:text-[#0ea5e9]"
+                }`}
               >
                 {tab}
 
                 {active && (
-                  <span className="absolute bottom-0 left-0 h-[3px] w-full rounded-full teb-bg-color" />
+                  <span className="teb-boder-colour absolute bottom-0 left-0 h-[3px] w-full rounded-full" />
                 )}
               </button>
             );
