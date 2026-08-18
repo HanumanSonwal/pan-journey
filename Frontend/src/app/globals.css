@@ -34,6 +34,17 @@
   --theme-gradient-start: #05144b;
   --theme-gradient-end: #0c2fb1;
 
+  /* Search Bar */
+  --theme-search-bar-background: #dbe9ff;
+  --theme-search-bar-button-background: #0c5863;
+
+  /* Footer */
+  --theme-footer-background: #e8edff;
+  --theme-footer-text: #000000;
+
+  /* Website */
+  --theme-website-background: #ffffff;
+
   /* Border Gradient */
   --theme-border-gradient-start: #72c0f0;
   --theme-border-gradient-end: #0f6a75;
@@ -378,15 +389,15 @@ body {
   background-color: var(--theme-white);
 }
 .background-color-bg {
-  background-color: #dbe9ff;
+  background-color: var(--theme-website-background);
 }
 .footer-backgound-color {
-  background-color: #e8edff;
-  color: black;
+  background-color: var(--theme-footer-background);
+  color:var(--theme-footer-text);
 }
 .navbar-background-color {
-  background-color: #4c72c5;
+  background-color: var(--theme-search-bar-background);
 }
 .navbar-buttion-background-color {
-  background-color: #0c5863;
+  background-color: var(--theme-search-bar-button-background);
 }

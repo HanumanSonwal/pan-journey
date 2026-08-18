@@ -44,6 +44,31 @@ const themeSchema = new mongoose.Schema(
       default: "#0C2FB1",
     },
 
+    searchBarBackgroundColor: {
+      type: String,
+      default: "#0C2FB1",
+    },
+
+    searchBarButtonBackgroundColor: {
+      type: String,
+      default: "#05144B",
+    },
+
+    footerBackgroundColor: {
+      type: String,
+      default: "#05144B",
+    },
+
+    footerTextColor: {
+      type: String,
+      default: "#FFFFFF",
+    },
+
+    websiteBackgroundColor: {
+      type: String,
+      default: "#FFFFFF",
+    },
+
     whiteColor: {
       type: String,
       default: "#FFFFFF",
@@ -52,11 +77,11 @@ const themeSchema = new mongoose.Schema(
     isActive: {
       type: Boolean,
       default: true,
-    }
+    },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 export default mongoose.model("Theme", themeSchema);
