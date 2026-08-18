@@ -33,6 +33,7 @@ export default function DesktopDateRangeField({
   const [mounted, setMounted] = useState(false);
 
   const fieldRef = useRef(null);
+  const popupRef = useRef(null);
 
   const [popupPosition, setPopupPosition] = useState({
     top: 0,
@@ -63,19 +64,131 @@ export default function DesktopDateRangeField({
   };
 
   // ==========================================
-  // UPDATE POSITION ON SCROLL / RESIZE
+  // SCROLL PAGE SO CALENDAR IS FULLY VISIBLE
+  // ==========================================
+
+  const scrollPageToShowCalendar = () => {
+    if (!popupRef.current) return;
+
+    const popupRect = popupRef.current.getBoundingClientRect();
+
+    const viewportHeight = window.innerHeight;
+
+    // Space from viewport top
+    const topMargin = 20;
+
+    // Space from viewport bottom
+    const bottomMargin = 20;
+
+    const popupTop = popupRect.top;
+    const popupBottom = popupRect.bottom;
+    const popupHeight = popupRect.height;
+
+    // ==========================================
+    // CASE 1:
+    // CALENDAR IS CUT FROM BOTTOM
+    // ==========================================
+
+    if (popupBottom > viewportHeight - bottomMargin) {
+      const requiredScroll = popupBottom - (viewportHeight - bottomMargin);
+
+      /*
+       * Positive scroll means:
+       * Page content upar jayega.
+       *
+       * Example:
+       * Calendar bottom = 850
+       * Viewport = 768
+       * Required = 102px
+       *
+       * Page 102px neeche scroll hoga
+       * aur calendar screen ke andar aa jayega.
+       */
+
+      window.scrollBy({
+        top: requiredScroll,
+        behavior: "smooth",
+      });
+
+      return;
+    }
+
+    // ==========================================
+    // CASE 2:
+    // CALENDAR IS CUT FROM TOP
+    // ==========================================
+
+    if (popupTop < topMargin) {
+      const requiredScroll = popupTop - topMargin;
+
+      window.scrollBy({
+        top: requiredScroll,
+        behavior: "smooth",
+      });
+
+      return;
+    }
+
+    // ==========================================
+    // CASE 3:
+    // CALENDAR ALREADY FULLY VISIBLE
+    // ==========================================
+
+    if (popupTop >= topMargin && popupBottom <= viewportHeight - bottomMargin) {
+      return;
+    }
+
+    // Prevent unused variable warning in some setups
+    if (popupHeight <= 0) return;
+  };
+
+  // ==========================================
+  // WHEN CALENDAR OPENS
   // ==========================================
 
   useEffect(() => {
     if (!open) return;
 
+    /*
+     * First popup position calculate karo.
+     */
     updatePopupPosition();
+
+    /*
+     * Popup DOM me render hone ke baad
+     * uski actual height measure karo.
+     */
+    const timer = setTimeout(() => {
+      updatePopupPosition();
+
+      requestAnimationFrame(() => {
+        scrollPageToShowCalendar();
+      });
+    }, 50);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [open]);
+
+  // ==========================================
+  // UPDATE POSITION ON RESIZE / SCROLL
+  // ==========================================
+
+  useEffect(() => {
+    if (!open) return;
 
     const handlePositionUpdate = () => {
       updatePopupPosition();
     };
 
     window.addEventListener("resize", handlePositionUpdate);
+
+    /*
+     * Capture phase me scroll listen kar rahe hain
+     * kyunki page scroll hone par popup ko
+     * field ke according reposition karna hai.
+     */
     window.addEventListener("scroll", handlePositionUpdate, true);
 
     return () => {
@@ -93,6 +206,7 @@ export default function DesktopDateRangeField({
 
   const toCalendarDate = (date) => {
     if (!date) return null;
+
     const d = dayjs(date);
 
     return new CalendarDate(d.year(), d.month() + 1, d.date());
@@ -122,12 +236,19 @@ export default function DesktopDateRangeField({
 
   const handleOpen = () => {
     setActiveField("checkIn");
+
     setCalendarKey((prev) => prev + 1);
 
+    /*
+     * Popup ki initial position calculate karo.
+     */
     requestAnimationFrame(() => {
       updatePopupPosition();
     });
 
+    /*
+     * Calendar open karo.
+     */
     setOpen?.(true);
   };
 
@@ -137,6 +258,7 @@ export default function DesktopDateRangeField({
 
   const handleClose = () => {
     setActiveField(null);
+
     setOpen?.(false);
   };
 
@@ -180,7 +302,10 @@ export default function DesktopDateRangeField({
     isDisabled,
     isOutsideMonth,
   }) => {
-    // Disabled / outside month
+    // ==========================================
+    // DISABLED / OUTSIDE MONTH
+    // ==========================================
+
     if (isDisabled || isOutsideMonth) {
       return `
         flex
@@ -197,7 +322,10 @@ export default function DesktopDateRangeField({
       `;
     }
 
-    // Check In / Check Out
+    // ==========================================
+    // CHECK IN / CHECK OUT
+    // ==========================================
+
     if (isSelectionStart || isSelectionEnd) {
       return `
         flex
@@ -208,7 +336,7 @@ export default function DesktopDateRangeField({
         items-center
         justify-center
         rounded-full
-        bg-[#05144B]
+        buttion-background-color
         text-[11px]
         sm:text-[12px]
         lg:text-[13px]
@@ -218,7 +346,10 @@ export default function DesktopDateRangeField({
       `;
     }
 
-    // Middle range
+    // ==========================================
+    // MIDDLE RANGE
+    // ==========================================
+
     if (isSelected) {
       return `
         flex
@@ -234,12 +365,15 @@ export default function DesktopDateRangeField({
         sm:text-[12px]
         lg:text-[13px]
         font-medium
-        text-[#05144B]
+       most-text-color
         transition-all
       `;
     }
 
-    // Normal date
+    // ==========================================
+    // NORMAL DATE
+    // ==========================================
+
     return `
       flex
       h-8 w-8
@@ -282,13 +416,15 @@ export default function DesktopDateRangeField({
       onChange={handleRangeChange}
       className="w-full"
     >
-      {/* ================= HEADER ================= */}
+      {/* ==========================================
+          HEADER
+      ========================================== */}
 
       <div className="mb-3 flex items-center gap-2 sm:mb-4">
         <Button
           slot="previous"
           aria-label="Previous months"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#E5E7EB] bg-[#F5F7FF] text-[#05144B] transition hover:bg-[#E8F0FF] disabled:cursor-not-allowed disabled:opacity-30 sm:h-9 sm:w-9"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#E5E7EB] bg-[#F5F7FF] most-text-color transition hover:bg-[#E8F0FF] disabled:cursor-not-allowed disabled:opacity-30 sm:h-9 sm:w-9"
         >
           <ChevronLeft
             size={17}
@@ -297,12 +433,12 @@ export default function DesktopDateRangeField({
           />
         </Button>
 
-        <Heading className="flex-1 text-center text-[13px] font-bold whitespace-nowrap text-[#05144B] sm:text-[14px] lg:text-[16px]" />
+        <Heading className="flex-1 text-center text-[13px] font-bold whitespace-nowrap most-text-color sm:text-[14px] lg:text-[16px]" />
 
         <Button
           slot="next"
           aria-label="Next months"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#E5E7EB] bg-[#F5F7FF] text-[#05144B] transition hover:bg-[#E8F0FF] disabled:cursor-not-allowed disabled:opacity-30 sm:h-9 sm:w-9"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#E5E7EB] bg-[#F5F7FF] most-text-color transition hover:bg-[#E8F0FF] disabled:cursor-not-allowed disabled:opacity-30 sm:h-9 sm:w-9"
         >
           <ChevronRight
             size={17}
@@ -312,7 +448,9 @@ export default function DesktopDateRangeField({
         </Button>
       </div>
 
-      {/* ================= TWO MONTHS ================= */}
+      {/* ==========================================
+          TWO MONTHS
+      ========================================== */}
 
       <div className="grid grid-cols-2 gap-1 sm:gap-2 lg:gap-8">
         {/* FIRST MONTH */}
@@ -351,13 +489,18 @@ export default function DesktopDateRangeField({
     open &&
     createPortal(
       <>
-        {/* ================= OVERLAY ================= */}
+        {/* ==========================================
+            OVERLAY
+        ========================================== */}
 
         <div className="fixed inset-0 z-[9999999998]" onClick={handleClose} />
 
-        {/* ================= CALENDAR POPUP ================= */}
+        {/* ==========================================
+            CALENDAR POPUP
+        ========================================== */}
 
         <div
+          ref={popupRef}
           className="fixed z-[9999999999] w-[720px] max-w-[calc(100vw-16px)] -translate-x-1/2 rounded-xl border border-gray-200 bg-white p-3 shadow-2xl sm:p-4"
           style={{
             top: `${popupPosition.top}px`,
@@ -365,13 +508,15 @@ export default function DesktopDateRangeField({
           }}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* ================= ACTIVE FIELD ================= */}
+          {/* ==========================================
+              ACTIVE FIELD
+          ========================================== */}
 
           <div className="mb-3 flex items-center justify-between border-b border-gray-200 px-1 pb-3 sm:mb-4">
             <span
               className={`text-[12px] sm:text-[14px] ${
                 activeField === "checkIn"
-                  ? "font-bold text-[#05144B] underline decoration-2 underline-offset-4"
+                  ? "most-text-color font-bold underline decoration-2 underline-offset-4"
                   : "font-medium text-gray-500"
               }`}
             >
@@ -383,7 +528,7 @@ export default function DesktopDateRangeField({
             <span
               className={`text-[12px] sm:text-[14px] ${
                 activeField === "checkOut"
-                  ? "font-bold text-[#05144B] underline decoration-2 underline-offset-4"
+                  ? "most-text-color font-bold underline decoration-2 underline-offset-4"
                   : "font-medium text-gray-500"
               }`}
             >
@@ -494,13 +639,15 @@ export default function DesktopDateRangeField({
 
   return (
     <>
-      {/* ================= LABELS ================= */}
+      {/* ==========================================
+          LABELS
+      ========================================== */}
 
       <div className="mb-2 flex items-center justify-evenly">
         <span
           className={`text-[12px] transition-all sm:text-[13px] lg:text-[14px] ${
             activeField === "checkIn"
-              ? "font-bold text-[#05144B] underline decoration-2 underline-offset-4"
+              ? "most-text-color font-bold underline decoration-2 underline-offset-4"
               : "font-semibold text-[#222]"
           }`}
         >
@@ -510,7 +657,7 @@ export default function DesktopDateRangeField({
         <span
           className={`ml-5! text-[12px] transition-all sm:text-[13px] lg:text-[14px] ${
             activeField === "checkOut"
-              ? "font-bold text-[#05144B] underline decoration-2 underline-offset-4"
+              ? "most-text-color font-bold underline decoration-2 underline-offset-4"
               : "font-semibold text-[#222]"
           }`}
         >
@@ -518,7 +665,9 @@ export default function DesktopDateRangeField({
         </span>
       </div>
 
-      {/* ================= FIELD ================= */}
+      {/* ==========================================
+          FIELD
+      ========================================== */}
 
       <div ref={fieldRef} className="relative w-full">
         <div
@@ -529,7 +678,7 @@ export default function DesktopDateRangeField({
 
           {icon && <div className="mr-1 shrink-0 sm:mr-2">{icon}</div>}
 
-          {/* ================= CHECK IN ================= */}
+          {/* CHECK IN */}
 
           <div className="flex min-w-0 flex-1 flex-col justify-center">
             <div className="flex items-start gap-1">
@@ -549,15 +698,15 @@ export default function DesktopDateRangeField({
             </span>
           </div>
 
-          {/* ================= ARROW ================= */}
+          {/* ARROW */}
 
           <div className="mx-2 shrink-0 sm:mx-3 lg:mx-4">
-            <span className="text-[20px] text-[#05144B] sm:text-[24px] lg:text-[28px]">
+            <span className="most-text-color text-[20px] sm:text-[24px] lg:text-[28px]">
               →
             </span>
           </div>
 
-          {/* ================= CHECK OUT ================= */}
+          {/* CHECK OUT */}
 
           <div className="flex min-w-0 flex-1 flex-col items-end justify-center">
             <div className="flex items-start gap-1">
@@ -577,7 +726,7 @@ export default function DesktopDateRangeField({
             </span>
           </div>
 
-          {/* ================= NIGHTS ================= */}
+          {/* NIGHTS */}
 
           {nights > 0 && (
             <div className="buttion-background-color ml-2 hidden shrink-0 rounded-md px-2 py-1 text-[9px] font-semibold text-white sm:block lg:ml-5 lg:text-[10px]">
