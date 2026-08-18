@@ -14,11 +14,10 @@
     "@hookform/resolvers": "^5.2.2",
     "@internationalized/date": "^3.12.2",
     "@tanstack/react-query": "^5.99.2",
-    "@tiptap/react": "^3.23.6",
-    "@tiptap/starter-kit": "^3.23.6",
     "antd": "^6.4.4",
     "axios": "^1.15.2",
     "clsx": "^2.1.1",
+    "dayjs": "^1.11.23",
     "jsonwebtoken": "^9.0.3",
     "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.4",
@@ -36,6 +35,7 @@
     "zustand": "^5.0.12"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^16.3.1",
     "@tailwindcss/postcss": "^4",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",

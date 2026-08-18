@@ -1,17 +1,7 @@
-"use client";
-
-import { EditorContent, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
+import Image from "next/image";
 import Link from "next/link";
 
 export default function ImageContentBlock({ data }) {
-  const editor = useEditor({
-    editable: false,
-    extensions: [StarterKit],
-    content: data?.content,
-    immediatelyRender: false,
-  });
-
   if (!data) return null;
 
   const isRight = data?.layout === "right";
@@ -25,16 +15,14 @@ export default function ImageContentBlock({ data }) {
           }`}
         >
           {/* IMAGE */}
-          <div
-            className={`w-full ${
-              isRight ? "lg:order-2" : "lg:order-1"
-            }`}
-          >
+          <div className={`w-full ${isRight ? "lg:order-2" : "lg:order-1"}`}>
             {data?.image && (
               <div className="w-full overflow-hidden rounded-[18px] sm:rounded-[22px] lg:rounded-[24px]">
-                <img
+                <Image
                   src={encodeURI(data.image)}
                   alt={data?.title || "section"}
+                  width={1200}
+                  height={700}
                   className="block h-auto max-h-[420px] w-full object-cover shadow-[0_15px_40px_rgba(15,23,42,0.12)] sm:max-h-[460px] lg:max-h-[520px]"
                 />
               </div>
@@ -42,11 +30,7 @@ export default function ImageContentBlock({ data }) {
           </div>
 
           {/* CONTENT */}
-          <div
-            className={`w-full ${
-              isRight ? "lg:order-1" : "lg:order-2"
-            }`}
-          >
+          <div className={`w-full ${isRight ? "lg:order-1" : "lg:order-2"}`}>
             {/* TITLE */}
             {data?.title && (
               <h2 className="mb-4 text-[26px] leading-[1.2] font-bold text-[#0f172a] sm:mb-5 sm:text-[32px] lg:text-[38px]">
@@ -56,9 +40,12 @@ export default function ImageContentBlock({ data }) {
 
             {/* CONTENT */}
             {data?.content && (
-              <div className="text-[14px] leading-7 text-[#475569] sm:text-[15px] sm:leading-7 lg:text-[16px] lg:leading-8">
-                <EditorContent editor={editor} />
-              </div>
+              <div
+                className="text-[14px] leading-7 text-[#475569] sm:text-[15px] sm:leading-7 lg:text-[16px] lg:leading-8"
+                dangerouslySetInnerHTML={{
+                  __html: data.content,
+                }}
+              />
             )}
 
             {/* BUTTON */}
