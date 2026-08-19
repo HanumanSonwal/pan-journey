@@ -11,6 +11,7 @@ import WhySection from "@/modules/shared/home/components/why_sections/WhySection
 import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
 import { fetchCmsBySlug } from "@/modules/cms/services/cmsFetch";
 import ScrollToTopButton from "@/modules/hotel/ScrollToTopButton";
+import GiftCardSlider from "@/modules/shared/home/components/hero_section/GiftCardSlider";
 import Hero from "@/modules/shared/home/components/hero_section/Hero";
 import TrustSection from "@/modules/shared/home/components/hero_section/TrustSection";
 import { fetchHomeContent } from "@/modules/shared/home/services/homeContentFetch";
@@ -149,12 +150,13 @@ export default async function Page() {
       )}
 
       <ScrollToTopButton />
-      <div className="relative">
+     
         <Hero banner={banner} />
         <TrustSection />
-      </div>
-
-      <VacationSection vibes={placesAsPerYourVibe} />
+     
+        <GiftCardSlider />
+        <VacationSection vibes={placesAsPerYourVibe} />{" "}
+      
       <Herobanner />
       <WhySection />
       <TopRatedHotels hotels={topRatedHotels} />
