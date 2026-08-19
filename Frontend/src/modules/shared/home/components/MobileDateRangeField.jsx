@@ -32,6 +32,7 @@ export default function MobileDateRangeField({
   // Temporary selection inside popup
   const [selectedCheckIn, setSelectedCheckIn] = useState(null);
   const [selectedCheckOut, setSelectedCheckOut] = useState(null);
+  const [isSelectingNewCheckIn, setIsSelectingNewCheckIn] = useState(false);
 
   const todayDate = today(getLocalTimeZone());
 
@@ -69,10 +70,11 @@ export default function MobileDateRangeField({
   const handleOpen = () => {
     setActiveField("checkIn");
 
-    // Existing selected dates ko temporary state me load karo
     setSelectedCheckIn(toCalendarDate(value?.[0]));
 
     setSelectedCheckOut(toCalendarDate(value?.[1]));
+
+    setIsSelectingNewCheckIn(false);
 
     setOpen?.(true);
   };
@@ -114,14 +116,38 @@ export default function MobileDateRangeField({
     // ========================================
 
     if (activeField === "checkOut") {
+      // ----------------------------------------
+      // CHECKOUT ALREADY SELECTED
+      // ----------------------------------------
+      // User ab next date click kar raha hai.
+      // Ye click NEW CHECK-IN hona chahiye.
+      // ----------------------------------------
+
+      if (selectedCheckOut) {
+        setSelectedCheckIn(date);
+        setSelectedCheckOut(null);
+
+        // New check-in select ho gaya,
+        // ab checkout select karna hai.
+        setActiveField("checkOut");
+
+        return;
+      }
+
+      // ----------------------------------------
+      // NORMAL CHECKOUT
+      // ----------------------------------------
+
       if (!selectedCheckIn) return;
 
-      // Checkout cannot be before checkin
+      // Checkout check-in se pehle nahi ho sakta
       if (date.compare(selectedCheckIn) < 0) {
         return;
       }
 
       setSelectedCheckOut(date);
+
+      setActiveField("checkOut");
     }
   };
 
@@ -160,7 +186,9 @@ export default function MobileDateRangeField({
   // ==========================================
 
   const calendarMinDate =
-    activeField === "checkOut" && selectedCheckIn ? selectedCheckIn : todayDate;
+    activeField === "checkOut" && selectedCheckIn && !selectedCheckOut
+      ? selectedCheckIn
+      : todayDate;
 
   // ==========================================
   // DATE STATE
