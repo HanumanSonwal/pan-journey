@@ -21,9 +21,9 @@ export default function VacationSection({ vibes }) {
   // }, [categories]);
 
   return (
-    <SectionWrapper className="background-color-bg pt-32 md:pt-36 lg:pt-24 xl:pt-22">
+    <SectionWrapper className="background-color-bg">
       {/* Heading */}
-      <div className="!mt-[124px]">
+      <div>
         <SectionHeading title={vibes?.title || "Places As Per Your Vibe"} />
       </div>
 
