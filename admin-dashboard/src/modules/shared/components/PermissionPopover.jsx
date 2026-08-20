@@ -1,116 +1,42 @@
 "use client";
 
-import {
-  EyeOutlined,
-  SafetyCertificateOutlined,
-} from "@ant-design/icons";
-
-import {
-  Badge,
-  Button,
-  Empty,
-  Popover,
-  Space,
-  Tag,
-  Typography,
-} from "antd";
+import { EyeOutlined, SafetyCertificateOutlined } from "@ant-design/icons";
+import { Badge, Button, Empty, Popover, Space, Tag, Typography } from "antd";
 
 const { Text } = Typography;
 
-export default function PermissionPopover({
-  permissions,
-}) {
+export default function PermissionPopover({ permissions }) {
   // ================= EMPTY =================
 
-  if (
-    !permissions ||
-    Object.keys(permissions)
-      .length === 0
-  ) {
-    return (
-      <Tag
-        style={{
-          borderRadius: 999,
-          margin: 0,
-        }}
-      >
-        No Access
-      </Tag>
-    );
+  if (!permissions || Object.keys(permissions).length === 0) {
+    return <Tag className="!m-0 !rounded-full">No Access</Tag>;
   }
 
   // ================= MODULES =================
 
-  const permissionModules =
-    Object.entries(
-      permissions
-    ).filter(
-      ([_, actions]) =>
-        Object.values(
-          actions
-        ).some(Boolean)
-    );
+  const permissionModules = Object.entries(permissions).filter(([_, actions]) =>
+    Object.values(actions).some(Boolean),
+  );
 
   // ================= TOTAL =================
 
-  const totalPermissions =
-    permissionModules.reduce(
-      (acc, [_, actions]) => {
-        return (
-          acc +
-          Object.values(
-            actions
-          ).filter(Boolean)
-            .length
-        );
-      },
-      0
-    );
+  const totalPermissions = permissionModules.reduce((acc, [_, actions]) => {
+    return acc + Object.values(actions).filter(Boolean).length;
+  }, 0);
 
   // ================= CONTENT =================
 
   const content = (
-    <div
-      style={{
-        width: 300,
-        maxHeight: 400,
-        overflowY: "auto",
-      }}
-    >
+    <div className="w-[300px] max-h-[400px] overflow-y-auto">
       {/* ================= HEADER ================= */}
 
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent:
-            "space-between",
-
-          marginBottom: 18,
-        }}
-      >
+      <div className="mb-[18px] flex items-center justify-between">
         {/* LEFT */}
 
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          <SafetyCertificateOutlined
-            style={{
-              color: "#1677ff",
-              fontSize: 16,
-            }}
-          />
+        <div className="flex items-center gap-2">
+          <SafetyCertificateOutlined className="!text-[16px] !text-[#1677ff]" />
 
-          <Text
-            strong
-            style={{
-              fontSize: 15,
-            }}
-          >
+          <Text strong className="!text-[15px]">
             Role Permissions
           </Text>
         </div>
@@ -118,13 +44,8 @@ export default function PermissionPopover({
         {/* COUNT */}
 
         <Badge
-          count={
-            totalPermissions
-          }
-          style={{
-            background:
-              "#1677ff",
-          }}
+          count={totalPermissions}
+          className="[&_.ant-badge-count]:!bg-[#1677ff]"
         />
       </div>
 
@@ -132,141 +53,52 @@ export default function PermissionPopover({
 
       {!permissionModules?.length ? (
         <Empty
-          image={
-            Empty.PRESENTED_IMAGE_SIMPLE
-          }
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
           description="No permissions assigned"
         />
       ) : (
-        <div
-          style={{
-            display: "flex",
-            flexDirection:
-              "column",
-            gap: 14,
-          }}
-        >
-          {permissionModules.map(
-            ([module, actions]) => {
-              const enabled =
-                Object.entries(
-                  actions
-                )
-                  .filter(
-                    ([_, val]) =>
-                      val
-                  )
-                  .map(
-                    ([key]) =>
-                      key
-                  );
+        <div className="flex flex-col gap-[14px]">
+          {permissionModules.map(([module, actions]) => {
+            const enabled = Object.entries(actions)
+              .filter(([_, val]) => val)
+              .map(([key]) => key);
 
-              return (
-                <div
-                  key={module}
-                  style={{
-                    paddingBottom: 12,
+            return (
+              <div key={module} className="border-b border-white/[0.06] pb-3">
+                {/* ================= TOP ================= */}
 
-                    borderBottom:
-                      "1px solid rgba(255,255,255,0.06)",
-                  }}
-                >
-                  {/* ================= TOP ================= */}
+                <div className="mb-[10px] flex items-center justify-between">
+                  {/* MODULE */}
 
-                  <div
-                    style={{
-                      display:
-                        "flex",
+                  <Text strong className="!text-[13px] !capitalize">
+                    {module}
+                  </Text>
 
-                      alignItems:
-                        "center",
+                  {/* COUNT */}
 
-                      justifyContent:
-                        "space-between",
-
-                      marginBottom: 10,
-                    }}
+                  <Tag
+                    color="blue"
+                    className="!m-0 !rounded-full !px-[10px] !text-[11px] !font-medium"
                   >
-                    {/* MODULE */}
-
-                    <Text
-                      strong
-                      style={{
-                        fontSize: 13,
-
-                        textTransform:
-                          "capitalize",
-                      }}
-                    >
-                      {module}
-                    </Text>
-
-                    {/* COUNT */}
-
-                    <Tag
-                      color="blue"
-                      style={{
-                        margin: 0,
-
-                        borderRadius: 999,
-
-                        fontSize: 11,
-
-                        fontWeight: 500,
-
-                        paddingInline: 10,
-                      }}
-                    >
-                      {
-                        enabled.length
-                      }{" "}
-                      Access
-                    </Tag>
-                  </div>
-
-                  {/* ================= ACTIONS ================= */}
-
-                  <Space
-                    wrap
-                    size={[6, 6]}
-                  >
-                    {enabled.map(
-                      (act) => (
-                        <Tag
-                          key={act}
-                          style={{
-                            margin: 0,
-
-                            borderRadius: 999,
-
-                            fontSize: 11,
-
-                            paddingInline: 10,
-
-                            fontWeight: 500,
-
-                            textTransform:
-                              "capitalize",
-
-                            background:
-                              "rgba(82,196,26,0.12)",
-
-                            border:
-                              "1px solid rgba(82,196,26,0.2)",
-
-                            color:
-                              "#52c41a",
-                          }}
-                        >
-                          {act}
-                        </Tag>
-                      )
-                    )}
-                  </Space>
+                    {enabled.length} Access
+                  </Tag>
                 </div>
-              );
-            }
-          )}
+
+                {/* ================= ACTIONS ================= */}
+
+                <Space wrap size={[6, 6]}>
+                  {enabled.map((act) => (
+                    <Tag
+                      key={act}
+                      className="!m-0 !rounded-full !border !border-[rgba(82,196,26,0.2)] !bg-[rgba(82,196,26,0.12)] !px-[10px] !text-[11px] !font-medium !capitalize !text-[#52c41a]"
+                    >
+                      {act}
+                    </Tag>
+                  ))}
+                </Space>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
@@ -279,22 +111,16 @@ export default function PermissionPopover({
       content={content}
       trigger="click"
       placement="bottom"
-      styles={{
-        body: {
-          borderRadius: 5,
-          padding: 16,
-        },
+      classNames={{
+        body: "!rounded-[5px] !p-4",
       }}
     >
       <Button
         icon={<EyeOutlined />}
         size="small"
-        style={{
-          borderRadius: 999,
-          fontWeight: 500,
-        }}
+        className="!rounded-full !font-medium"
       >
-       view Permissions
+        View Permissions
       </Button>
     </Popover>
   );

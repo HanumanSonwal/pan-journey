@@ -6,6 +6,7 @@ import {
   Button,
   Card,
   Empty,
+  Popover,
   Switch,
   Table,
   Tag,
@@ -13,18 +14,19 @@ import {
   Typography,
 } from "antd";
 
-import RoleFormModal from "@/modules/role/components/RoleFormModal";
 import { useRoles } from "@/modules/role/hooks/useRoles";
 import { usePermission } from "@/modules/shared/hooks/usePermission";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import PermissionPopover from "../../../../modules/shared/components/PermissionPopover";
 const { Text } = Typography;
 
 export default function RolesPage() {
   // ================= STATES =================
-  const [open, setOpen] = useState(false);
-  const [editData, setEditData] = useState(null);
-  
+
+  const [openPopup, setOpenPopup] = useState(false);
+
+  const router = useRouter();
   // ================= PERMISSIONS =================
 
   const { canRead, canCreate, canEdit, isAdmin } = usePermission("roles");
@@ -33,13 +35,6 @@ export default function RolesPage() {
   // ================= API =================
 
   const { roles, isLoading, updateStatus } = useRoles(canFetch);
-
-  // ================= EDIT =================
-
-  const handleEdit = (record) => {
-    setEditData(record);
-    setOpen(true);
-  };
 
   // ================= STATUS COLORS =================
 
@@ -57,29 +52,16 @@ export default function RolesPage() {
   // ================= COLUMNS =================
 
   const columns = [
-    // ================= ROLE =================
-
     {
       title: "Role",
       dataIndex: "name",
       width: 260,
 
       render: (_, record) => (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 4,
-          }}
-        >
+        <div className="flex flex-col gap-1">
           {/* ROLE NAME */}
 
-          <Text
-            strong
-            style={{
-              fontSize: 14,
-            }}
-          >
+          <Text strong className="text-sm">
             {record?.name}
           </Text>
 
@@ -88,13 +70,7 @@ export default function RolesPage() {
           {record?.isSystemRole && (
             <Tag
               color="gold"
-              style={{
-                width: "fit-content",
-                margin: 0,
-                borderRadius: 999,
-                fontSize: 11,
-                fontWeight: 500,
-              }}
+              className="!m-0 !w-fit !rounded-full !text-[11px] !font-medium"
             >
               System Role
             </Tag>
@@ -110,20 +86,65 @@ export default function RolesPage() {
       dataIndex: "type",
       width: 140,
       align: "center",
+
       render: (val) => (
         <Tag
           color={getTypeColor(val)}
-          style={{
-            margin: 0,
-            borderRadius: 999,
-            paddingInline: 12,
-            fontWeight: 600,
-            textTransform: "uppercase",
-          }}
+          className="!m-0 !rounded-full !px-3 !font-semibold !uppercase"
         >
           {val}
         </Tag>
       ),
+    },
+
+    // ================= DESCRIPTION =================
+
+    {
+      title: "Description",
+      dataIndex: "description",
+      width: 300,
+
+      render: (description) => {
+        if (!description) {
+          return <Text type="secondary">-</Text>;
+        }
+
+        const isLong = description.length > 50;
+
+        const content = (
+          <div className="max-w-[350px] break-words leading-[1.6]">
+            {description}
+          </div>
+        );
+
+        if (!isLong) {
+          return <Text>{description}</Text>;
+        }
+
+        return (
+          <Popover
+            title="Description"
+            content={content}
+            trigger="click"
+            placement="topLeft"
+            open={openPopup}
+            onOpenChange={(visible) => setOpenPopup(visible)}
+          >
+            <div className="flex cursor-pointer flex-col gap-1">
+              <Text ellipsis className="!block !max-w-[240px]">
+                {description}
+              </Text>
+
+              <Tag
+                color="blue"
+                className="!m-0 !w-fit !cursor-pointer !rounded-full !text-[11px] !font-medium"
+              >
+                Click to view
+              </Tag>
+            </div>
+          </Popover>
+        );
+      },
     },
 
     // ================= STATUS =================
@@ -133,27 +154,14 @@ export default function RolesPage() {
       dataIndex: "isActive",
       width: 130,
       align: "center",
+
       render: (val) =>
         val ? (
-          <Tag
-            color="green"
-            style={{
-              margin: 0,
-              borderRadius: 999,
-              fontWeight: 500,
-            }}
-          >
+          <Tag color="green" className="!m-0 !rounded-full !font-medium">
             Active
           </Tag>
         ) : (
-          <Tag
-            color="red"
-            style={{
-              margin: 0,
-              borderRadius: 999,
-              fontWeight: 500,
-            }}
-          >
+          <Tag color="red" className="!m-0 !rounded-full !font-medium">
             Inactive
           </Tag>
         ),
@@ -166,6 +174,7 @@ export default function RolesPage() {
       dataIndex: "permissions",
       width: 180,
       align: "center",
+
       render: (permissions) => <PermissionPopover permissions={permissions} />,
     },
 
@@ -176,6 +185,7 @@ export default function RolesPage() {
       dataIndex: "createdAt",
       width: 150,
       responsive: ["lg"],
+
       render: (val) =>
         val
           ? new Date(val).toLocaleDateString("en-IN", {
@@ -196,20 +206,17 @@ export default function RolesPage() {
             align: "center",
 
             render: (_, record) => (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 10,
-                }}
-              >
+              <div className="flex items-center justify-center gap-2.5">
                 {/* EDIT */}
 
                 <Tooltip title="Edit Role">
                   <Button
                     icon={<EditOutlined />}
-                    onClick={() => handleEdit(record)}
+                    onClick={() =>
+                      router.push(
+                        `/dashboard/staff/create-role?id=${record._id}`,
+                      )
+                    }
                   />
                 </Tooltip>
 
@@ -226,7 +233,6 @@ export default function RolesPage() {
                       onChange={(checked) =>
                         updateStatus({
                           id: record?._id,
-
                           data: {
                             isActive: checked,
                           },
@@ -247,39 +253,19 @@ export default function RolesPage() {
       {/* ================= CARD ================= */}
 
       <Card
-        style={{
-          borderRadius: 5,
-        }}
+        className="!rounded-[5px]"
         styles={{
           body: {
             paddingTop: 18,
           },
         }}
         title={
-          <div
-            style={{
-              display: "flex",
-
-              flexDirection: "column",
-
-              gap: 2,
-            }}
-          >
-            <Text
-              strong
-              style={{
-                fontSize: 18,
-              }}
-            >
+          <div className="flex flex-col gap-0.5">
+            <Text strong className="!text-[18px]">
               Role Management
             </Text>
 
-            <Text
-              type="secondary"
-              style={{
-                fontSize: 13,
-              }}
-            >
+            <Text type="secondary" className="!text-[13px]">
               Manage roles and permissions for staff access
             </Text>
           </div>
@@ -290,11 +276,7 @@ export default function RolesPage() {
               type="primary"
               icon={<PlusOutlined />}
               size="large"
-              onClick={() => {
-                setEditData(null);
-
-                setOpen(true);
-              }}
+              onClick={() => router.push("/dashboard/staff/create-role")}
             >
               Create Role
             </Button>
@@ -332,10 +314,6 @@ export default function RolesPage() {
           <Empty description="No permission to view roles" />
         )}
       </Card>
-
-      {/* ================= MODAL ================= */}
-
-      <RoleFormModal open={open} setOpen={setOpen} editData={editData} />
     </>
   );
 }
