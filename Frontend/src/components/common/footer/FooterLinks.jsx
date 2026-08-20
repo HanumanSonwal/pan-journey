@@ -9,18 +9,19 @@ function FooterColumn({ title, links }) {
     <div>
       <h3 className="mb-4 text-lg font-semibold">{title}</h3>
 
-      <ul className="space-y-2 text-sm">
-        {links.map((item) => (
-          <li key={item.label}>
-            <Link
-              href={item.href}
-              className="header-hover-most-text-color relative inline-block transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[var(--theme-secondary)] after:transition-all after:duration-300 hover:after:w-full"
-            >
-              {item.label}
-            </Link>
-          </li>
-        ))}
-      </ul>
+     <ul className="flex flex-wrap gap-x-2 gap-y-2 text-sm">
+  {links.map((item, index) => (
+    <li key={item.label}>
+      <Link
+        href={item.href}
+        className="header-hover-most-text-color relative inline-block transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[var(--theme-secondary)] after:transition-all after:duration-300 hover:after:w-full"
+      >
+        {item.label}
+        {index < links.length - 1 && ","}
+      </Link>
+    </li>
+  ))}
+</ul>
     </div>
   );
 }
@@ -47,20 +48,12 @@ const socialLinks = [
     icon: "/images/icons/whatsapp-logo.svg",
   },
 ];
+
 export default function FooterLinks() {
   return (
     <div className="font-roboto! grid grid-cols-1 gap-10 font-semibold sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
       {/* About */}
       <div className="max-w-[340px]">
-        <div className="relative mb-5 h-14 w-[180px]">
-          <Image
-            src="/images/PJ_LOGO-removebg-preview.png"
-            alt="PAN Journey"
-            fill
-            className="object-contain object-left"
-          />
-        </div>
-
         <p className="footer-backgound-color text-[15px] leading-7">
           PAN Journey helps travelers discover and book hotels with ease,
           offering secure payments, verified stays, and dedicated customer

@@ -29,7 +29,7 @@ export const menuItems = [
     key: "/dashboard/bookings",
     icon: <BookOutlined />,
     label: <Link href="/dashboard#">Bookings</Link>,
-    module: "bookings",
+    module: "Bookings",
   },
 
   {
@@ -92,6 +92,6 @@ export const menuItems = [
     key: "/dashboard/revenue",
     icon: <DollarOutlined />,
     label: <Link href="/dashboard#">Revenue</Link>,
-    module: "revenue", // ✅ FIX
+    module: "Revenue", // ✅ FIX
   },
 ];

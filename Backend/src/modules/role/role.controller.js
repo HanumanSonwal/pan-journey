@@ -7,6 +7,7 @@ import {
   getRolesService,
   updateRoleService,
   updateRoleStatus,
+  deleteRoleService
 } from "./role.service.js";
 // 🔹 Create
 export const createRole = asyncHandler(async (req, res) => {
@@ -28,20 +29,47 @@ export const getRoles = asyncHandler(async (req, res) => {
 });
 
 export const getRolesDropdown = asyncHandler(async (req, res) => {
-  const user = req.user; // ✅ FIX
+  const user = req.user;
 
-  // ✅ permission check (user create kar sakta hai to allow)
+  // Permission check
   if (user.role !== "admin" && !user.permissions?.users?.write) {
     return sendError(res, "Unauthorized", 403);
   }
 
-  // ✅ ONLY required fields
-  const roles = await Role.find({ isActive: true })
+  // Active roles, but exclude admin type
+  const roles = await Role.find({
+    isActive: true,
+    type: { $ne: "admin" },
+  })
     .select("_id name type")
     .lean();
 
-  sendSuccess(res, "Roles dropdown fetched", roles);
+  return sendSuccess(res, "Roles dropdown fetched", roles);
 });
+
+export const deleteRoleController = asyncHandler(async (req, res) => {
+  const result = await deleteRoleService(req.params.id);
+
+  return sendSuccess(
+    res,
+    result
+  );
+});
+// export const getRolesDropdown = asyncHandler(async (req, res) => {
+//   const user = req.user; // ✅ FIX
+
+//   // ✅ permission check (user create kar sakta hai to allow)
+//   if (user.role !== "admin" && !user.permissions?.users?.write) {
+//     return sendError(res, "Unauthorized", 403);
+//   }
+
+//   // ✅ ONLY required fields
+//   const roles = await Role.find({ isActive: true })
+//     .select("_id name type")
+//     .lean();
+
+//   sendSuccess(res, "Roles dropdown fetched", roles);
+// });
 
 export const getRoleById = asyncHandler(async (req, res) => {
   const role = await getRoleByIdService(req.params.id);

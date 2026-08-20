@@ -21,6 +21,15 @@ const router = express.Router();
 
 router.get("/", getHomeContentController);
 
+
+// WEBSITE GET
+
+router.get(
+"/",
+getHomeContentController
+);
+
+
 /*
 |--------------------------------------------------------------------------
 | ADMIN
@@ -50,13 +59,6 @@ router.post(
 );
 
 
-
-// WEBSITE GET
-
-router.get(
-"/",
-getHomeContentController
-);
 
 // ADMIN GET ALL
 

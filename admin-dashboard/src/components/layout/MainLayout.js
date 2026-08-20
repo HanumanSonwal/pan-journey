@@ -1,6 +1,7 @@
 "use client";
 
 import { useTheme } from "@/context/ThemeContext";
+import { useDashboardUIStore } from "@/modules/shared/store/dashboardUI.store";
 import { darkTheme, lightTheme } from "@/theme/themeConfig";
 import { ConfigProvider, Layout, theme } from "antd";
 import { useEffect, useMemo, useState } from "react";
@@ -12,16 +13,19 @@ const { Content } = Layout;
 const MainLayout = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const { isDark } = useTheme();
-
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  const isScrollLocked = useDashboardUIStore((state) => state.isScrollLocked);
+
   const antdTheme = useMemo(() => {
     return {
-      algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
+      algorithm: isDark
+        ? theme.darkAlgorithm
+        : theme.defaultAlgorithm,
 
       ...(isDark ? darkTheme : lightTheme),
     };
@@ -30,19 +34,23 @@ const MainLayout = ({ children }) => {
   return (
     <ConfigProvider theme={antdTheme}>
       {mounted ? (
-        <Layout
-          style={{
-            minHeight: "100vh",
-          }}
-        >
+        <Layout className="min-h-screen">
           <Sidebar collapsed={collapsed} />
+
           <Layout
-            style={{
-              height: "100vh",
-              background: isDark ? "#08161A" : "#edf7fa",
-            }}
+            className={`
+              h-screen
+              ${
+                isDark
+                  ? "bg-[#08161A]"
+                  : "bg-[#edf7fa]"
+              }
+            `}
           >
-            <HeaderBar collapsed={collapsed} setCollapsed={setCollapsed} />
+            <HeaderBar
+              collapsed={collapsed}
+              setCollapsed={setCollapsed}
+            />
 
             <Content
               style={{
@@ -54,7 +62,7 @@ const MainLayout = ({ children }) => {
                   ? "0 10px 30px rgba(0,0,0,.25)"
                   : "0 10px 30px rgba(15,106,117,.05)",
                 flex: 1,
-                overflowY: "auto",
+                overflowY: isScrollLocked ? "hidden" : "auto",
                 height: "calc(100vh - 64px)",
               }}
             >

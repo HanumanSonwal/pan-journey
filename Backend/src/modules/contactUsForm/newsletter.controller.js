@@ -1,5 +1,7 @@
 import Newsletter from "./newsletter.model.js";
 import { sendSuccess, sendError } from "../../utils/response/ApiResponse.js";
+import transporter from "../../config/mailer.js";
+import { newsletterSubscriptionTemplate } from "../mail/templates/newsletterSubscription.template.js";
 
 
 // SUBSCRIBE API
@@ -11,21 +13,30 @@ export const subscribeNewsletter = async (req, res) => {
       return sendError(res, "Email is required", 400);
     }
 
-    // Check duplicate
     const existingEmail = await Newsletter.findOne({ email });
 
     if (existingEmail) {
-      return sendError(
-        res,
-        "Email already subscribed",
-        400
-      );
+      return sendError(res, "Email already subscribed", 400);
     }
 
-    // Save
     const subscriber = await Newsletter.create({
       email,
     });
+
+    // Send confirmation email
+    try {
+      await transporter.sendMail({
+        from: `"Pan Journey" <${process.env.GMAIL_USER}>`,
+        to: email,
+        subject: "Welcome to Pan Journey Newsletter!",
+        html: newsletterSubscriptionTemplate(),
+      });
+    } catch (mailError) {
+      console.error(
+        "Newsletter confirmation email failed:",
+        mailError.message
+      );
+    }
 
     return sendSuccess(
       res,
@@ -34,12 +45,10 @@ export const subscribeNewsletter = async (req, res) => {
       null,
       201
     );
-
   } catch (error) {
     return sendError(res, error.message, 500);
   }
 };
-
 
 
 // GET ALL SUBSCRIBERS (Admin)

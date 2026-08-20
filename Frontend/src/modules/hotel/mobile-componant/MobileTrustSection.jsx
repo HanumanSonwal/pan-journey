@@ -37,40 +37,20 @@ const trustItems = [
   },
   {
     id: 6,
-    icon: <SafetyOutlined className="text-[32px] text-[#0A1F5C]" />,
+    icon: <SafetyOutlined className="most-text-color text-[32px]" />,
     title: "Safe & Trusted",
   },
 ];
 
 export default function MobileTrustSection() {
   return (
-    <section
-      className="
-        absolute
-        left-1/2
-        top-155
-        -translate-x-1/2
-        -translate-y-2
-        z-20
-        w-[92%]
-        rounded-2xl
-        bg-white
-        shadow-lg
-        border
-        border-[#ECECEC]
-        px-3
-        py-3
-      "
-    >
-      <div className="grid grid-cols-3 gap-y-4 most-text-color">
+    <section className="rounded-2xl border border-[#ECECEC] bg-white px-3 !py-3 shadow-lg">
+      <div className="most-text-color grid grid-cols-3 gap-y-4">
         {trustItems.map((item) => (
-          <div
-            key={item.id}
-            className="flex flex-col items-center text-center"
-          >
+          <div key={item.id} className="flex flex-col items-center text-center">
             {item.icon}
 
-            <p className="mt-2 text-[14px] font-semibold most-text-color leading-5">
+            <p className="most-text-color mt-2 text-[14px] leading-5 font-semibold">
               {item.title}
             </p>
           </div>

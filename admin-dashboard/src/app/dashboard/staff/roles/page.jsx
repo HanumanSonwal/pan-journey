@@ -1,11 +1,13 @@
 "use client";
 
-import { EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 
 import {
   Button,
   Card,
   Empty,
+  Popconfirm,
+  Popover,
   Switch,
   Table,
   Tag,
@@ -13,88 +15,51 @@ import {
   Typography,
 } from "antd";
 
-import RoleFormModal from "@/modules/role/components/RoleFormModal";
 import { useRoles } from "@/modules/role/hooks/useRoles";
 import { usePermission } from "@/modules/shared/hooks/usePermission";
-import { useState } from "react";
+import { useDashboardUIStore } from "@/modules/shared/store/dashboardUI.store";
+import { useRouter } from "next/navigation";
 import PermissionPopover from "../../../../modules/shared/components/PermissionPopover";
 const { Text } = Typography;
 
 export default function RolesPage() {
-  // ================= STATES =================
-  const [open, setOpen] = useState(false);
-  const [editData, setEditData] = useState(null);
-  
+  const router = useRouter();
   // ================= PERMISSIONS =================
-
+  const setScrollLocked = useDashboardUIStore((state) => state.setScrollLocked);
   const { canRead, canCreate, canEdit, isAdmin } = usePermission("roles");
   const canFetch = canRead || isAdmin;
 
   // ================= API =================
 
-  const { roles, isLoading, updateStatus } = useRoles(canFetch);
+  const { roles, isLoading, updateStatus, deleteRole } = useRoles(canFetch);
 
-  // ================= EDIT =================
+  // ================= DELETE =================
 
-  const handleEdit = (record) => {
-    setEditData(record);
-    setOpen(true);
-  };
-
-  // ================= STATUS COLORS =================
-
-  const getTypeColor = (type) => {
-    switch (type) {
-      case "admin":
-        return "red";
-      case "staff":
-        return "blue";
-      default:
-        return "green";
+  const handleDelete = async (record) => {
+    try {
+      await deleteRole(record?._id);
+    } catch (error) {
+      console.error("DELETE FAILED:", error);
     }
   };
 
   // ================= COLUMNS =================
 
   const columns = [
-    // ================= ROLE =================
-
     {
       title: "Role",
       dataIndex: "name",
       width: 260,
 
       render: (_, record) => (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 4,
-          }}
-        >
-          {/* ROLE NAME */}
-
-          <Text
-            strong
-            style={{
-              fontSize: 14,
-            }}
-          >
+        <div className="flex flex-col gap-1">
+          <Text strong className="text-sm">
             {record?.name}
           </Text>
-
-          {/* SYSTEM ROLE */}
-
           {record?.isSystemRole && (
             <Tag
               color="gold"
-              style={{
-                width: "fit-content",
-                margin: 0,
-                borderRadius: 999,
-                fontSize: 11,
-                fontWeight: 500,
-              }}
+              className="!m-0 !w-fit !rounded-full !text-[11px] !font-medium"
             >
               System Role
             </Tag>
@@ -103,79 +68,89 @@ export default function RolesPage() {
       ),
     },
 
-    // ================= TYPE =================
-
     {
-      title: "Type",
-      dataIndex: "type",
-      width: 140,
-      align: "center",
-      render: (val) => (
-        <Tag
-          color={getTypeColor(val)}
-          style={{
-            margin: 0,
-            borderRadius: 999,
-            paddingInline: 12,
-            fontWeight: 600,
-            textTransform: "uppercase",
-          }}
-        >
-          {val}
-        </Tag>
-      ),
-    },
+      title: "Description",
+      dataIndex: "description",
+      width: 300,
 
-    // ================= STATUS =================
+      render: (description) => {
+        if (!description) {
+          return <Text type="secondary">-</Text>;
+        }
+        const isLong = description.length > 50;
+        const content = (
+          <div className="max-w-[350px] break-words leading-[1.6]">
+            {description}
+          </div>
+        );
+
+        if (!isLong) {
+          return <Text>{description}</Text>;
+        }
+
+        return (
+          <Popover
+            title="Description"
+            content={content}
+            trigger="click"
+            placement="topLeft"
+            onOpenChange={setScrollLocked}
+          >
+            <div className="flex cursor-pointer flex-col gap-1">
+              <Text ellipsis className="!block !max-w-[240px]">
+                {description}
+              </Text>
+
+              <Tag
+                color="blue"
+                className="!m-0 !w-fit !cursor-pointer !rounded-full !text-[11px] !font-medium"
+              >
+                Click to view
+              </Tag>
+            </div>
+          </Popover>
+        );
+      },
+    },
 
     {
       title: "Status",
       dataIndex: "isActive",
       width: 130,
       align: "center",
+
       render: (val) =>
         val ? (
-          <Tag
-            color="green"
-            style={{
-              margin: 0,
-              borderRadius: 999,
-              fontWeight: 500,
-            }}
-          >
+          <Tag color="green" className="!m-0 !rounded-full !font-medium">
             Active
           </Tag>
         ) : (
-          <Tag
-            color="red"
-            style={{
-              margin: 0,
-              borderRadius: 999,
-              fontWeight: 500,
-            }}
-          >
+          <Tag color="red" className="!m-0 !rounded-full !font-medium">
             Inactive
           </Tag>
         ),
     },
-
-    // ================= PERMISSIONS =================
 
     {
       title: "Permissions",
       dataIndex: "permissions",
       width: 180,
       align: "center",
-      render: (permissions) => <PermissionPopover permissions={permissions} />,
-    },
 
-    // ================= CREATED =================
+      render: (permissions) => (
+        <PermissionPopover
+          permissions={permissions}
+          onOpenChange={setScrollLocked}
+        />
+      ),
+    },
 
     {
       title: "Created",
       dataIndex: "createdAt",
       width: 150,
       responsive: ["lg"],
+
       render: (val) =>
         val
           ? new Date(val).toLocaleDateString("en-IN", {
@@ -186,8 +161,6 @@ export default function RolesPage() {
           : "-",
     },
 
-    // ================= ACTIONS =================
-
     ...(canEdit
       ? [
           {
@@ -196,20 +169,17 @@ export default function RolesPage() {
             align: "center",
 
             render: (_, record) => (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 10,
-                }}
-              >
+              <div className="flex items-center justify-center gap-2.5">
                 {/* EDIT */}
 
                 <Tooltip title="Edit Role">
                   <Button
                     icon={<EditOutlined />}
-                    onClick={() => handleEdit(record)}
+                    onClick={() =>
+                      router.push(
+                        `/dashboard/staff/create-role?id=${record._id}`,
+                      )
+                    }
                   />
                 </Tooltip>
 
@@ -226,7 +196,6 @@ export default function RolesPage() {
                       onChange={(checked) =>
                         updateStatus({
                           id: record?._id,
-
                           data: {
                             isActive: checked,
                           },
@@ -234,6 +203,22 @@ export default function RolesPage() {
                       }
                     />
                   </Tooltip>
+                )}
+                {!record?.isSystemRole && (
+                  <Popconfirm
+                    title="Delete Role"
+                    description={`Are you sure you want to delete "${record?.name}"?`}
+                    okText="Yes"
+                    cancelText="No"
+                    okButtonProps={{
+                      danger: true,
+                    }}
+                    onConfirm={() => handleDelete(record)}
+                  >
+                    <Tooltip title="Delete Role">
+                      <Button danger icon={<DeleteOutlined />} />
+                    </Tooltip>
+                  </Popconfirm>
                 )}
               </div>
             ),
@@ -244,42 +229,20 @@ export default function RolesPage() {
 
   return (
     <>
-      {/* ================= CARD ================= */}
-
       <Card
-        style={{
-          borderRadius: 5,
-        }}
+        className="!rounded-[5px]"
         styles={{
           body: {
             paddingTop: 18,
           },
         }}
         title={
-          <div
-            style={{
-              display: "flex",
-
-              flexDirection: "column",
-
-              gap: 2,
-            }}
-          >
-            <Text
-              strong
-              style={{
-                fontSize: 18,
-              }}
-            >
+          <div className="flex flex-col gap-0.5">
+            <Text strong className="!text-[18px]">
               Role Management
             </Text>
 
-            <Text
-              type="secondary"
-              style={{
-                fontSize: 13,
-              }}
-            >
+            <Text type="secondary" className="!text-[13px]">
               Manage roles and permissions for staff access
             </Text>
           </div>
@@ -290,19 +253,13 @@ export default function RolesPage() {
               type="primary"
               icon={<PlusOutlined />}
               size="large"
-              onClick={() => {
-                setEditData(null);
-
-                setOpen(true);
-              }}
+              onClick={() => router.push("/dashboard/staff/create-role")}
             >
               Create Role
             </Button>
           )
         }
       >
-        {/* ================= TABLE ================= */}
-
         {canFetch ? (
           <Table
             columns={columns}
@@ -311,9 +268,9 @@ export default function RolesPage() {
             loading={isLoading}
             bordered
             size="middle"
-            scroll={{
-              x: 920,
-            }}
+            // scroll={{
+            //   x: 920,
+            // }}
             pagination={{
               pageSize: 8,
 
@@ -332,10 +289,6 @@ export default function RolesPage() {
           <Empty description="No permission to view roles" />
         )}
       </Card>
-
-      {/* ================= MODAL ================= */}
-
-      <RoleFormModal open={open} setOpen={setOpen} editData={editData} />
     </>
   );
 }

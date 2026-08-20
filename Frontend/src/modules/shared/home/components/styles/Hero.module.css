@@ -34,20 +34,18 @@
 @media (max-width: 699px) {
   .heroBg {
     height: 575px;
-
-    background-image: url("/images/heromobile.png");
-
     background-size: cover;
-
     background-position: center;
   }
 
   .heroBg img {
-    width: 92%;
-    max-width: 100%;
-    height: auto;
-    max-height: 190px;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    object-fit: cover;
   }
+
 
   .cardWrapper {
     width: calc(100% - 4px);

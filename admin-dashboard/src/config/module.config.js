@@ -30,7 +30,7 @@ export const moduleConfig = {
   },
 
   couponCodes: {
-    label: "coupon-codes",
+    label: "Coupon-codes",
     actions: ["read", "write", "update", "delete"],
   },
 
@@ -45,7 +45,7 @@ export const moduleConfig = {
   },
 
   masterData: {
-    label: "master-data",
+    label: "Master-data",
     actions: ["read", "write", "update", "delete"],
   },
 

@@ -25,6 +25,16 @@ export const createRole = async (data) => {
   const res = await api.post("/roles", data);
   return res.data;
 };
+// 🔹 Delete Role
+export const deleteRole = async (id) => {
+  console.log("DELETE ROLE API ID:", id);
+
+  const res = await api.delete(`/roles/${id}`);
+
+  console.log("DELETE ROLE RESPONSE:", res.data);
+
+  return res.data;
+};
 
 // 🔹 Update Role
 export const updateRole = async (id, data) => {

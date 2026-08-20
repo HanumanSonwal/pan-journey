@@ -1,7 +1,7 @@
 export const PERMISSIONS = {
   dashboard: ["read"],
 
-  bookings: ["read", "write", "update", "delete"],
+  Bookings: ["read", "write", "update", "delete"],
 
   userQuery: ["read", "update"],
 
@@ -34,5 +34,5 @@ export const PERMISSIONS = {
 
   calendar: ["read"],
 
-  revenue: ["read"],
+  Revenue: ["read"],
 };
