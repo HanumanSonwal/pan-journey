@@ -5,6 +5,7 @@ import {
   getRolesDropdown,
   statusUpdateRole,
   updateRole,
+   deleteRole,
 } from "@/modules/role/api/role.service";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -89,7 +90,35 @@ export const useRoles = (enabled = false, dropdownEnabled = false) => {
       });
     },
   });
+const deleteMutation = useMutation({
+  mutationFn: (id) => deleteRole(id),
 
+  onSuccess: (_, deletedId) => {
+    console.log("DELETE SUCCESS:", deletedId);
+
+    queryClient.setQueryData(rolesKey, (old) => {
+      if (!old) return old;
+
+      return {
+        ...old,
+        data: old.data.filter((role) => role._id !== deletedId),
+      };
+    });
+
+    queryClient.setQueryData(dropdownKey, (old) => {
+      if (!old) return old;
+
+      return {
+        ...old,
+        data: old.data.filter((role) => role._id !== deletedId),
+      };
+    });
+  },
+
+  onError: (error) => {
+    console.error("DELETE ROLE ERROR:", error);
+  },
+});
   console.log("dropdownData", dropdownData);
 
   console.log(
@@ -116,5 +145,6 @@ export const useRoles = (enabled = false, dropdownEnabled = false) => {
     createRole: createMutation.mutateAsync,
     updateRole: updateMutation.mutateAsync,
     updateStatus: statusMutation.mutateAsync,
+     deleteRole: deleteMutation.mutateAsync,
   };
 };

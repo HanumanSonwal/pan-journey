@@ -7,11 +7,13 @@ const roleSchema = new mongoose.Schema(
       required: true,
       unique: true,
       trim: true,
+      maxlength: [50, "Role name cannot exceed 50 characters"],
     },
 
     description: {
       type: String,
       default: "",
+     maxlength: [250, "Description cannot exceed 250 characters"],
     },
     type: {
       type: String,

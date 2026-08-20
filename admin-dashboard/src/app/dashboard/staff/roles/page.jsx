@@ -1,12 +1,13 @@
 "use client";
 
-import { EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 
 import {
   Button,
   Card,
   Empty,
   Popover,
+  Popconfirm,
   Switch,
   Table,
   Tag,
@@ -34,8 +35,23 @@ export default function RolesPage() {
 
   // ================= API =================
 
-  const { roles, isLoading, updateStatus } = useRoles(canFetch);
+  const { roles, isLoading, updateStatus, deleteRole } = useRoles(canFetch);
 
+
+  // ================= DELETE =================
+
+  const handleDelete = async (record) => {
+    try {
+      console.log("DELETE CLICKED:", record);
+      console.log("ROLE ID:", record?._id);
+
+      await deleteRole(record?._id);
+
+      console.log("DELETE API COMPLETED");
+    } catch (error) {
+      console.error("DELETE FAILED:", error);
+    }
+  };
   // ================= STATUS COLORS =================
 
   const getTypeColor = (type) => {
@@ -79,23 +95,7 @@ export default function RolesPage() {
       ),
     },
 
-    // ================= TYPE =================
 
-    {
-      title: "Type",
-      dataIndex: "type",
-      width: 140,
-      align: "center",
-
-      render: (val) => (
-        <Tag
-          color={getTypeColor(val)}
-          className="!m-0 !rounded-full !px-3 !font-semibold !uppercase"
-        >
-          {val}
-        </Tag>
-      ),
-    },
 
     // ================= DESCRIPTION =================
 
@@ -240,6 +240,22 @@ export default function RolesPage() {
                       }
                     />
                   </Tooltip>
+                )}
+                {!record?.isSystemRole && (
+                  <Popconfirm
+                    title="Delete Role"
+                    description={`Are you sure you want to delete "${record?.name}"?`}
+                    okText="Yes"
+                    cancelText="No"
+                    okButtonProps={{
+                      danger: true,
+                    }}
+                    onConfirm={() => handleDelete(record)}
+                  >
+                    <Tooltip title="Delete Role">
+                      <Button danger icon={<DeleteOutlined />} />
+                    </Tooltip>
+                  </Popconfirm>
                 )}
               </div>
             ),
