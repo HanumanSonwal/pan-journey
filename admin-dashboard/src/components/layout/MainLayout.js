@@ -21,7 +21,9 @@ const MainLayout = ({ children }) => {
 
   const antdTheme = useMemo(() => {
     return {
-      algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
+      algorithm: isDark
+        ? theme.darkAlgorithm
+        : theme.defaultAlgorithm,
 
       ...(isDark ? darkTheme : lightTheme),
     };
@@ -30,33 +32,38 @@ const MainLayout = ({ children }) => {
   return (
     <ConfigProvider theme={antdTheme}>
       {mounted ? (
-        <Layout
-          style={{
-            minHeight: "100vh",
-          }}
-        >
+        <Layout className="min-h-screen">
           <Sidebar collapsed={collapsed} />
+
           <Layout
-            style={{
-              height: "100vh",
-              background: isDark ? "#08161A" : "#edf7fa",
-            }}
+            className={`
+              h-screen
+              ${
+                isDark
+                  ? "bg-[#08161A]"
+                  : "bg-[#edf7fa]"
+              }
+            `}
           >
-            <HeaderBar collapsed={collapsed} setCollapsed={setCollapsed} />
+            <HeaderBar
+              collapsed={collapsed}
+              setCollapsed={setCollapsed}
+            />
 
             <Content
-              style={{
-                margin: "16px",
-                padding: "24px",
-                borderRadius: "5px",
-                background: isDark ? "#102027" : "#f8fcfd",
-                boxShadow: isDark
-                  ? "0 10px 30px rgba(0,0,0,.25)"
-                  : "0 10px 30px rgba(15,106,117,.05)",
-                flex: 1,
-                overflowY: "auto",
-                height: "calc(100vh - 64px)",
-              }}
+              className={`
+                m-4
+                p-6
+                rounded-[5px]
+                flex-1
+                overflow-y-auto
+                h-[calc(100vh-64px)]
+                ${
+                  isDark
+                    ? "bg-[#102027] shadow-[0_10px_30px_rgba(0,0,0,0.25)]"
+                    : "bg-[#f8fcfd] shadow-[0_10px_30px_rgba(15,106,117,0.05)]"
+                }
+              `}
             >
               {children}
             </Content>
