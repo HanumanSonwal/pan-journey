@@ -2,6 +2,7 @@ import { validatePermissions } from "../../utils/permissionValidator.js";
 import ApiError from "../../utils/response/ApiError.js";
 import Role from "./role.model.js";
 import User from "../user/user.model.js";
+import { queryBuilder } from "../../utils/queryBuilder.js";
 
 //////////////////////////////////////////////////////////////
 // 🔹 Create Role
