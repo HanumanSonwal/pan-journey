@@ -6,6 +6,7 @@ import {
   getRolesDropdown,
   updateRole,
   updateRoleStatusController,
+  deleteRoleController
 } from "./role.controller.js";
 
 import { protect } from "../../middleware/auth.middleware.js";
@@ -33,5 +34,10 @@ router.patch(
   checkPermission("roles", "update"),
   updateRoleStatusController,
 );
-
+router.delete(
+  "/:id",
+  protect,
+  checkPermission("roles", "delete"),
+  deleteRoleController
+);
 export default router;

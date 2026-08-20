@@ -14,15 +14,14 @@ import { protect } from "../../middleware/auth.middleware.js";
 
 const router = express.Router();
 
+// WEBSITE
+
 router.post(
   "/createGrievance",
   protectCustomer,
   createGrievance
 );
-router.get(
-  "/admin/all-grievance",protect,
-  getAllGrievanceAdmin
-);
+
 
 router.get(
   "/getAllGrievance",
@@ -47,6 +46,14 @@ router.delete(
   protectCustomer,
   deleteGrievance
 );
+
+//ADMIN
+
+router.get(
+  "/admin/all-grievance",protect,
+  getAllGrievanceAdmin
+);
+
 router.patch(
   "/admin/update-grievance/:id",
   protect,

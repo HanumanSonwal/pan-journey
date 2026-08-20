@@ -13,7 +13,7 @@ export const updateThemeService = async (data) => {
 };
 
 export const getThemeService = async () => {
-  return await Theme.findOne({});
+  return await Theme.findOne({ isActive: true });
 };
 
 export const deleteThemeService = async () => {

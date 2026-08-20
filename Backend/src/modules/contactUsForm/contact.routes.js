@@ -13,13 +13,15 @@ import {
 } from "./contact.controller.js";
 
 const router = express.Router();
-
+//WEBSITE
 router.post("/create", protectCustomer, createContact);
 router.get("/getAllContacts", protectCustomer, getAllContacts);
 router.get("/getSingleContact/:id", protectCustomer, getSingleContact);
 router.put("/updateContact/:id", protectCustomer, updateContact);
 router.delete("/deleteContact/:id", protectCustomer, deleteContact);
 
+
+//ADMIN
 router.get(
   "/admin/all-contacts",
   protect,

@@ -48,18 +48,18 @@ router.get("/templates", getTemplates);
 ENTITY CMS
 PROTECTED
 */
-router.get(
-  "/entity/:entityType/:entityId",
-  protect,
-  checkPermission("cmsPages", "read"),
-  getCMSByEntityController,
-);
 
 /*
 =================================
 ADMIN
 =================================
 */
+router.get(
+  "/entity/:entityType/:entityId",
+  protect,
+  checkPermission("cmsPages", "read"),
+  getCMSByEntityController,
+);
 
 /*
 CREATE

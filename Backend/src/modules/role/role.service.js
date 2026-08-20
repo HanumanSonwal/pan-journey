@@ -1,6 +1,7 @@
 import { validatePermissions } from "../../utils/permissionValidator.js";
 import ApiError from "../../utils/response/ApiError.js";
 import Role from "./role.model.js";
+import User from "../user/user.model.js";
 
 //////////////////////////////////////////////////////////////
 // 🔹 Create Role
@@ -38,7 +39,7 @@ export const createRoleService = async ({
 // 🔹 Get All Roles
 //////////////////////////////////////////////////////////////
 export const getRolesService = async () => {
-  return await Role.find().sort({ createdAt: -1 });
+  return await Role.find().select("-type");
 };
 
 //////////////////////////////////////////////////////////////
@@ -75,8 +76,17 @@ export const updateRoleService = async (id, data) => {
     validatePermissions(data.permissions);
   }
 
-  role.name = data.name ? data.name.toLowerCase() : role.name;
-  role.description = data.description || role.description;
+  // role.name = data.name ? data.name.toLowerCase() : role.name;
+  // role.description = data.description || role.description;
+   if (data.name !== undefined) {
+    role.name = data.name.toLowerCase();
+  }
+
+  // Update description
+  // Allows "", null, or any string
+  if (data.description !== undefined) {
+    role.description = data.description;
+  }
 
   if (data.permissions) {
     role.permissions = {
@@ -102,4 +112,32 @@ export const updateRoleStatus = async (id, isActive) => {
 
   role.isActive = isActive;
   return await role.save();
+};
+export const deleteRoleService = async (id) => {
+  const role = await Role.findById(id);
+
+  if (!role) {
+    throw new ApiError(404, "Role not found");
+  }
+
+  // System role cannot be deleted
+  if (role.isSystemRole) {
+    throw new ApiError(400, "System role cannot be deleted");
+  }
+
+  // Check if role is assigned to any user
+  const assignedUser = await User.findOne({
+    role: role._id,
+  });
+
+  if (assignedUser) {
+    throw new ApiError(
+      400,
+      "This role is assigned to one or more users and cannot be deleted"
+    );
+  }
+
+  await Role.findByIdAndDelete(id);
+
+  return "Role deleted successfully";
 };

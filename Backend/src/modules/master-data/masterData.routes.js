@@ -11,10 +11,10 @@ import { checkPermission } from "../../middleware/checkPermission.js";
 
 const router = express.Router();
 
-// Public
+// WEBSITE
 router.get("/", getMasterData);
 
-// Admin
+// ADMIN
 router.post(
   "/create",
   protect,
