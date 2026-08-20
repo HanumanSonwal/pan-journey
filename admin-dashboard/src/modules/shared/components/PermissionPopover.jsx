@@ -5,34 +5,22 @@ import { Badge, Button, Empty, Popover, Space, Tag, Typography } from "antd";
 
 const { Text } = Typography;
 
-export default function PermissionPopover({ permissions }) {
-  // ================= EMPTY =================
-
+export default function PermissionPopover({ permissions, onOpenChange }) {
   if (!permissions || Object.keys(permissions).length === 0) {
     return <Tag className="!m-0 !rounded-full">No Access</Tag>;
   }
-
-  // ================= MODULES =================
 
   const permissionModules = Object.entries(permissions).filter(([_, actions]) =>
     Object.values(actions).some(Boolean),
   );
 
-  // ================= TOTAL =================
-
   const totalPermissions = permissionModules.reduce((acc, [_, actions]) => {
     return acc + Object.values(actions).filter(Boolean).length;
   }, 0);
 
-  // ================= CONTENT =================
-
   const content = (
     <div className="w-[300px] max-h-[400px] overflow-y-auto">
-      {/* ================= HEADER ================= */}
-
       <div className="mb-[18px] flex items-center justify-between">
-        {/* LEFT */}
-
         <div className="flex items-center gap-2">
           <SafetyCertificateOutlined className="!text-[16px] !text-[#1677ff]" />
 
@@ -41,15 +29,11 @@ export default function PermissionPopover({ permissions }) {
           </Text>
         </div>
 
-        {/* COUNT */}
-
         <Badge
           count={totalPermissions}
           className="[&_.ant-badge-count]:!bg-[#1677ff]"
         />
       </div>
-
-      {/* ================= EMPTY ================= */}
 
       {!permissionModules?.length ? (
         <Empty
@@ -84,8 +68,6 @@ export default function PermissionPopover({ permissions }) {
                   </Tag>
                 </div>
 
-                {/* ================= ACTIONS ================= */}
-
                 <Space wrap size={[6, 6]}>
                   {enabled.map((act) => (
                     <Tag
@@ -104,13 +86,14 @@ export default function PermissionPopover({ permissions }) {
     </div>
   );
 
-  // ================= TRIGGER =================
-
   return (
     <Popover
       content={content}
       trigger="click"
       placement="bottom"
+      onOpenChange={(visible) => {
+        onOpenChange?.(visible);
+      }}
       classNames={{
         body: "!rounded-[5px] !p-4",
       }}

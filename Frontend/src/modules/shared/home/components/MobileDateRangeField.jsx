@@ -327,7 +327,7 @@ export default function MobileDateRangeField({
 
       <div className="relative z-[99999] w-full">
         <div
-          className="flex h-[65px] w-full cursor-pointer items-center rounded-md border border-[#d9d9d9] bg-white px-2 py-3"
+          className="flex h-[65px] w-full cursor-pointer items-center gap-3 rounded-md border border-[#d9d9d9] bg-white px-2 py-3"
           onClick={handleOpen}
         >
           {icon}
@@ -336,11 +336,11 @@ export default function MobileDateRangeField({
 
           <div className="flex min-w-0 flex-1 flex-col justify-center">
             <div className="flex items-start gap-1">
-              <span className="text-[26px] leading-none font-semibold text-[#222]">
+              <span className="font-jost text-[22px] leading-none text-gray-700 min-[700px]:font-medium! min-[700px]:text-gray-800! sm:text-[22px] md:text-[28px] lg:text-[26px]">
                 {start.format("DD")}
               </span>
 
-              <div className="mt-2 leading-none">
+              <div className="!mt-1 leading-none">
                 <span className="text-[12px] font-semibold text-[#444]">
                   {start.format("MMM")} {start.format("YY")}
                 </span>
@@ -362,11 +362,11 @@ export default function MobileDateRangeField({
 
           <div className="flex min-w-0 flex-1 flex-col items-end justify-center">
             <div className="flex items-start gap-1">
-              <span className="text-[26px] leading-none font-semibold text-[#222]">
+              <span className="font-jost text-[22px] leading-none text-gray-700 min-[700px]:font-medium! min-[700px]:text-gray-800! sm:text-[22px] md:text-[28px] lg:text-[26px]">
                 {end.format("DD")}
               </span>
 
-              <div className="mt-2 leading-none">
+              <div className="mt-1 leading-none">
                 <span className="text-[12px] font-semibold text-[#444]">
                   {end.format("MMM")} {end.format("YY")}
                 </span>

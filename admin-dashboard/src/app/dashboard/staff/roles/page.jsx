@@ -6,8 +6,8 @@ import {
   Button,
   Card,
   Empty,
-  Popover,
   Popconfirm,
+  Popover,
   Switch,
   Table,
   Tag,
@@ -17,19 +17,15 @@ import {
 
 import { useRoles } from "@/modules/role/hooks/useRoles";
 import { usePermission } from "@/modules/shared/hooks/usePermission";
+import { useDashboardUIStore } from "@/modules/shared/store/dashboardUI.store";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import PermissionPopover from "../../../../modules/shared/components/PermissionPopover";
 const { Text } = Typography;
 
 export default function RolesPage() {
-  // ================= STATES =================
-
-  const [openPopup, setOpenPopup] = useState(false);
-
   const router = useRouter();
   // ================= PERMISSIONS =================
-
+  const setScrollLocked = useDashboardUIStore((state) => state.setScrollLocked);
   const { canRead, canCreate, canEdit, isAdmin } = usePermission("roles");
   const canFetch = canRead || isAdmin;
 
@@ -37,31 +33,13 @@ export default function RolesPage() {
 
   const { roles, isLoading, updateStatus, deleteRole } = useRoles(canFetch);
 
-
   // ================= DELETE =================
 
   const handleDelete = async (record) => {
     try {
-      console.log("DELETE CLICKED:", record);
-      console.log("ROLE ID:", record?._id);
-
       await deleteRole(record?._id);
-
-      console.log("DELETE API COMPLETED");
     } catch (error) {
       console.error("DELETE FAILED:", error);
-    }
-  };
-  // ================= STATUS COLORS =================
-
-  const getTypeColor = (type) => {
-    switch (type) {
-      case "admin":
-        return "red";
-      case "staff":
-        return "blue";
-      default:
-        return "green";
     }
   };
 
@@ -75,14 +53,9 @@ export default function RolesPage() {
 
       render: (_, record) => (
         <div className="flex flex-col gap-1">
-          {/* ROLE NAME */}
-
           <Text strong className="text-sm">
             {record?.name}
           </Text>
-
-          {/* SYSTEM ROLE */}
-
           {record?.isSystemRole && (
             <Tag
               color="gold"
@@ -95,10 +68,6 @@ export default function RolesPage() {
       ),
     },
 
-
-
-    // ================= DESCRIPTION =================
-
     {
       title: "Description",
       dataIndex: "description",
@@ -108,9 +77,7 @@ export default function RolesPage() {
         if (!description) {
           return <Text type="secondary">-</Text>;
         }
-
         const isLong = description.length > 50;
-
         const content = (
           <div className="max-w-[350px] break-words leading-[1.6]">
             {description}
@@ -127,8 +94,7 @@ export default function RolesPage() {
             content={content}
             trigger="click"
             placement="topLeft"
-            open={openPopup}
-            onOpenChange={(visible) => setOpenPopup(visible)}
+            onOpenChange={setScrollLocked}
           >
             <div className="flex cursor-pointer flex-col gap-1">
               <Text ellipsis className="!block !max-w-[240px]">
@@ -146,8 +112,6 @@ export default function RolesPage() {
         );
       },
     },
-
-    // ================= STATUS =================
 
     {
       title: "Status",
@@ -167,18 +131,19 @@ export default function RolesPage() {
         ),
     },
 
-    // ================= PERMISSIONS =================
-
     {
       title: "Permissions",
       dataIndex: "permissions",
       width: 180,
       align: "center",
 
-      render: (permissions) => <PermissionPopover permissions={permissions} />,
+      render: (permissions) => (
+        <PermissionPopover
+          permissions={permissions}
+          onOpenChange={setScrollLocked}
+        />
+      ),
     },
-
-    // ================= CREATED =================
 
     {
       title: "Created",
@@ -195,8 +160,6 @@ export default function RolesPage() {
             })
           : "-",
     },
-
-    // ================= ACTIONS =================
 
     ...(canEdit
       ? [
@@ -266,8 +229,6 @@ export default function RolesPage() {
 
   return (
     <>
-      {/* ================= CARD ================= */}
-
       <Card
         className="!rounded-[5px]"
         styles={{
@@ -299,8 +260,6 @@ export default function RolesPage() {
           )
         }
       >
-        {/* ================= TABLE ================= */}
-
         {canFetch ? (
           <Table
             columns={columns}
@@ -309,9 +268,9 @@ export default function RolesPage() {
             loading={isLoading}
             bordered
             size="middle"
-            scroll={{
-              x: 920,
-            }}
+            // scroll={{
+            //   x: 920,
+            // }}
             pagination={{
               pageSize: 8,
 
