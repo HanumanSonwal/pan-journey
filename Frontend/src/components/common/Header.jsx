@@ -207,16 +207,16 @@ export default function Header() {
         <div className={isMobile ? "" : "flex items-center justify-start"}>
           <Link href="/" className="flex items-center">
             <Image
-              src="/images/PJ_LOGO-removebg-preview.png"
+              src="/images/Destinoway-Logo10.png"
               alt="PAN Journey"
-              width={120}
-              height={110}
+              width={400}
+              height={970}
               priority
               unoptimized
               className={`object-contain transition-all duration-300 ${
                 isMobile
                   ? "absolute top-2 left-2 h-[50px] w-[50px]"
-                  : "h-[100px] w-[100px]"
+                  : "h-[200px] w-[200px]"
               }`}
             />
           </Link>

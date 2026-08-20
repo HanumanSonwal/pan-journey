@@ -23,7 +23,9 @@ const MainLayout = ({ children }) => {
 
   const antdTheme = useMemo(() => {
     return {
-      algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
+      algorithm: isDark
+        ? theme.darkAlgorithm
+        : theme.defaultAlgorithm,
 
       ...(isDark ? darkTheme : lightTheme),
     };
@@ -32,20 +34,23 @@ const MainLayout = ({ children }) => {
   return (
     <ConfigProvider theme={antdTheme}>
       {mounted ? (
-        <Layout
-          style={{
-            minHeight: "100vh",
-          }}
-        >
+        <Layout className="min-h-screen">
           <Sidebar collapsed={collapsed} />
 
           <Layout
-            style={{
-              height: "100vh",
-              background: isDark ? "#08161A" : "#edf7fa",
-            }}
+            className={`
+              h-screen
+              ${
+                isDark
+                  ? "bg-[#08161A]"
+                  : "bg-[#edf7fa]"
+              }
+            `}
           >
-            <HeaderBar collapsed={collapsed} setCollapsed={setCollapsed} />
+            <HeaderBar
+              collapsed={collapsed}
+              setCollapsed={setCollapsed}
+            />
 
             <Content
               style={{
