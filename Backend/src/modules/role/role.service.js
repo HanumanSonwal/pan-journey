@@ -2,6 +2,7 @@ import { validatePermissions } from "../../utils/permissionValidator.js";
 import ApiError from "../../utils/response/ApiError.js";
 import Role from "./role.model.js";
 import User from "../user/user.model.js";
+import { queryBuilder } from "../../utils/queryBuilder.js";
 
 //////////////////////////////////////////////////////////////
 // 🔹 Create Role
@@ -39,9 +40,10 @@ export const createRoleService = async ({
 // 🔹 Get All Roles
 //////////////////////////////////////////////////////////////
 export const getRolesService = async () => {
-  return await Role.find().select("-type");
+  return await Role.find({
+    type: { $ne: "admin" },
+  }).select("-type");
 };
-
 //////////////////////////////////////////////////////////////
 // 🔹 Get Role By ID
 //////////////////////////////////////////////////////////////
