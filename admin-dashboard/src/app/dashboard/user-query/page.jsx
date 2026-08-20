@@ -2,6 +2,7 @@
 
 import TableFilters from "@/modules/shared/components/TableFilters";
 import { usePermission } from "@/modules/shared/hooks/usePermission";
+import { useDashboardUIStore } from "@/modules/shared/store/dashboardUI.store";
 import { useContactQuery } from "@/modules/User-Query/hook/useContactQuery";
 import { useUpdateContactStatus } from "@/modules/User-Query/hook/useUpdateContactStatus";
 import { EyeOutlined } from "@ant-design/icons";
@@ -34,6 +35,8 @@ export default function CustomersPage() {
   const { message } = App.useApp();
   const { canRead, isAdmin, canEdit } = usePermission("userQuery");
   const canFetch = canRead || isAdmin;
+
+  const setScrollLocked = useDashboardUIStore((state) => state.setScrollLocked);
 
   // FIRST: query call
   const { data, isLoading } = useContactQuery({
@@ -115,18 +118,16 @@ export default function CustomersPage() {
         </Typography.Text>
       ),
     },
-   {
-  title: "Type",
-  dataIndex: "Type",
-  width: 120,
-  render: (value) => (
-    <Tag color="magenta">
-      {value
-        ? value.charAt(0).toUpperCase() + value.slice(1)
-        : "-"}
-    </Tag>
-  ),
-},
+    {
+      title: "Type",
+      dataIndex: "Type",
+      width: 120,
+      render: (value) => (
+        <Tag color="magenta">
+          {value ? value.charAt(0).toUpperCase() + value.slice(1) : "-"}
+        </Tag>
+      ),
+    },
     {
       title: "Ticket ID",
       dataIndex: "ticketId",
@@ -193,6 +194,9 @@ export default function CustomersPage() {
                 value={value}
                 style={{ width: 150 }}
                 loading={updatingId === record._id}
+                onOpenChange={(open) => {
+                  setScrollLocked(open);
+                }}
                 onChange={(status) => {
                   setTableData((prev) =>
                     prev.map((item) =>
