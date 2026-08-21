@@ -57,6 +57,35 @@ export const metadata = {
 
   description: "Booking platform",
 
+  icons: {
+    icon: [
+      {
+        url: "/favicon.ico",
+        sizes: "any",
+      },
+      {
+        url: "/icon-16x16.png",
+        sizes: "16x16",
+        type: "image/png",
+      },
+      {
+        url: "/icon-32x32.png",
+        sizes: "32x32",
+        type: "image/png",
+      },
+    ],
+
+    apple: [
+      {
+        url: "/apple-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
+  },
+
+  manifest: "/manifest.webmanifest",
+
   robots: {
     index: false,
     follow: false,
@@ -97,7 +126,6 @@ export default async function RootLayout({ children }) {
     >
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-
         <link rel="preload" as="image" href="/images/homepage/home.svg" />
 
         {/* Google Analytics */}
@@ -108,15 +136,15 @@ export default async function RootLayout({ children }) {
 
         <Script id="google-analytics" strategy="afterInteractive">
           {`
-            window.dataLayer = window.dataLayer || [];
+      window.dataLayer = window.dataLayer || [];
 
-            function gtag() {
-              dataLayer.push(arguments);
-            }
+      function gtag() {
+        dataLayer.push(arguments);
+      }
 
-            gtag('js', new Date());
-            gtag('config', 'G-DYY7076V0W');
-          `}
+      gtag('js', new Date());
+      gtag('config', 'G-DYY7076V0W');
+    `}
         </Script>
       </head>
 
