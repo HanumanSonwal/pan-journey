@@ -207,7 +207,7 @@ export default function Header() {
         <div className={isMobile ? "" : "flex items-center justify-start"}>
           <Link href="/" className="flex items-center">
             <Image
-              src="/images/Destinoway-Logo10.png"
+              src="/images/LOGO-DW.png"
               alt="PAN Journey"
               width={400}
               height={970}
@@ -222,7 +222,7 @@ export default function Header() {
           </Link>
         </div>
 
-        <nav className="font-roboto hidden items-center justify-center gap-7 text-gray-900 min-[901px]:flex lg:gap-4 xl:gap-7 2xl:gap-7">
+        <nav className="font-roboto hidden items-center justify-center gap-7 font-semibold text-[#051449] min-[901px]:flex lg:gap-4 xl:gap-7 2xl:gap-7">
           {desktopNavigationItems.map((item) =>
             item.type === "comingSoon" ? (
               <Tooltip
