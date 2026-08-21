@@ -190,11 +190,6 @@ export default function Header() {
 
   return (
     <div className="w-full">
-      {/* Top Bar */}
-      {/* <div className="!bg-white py-2 text-center text-sm text-black md:text-base">
-        Get the best offers on your every booking!
-      </div> */}
-
       {/* Navbar */}
       <header
         className={`flex justify-between bg-white shadow-sm ${
@@ -215,7 +210,7 @@ export default function Header() {
               unoptimized
               className={`object-contain transition-all duration-300 ${
                 isMobile
-                  ? "absolute top-2 left-2 h-[50px] w-[50px]"
+                  ? "absolute top-0 left-2 h-[50px] w-[170px]"
                   : "h-[200px] w-[200px]"
               }`}
             />
