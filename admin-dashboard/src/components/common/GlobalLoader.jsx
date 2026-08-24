@@ -20,7 +20,7 @@ export default function GlobalLoader() {
           <div className="spinner-inner"></div>
         </div>
 
-        <p className="loader-text">Checking authentication...</p>
+        <p className="loader-text">Processing...</p>
       </div>
     </div>,
     document.body,
