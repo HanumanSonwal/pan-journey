@@ -190,11 +190,6 @@ export default function Header() {
 
   return (
     <div className="w-full">
-      {/* Top Bar */}
-      {/* <div className="!bg-white py-2 text-center text-sm text-black md:text-base">
-        Get the best offers on your every booking!
-      </div> */}
-
       {/* Navbar */}
       <header
         className={`flex justify-between bg-white shadow-sm ${
@@ -207,7 +202,7 @@ export default function Header() {
         <div className={isMobile ? "" : "flex items-center justify-start"}>
           <Link href="/" className="flex items-center">
             <Image
-              src="/images/Destinoway-Logo10.png"
+              src="/images/LOGO-DW.png"
               alt="PAN Journey"
               width={400}
               height={970}
@@ -215,14 +210,14 @@ export default function Header() {
               unoptimized
               className={`object-contain transition-all duration-300 ${
                 isMobile
-                  ? "absolute top-2 left-2 h-[50px] w-[50px]"
+                  ? "absolute top-0 left-2 h-[50px] w-[170px]"
                   : "h-[200px] w-[200px]"
               }`}
             />
           </Link>
         </div>
 
-        <nav className="font-roboto hidden items-center justify-center gap-7 text-gray-900 min-[901px]:flex lg:gap-4 xl:gap-7 2xl:gap-7">
+        <nav className="font-roboto hidden items-center justify-center gap-7 font-semibold text-[#051449] min-[901px]:flex lg:gap-4 xl:gap-7 2xl:gap-7">
           {desktopNavigationItems.map((item) =>
             item.type === "comingSoon" ? (
               <Tooltip
@@ -337,15 +332,15 @@ export default function Header() {
         title={
           <div className="flex items-center gap-2">
             <Image
-              src="/images/PJ_LOGO-removebg-preview.png"
+              src="/images/LOGO-DW-Symbol.png"
               alt="PAN Journey"
               width={48}
               height={48}
             />
 
             <div>
-              <h3 className="mb-0! text-[16px] font-bold text-[#0F6A75]">
-                PAN Journey
+              <h3 className="mb-0! text-[16px] font-bold text-[#051449]">
+                Destinoway
               </h3>
 
               <p className="text-[12px] text-gray-500">
@@ -450,7 +445,7 @@ export default function Header() {
           <div className="mt-3! border-t border-gray-200 pt-6">
             <div className="rounded-2xl bg-[#F5FBFE] p-4">
               <h4 className="most-text-color text-[15px] font-semibold">
-                PAN Journey
+                Destinoway
               </h4>
 
               <p className="mt-2 text-[13px] leading-6 text-gray-500">

@@ -7,12 +7,12 @@ export default function HotelNotFound({ type = "not-found" }) {
 
   const isError = type === "error";
 
-  const handleChangeDestination = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
+  // const handleChangeDestination = () => {
+  //   window.scrollTo({
+  //     top: 0,
+  //     behavior: "smooth",
+  //   });
+  // };
 
   const handleHome = () => {
     router.push("/");

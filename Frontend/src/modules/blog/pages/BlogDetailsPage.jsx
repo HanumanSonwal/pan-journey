@@ -45,9 +45,6 @@ const BlogDetailsPage = ({ blog }) => {
 
   return (
     <>
-      {/* ============================================================ */}
-      {/* HERO                                                         */}
-      {/* ============================================================ */}
       {/* HERO */}
       <section className="relative overflow-hidden bg-[#092f49]">
         {/* BACKGROUND IMAGE */}
@@ -124,7 +121,7 @@ const BlogDetailsPage = ({ blog }) => {
 
           {/* AUTHOR */}
 
-          <div className=" flex flex-col gap-4 rounded-[18px] border border-gray-100 bg-[#fafcff] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+          <div className="flex flex-col gap-4 rounded-[18px] border border-gray-100 bg-[#fafcff] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
             <div className="flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#eaf6ff] text-lg text-[#008cff]">
                 <UserOutlined />

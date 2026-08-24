@@ -44,7 +44,7 @@ export const menuItems = [
       },
       {
         key: "/dashboard/staff/users",
-        label: <Link href="/dashboard/staff/users">Users</Link>,
+        label: <Link href="/dashboard/staff/users">Staff</Link>,
         module: "users", // ✅ ADD
       },
     ],
