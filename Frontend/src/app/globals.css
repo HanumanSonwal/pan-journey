@@ -289,6 +289,34 @@ body {
   overscroll-behavior-x: contain !important;
 }
 
+/* =========================================================
+   GIFT CARD SWIPER
+========================================================= */
+
+.gift-card-swiper {
+  width: 100%;
+  overflow: hidden;
+}
+
+.gift-card-swiper .swiper {
+  width: 100%;
+  overflow: visible;
+}
+
+.gift-card-swiper .swiper-slide {
+  height: auto;
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 639px) {
+  .gift-card-swiper {
+    padding: 0 2px;
+  }
+}
+
 /* ==========================================================================
    WEBSITE THEME
    ========================================================================== */
@@ -393,7 +421,7 @@ body {
 }
 .footer-backgound-color {
   background-color: var(--theme-footer-background);
-  color:var(--theme-footer-text);
+  color: var(--theme-footer-text);
 }
 .navbar-background-color {
   background-color: var(--theme-search-bar-background);

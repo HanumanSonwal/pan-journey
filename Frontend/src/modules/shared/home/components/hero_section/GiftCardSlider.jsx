@@ -7,83 +7,146 @@ import { useState } from "react";
 import { Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import "swiper/css";
+import { useGiftcard } from "@/modules/hotel/components/hotels/Gift-card/hook/useGiftcard";
 
-const giftCards = [
-  {
-    id: 1,
-    image:
-      "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80",
-    title: "Hurry Up",
-    discount: "25 % Off",
-    description: "on Disney Hotel",
-    gift: "Gift Card",
-  },
-  {
-    id: 2,
-    image:
-      "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=800&q=80",
-    title: "Hurry Up",
-    discount: "25 % Off",
-    description: "on Disney Hotel",
-    gift: "Gift Card",
-  },
-  {
-    id: 3,
-    image:
-      "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=800&q=80",
-    title: "Hurry Up",
-    discount: "25 % Off",
-    description: "on Disney Hotel",
-    gift: "Gift Card",
-  },
-  {
-    id: 4,
-    image:
-      "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=800&q=80",
-    title: "Hurry Up",
-    discount: "25 % Off",
-    description: "on Disney Hotel",
-    gift: "Gift Card",
-  },
-  {
-    id: 5,
-    image:
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80",
-    title: "Hurry Up",
-    discount: "25 % Off",
-    description: "on Disney Hotel",
-    gift: "Gift Card",
-  },
-  {
-    id: 6,
-    image:
-      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80",
-    title: "Hurry Up",
-    discount: "25 % Off",
-    description: "on Disney Hotel",
-    gift: "Gift Card",
-  },
-];
+import GiftCardSkeleton from "@/components/common/loder/GiftCardSkeleton";
+import { Skeleton } from "antd";
+import "swiper/css";
 
 export default function GiftCardSlider() {
   const [swiper, setSwiper] = useState(null);
 
+  const { data: giftCards = [], isLoading, isError } = useGiftcard();
+
+  // =========================================================
+  // HELPERS
+  // =========================================================
+
+  const getModuleName = (modules = []) => {
+    return modules
+      .map((module) => module.charAt(0).toUpperCase() + module.slice(1))
+      .join(" & ");
+  };
+
+  const getDiscountText = (card) => {
+    if (card.discountType === "percent") {
+      return `${card.discountValue}% Off`;
+    }
+
+    if (card.discountType === "flat") {
+      return `₹${card.discountValue} Off`;
+    }
+
+    return `${card.discountValue} Off`;
+  };
+
+  // =========================================================
+  // LOADING SKELETON
+  // =========================================================
+
+  if (isLoading) {
+    return (
+      <section className="background-color-bg w-full py-4 sm:py-5">
+        <div className="mx-auto w-full max-w-[1400px] px-2 sm:px-4 lg:px-17">
+          {/* HEADER */}
+
+          <div className="mb-3 flex items-center justify-between sm:mb-4">
+            <div>
+              <Skeleton.Input
+                active
+                size="small"
+                className="!h-[20px] !w-[110px] sm:!h-[23px] sm:!w-[130px]"
+              />
+
+              <div className="mt-1">
+                <Skeleton.Input
+                  active
+                  size="small"
+                  className="!h-[12px] !w-[180px]"
+                />
+              </div>
+            </div>
+
+            {/* BUTTONS */}
+
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <Skeleton.Button
+                active
+                shape="circle"
+                className="!h-7 !w-7 sm:!h-8 sm:!w-8"
+              />
+
+              <Skeleton.Button
+                active
+                shape="circle"
+                className="!h-7 !w-7 sm:!h-8 sm:!w-8"
+              />
+            </div>
+          </div>
+
+          {/* CARDS */}
+
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {[1, 2, 3, 4].map((item) => (
+              <GiftCardSkeleton key={item} />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // =========================================================
+  // ERROR
+  // =========================================================
+
+  if (isError) {
+    return (
+      <section className="background-color-bg w-full py-4 sm:py-5">
+        <div className="mx-auto w-full max-w-[1400px] px-2 sm:px-4 lg:px-17">
+          <div className="rounded-[6px] border border-red-100 bg-white p-5 text-center">
+            <p className="text-sm font-semibold text-red-600">
+              Unable to load Gift Cards
+            </p>
+
+            <p className="mt-1 text-xs text-gray-500">
+              Please try again later.
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // =========================================================
+  // EMPTY
+  // =========================================================
+
+  if (!giftCards.length) {
+    return null;
+  }
+
   return (
     <section className="background-color-bg w-full py-4 sm:py-5">
       <div className="mx-auto w-full max-w-[1400px] px-2 sm:px-4 lg:px-17">
-        {/* ==========================================
+        {/* =====================================================
             HEADER
-        ========================================== */}
+        ===================================================== */}
 
         <div className="mb-3 flex items-center justify-between sm:mb-4">
-          <h2 className="text-[17px] font-bold text-[#05144B] sm:text-[19px] lg:text-[20px]">
-            Gift Cards
-          </h2>
+          <div>
+            <h2 className="text-[17px] font-bold text-[#05144B] sm:text-[19px] lg:text-[20px]">
+              Gift Cards
+            </h2>
 
-          {/* ==========================================
+            <p className="mt-0.5 text-[10px] text-gray-500 sm:text-xs">
+              Exclusive offers & discounts
+            </p>
+          </div>
+
+          {/* ===================================================
               SLIDER BUTTONS
-          ========================================== */}
+          =================================================== */}
 
           {giftCards.length > 1 && (
             <div className="flex items-center gap-1.5 sm:gap-2">
@@ -112,9 +175,9 @@ export default function GiftCardSlider() {
           )}
         </div>
 
-        {/* ==========================================
-            SWIPER SLIDER
-        ========================================== */}
+        {/* =====================================================
+            SWIPER
+        ===================================================== */}
 
         <div className="gift-card-swiper">
           <Swiper
@@ -131,45 +194,35 @@ export default function GiftCardSlider() {
               pauseOnMouseEnter: true,
             }}
             breakpoints={{
-              /* ======================================
-                 MOBILE
-              ====================================== */
+              /* MOBILE */
 
               0: {
                 slidesPerView: 1,
                 spaceBetween: 10,
               },
 
-              /* ======================================
-                 SMALL TABLET
-              ====================================== */
+              /* SMALL TABLET */
 
               640: {
                 slidesPerView: 2,
                 spaceBetween: 10,
               },
 
-              /* ======================================
-                 TABLET
-              ====================================== */
+              /* TABLET */
 
               768: {
                 slidesPerView: 2,
                 spaceBetween: 12,
               },
 
-              /* ======================================
-                 DESKTOP
-              ====================================== */
+              /* DESKTOP */
 
               1024: {
                 slidesPerView: 3,
                 spaceBetween: 12,
               },
 
-              /* ======================================
-                 LARGE DESKTOP
-              ====================================== */
+              /* LARGE DESKTOP */
 
               1280: {
                 slidesPerView: 4,
@@ -177,25 +230,35 @@ export default function GiftCardSlider() {
               },
             }}
           >
+            {/* =================================================
+                API GIFT CARDS
+            ================================================= */}
+
             {giftCards.map((card) => (
-              <SwiperSlide key={card.id}>
+              <SwiperSlide key={card._id}>
                 <div className="group relative w-full overflow-hidden rounded-[6px] border border-[#e7e7e7] bg-white shadow-[0_2px_6px_rgba(0,0,0,0.10)] transition-all duration-300 hover:-translate-y-[2px] hover:shadow-[0_5px_12px_rgba(0,0,0,0.14)]">
-                  {/* ==========================================
+                  {/* =================================================
                       IMAGE
-                  ========================================== */}
+                  ================================================= */}
 
                   <div className="relative h-[100px] w-full overflow-hidden sm:h-[125px] md:h-[140px] lg:h-[170px]">
-                    <Image
-                      src={card.image}
-                      alt={card.title}
-                      fill
-                      sizes="(max-width: 639px) 100vw, (max-width: 767px) 50vw, (max-width: 1023px) 33.33vw, 25vw"
-                      className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                    />
+                    {card.image ? (
+                      <Image
+                        src={card.image}
+                        alt={card.title || "Gift Card"}
+                        fill
+                        sizes="(max-width: 639px) 100vw, (max-width: 767px) 50vw, (max-width: 1023px) 33.33vw, 25vw"
+                        className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center bg-gray-100">
+                        <span className="text-xs text-gray-400">Gift Card</span>
+                      </div>
+                    )}
 
-                    {/* ==========================================
+                    {/* =================================================
                         RED GIFT RIBBON
-                    ========================================== */}
+                    ================================================= */}
 
                     <div className="pointer-events-none absolute inset-0 z-30 overflow-hidden">
                       <svg
@@ -203,9 +266,7 @@ export default function GiftCardSlider() {
                         viewBox="0 0 130 130"
                         xmlns="http://www.w3.org/2000/svg"
                       >
-                        {/* ======================================
-                            DIAGONAL RIBBON
-                        ====================================== */}
+                        {/* DIAGONAL RIBBON */}
 
                         <path
                           d="M-25 125 L105 -25"
@@ -214,7 +275,7 @@ export default function GiftCardSlider() {
                           fill="none"
                         />
 
-                        {/* Dark bottom edge */}
+                        {/* DARK EDGE */}
 
                         <path
                           d="M-25 129 L109 -25"
@@ -223,7 +284,7 @@ export default function GiftCardSlider() {
                           fill="none"
                         />
 
-                        {/* Bright highlight */}
+                        {/* HIGHLIGHT */}
 
                         <path
                           d="M-22 121 L101 -22"
@@ -233,9 +294,7 @@ export default function GiftCardSlider() {
                           opacity="0.9"
                         />
 
-                        {/* ======================================
-                            BOW
-                        ====================================== */}
+                        {/* BOW */}
 
                         <g transform="rotate(-48 46 48)">
                           {/* LEFT LOOP */}
@@ -251,7 +310,7 @@ export default function GiftCardSlider() {
                             fill="#e00000"
                           />
 
-                          {/* LEFT DARK SHADOW */}
+                          {/* LEFT SHADOW */}
 
                           <path
                             d="
@@ -289,7 +348,7 @@ export default function GiftCardSlider() {
                             fill="#d90000"
                           />
 
-                          {/* RIGHT DARK SHADOW */}
+                          {/* RIGHT SHADOW */}
 
                           <path
                             d="
@@ -405,9 +464,9 @@ export default function GiftCardSlider() {
                     </div>
                   </div>
 
-                  {/* ==========================================
+                  {/* =================================================
                       CONTENT
-                  ========================================== */}
+                  ================================================= */}
 
                   <div className="bg-white px-[8px] pt-[2px] !pb-[1px] sm:px-[9px] sm:pt-[2px] sm:pb-[6px]">
                     {/* LABEL */}
@@ -421,15 +480,15 @@ export default function GiftCardSlider() {
                     <p className="!text-[16px] leading-[1px] font-medium text-[#222] sm:text-[11px]">
                       {card.title}{" "}
                       <span className="font-semibold text-[#f01414]">
-                        {card.discount}
+                        {getDiscountText(card)}
                       </span>{" "}
-                      {card.description}
+                      on {getModuleName(card.applicableModules)}
                     </p>
 
                     {/* GIFT */}
 
                     <p className="!text-[14px] leading-[13px] text-[#222] sm:text-[10px] sm:leading-[14px]">
-                      {card.gift}
+                      Gift Card
                     </p>
                   </div>
                 </div>
@@ -438,32 +497,6 @@ export default function GiftCardSlider() {
           </Swiper>
         </div>
       </div>
-
-      {/* ==========================================
-          SWIPER CSS
-      ========================================== */}
-
-      <style jsx global>{`
-        .gift-card-swiper {
-          width: 100%;
-          overflow: hidden;
-        }
-
-        .gift-card-swiper .swiper {
-          width: 100%;
-          overflow: visible;
-        }
-
-        .gift-card-swiper .swiper-slide {
-          height: auto;
-        }
-
-        @media (max-width: 639px) {
-          .gift-card-swiper {
-            padding: 0 2px;
-          }
-        }
-      `}</style>
     </section>
   );
 }
