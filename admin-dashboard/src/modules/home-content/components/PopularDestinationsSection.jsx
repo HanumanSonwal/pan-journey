@@ -1,7 +1,18 @@
 "use client";
 
-import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Card, Collapse, Empty, Image, Popconfirm } from "antd";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
+import {
+  Button,
+  Card,
+  Collapse,
+  Empty,
+  Image,
+  Popconfirm,
+} from "antd";
 
 import { useTheme } from "@/context/ThemeContext";
 import { HOME_CONTENT_SECTIONS } from "../constants/homeContent.constants";
@@ -24,7 +35,11 @@ export default function PopularDestinationsSection({
         {label}
       </span>
 
-      <span className={`mx-2 ${isDark ? "text-gray-500" : "text-gray-400"}`}>
+      <span
+        className={`mx-2 ${
+          isDark ? "text-gray-500" : "text-gray-400"
+        }`}
+      >
         :
       </span>
 
@@ -41,7 +56,9 @@ export default function PopularDestinationsSection({
   return (
     <Card
       className={`rounded-2xl border shadow-sm ${
-        isDark ? "border-[#2f2f2f] bg-[#1b1b1b]" : "border-gray-200 bg-white"
+        isDark
+          ? "border-[#2f2f2f] bg-[#1b1b1b]"
+          : "border-gray-200 bg-white"
       }`}
       styles={{
         body: {
@@ -61,7 +78,9 @@ export default function PopularDestinationsSection({
         <Button
           type="primary"
           icon={<PlusOutlined />}
-          onClick={() => onCreate(HOME_CONTENT_SECTIONS.POPULAR_DESTINATIONS)}
+          onClick={() =>
+            onCreate(HOME_CONTENT_SECTIONS.POPULAR_DESTINATIONS)
+          }
         >
           Add Category
         </Button>
@@ -121,7 +140,11 @@ export default function PopularDestinationsSection({
                     title="Delete this category?"
                     onConfirm={() => onDelete(category._id)}
                   >
-                    <Button danger size="small" icon={<DeleteOutlined />}>
+                    <Button
+                      danger
+                      size="small"
+                      icon={<DeleteOutlined />}
+                    >
                       Delete
                     </Button>
                   </Popconfirm>
@@ -140,12 +163,19 @@ export default function PopularDestinationsSection({
                         : "border-gray-200 bg-white"
                     }`}
                   >
-                    <Image
-                      preview
-                      src={destination.image}
-                      className="h-36 w-full object-cover"
-                    />
+                    {/* Fixed Size Image */}
+                    <div className="h-[144px] w-full overflow-hidden">
+                      <Image
+                        preview
+                        src={destination.image}
+                        alt={destination.name || "Destination Image"}
+                        width={500}
+                        height={144}
+                        className="!h-[144px] !w-full object-cover"
+                      />
+                    </div>
 
+                    {/* Content */}
                     <div className="space-y-3 p-4">
                       <h3
                         className={`line-clamp-2 text-sm font-semibold ${
@@ -157,15 +187,26 @@ export default function PopularDestinationsSection({
 
                       <div
                         className={`border-t pt-3 ${
-                          isDark ? "border-[#303030]" : "border-gray-200"
+                          isDark
+                            ? "border-[#303030]"
+                            : "border-gray-200"
                         }`}
                       >
                         <div className="space-y-2">
-                          <InfoRow label="City" value={destination.city} />
+                          <InfoRow
+                            label="City"
+                            value={destination.city}
+                          />
 
-                          <InfoRow label="City ID" value={destination.cityId} />
+                          <InfoRow
+                            label="City ID"
+                            value={destination.cityId}
+                          />
 
-                          <InfoRow label="Alt" value={destination.alt} />
+                          <InfoRow
+                            label="Alt"
+                            value={destination.alt}
+                          />
                         </div>
                       </div>
                     </div>

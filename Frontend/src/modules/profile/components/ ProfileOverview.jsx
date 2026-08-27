@@ -31,10 +31,10 @@ import { profileSchema } from "../schema/profileValidation";
 
 const ViewField = memo(({ label, value, type, prefix }) => (
   <div className="space-y-1">
-    <p className="text-[14px] font-medium text-[#4b4b4b]">{label}</p>
+    <p className="text-[14px] text-gray-500">{label}</p>
 
     {value !== null && value !== undefined && value !== "" ? (
-      <div className="flex items-center gap-1 text-[16px] font-semibold text-[#1f1f1f]">
+      <div className="flex items-center text-[16px] font-semibold text-[#1f1f1f]">
         {type === "date" ? (
           dayjs(value).format("DD MMM YYYY")
         ) : (
@@ -469,14 +469,14 @@ export default function ProfileOverview() {
   return (
     <div className="min-h-screen">
       <div className="bg-white p-5">
-        <div className="mb-8 flex items-center justify-between">
+        <div className="!mb-8 flex items-center justify-between">
           <h2 className="font-roboto! text-[20px] font-semibold text-[#1f1f1f]">
             Personal Information
           </h2>
 
           {!isEdit && (
             <Button
-              icon={<EditOutlined className="font-roboto! font-semibold!" />}
+              icon={<EditOutlined className="buttion-color!" />}
               onClick={() => setIsEdit(true)}
               className="font-roboto! font-semibold!"
             >
@@ -487,7 +487,7 @@ export default function ProfileOverview() {
 
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-6">
               {fields.map(
                 ({ name, label, component: Component, type, props }) => (
                   <div key={name}>
@@ -516,7 +516,7 @@ export default function ProfileOverview() {
                     name="email"
                     label="Email"
                     verified={emailVerified}
-                    otp={emailOtp}
+                    otp={emailOtp}                                                                                
                     setOtp={setEmailOtp}
                     showOtp={showEmailOtp}
                     setShowOtp={setShowEmailOtp}

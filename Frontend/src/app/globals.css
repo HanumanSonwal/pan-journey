@@ -309,6 +309,9 @@ body {
 .header-hover-most-text-color:hover {
   color: var(--theme-text-primary) !important;
 }
+.footer-hover-most-text-color:hover {
+  color: var(--theme-text-secondary) !important;
+}
 /* Background */
 
 .teb-boder-colour {
@@ -340,6 +343,11 @@ body {
 
 .background-color:hover {
   background-color: var(--theme-secondary) !important;
+}
+.buttion-color:hover {
+colour: var(--theme-secondary) !important;
+boder: var(--theme-secondary) !important;
+
 }
 
 /* Border */
