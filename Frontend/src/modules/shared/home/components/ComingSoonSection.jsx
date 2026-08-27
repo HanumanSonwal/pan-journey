@@ -19,9 +19,9 @@ export default function ComingSoonSection() {
                   src={item.image}
                   alt={item.title}
                   fill
-                  priority
-                  sizes="(max-width:768px) 100vw, 50vw"
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover"
+                  loading="lazy"
                 />
 
                 {/* Coming Soon Tag */}
