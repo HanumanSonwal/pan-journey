@@ -14,13 +14,12 @@ function FooterColumn({ title, links }) {
     <li key={item.label}>
       <Link
         href={item.href}
-        className="header-hover-most-text-color relative inline-block transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[var(--theme-secondary)] after:transition-all after:duration-300 hover:after:w-full"
+        className="footer-hover-most-text-color relative inline-block transition-colors duration-200 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 after:bg-[var(--theme-secondary)] after:transition-all after:duration-300 hover:after:w-full"
       >
         {item.label}
         {index < links.length - 1 && ","}
       </Link>
-    </li>
-  ))}
+    </li>  ))}
 </ul>
     </div>
   );

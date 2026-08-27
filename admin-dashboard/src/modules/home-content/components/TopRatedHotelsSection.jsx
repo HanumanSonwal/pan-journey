@@ -86,18 +86,20 @@ export default function TopRatedHotelsSection({ data = null, onEdit }) {
               }`}
             >
               {/* Image */}
-
-              <Image
-                preview
-                src={hotel.image}
-                className="h-36 w-full object-cover"
-              />
+              <div className="h-[144px] w-[300px] overflow-hidden">
+                <Image
+                  preview
+                  src={hotel.image}
+                  alt={hotel.name || "Hotel Image"}
+                  width={300}
+                  height={144}
+                  className="!h-[144px] !w-[300px] object-cover"
+                />
+              </div>
 
               {/* Content */}
-
               <div className="space-y-3 p-4">
-                {/* Name */}
-
+                {/* Name + Rating */}
                 <div className="flex items-start justify-between gap-2">
                   <h3
                     className={`line-clamp-2 text-sm font-semibold ${
@@ -115,11 +117,11 @@ export default function TopRatedHotelsSection({ data = null, onEdit }) {
                     }`}
                   >
                     <StarFilled />
-
                     {hotel.rating}
                   </div>
                 </div>
 
+                {/* Hotel Information */}
                 <div
                   className={`border-t pt-3 ${
                     isDark ? "border-[#303030]" : "border-gray-200"

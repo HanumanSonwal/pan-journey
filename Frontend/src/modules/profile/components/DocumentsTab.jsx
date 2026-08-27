@@ -25,16 +25,11 @@ const schema = z.object({
     .string()
     .trim()
     .min(1, "Passport number is required")
-    .regex(
-      /^[A-PR-WYa-pr-wy][1-9]\d\s?\d{4}[1-9]$/,
-      "Invalid passport number"
-    ),
+    .regex(/^[A-PR-WYa-pr-wy][1-9]\d\s?\d{4}[1-9]$/, "Invalid passport number"),
 
-  passportExpiryDate: z
-    .any()
-    .refine((val) => val !== null, {
-      message: "Passport expiry date is required",
-    }),
+  passportExpiryDate: z.any().refine((val) => val !== null, {
+    message: "Passport expiry date is required",
+  }),
 
   passportIssuingCountry: z
     .string()
@@ -45,22 +40,17 @@ const schema = z.object({
     .string()
     .trim()
     .min(1, "PAN card number is required")
-    .regex(
-      /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/,
-      "Invalid PAN card number"
-    ),
+    .regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, "Invalid PAN card number"),
 });
 
 export default function DocumentsTab() {
   const [isEdit, setIsEdit] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [documentsLoading, setDocumentsLoading] =
-    useState(true);
+  const [documentsLoading, setDocumentsLoading] = useState(true);
 
   /* ✅ ORIGINAL DATA STORE */
 
-  const [originalData, setOriginalData] =
-    useState(null);
+  const [originalData, setOriginalData] = useState(null);
   const methods = useForm({
     resolver: zodResolver(schema),
 
@@ -88,25 +78,20 @@ export default function DocumentsTab() {
       try {
         setDocumentsLoading(true);
 
-        const res =
-          await getCustomerDocumentsApi();
+        const res = await getCustomerDocumentsApi();
 
         const data = res?.data?.data;
 
         const formattedData = {
-          passportNumber:
-            data?.passportNumber || "",
+          passportNumber: data?.passportNumber || "",
 
-          passportExpiryDate:
-            data?.passportExpiryDate
-              ? dayjs(data.passportExpiryDate)
-              : null,
+          passportExpiryDate: data?.passportExpiryDate
+            ? dayjs(data.passportExpiryDate)
+            : null,
 
-          passportIssuingCountry:
-            data?.passportIssuingCountry || "",
+          passportIssuingCountry: data?.passportIssuingCountry || "",
 
-          panCardNumber:
-            data?.panCardNumber || "",
+          panCardNumber: data?.panCardNumber || "",
         };
 
         /* ✅ SAVE ORIGINAL DATA */
@@ -115,9 +100,7 @@ export default function DocumentsTab() {
 
         reset(formattedData);
       } catch (error) {
-        message.error(
-          "Failed to load documents"
-        );
+        message.error("Failed to load documents");
       } finally {
         setDocumentsLoading(false);
       }
@@ -133,67 +116,45 @@ export default function DocumentsTab() {
       setLoading(true);
 
       const payload = {
-        passportNumber:
-          data.passportNumber,
+        passportNumber: data.passportNumber,
 
-        passportExpiryDate:
-          data.passportExpiryDate
-            ? dayjs(
-                data.passportExpiryDate
-              ).toISOString()
-            : null,
+        passportExpiryDate: data.passportExpiryDate
+          ? dayjs(data.passportExpiryDate).toISOString()
+          : null,
 
-        passportIssuingCountry:
-          data.passportIssuingCountry,
+        passportIssuingCountry: data.passportIssuingCountry,
 
-        panCardNumber:
-          data.panCardNumber,
+        panCardNumber: data.panCardNumber,
       };
 
-      const res =
-        await updateCustomerDocumentsApi(
-          payload
-        );
+      const res = await updateCustomerDocumentsApi(payload);
 
-      const updatedData =
-        res?.data?.data;
+      const updatedData = res?.data?.data;
 
       const formattedUpdatedData = {
-        passportNumber:
-          updatedData?.passportNumber || "",
+        passportNumber: updatedData?.passportNumber || "",
 
-        passportExpiryDate:
-          updatedData?.passportExpiryDate
-            ? dayjs(
-                updatedData.passportExpiryDate
-              )
-            : null,
+        passportExpiryDate: updatedData?.passportExpiryDate
+          ? dayjs(updatedData.passportExpiryDate)
+          : null,
 
-        passportIssuingCountry:
-          updatedData?.passportIssuingCountry ||
-          "",
+        passportIssuingCountry: updatedData?.passportIssuingCountry || "",
 
-        panCardNumber:
-          updatedData?.panCardNumber || "",
+        panCardNumber: updatedData?.panCardNumber || "",
       };
 
       /* ✅ UPDATE ORIGINAL DATA */
 
-      setOriginalData(
-        formattedUpdatedData
-      );
+      setOriginalData(formattedUpdatedData);
 
       reset(formattedUpdatedData);
 
-      message.success(
-        "Documents updated successfully"
-      );
+      message.success("Documents updated successfully");
 
       setIsEdit(false);
     } catch (error) {
       message.error(
-        error?.response?.data?.message ||
-          "Failed to update documents"
+        error?.response?.data?.message || "Failed to update documents",
       );
     } finally {
       setLoading(false);
@@ -244,18 +205,14 @@ export default function DocumentsTab() {
 
       {/* MAIN */}
 
-      <div className="p-6 text-gray-900 shadow !bg-white">
+      <div className="!bg-white p-6 text-gray-900 shadow">
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="font-semibold">
-            Documents
-          </h3>
+          <h3 className="font-semibold">Documents</h3>
 
           {!isEdit && (
             <Button
               icon={<EditOutlined />}
-              onClick={() =>
-                setIsEdit(true)
-              }
+              onClick={() => setIsEdit(true)}
               loading={documentsLoading}
             >
               Edit Details
@@ -266,73 +223,38 @@ export default function DocumentsTab() {
         <FormProvider {...methods}>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className={
-              isEdit ? "edit-mode" : ""
-            }
+            className={isEdit ? "edit-mode" : ""}
           >
-            <div className="grid gap-6 md:grid-cols-2">
-
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6">
               {/* PASSPORT */}
 
               <EditableField
-                label={
-                  !isEdit
-                    ? "Passport Number"
-                    : ""
-                }
+                label={!isEdit ? "Passport Number" : ""}
                 value={watch("passportNumber")}
                 isEdit={isEdit}
-                error={
-                  errors.passportNumber
-                    ?.message
-                }
+                error={errors.passportNumber?.message}
               >
-                <RHFInput
-                  name="passportNumber"
-                  label="Passport Number"
-                />
+                <RHFInput name="passportNumber" label="Passport Number" />
               </EditableField>
 
               {/* EXPIRY */}
 
               <EditableField
-                label={
-                  !isEdit
-                    ? "Passport Expiry Date"
-                    : ""
-                }
+                label={!isEdit ? "Passport Expiry Date" : ""}
                 value={
-                  watch(
-                    "passportExpiryDate"
-                  )
-                    ? dayjs(
-                        watch(
-                          "passportExpiryDate"
-                        )
-                      ).format(
-                        "DD MMM YYYY"
-                      )
+                  watch("passportExpiryDate")
+                    ? dayjs(watch("passportExpiryDate")).format("DD MMM YYYY")
                     : ""
                 }
                 isEdit={isEdit}
-                error={
-                  errors
-                    .passportExpiryDate
-                    ?.message
-                }
+                error={errors.passportExpiryDate?.message}
               >
                 <RHFDatePicker
                   name="passportExpiryDate"
                   label="Passport Expiry Date"
                   placeholder="Select Passport Expiry Date"
-                  disabledDate={(
-                    current
-                  ) =>
-                    current &&
-                    current <=
-                      dayjs().endOf(
-                        "day"
-                      )
+                  disabledDate={(current) =>
+                    current && current <= dayjs().endOf("day")
                   }
                   showToday={false}
                 />
@@ -341,20 +263,10 @@ export default function DocumentsTab() {
               {/* COUNTRY */}
 
               <EditableField
-                label={
-                  !isEdit
-                    ? "Passport Issuing Country"
-                    : ""
-                }
-                value={watch(
-                  "passportIssuingCountry"
-                )}
+                label={!isEdit ? "Passport Issuing Country" : ""}
+                value={watch("passportIssuingCountry")}
                 isEdit={isEdit}
-                error={
-                  errors
-                    .passportIssuingCountry
-                    ?.message
-                }
+                error={errors.passportIssuingCountry?.message}
               >
                 <RHFSelect
                   name="passportIssuingCountry"
@@ -376,24 +288,15 @@ export default function DocumentsTab() {
               {/* PAN */}
 
               <EditableField
-                label={
-                  !isEdit
-                    ? "PAN Card Number"
-                    : ""
-                }
+                label={!isEdit ? "PAN Card Number" : ""}
                 value={watch("panCardNumber")}
                 isEdit={isEdit}
-                error={
-                  errors.panCardNumber
-                    ?.message
-                }
+                error={errors.panCardNumber?.message}
               >
                 <RHFInput
                   name="panCardNumber"
                   label="PAN Card Number"
-                  transform={(v) =>
-                    v.toUpperCase()
-                  }
+                  transform={(v) => v.toUpperCase()}
                 />
               </EditableField>
             </div>
@@ -402,10 +305,7 @@ export default function DocumentsTab() {
 
             {isEdit && (
               <div className="mt-6 flex gap-3">
-                <Button
-                  onClick={handleCancel}
-                  className="!h-[42px] !px-6"
-                >
+                <Button onClick={handleCancel} className="!h-[42px] !px-6">
                   Cancel
                 </Button>
 
@@ -413,8 +313,7 @@ export default function DocumentsTab() {
                   htmlType="submit"
                   type="primary"
                   loading={loading}
-                  className="!h-[42px] !border-none !px-6 buttion-background-color"
-                  
+                  className="buttion-background-color !h-[42px] !border-none !px-6"
                 >
                   Save Changes
                 </Button>

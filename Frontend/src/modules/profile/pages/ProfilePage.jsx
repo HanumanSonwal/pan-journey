@@ -29,7 +29,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#edf7ff]">
+    <div className="min-h-screen overflow-x-hidden background-color-bg ">
       {/* Banner */}
       <div className="relative h-[180px] w-full overflow-hidden sm:h-[200px] md:h-[220px]">
         <img
