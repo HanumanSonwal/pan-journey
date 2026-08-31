@@ -31,10 +31,6 @@ export default function TiptapToolbar({ editor, onFullscreen }) {
     return null;
   }
 
-  /* =====================================================
-     HEADING
-  ===================================================== */
-
   const getHeadingValue = () => {
     for (let level = 1; level <= 6; level++) {
       if (
@@ -65,10 +61,6 @@ export default function TiptapToolbar({ editor, onFullscreen }) {
       .run();
   };
 
-  /* =====================================================
-     LINK
-  ===================================================== */
-
   const handleLink = () => {
     const oldUrl = editor.getAttributes("link").href || "";
 
@@ -96,10 +88,6 @@ export default function TiptapToolbar({ editor, onFullscreen }) {
       .run();
   };
 
-  /* =====================================================
-     IMAGE
-  ===================================================== */
-
   const handleImage = () => {
     const url = window.prompt("Enter image URL", "https://");
 
@@ -115,10 +103,6 @@ export default function TiptapToolbar({ editor, onFullscreen }) {
       })
       .run();
   };
-
-  /* =====================================================
-     CUSTOM TABLE
-  ===================================================== */
 
   const insertCustomTable = () => {
     const rowsInput = window.prompt("Number of rows", "3");
@@ -148,9 +132,6 @@ export default function TiptapToolbar({ editor, onFullscreen }) {
       .run();
   };
 
-  /* =====================================================
-     TABLE ACTIONS
-  ===================================================== */
 
   const tableItems = [
     {
@@ -350,9 +331,6 @@ export default function TiptapToolbar({ editor, onFullscreen }) {
     },
   ];
 
-  /* =====================================================
-     HIGHLIGHT
-  ===================================================== */
 
   const highlightColors = [
     ["yellow", "Yellow", "#fff566"],
@@ -401,17 +379,9 @@ export default function TiptapToolbar({ editor, onFullscreen }) {
     },
   ];
 
-  /* =====================================================
-     UNDO / REDO
-  ===================================================== */
-
   const canUndo = editor.can().chain().focus().undo().run();
 
   const canRedo = editor.can().chain().focus().redo().run();
-
-  /* =====================================================
-     RETURN
-  ===================================================== */
 
   return (
     <Space

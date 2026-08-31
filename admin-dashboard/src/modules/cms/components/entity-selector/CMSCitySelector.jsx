@@ -60,7 +60,7 @@ export default function CMSCitySelector({ form }) {
 
   return (
     <Form.Item
-      label="Select City"
+      label={<span className="font-bold">Select City</span>}
       name="selectedCity"
       rules={[
         {
