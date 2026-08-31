@@ -2,7 +2,7 @@
 
 import { Button, Card, Collapse, Form, Input, Select, theme } from "antd";
 import CMSImageUpload from "./CMSImageUpload";
-import TextEditor from "./editor/joditEditor/TextEditor";
+import TextEditor from "./editor/TextEditor";
 
 const blockOptions = [
   {
