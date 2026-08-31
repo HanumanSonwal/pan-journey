@@ -193,7 +193,7 @@ export default async function Page() {
 
       <TrustSection />
 
-      {/* <GiftCardSlider /> */}
+      <GiftCardSlider />
 
       <VacationSection vibes={placesAsPerYourVibe} />
 
