@@ -3,6 +3,7 @@
 import { Button, Card, Collapse, Form, Input, Select, theme } from "antd";
 import CMSImageUpload from "./CMSImageUpload";
 import TextEditor from "./editor/TextEditor";
+// import CKEditorTextEditor from "./editor/CKEditorTextEditor";
 
 const blockOptions = [
   {
@@ -105,6 +106,7 @@ function BlockFields({ field, form }) {
             {type === "content" && (
               <Form.Item name={[field.name, "data", "content"]} label="Content">
                 <TextEditor />
+                {/* <CKEditorTextEditor /> */}
               </Form.Item>
             )}
 
@@ -295,6 +297,8 @@ function BlockFields({ field, form }) {
                   }
                 >
                   <TextEditor />
+                  {/* <CKEditorTextEditor /> */}
+
                 </Form.Item>
 
                 {/* Section Image */}
