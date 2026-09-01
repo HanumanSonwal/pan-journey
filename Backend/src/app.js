@@ -9,7 +9,7 @@ import authRoutes from "./modules/auth/admin-auth/auth.routes.js";
 import otpRoutes from "./modules/auth/customer-auth/auth.routes.js";
 import customerProfileRoutes from "./modules/auth/customer-auth/customer-documents/customerDocument.routes.js";
 import profileRoutes from "./modules/auth/customer-auth/customerProfile/profile.routes.js";
-import citySearch from "./modules/citysearch/supplierCity.routes.js";
+import destinationSearch from "./modules/hotel/destination/destination.routes.js";
 import cmsRoutes from "./modules/cms/cms.routes.js";
 import contactUs from "./modules/contactUsForm/contact.routes.js";
 import newsletter from "./modules/contactUsForm/newsletter.routes.js";
@@ -40,6 +40,7 @@ import homecontent from "./modules/HomeContent/homeContent.route.js";
 import wishlistRoutes from "./modules/wishlist/wishlist.routes.js";
 import theme from "./modules/theme/theme.route.js";
 import testRoutes from "./test.routes.js";
+import searchApi from "./modules/hotel/hotelSearch/search.routes.js"
 import path from "path";
 
 
@@ -84,11 +85,12 @@ app.use("/api/v1/tax", tax);
 app.use("/api/v1/couponCode", couponCode);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/homecontent", homecontent);
+app.use("/api/v1/HotelSearch", searchApi);
 
 app.use("/api/v1/cms", cmsRoutes);
 app.use("/api/v1/theme", theme);
 app.use("/api/v1/roles", roleRoutes);
-app.use("/api/v1/Seacrhcity", citySearch);
+app.use("/api/v1/destination", destinationSearch);
 app.use("/api/webhooks", gatewayroutewebhook);
 app.use("/api/v1/Hotels", hotelSearch);
 app.use("/api/v1", tempbookingRoutes);
