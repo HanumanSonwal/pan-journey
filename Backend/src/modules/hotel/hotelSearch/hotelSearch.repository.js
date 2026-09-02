@@ -18,3 +18,13 @@ export const deleteExpiredHotelSearch = async () => {
     },
   });
 };
+export const findHotelSearchCache = async ({
+  cacheKey,
+}) => {
+  return HotelSearch.findOne({
+    cacheKey,
+    expiresAt: {
+      $gt: new Date(),
+    },
+  }).lean();
+};
