@@ -48,7 +48,6 @@ export const mapHotelSearchResponse = (response) => {
           ? Number(hotel.StarCategoryId)
           : null,
 
-        description: hotel?.StarCategoryDesc || null,
       },
 
       image: hotel?.HotelImage || null,
@@ -60,17 +59,6 @@ export const mapHotelSearchResponse = (response) => {
         })
       ),
 
-      stay: {
-        checkIn: {
-          date: hotel?.CheckInDate || null,
-          time: hotel?.CheckInTime || null,
-        },
-
-        checkOut: {
-          date: hotel?.CheckOutDate || null,
-          time: hotel?.CheckOutTime || null,
-        },
-      },
 
       pricing: {
         currency: hotel?.Currencycode || null,
@@ -87,25 +75,14 @@ export const mapHotelSearchResponse = (response) => {
           hotel?.TotalAmount || 0
         ),
 
-        serviceFee: Number(
-          hotel?.ServiceFeeAmount || 0
-        ),
-
-        markup: Number(
-          hotel?.TradeMarkupAmount || 0
-        ),
+       
 
         gst: Number(
           hotel?.GST || 0
         ),
 
-        grossCommission: Number(
-          hotel?.GrossCommission || 0
-        ),
-
-        netCommission: Number(
-          hotel?.NetCommission || 0
-        ),
+     
+      
       },
 
       policy: {
@@ -118,13 +95,7 @@ export const mapHotelSearchResponse = (response) => {
           hotel?.OutPolicyReason || null,
       },
 
-      booking: {
-        getRatePlanCallMandatory:
-          hotel?.GetRatePlanCallMandatory || false,
-
-        showSearchResult:
-          hotel?.ShowSearchResult ?? null,
-      },
+     
     })),
   };
 };
