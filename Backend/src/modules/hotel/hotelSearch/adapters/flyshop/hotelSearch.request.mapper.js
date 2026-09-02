@@ -38,7 +38,7 @@
 const formatSupplierDate = (date) => {
   if (!date) return null;
 
-  const [year, month, day] = date.split("-");
+  const [month, day, year] = date.split("-");
 
   return `${month}/${day}/${year}`;
 };
