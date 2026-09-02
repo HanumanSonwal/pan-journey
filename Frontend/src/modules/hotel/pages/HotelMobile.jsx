@@ -7,6 +7,8 @@ import SidebarFilters from "../cards/SidebarFilters";
 import HotelList from "../components/hotels/HotelList";
 import SearchBar from "../components/hotels/SearchBar";
 import MobileSortBar from "../components/MobileSortBar";
+import CMSContentRenderer from "@/modules/cms/renderer/CMSContentRenderer";
+import HotelsSeoSection from "../seo/HotelsSeoSection";
 
 const defaultFilters = {
   price: null,
@@ -24,6 +26,7 @@ export default function HotelMobile({
   setHotelsForMap,
   setHotelsLoading,
   setHasHotels,
+  cms,
 }) {
   const [showSort, setShowSort] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
@@ -107,16 +110,22 @@ export default function HotelMobile({
         </Drawer>
 
         {/* HOTEL LIST */}
-        <div id="hotel-list-section" className="mt-3 px-2">
-          <HotelList
-            searchData={appliedSearchData}
-            filters={filters}
-            sort={sort}
-            onHotelsChange={setHotelsForMap}
-            onLoadingChange={setHotelsLoading}
-            onResultChange={setHasHotels}
-          />
-        </div>
+ <div id="hotel-list-section" className="mt-3 px-2">
+  <HotelList
+    searchData={appliedSearchData}
+    filters={filters}
+    sort={sort}
+    onHotelsChange={setHotelsForMap}
+    onLoadingChange={setHotelsLoading}
+    onResultChange={setHasHotels}
+  />
+</div>
+
+{cms && (
+  <HotelsSeoSection>
+    <CMSContentRenderer cms={cms} />
+  </HotelsSeoSection>
+)}
       </div>
     </div>
   );

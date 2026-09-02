@@ -1,19 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { searchDestinationApi } from "../services/search.api";
 
-export const useDestinationSearch = (
-  searchText,
-) => {
+export const useDestinationSearch = (searchText = "") => {
+  const trimmedSearch = searchText.trim();
+
   return useQuery({
-    queryKey: ["destination-search", searchText],
-
-    queryFn: () =>
-      searchDestinationApi(searchText),
-
-    enabled:
-      searchText?.length >= 2 ||
-      searchText === "",
-
+    queryKey: ["destination-search", trimmedSearch],
+    queryFn: () => searchDestinationApi(trimmedSearch),
+    enabled: trimmedSearch.length >= 2,
     staleTime: 1000 * 60 * 5,
+
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
   });
 };

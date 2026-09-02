@@ -41,6 +41,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "pix8.agoda.net",
       },
+      {
+        protocol: "https",
+        hostname: "www.tboholidays.com",
+      },
     ],
 
     formats: ["image/avif", "image/webp"],
