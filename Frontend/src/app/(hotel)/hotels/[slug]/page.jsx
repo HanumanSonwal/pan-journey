@@ -7,30 +7,46 @@ import { buildCmsMetadata } from "@/modules/cms/seo/cmsSeo";
 import { fetchCmsBySlug } from "@/modules/cms/services/cmsFetch";
 import HotelContent from "@/modules/hotel/pages/Hotel";
 import { searchDestinationServer } from "@/modules/hotel/services/search.server";
+import dayjs from "dayjs";
 import { notFound } from "next/navigation";
+
+const formatCityName = (value = "") => {
+  return (
+    value
+      ?.replace(/-/g, " ")
+      ?.replace(/\b\w/g, (letter) => letter.toUpperCase()) || ""
+  );
+};
 
 export async function generateMetadata({ params, searchParams }) {
   const { slug } = await params;
   const query = await searchParams;
-  const preview = query?.preview === "true";
-  const cms = await fetchCmsBySlug(slug, preview);
-  console.log("METADATA PREVIEW:", preview);
 
-  /*
-    CMS SEO
-  */
+  const preview = query?.preview === "true";
+
+  const cms = await fetchCmsBySlug(slug, preview);
+
   if (cms) {
-    return buildCmsMetadata(cms);
+    const metadata = buildCmsMetadata(cms);
+
+    if (preview) {
+      metadata.robots = {
+        index: false,
+        follow: false,
+        googleBot: {
+          index: false,
+          follow: false,
+        },
+      };
+    }
+
+    return metadata;
   }
 
-  /*
-    DEFAULT SEO
-  */
   const siteUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
-  const cityName =
-    slug?.replace(/-/g, " ")?.replace(/\b\w/g, (l) => l.toUpperCase()) ||
-    "Hotels";
+  const cityName = formatCityName(slug) || "Hotels";
   const canonical = `${siteUrl}/hotels/${slug}`;
+
   return {
     metadataBase: new URL(siteUrl),
     title: buildHotelTitle(cityName),
@@ -39,10 +55,12 @@ export async function generateMetadata({ params, searchParams }) {
     alternates: {
       canonical,
     },
+
     robots: {
       index: false,
       follow: false,
       nocache: true,
+
       googleBot: {
         index: false,
         follow: false,
@@ -51,13 +69,16 @@ export async function generateMetadata({ params, searchParams }) {
         "max-snippet": -1,
       },
     },
+
     authors: [
       {
         name: "PAN Journey",
       },
     ],
+
     creator: "PAN Journey",
     publisher: "PAN Journey",
+
     openGraph: {
       title: buildHotelTitle(cityName),
       description: buildHotelDescription(cityName),
@@ -76,52 +97,102 @@ export async function generateMetadata({ params, searchParams }) {
 
 export default async function Page({ params, searchParams }) {
   const { slug } = await params;
-
   const query = await searchParams;
   const preview = query?.preview === "true";
-
   const siteUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
-
   const cms = await fetchCmsBySlug(slug, preview);
 
-  console.log("PAGE PREVIEW:", preview);
+  let cityName = formatCityName(slug);
+  let cityData = null;
 
-  let cityName =
-    slug?.replace(/-/g, " ")?.replace(/\b\w/g, (l) => l.toUpperCase()) || "";
-
-  let cityId = "";
-
-  /*
-    CMS FOUND
-  */
   if (cms && cms?.data?.cityMeta?.destinationId) {
-    cityName = cms?.data?.cityMeta?.destination || cityName;
+    const cityMeta = cms?.data?.cityMeta || {};
 
-    cityId = cms?.data?.cityMeta?.destinationId;
+    cityName = cityMeta?.destination || cityName;
+    cityData = {
+      id: cityMeta?.destinationId || "",
+      name: cityName || "",
+      type: "city",
+      city: cityName || "",
+      state: cityMeta?.stateName || "",
+      stateName: cityMeta?.stateName || "",
+      country: cityMeta?.country || "",
+      countryCode: cityMeta?.countryCode || "",
+      displayName: [cityName, cityMeta?.stateName, cityMeta?.country]
+        .filter(Boolean)
+        .join(","),
+
+      normalizedCity: cityName || "",
+    };
   } else {
-    /*
-      FALLBACK
-    */
     const destinations = await searchDestinationServer(cityName);
+    const matchedCity =
+      destinations?.find(
+        (item) =>
+          item?.type?.toLowerCase() === "city" &&
+          item?.city?.toLowerCase() === cityName?.toLowerCase(),
+      ) ||
+      destinations?.find((item) => item?.type?.toLowerCase() === "city") ||
+      destinations?.[0];
 
-    console.log("DESTINATIONS in man page :", destinations);
+    if (!matchedCity) {
+      notFound();
+    }
 
-    const matchedCity = destinations?.[0];
+    cityName = matchedCity?.city || matchedCity?.name || cityName;
+    cityData = {
+      id: matchedCity?.id || "",
+      name: matchedCity?.name || cityName,
+      type: matchedCity?.type || "city",
+      city: matchedCity?.city || cityName,
+      state: matchedCity?.state || "",
+      stateName: matchedCity?.state || "",
+      country: matchedCity?.country || "",
+      countryCode: matchedCity?.countryCode || "",
+      displayName:
+        matchedCity?.displayName ||
+        [
+          matchedCity?.name || cityName,
+          matchedCity?.state,
+          matchedCity?.country,
+        ]
+          .filter(Boolean)
+          .join(","),
 
-    cityName = matchedCity?.destination || cityName;
+      normalizedCity: matchedCity?.city || matchedCity?.name || cityName,
+    };
 
-    cityId = matchedCity?.id || "";
-    if (!cms && !cityId) {
+    if (!cityData?.id) {
       notFound();
     }
   }
 
-  /*
-    CITY SCHEMA
-  */
+  const initialSearchData = {
+    city: cityData?.displayName || cityName || "",
+    cityData: {
+      id: cityData?.id || "",
+      name: cityData?.name || cityName || "",
+      type: cityData?.type || "city",
+      city: cityData?.city || cityName || "",
+      state: cityData?.state || "",
+      stateName: cityData?.stateName || cityData?.state || "",
+      country: cityData?.country || "",
+      countryCode: cityData?.countryCode || "",
+      displayName: cityData?.displayName || cityName || "",
+      normalizedCity: cityData?.normalizedCity || cityName || "",
+    },
+
+    checkIn: dayjs().format("YYYY-MM-DD"),
+    checkOut: dayjs().add(1, "day").format("YYYY-MM-DD"),
+    rooms: 1,
+    adults: 2,
+    children: 0,
+    childAges: [],
+    pets: false,
+  };
+
   const schema = {
     "@context": "https://schema.org",
-
     "@graph": [
       {
         "@type": "BreadcrumbList",
@@ -133,12 +204,14 @@ export default async function Page({ params, searchParams }) {
             name: "Home",
             item: siteUrl,
           },
+
           {
             "@type": "ListItem",
             position: 2,
             name: "Hotels",
             item: `${siteUrl}/hotels`,
           },
+
           {
             "@type": "ListItem",
             position: 3,
@@ -150,11 +223,8 @@ export default async function Page({ params, searchParams }) {
 
       {
         "@type": "CollectionPage",
-
         name: `Hotels in ${cityName}`,
-
         url: `${siteUrl}/hotels/${slug}`,
-
         description:
           cms?.metaDescription ||
           `Find hotels in ${cityName} with best prices on PAN Journey.`,
@@ -162,54 +232,22 @@ export default async function Page({ params, searchParams }) {
 
       {
         "@type": "Organization",
-
         name: "PAN Journey",
-
         url: siteUrl,
       },
     ],
   };
 
-  const dayjs = require("dayjs");
-
-  const initialSearchData = {
-    city: cityName || "",
-
-    cityData: {
-      id: cityId || "",
-
-      stateName: cms?.data?.cityMeta?.stateName || "",
-
-      countryCode: cms?.data?.cityMeta?.countryCode || "",
-    },
-
-    checkIn: dayjs().format("YYYY-MM-DD"),
-
-    checkOut: dayjs().add(1, "day").format("YYYY-MM-DD"),
-
-    rooms: 1,
-    adults: 2,
-    children: 0,
-    childAges: [],
-    pets: false,
-  };
-
-  /*
-    FAQ SCHEMA
-  */
-  const faqBlock = cms?.data?.blocks?.find((b) => b?.type === "faq");
-
+  const faqBlock = cms?.data?.blocks?.find((block) => block?.type === "faq");
   let faqItems = faqBlock?.data?.items || faqBlock?.data?.faqs || [];
 
-  /*
-  FALLBACK FAQ
-*/
   if (!faqItems.length) {
     faqItems = [
       {
         question: `What are the best areas to stay in ${cityName}?`,
         answer: `The best area depends on your travel needs, budget and nearby attractions in ${cityName}.`,
       },
+
       {
         question: `When should I book hotels in ${cityName}?`,
         answer: `Booking early is generally recommended during weekends, holidays and peak travel seasons.`,
@@ -247,7 +285,7 @@ export default async function Page({ params, searchParams }) {
       <HotelContent
         initialSearchData={initialSearchData}
         cms={cms}
-        isValidCity={!!cityId}
+        isValidCity={!!cityData?.id}
       />
     </>
   );

@@ -5,31 +5,47 @@ export const buildHotelPayload = ({ searchData, filters = {}, sort = "" }) => {
     return null;
   }
 
+  const cityData = searchData?.cityData || {};
+
+  const destinationType = cityData?.type?.toLowerCase() || "city";
+
+  const destinationCity =
+    cityData?.city || cityData?.name || searchData?.city || "";
+
+  const destinationState = cityData?.state || cityData?.stateName || "";
+
+  const destinationCountry = cityData?.country || "";
+
+  const adults = Number(searchData?.adults) || 1;
+
+  const childrenCount = Number(searchData?.children) || 0;
+
+  const childAges = Array.isArray(searchData?.childAges)
+    ? searchData.childAges
+    : [];
+
+  const children = childAges
+    .slice(0, childrenCount)
+    .map((age) => Number(age))
+    .filter((age) => !Number.isNaN(age));
+
   return {
-    HotelSeedValue: "",
-    CheckInDate: formatSupplierDate(searchData?.checkIn),
-    CheckOutDate: formatSupplierDate(searchData?.checkOut),
-    HotelRoomDetail: [
+    checkIn: formatSupplierDate(searchData?.checkIn),
+
+    checkOut: formatSupplierDate(searchData?.checkOut),
+
+    destination: {
+      type: destinationType,
+      city: destinationCity,
+      state: destinationState,
+      country: destinationCountry,
+    },
+
+    rooms: [
       {
-        AdultCount: searchData?.adults || 1,
-        ChildCount: searchData?.children || 0,
-        Child1Age: searchData?.childAges?.[0] || 0,
-        Child2Age: searchData?.childAges?.[1] || 0,
+        adults,
+        children,
       },
     ],
-
-    fullName: searchData?.city || "",
-    id: searchData?.cityData?.id || "",
-    stateName: searchData?.cityData?.stateName || "",
-    countryCode: searchData?.cityData?.countryCode || "",
-    RoomCount: searchData?.rooms || 1,
-    filters: {
-      search: filters?.search || "",
-      freeCancellation: filters?.freeCancellation || false,
-      starRating: filters?.starRating || "",
-      minPrice: filters?.minPrice || "",
-      maxPrice: filters?.maxPrice || "",
-    },
-    sort,
   };
 };

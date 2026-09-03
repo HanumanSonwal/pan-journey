@@ -1,14 +1,14 @@
 "use client";
 
 import { CalendarOutlined, TeamOutlined } from "@ant-design/icons";
+import dayjs from "dayjs";
+import { useRef, useState } from "react";
 
 import { useHotelSearchStore } from "@/modules/hotel/store/serchData.store";
 import DateRangeField from "@/modules/shared/home/components/DateRangeField";
 import DestinationSearchField from "@/modules/shared/home/components/DestinationSearchField";
 import GuestsField from "@/modules/shared/home/components/GuestsField/GuestsField";
 import SearchButton from "@/modules/shared/home/components/hero_section/SearchButton";
-import dayjs from "dayjs";
-import { useRef, useState } from "react";
 
 export default function HotelSearchForm({
   destinationError,
@@ -23,6 +23,57 @@ export default function HotelSearchForm({
   const [guestOpen, setGuestOpen] = useState(false);
 
   const destinationClickedRef = useRef(false);
+
+  const handleDestinationChange = (value) => {
+    setDestinationError?.(false);
+
+    const cityData = value?.cityData;
+
+    setDraftSearchData({
+      city: value?.city || "",
+
+      cityData: cityData
+        ? {
+            ...cityData,
+            id: cityData?.id || "",
+            name: cityData?.name || "",
+            type: cityData?.type || "",
+            city: cityData?.city || cityData?.name || "",
+            state: cityData?.state || cityData?.stateName || "",
+            stateName: cityData?.state || cityData?.stateName || "",
+            country: cityData?.country || "",
+            countryCode: cityData?.countryCode || "",
+            displayName: cityData?.displayName || "",
+            normalizedCity: cityData?.city || cityData?.name || "",
+          }
+        : null,
+    });
+
+    if (destinationClickedRef.current && (value?.city || value?.cityData)) {
+      requestAnimationFrame(() => {
+        setDateOpen(true);
+      });
+    }
+  };
+
+  const handleDateChange = (dates) => {
+    setDraftSearchData({
+      checkIn: dates?.[0]?.format("YYYY-MM-DD"),
+      checkOut: dates?.[1]?.format("YYYY-MM-DD"),
+    });
+
+    if (dates?.[0] && dates?.[1]) {
+      setDateOpen(false);
+
+      requestAnimationFrame(() => {
+        setGuestOpen(true);
+      });
+    }
+  };
+
+  const handleGuestsChange = (value) => {
+    setDraftSearchData(value);
+  };
 
   return (
     <div className="w-full">
@@ -40,29 +91,7 @@ export default function HotelSearchForm({
               cityData: draftSearchData?.cityData,
             }}
             error={destinationError}
-            onChange={(val) => {
-              setDestinationError?.(false);
-
-              setDraftSearchData({
-                city: val?.city || "",
-                cityData: {
-                  ...val?.cityData,
-                  stateName:
-                    val?.cityData?.stateName || val?.cityData?.state || "",
-                  countryCode:
-                    val?.cityData?.countryCode || val?.cityData?.country || "",
-                },
-              });
-
-              if (
-                destinationClickedRef.current &&
-                (val?.city || val?.cityData)
-              ) {
-                requestAnimationFrame(() => {
-                  setDateOpen(true);
-                });
-              }
-            }}
+            onChange={handleDestinationChange}
             height="65px"
           />
         </div>
@@ -74,27 +103,13 @@ export default function HotelSearchForm({
             variant="default"
             value={[
               draftSearchData?.checkIn ? dayjs(draftSearchData.checkIn) : null,
-
               draftSearchData?.checkOut
                 ? dayjs(draftSearchData.checkOut)
                 : null,
             ]}
             open={dateOpen}
             setOpen={setDateOpen}
-            onChange={(dates) => {
-              setDraftSearchData({
-                checkIn: dates?.[0]?.format("YYYY-MM-DD"),
-                checkOut: dates?.[1]?.format("YYYY-MM-DD"),
-              });
-
-              if (dates?.[0] && dates?.[1]) {
-                setDateOpen(false);
-
-                requestAnimationFrame(() => {
-                  setGuestOpen(true);
-                });
-              }
-            }}
+            onChange={handleDateChange}
           />
         </div>
 
@@ -106,9 +121,7 @@ export default function HotelSearchForm({
             value={draftSearchData}
             open={guestOpen}
             setOpen={setGuestOpen}
-            onChange={(val) => {
-              setDraftSearchData(val);
-            }}
+            onChange={handleGuestsChange}
           />
         </div>
 

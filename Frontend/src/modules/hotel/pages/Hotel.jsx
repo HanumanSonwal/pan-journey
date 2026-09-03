@@ -337,15 +337,40 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
       });
     }
 
+    const destinationCity =
+      searchParams.get("destinationCity") ||
+      draftSearchData?.cityData?.city ||
+      draftSearchData?.city ||
+      "";
+
+    const displayName =
+      searchParams.get("cityName") ||
+      draftSearchData?.cityData?.displayName ||
+      destinationCity;
+
     const urlData = {
-      city: searchParams.get("cityName") || draftSearchData?.city || "",
+      city: destinationCity,
 
       cityData: {
         id: searchParams.get("cityId") || "",
 
+        name: searchParams.get("destinationCity") || destinationCity,
+
+        type: searchParams.get("destinationType") || "city",
+
+        city: destinationCity,
+
+        state: searchParams.get("stateName") || "",
+
         stateName: searchParams.get("stateName") || "",
 
+        country: searchParams.get("country") || "",
+
         countryCode: searchParams.get("countryCode") || "",
+
+        displayName,
+
+        normalizedCity: destinationCity,
       },
 
       checkIn: searchParams.get("checkIn") || "",
@@ -459,6 +484,7 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
           hasHotels={hasHotels}
           hotelsForMap={hotelsForMap}
           setHotelsForMap={setHotelsForMap}
+          cms={cms}
         />
       ) : (
         /* ==================================
@@ -600,7 +626,7 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
                   HOTEL LIST
               ================================== */}
 
-              <div id="hotel-list-section" ref={hotelListRef}>
+              <div id="hotel-list-section" ref={hotelListRef} className="pt-3">
                 <HotelList
                   searchData={appliedSearchData}
                   filters={filters}

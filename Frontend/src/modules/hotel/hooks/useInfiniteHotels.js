@@ -4,35 +4,41 @@ import { useCurrencyStore } from "@/modules/shared/store/currency.store";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { searchHotels } from "../services/hotel.service";
 
-const PAGE_SIZE = 10;
-
 export const useInfiniteHotels = (params) => {
   const currency = useCurrencyStore((state) => state.selectedCurrency.code);
 
   return useInfiniteQuery({
     queryKey: ["hotels", params, currency],
 
-    queryFn: ({ pageParam = 1 }) =>
-      searchHotels({
-        ...params,
-        pagination: {
-          page: pageParam,
-          limit: PAGE_SIZE,
-        },
-      }),
+    /*
+     * Backend me abhi pagination nahi hai.
+     *
+     * Isliye फिलहाल same payload directly bhej rahe hain.
+     *
+     * Future me backend pagination aane par
+     * yahin pageParam + pagination add karenge.
+     */
+    queryFn: () => searchHotels(params),
 
     initialPageParam: 1,
 
-    getNextPageParam: (lastPage) => {
-      if (!lastPage?.data) return undefined;
+    /*
+     * Backend response me abhi page / totalPage
+     * nahi aa raha.
+     *
+     * Isliye next page फिलहाल disabled hai.
+     */
+    getNextPageParam: () => undefined,
 
-      const currentPage = lastPage.data.page ?? 1;
-      const totalPages = lastPage.data.totalPage ?? 1;
-
-      return currentPage < totalPages ? currentPage + 1 : undefined;
-    },
-
-    enabled: !!params?.id,
+    /*
+     * Old payload me params.id tha.
+     *
+     * New payload me destination object hai,
+     * isliye enabled condition bhi new payload
+     * ke according hai.
+     */
+    enabled:
+      !!params?.destination?.city && !!params?.checkIn && !!params?.checkOut,
 
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 10,
