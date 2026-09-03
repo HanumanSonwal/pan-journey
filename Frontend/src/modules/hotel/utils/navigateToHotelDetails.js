@@ -5,23 +5,30 @@ export const navigateToHotelDetails = ({
   router,
   hotel,
   searchData,
-  setSelectedHotel, 
+  setSelectedHotel,
 }) => {
-  const citySlug = slugify(
-    searchData?.city?.split(",")[0] ||
-      hotel?.cityName?.split(",")[0] ||
-      hotel?.City ||
-      "hotel",
-  );
+  const cityData = searchData?.cityData || {};
 
-  const hotelSlug =
-    hotel?.hotelSlug ||
-    slugify(hotel?.name || hotel?.hotelName || hotel?.HotelName || "hotel");
+  const cityName =
+    cityData?.city ||
+    cityData?.name ||
+    searchData?.city ||
+    hotel?.location?.city ||
+    hotel?.cityName ||
+    hotel?.City ||
+    "hotel";
+
+  const citySlug = slugify(cityName?.toString().split(",")[0].trim());
+
+  const hotelName =
+    hotel?.name || hotel?.hotelName || hotel?.HotelName || "hotel";
+
+  const hotelSlug = hotel?.hotelSlug || slugify(hotelName);
 
   const hotelId = hotel?.id || hotel?.hotelId || hotel?.HotelId || "";
 
   if (!hotelId) {
-    console.error("Hotel id not found");
+    console.error("Hotel id not found", hotel);
     return;
   }
 

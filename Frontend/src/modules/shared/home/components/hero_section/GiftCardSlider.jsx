@@ -18,10 +18,6 @@ export default function GiftCardSlider() {
 
   const { data: giftCards = [], isLoading, isError } = useGiftcard();
 
-  // =========================================================
-  // HELPERS
-  // =========================================================
-
   const getModuleName = (modules = []) => {
     return modules
       .map((module) => module.charAt(0).toUpperCase() + module.slice(1))
@@ -39,10 +35,6 @@ export default function GiftCardSlider() {
 
     return `${card.discountValue} Off`;
   };
-
-  // =========================================================
-  // LOADING SKELETON
-  // =========================================================
 
   if (isLoading) {
     return (
@@ -95,10 +87,6 @@ export default function GiftCardSlider() {
       </section>
     );
   }
-
-  // =========================================================
-  // ERROR
-  // =========================================================
 
   if (isError) {
     return (

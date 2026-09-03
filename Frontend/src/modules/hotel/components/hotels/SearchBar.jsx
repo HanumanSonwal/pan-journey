@@ -37,9 +37,15 @@ export default function SearchBar({ onSearch }) {
       setDestinationError(true);
       return;
     }
+
     setDestinationError(false);
+
     onSearch?.();
     applySearch();
+
+    // Close mobile search modal
+    setSearchModalOpen(false);
+
     navigateToHotels(router, draftSearchData);
   };
 
@@ -143,7 +149,7 @@ export default function SearchBar({ onSearch }) {
                 <button
                   type="button"
                   onClick={handleSearch}
-                  className=" h-[50px] w-full rounded-[25px] text-sm font-semibold navbar-buttion-background-color !text-white transition-all duration-200 active:scale-[0.98]"
+                  className="navbar-buttion-background-color h-[50px] w-full rounded-[25px] text-sm font-semibold !text-white transition-all duration-200 active:scale-[0.98]"
                 >
                   SEARCH
                 </button>

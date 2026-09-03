@@ -72,7 +72,7 @@ export default function CMSHotelSelector({ form }) {
   return (
     <>
       <Form.Item
-        label="Select Hotel"
+        label={<span className="font-bold">Select Hotel</span>}
         name="selectedHotel"
         rules={[
           {

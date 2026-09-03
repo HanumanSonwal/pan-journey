@@ -22,7 +22,6 @@ function DestinationSearchField({
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [recentSearches, setRecentSearches] = useState([]);
 
-  // RECENT SEARCHES
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -32,17 +31,18 @@ function DestinationSearchField({
 
       setRecentSearches(stored);
 
-      // AUTO SELECT
+      // AUTO SELECT RECENT
       if (autoSelectRecent && stored.length > 0 && !value?.city) {
         onChange({
-          city: stored[0]?.name || "",
-
+          city: stored[0]?.displayName || stored[0]?.name || "",
           cityData: {
             ...stored[0],
 
             stateName: stored[0]?.stateName || stored[0]?.state || "",
 
             countryCode: stored[0]?.countryCode || stored[0]?.country || "",
+
+            normalizedCity: stored[0]?.city || stored[0]?.name || "",
           },
         });
       }
@@ -53,12 +53,11 @@ function DestinationSearchField({
     }
   }, []);
 
-  // DEBOUNCE
   const debounceSearch = useMemo(
     () =>
       debounce((value) => {
         setDebouncedSearch(value);
-      }, 200),
+      }, 300),
     [],
   );
 
@@ -68,16 +67,13 @@ function DestinationSearchField({
     };
   }, [debounceSearch]);
 
-  // SEARCH
   const handleSearch = (value) => {
     setSearchText(value);
     debounceSearch(value);
   };
 
-  // API
   const { data = [], isLoading } = useDestinationSearch(debouncedSearch);
 
-  // SAVE RECENT
   const saveRecentSearch = (item) => {
     if (!item || typeof window === "undefined") {
       return;
@@ -86,13 +82,9 @@ function DestinationSearchField({
     try {
       const existing =
         JSON.parse(localStorage.getItem("recentHotelSearches") || "[]") || [];
-
-      const filtered = existing.filter((x) => x.name !== item.name);
-
+      const filtered = existing.filter((x) => x.id !== item.id);
       const updated = [item, ...filtered].slice(0, 4);
-
       localStorage.setItem("recentHotelSearches", JSON.stringify(updated));
-
       setRecentSearches(updated);
     } catch (error) {
       if (process.env.NODE_ENV === "development") {
@@ -103,54 +95,41 @@ function DestinationSearchField({
 
   const isEmptySearch = searchText.trim() === "";
 
-  // SORT RESULTS
   const sortedSearchResults = useMemo(() => {
     return [...data].sort((a, b) => {
-      const aStarts = a?.name
-        ?.toLowerCase()
-        ?.startsWith(searchText.toLowerCase());
+      const search = searchText.toLowerCase();
 
-      const bStarts = b?.name
-        ?.toLowerCase()
-        ?.startsWith(searchText.toLowerCase());
+      const aName = a?.name?.toLowerCase() || "";
+      const bName = b?.name?.toLowerCase() || "";
+
+      const aStarts = aName.startsWith(search);
+      const bStarts = bName.startsWith(search);
 
       if (aStarts && !bStarts) return -1;
-
       if (!aStarts && bStarts) return 1;
 
       return 0;
     });
   }, [data, searchText]);
 
-  // OPTIONS
   const buildOptions = (items = []) => {
     return items.map((item) => {
-      const fullName = [
-        item.name,
-        item.stateName || item.state,
-        item.country || item.countryCode,
-      ]
-        .filter(Boolean)
-        .join(", ");
+      const fullName =
+        item?.displayName ||
+        [item?.name, item?.state, item?.country].filter(Boolean).join(", ");
 
       return {
         label: (
           <div className="flex flex-col py-1">
-            <span className="font-semibold text-gray-800">
-              {[
-                item.name,
-                item.stateName || item.state,
-                item.country || item.countryCode,
-              ]
-                .filter(Boolean)
-                .join(", ")}
-            </span>
+            <span className="font-semibold text-gray-800">{fullName}</span>
 
-            <span className="text-xs text-gray-500">{item.type}</span>
+            <span className="text-xs text-gray-500 capitalize">
+              {item?.type || ""}
+            </span>
           </div>
         ),
 
-        value: `${item.type}-${item.id}`,
+        value: `${item?.type || "destination"}-${item?.id}`,
 
         searchLabel: fullName,
 
@@ -159,96 +138,101 @@ function DestinationSearchField({
     });
   };
 
-  // GROUPED OPTIONS
   const groupedOptions = useMemo(() => {
     if (isEmptySearch) {
-      return [
-        ...(recentSearches.length > 0
-          ? [
+      return recentSearches.length > 0
+        ? [
             {
               label: "Recent Searches",
-
               options: buildOptions(recentSearches),
             },
           ]
-          : []),
-
-        {
-          label: "Popular Destinations",
-
-          options: buildOptions(
-            data.filter(
-              (popular) =>
-                !recentSearches.some((recent) => recent.name === popular.name),
-            ),
-          ),
-        },
-      ];
+        : [];
     }
+
+    const cities = sortedSearchResults.filter((item) => {
+      const type = item?.type?.toLowerCase();
+
+      return type === "city" || type === "multicity";
+    });
+
+    const hotels = sortedSearchResults.filter((item) => {
+      const type = item?.type?.toLowerCase();
+
+      return type === "hotel";
+    });
+
+    const locations = sortedSearchResults.filter((item) => {
+      const type = item?.type?.toLowerCase();
+
+      return [
+        "location",
+        "state",
+        "neighborhood",
+        "trainstation",
+        "pointofinterest",
+      ].includes(type);
+    });
 
     return [
-      {
-        label: "Cities",
+      // Cities
+      ...(cities.length > 0
+        ? [
+            {
+              label: "Cities",
+              options: buildOptions(cities),
+            },
+          ]
+        : []),
 
-        options: buildOptions(
-          sortedSearchResults.filter((item) => item.type === "City"),
-        ),
-      },
+      // Hotels
+      ...(hotels.length > 0
+        ? [
+            {
+              label: "Hotels",
+              options: buildOptions(hotels),
+            },
+          ]
+        : []),
 
-      {
-        label: "Hotels",
-
-        options: buildOptions(
-          sortedSearchResults.filter((item) => item.type === "Hotel"),
-        ),
-      },
-
-      {
-        label: "Airports",
-
-        options: buildOptions(
-          sortedSearchResults.filter((item) => item.type === "Airport"),
-        ),
-      },
-
-      {
-        label: "Locations",
-
-        options: buildOptions(
-          sortedSearchResults.filter(
-            (item) =>
-              item.type !== "City" &&
-              item.type !== "Hotel" &&
-              item.type !== "Airport",
-          ),
-        ),
-      },
+      // Locations
+      ...(locations.length > 0
+        ? [
+            {
+              label: "Locations",
+              options: buildOptions(locations),
+            },
+          ]
+        : []),
     ];
-  }, [isEmptySearch, recentSearches, data, sortedSearchResults]);
+  }, [isEmptySearch, recentSearches, sortedSearchResults]);
 
-  // SELECT
   const handleChange = (selectedValue, option) => {
-    saveRecentSearch(option?.itemData);
-
     const item = option?.itemData;
 
-    let normalizedCity = "";
-
-    if (item?.type === "Hotel") {
-      normalizedCity = item?.name?.split(",")?.[1]?.trim() || "";
-    } else {
-      normalizedCity = item?.name?.split(",")?.[0]?.trim() || "";
+    if (!item) {
+      return;
     }
 
+    saveRecentSearch(item);
+
+    const normalizedCity = item?.city || item?.name || "";
+
     onChange({
-      city: option?.searchLabel || "",
+      city: item?.displayName || option?.searchLabel || item?.name || "",
 
       cityData: {
         ...item,
-
-        stateName: item?.stateName || item?.state || "",
-
-        countryCode: item?.countryCode || item?.country || "",
+        id: item?.id || "",
+        name: item?.name || "",
+        type: item?.type || "",
+        city: item?.city || normalizedCity,
+        state: item?.state || "",
+        stateName: item?.state || item?.stateName || "",
+        country: item?.country || "",
+        countryCode: item?.countryCode || "",
+        displayName: item?.displayName || "",
+        normalizedCity,
       },
     });
   };
@@ -263,34 +247,28 @@ function DestinationSearchField({
 
       <div
         title={value?.city || ""}
-        className={`relative w-full min-w-0 overflow-visible rounded border px-3 py-1 transition-all hover:border-[#0077b6] !bg-white ${error ? "border-red-500" : "border-gray-300"
-          } ${wrapperClassName}`}
+        className={`relative w-full min-w-0 overflow-visible rounded border !bg-white px-3 py-1 transition-all hover:border-[#0077b6] ${
+          error ? "border-red-500" : "border-gray-300"
+        } ${wrapperClassName}`}
         style={{ height }}
       >
-        {/* CONTENT */}
-
         <div
-          className={`flex w-full min-w-0 overflow-hidden ${compact
-            ? "h-full items-center px-0 gap-2"
-            : "min-h-[6px] flex-col justify-center px-1 md:px-2"
-            }`}
+          className={`flex w-full min-w-0 overflow-hidden ${
+            compact
+              ? "h-full items-center gap-2 px-0"
+              : "min-h-[6px] flex-col justify-center px-1 md:px-2"
+          }`}
         >
-
           {/* ICON */}
-          {icon && (
-            <div className="flex shrink-0 items-center">
-              {icon}
-            </div>
-          )}
+
+          {icon && <div className="flex shrink-0 items-center">{icon}</div>}
 
           {/* SELECT */}
-          <div className="flex w-full items-center gap-2 min-w-0 overflow-hidden">
 
-            {icon || (
-              <SearchOutlined className="text-gray-400 !text-[20px]" />
-            )}
+          <div className="flex w-full min-w-0 items-center gap-2 overflow-hidden">
+            {icon || <SearchOutlined className="!text-[20px] text-gray-400" />}
 
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 flex-1">
               <Popover
                 open={error}
                 placement="bottomLeft"
@@ -313,6 +291,9 @@ function DestinationSearchField({
                       : undefined
                   }
                   onClear={() => {
+                    setSearchText("");
+                    setDebouncedSearch("");
+
                     onChange({
                       city: "",
                       cityData: null,
@@ -327,14 +308,11 @@ function DestinationSearchField({
                   className={`font-jost! w-full min-w-0 overflow-hidden font-medium text-gray-600 min-[700px]:font-semibold! min-[700px]:text-gray-800! ${styles.destinationSelect}`}
                   style={{
                     width: "100%",
-                    fontSize: 18,
+                    fontSize,
                     fontWeight: 400,
                   }}
                   options={groupedOptions}
                   onSearch={handleSearch}
-                  onFocus={() => {
-                    setDebouncedSearch("");
-                  }}
                   onChange={handleChange}
                   notFoundContent={
                     isLoading ? (
@@ -351,7 +329,9 @@ function DestinationSearchField({
               </Popover>
             </div>
           </div>
+
           {/* COUNTRY */}
+
           {compact ? (
             <span
               className="ml-1 max-w-[70px] flex-shrink-0 overflow-hidden text-[11px] text-ellipsis whitespace-nowrap text-gray-400"

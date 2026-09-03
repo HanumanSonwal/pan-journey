@@ -1,7 +1,7 @@
 import { sendError, sendSuccess } from "../../../utils/response/ApiResponse.js";
 import Markup from "./markup.model.js";
 
-import { paginateHotels } from "../../hotel/hotelPagination.js";
+// import { paginateHotels } from "../../hotel/hotelPagination.js";
 
 export const getAllMarkups = async (req, res) => {
   try {

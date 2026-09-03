@@ -2,7 +2,8 @@
 
 import { Button, Card, Collapse, Form, Input, Select, theme } from "antd";
 import CMSImageUpload from "./CMSImageUpload";
-import TextEditor from "./editor/joditEditor/TextEditor";
+import TextEditor from "./editor/TextEditor";
+// import CKEditorTextEditor from "./editor/CKEditorTextEditor";
 
 const blockOptions = [
   {
@@ -47,16 +48,24 @@ function BlockFields({ field, form }) {
               <>
                 <Form.Item
                   name={[field.name, "data", "title"]}
-                  label="Hero Title"
+                  label={
+                    <span className="font-semibold text-gray-700">
+                      Hero Title
+                    </span>
+                  }
                 >
-                  <Input />
+                  <Input size="large" placeholder="Enter hero title" />
                 </Form.Item>
 
                 <Form.Item
                   name={[field.name, "data", "subtitle"]}
-                  label="Hero Subtitle"
+                  label={
+                    <span className="font-semibold text-gray-700">
+                      Hero Subtitle
+                    </span>
+                  }
                 >
-                  <Input.TextArea rows={3} />
+                  <Input.TextArea rows={3} placeholder="Enter hero subtitle" />
                 </Form.Item>
 
                 <CMSImageUpload
@@ -65,25 +74,39 @@ function BlockFields({ field, form }) {
                   namePath={["data", "blocks", field.name, "data", "image"]}
                 />
 
-                <Form.Item
-                  name={[field.name, "data", "buttonText"]}
-                  label="Button Text"
-                >
-                  <Input />
-                </Form.Item>
+                {/* Button Fields - 6 / 6 */}
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <Form.Item
+                    name={[field.name, "data", "buttonText"]}
+                    label={
+                      <span className="font-semibold text-gray-700">
+                        Button Text
+                      </span>
+                    }
+                    className="mb-0"
+                  >
+                    <Input size="large" placeholder="Enter button text" />
+                  </Form.Item>
 
-                <Form.Item
-                  name={[field.name, "data", "buttonLink"]}
-                  label="Button Link"
-                >
-                  <Input />
-                </Form.Item>
+                  <Form.Item
+                    name={[field.name, "data", "buttonLink"]}
+                    label={
+                      <span className="font-semibold text-gray-700">
+                        Button Link
+                      </span>
+                    }
+                    className="mb-0"
+                  >
+                    <Input size="large" placeholder="Enter button link" />
+                  </Form.Item>
+                </div>
               </>
             )}
 
             {type === "content" && (
               <Form.Item name={[field.name, "data", "content"]} label="Content">
                 <TextEditor />
+                {/* <CKEditorTextEditor /> */}
               </Form.Item>
             )}
 
@@ -254,32 +277,50 @@ function BlockFields({ field, form }) {
 
             {type === "imageContent" && (
               <>
+                {/* Section Title */}
                 <Form.Item
                   name={[field.name, "data", "title"]}
-                  label="Section Title"
+                  label={
+                    <span className="font-semibold text-gray-700">
+                      Section Title
+                    </span>
+                  }
                 >
-                  <Input />
+                  <Input size="large" placeholder="Enter section title" />
                 </Form.Item>
 
+                {/* Content */}
                 <Form.Item
                   name={[field.name, "data", "content"]}
-                  label="Content"
+                  label={
+                    <span className="font-semibold text-gray-700">Content</span>
+                  }
                 >
                   <TextEditor />
+                  {/* <CKEditorTextEditor /> */}
+
                 </Form.Item>
 
+                {/* Section Image */}
                 <CMSImageUpload
                   form={form}
                   label="Section Image"
                   namePath={["data", "blocks", field.name, "data", "image"]}
                 />
 
+                {/* Image Position */}
                 <Form.Item
                   name={[field.name, "data", "layout"]}
-                  label="Image Position"
+                  label={
+                    <span className="font-semibold text-gray-700">
+                      Image Position
+                    </span>
+                  }
                   initialValue="left"
                 >
                   <Select
+                    size="large"
+                    placeholder="Select image position"
                     options={[
                       {
                         label: "Left Image",
@@ -293,33 +334,54 @@ function BlockFields({ field, form }) {
                   />
                 </Form.Item>
 
-                <Form.Item
-                  name={[field.name, "data", "buttonText"]}
-                  label="Button Text"
-                >
-                  <Input />
-                </Form.Item>
+                {/* Button Fields - 6 / 6 */}
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  {/* Button Text */}
+                  <Form.Item
+                    name={[field.name, "data", "buttonText"]}
+                    label={
+                      <span className="font-semibold text-gray-700">
+                        Button Text
+                      </span>
+                    }
+                    className="mb-0"
+                  >
+                    <Input size="large" placeholder="Enter button text" />
+                  </Form.Item>
 
-                <Form.Item
-                  name={[field.name, "data", "buttonLink"]}
-                  label="Button Link"
-                >
-                  <Input />
-                </Form.Item>
+                  {/* Button Link */}
+                  <Form.Item
+                    name={[field.name, "data", "buttonLink"]}
+                    label={
+                      <span className="font-semibold text-gray-700">
+                        Button Link
+                      </span>
+                    }
+                    className="mb-0"
+                  >
+                    <Input size="large" placeholder="Enter button link" />
+                  </Form.Item>
+                </div>
               </>
             )}
 
             {type === "links" && (
               <Form.List name={[field.name, "data", "groups"]}>
                 {(groupFields, { add: addGroup, remove: removeGroup }) => (
-                  <>
-                    {groupFields.map((groupField) => (
+                  <div className="space-y-5">
+                    {/* =========================
+            LINK GROUPS
+        ========================== */}
+                    {groupFields.map((groupField, groupIndex) => (
                       <Card
                         key={groupField.key}
                         size="small"
-                        style={{
-                          marginBottom: 16,
-                        }}
+                        className="rounded-lg border border-gray-200"
+                        title={
+                          <span className="font-semibold text-gray-700">
+                            Link Group {groupIndex + 1}
+                          </span>
+                        }
                         extra={
                           <Button
                             danger
@@ -330,26 +392,40 @@ function BlockFields({ field, form }) {
                           </Button>
                         }
                       >
+                        {/* =========================
+                GROUP TITLE
+            ========================== */}
                         <Form.Item
                           name={[groupField.name, "title"]}
-                          label="Group Title"
+                          label={
+                            <span className="font-semibold text-gray-700">
+                              Group Title
+                            </span>
+                          }
                         >
-                          <Input />
+                          <Input size="large" placeholder="Enter group title" />
                         </Form.Item>
 
+                        {/* =========================
+                LINKS
+            ========================== */}
                         <Form.List name={[groupField.name, "links"]}>
                           {(
                             linkFields,
                             { add: addLink, remove: removeLink },
                           ) => (
-                            <>
-                              {linkFields.map((linkField) => (
+                            <div className="space-y-4">
+                              {/* Existing Links */}
+                              {linkFields.map((linkField, linkIndex) => (
                                 <Card
                                   key={linkField.key}
                                   size="small"
-                                  style={{
-                                    marginBottom: 12,
-                                  }}
+                                  className="rounded-md border border-gray-200 bg-gray-50"
+                                  title={
+                                    <span className="text-sm font-semibold text-gray-600">
+                                      Link {linkIndex + 1}
+                                    </span>
+                                  }
                                   extra={
                                     <Button
                                       danger
@@ -360,39 +436,74 @@ function BlockFields({ field, form }) {
                                     </Button>
                                   }
                                 >
-                                  <Form.Item
-                                    name={[linkField.name, "label"]}
-                                    label="Label"
-                                  >
-                                    <Input />
-                                  </Form.Item>
+                                  {/* =========================
+                          LABEL + URL : 6 / 6
+                      ========================== */}
+                                  <div className="grid grid-cols-1 gap-x-6 gap-y-4 md:grid-cols-2">
+                                    {/* Link Label */}
+                                    <Form.Item
+                                      name={[linkField.name, "label"]}
+                                      label={
+                                        <span className="font-semibold text-gray-700">
+                                          Label
+                                        </span>
+                                      }
+                                      className="!mb-0"
+                                    >
+                                      <Input
+                                        size="large"
+                                        placeholder="Enter link label"
+                                      />
+                                    </Form.Item>
 
-                                  <Form.Item
-                                    name={[linkField.name, "url"]}
-                                    label="URL"
-                                  >
-                                    <Input />
-                                  </Form.Item>
+                                    {/* Link URL */}
+                                    <Form.Item
+                                      name={[linkField.name, "url"]}
+                                      label={
+                                        <span className="font-semibold text-gray-700">
+                                          URL
+                                        </span>
+                                      }
+                                      className="!mb-0"
+                                    >
+                                      <Input
+                                        size="large"
+                                        placeholder="https://example.com"
+                                      />
+                                    </Form.Item>
+                                  </div>
                                 </Card>
                               ))}
 
+                              {/* =========================
+                      ADD LINK
+                  ========================== */}
                               <Button
                                 type="dashed"
                                 block
+                                size="large"
                                 onClick={() => addLink()}
                               >
                                 + Add Link
                               </Button>
-                            </>
+                            </div>
                           )}
                         </Form.List>
                       </Card>
                     ))}
 
-                    <Button type="dashed" block onClick={() => addGroup()}>
+                    {/* =========================
+            ADD GROUP
+        ========================== */}
+                    <Button
+                      type="dashed"
+                      block
+                      size="large"
+                      onClick={() => addGroup()}
+                    >
                       + Add Group
                     </Button>
-                  </>
+                  </div>
                 )}
               </Form.List>
             )}

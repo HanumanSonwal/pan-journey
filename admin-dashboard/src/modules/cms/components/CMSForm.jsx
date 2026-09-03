@@ -27,8 +27,6 @@ import CMSSeoFields from "./CMSSeoFields";
 import CMSCitySelector from "./entity-selector/CMSCitySelector";
 import CMSHotelSelector from "./entity-selector/CMSHotelSelector";
 
-CopyOutlined;
-
 export default function CMSForm({ id }) {
   const { message } = App.useApp();
   const [form] = Form.useForm();
@@ -121,7 +119,7 @@ export default function CMSForm({ id }) {
     window.open(`${frontendUrl}${values.url}?preview=true`, "_blank");
   };
 
-  const slug = Form.useWatch("slug", form);
+  // const slug = Form.useWatch("slug", form);
 
   const url = Form.useWatch("url", form);
 
@@ -179,7 +177,7 @@ export default function CMSForm({ id }) {
 
             <Form.Item
               name="entityType"
-              label="Entity Type"
+              label={<span className="font-bold">entity Type</span>}
               rules={[{ required: true }]}
             >
               <Select
@@ -218,7 +216,9 @@ export default function CMSForm({ id }) {
                 <Col xs={24} md={24}>
                   <Form.Item
                     name="categoryId"
-                    label="Select Blog Category"
+                    label={
+                      <span className="font-bold">Select Blog Category</span>
+                    }
                     rules={[
                       {
                         required: true,
@@ -242,7 +242,7 @@ export default function CMSForm({ id }) {
               <Col xs={24} md={12}>
                 <Form.Item
                   name="title"
-                  label="Page Title"
+                  label={<span className="font-bold">Page Title</span>}
                   rules={[{ required: true }]}
                 >
                   <Input placeholder="Enter page title" size="large" />
@@ -250,7 +250,7 @@ export default function CMSForm({ id }) {
               </Col>
 
               <Col xs={24} md={12}>
-                <Form.Item label="Slug">
+                <Form.Item label={<span className="font-bold">Slug</span>}>
                   <div
                     style={{
                       display: "flex",
@@ -300,28 +300,8 @@ export default function CMSForm({ id }) {
             {entityType === "blog" && (
               <>
                 <Form.Item
-                  name="categoryId"
-                  label="Select Blog Category"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please select a blog category",
-                    },
-                  ]}
-                >
-                  <Select
-                    size="large"
-                    placeholder="Select Blog Category"
-                    allowClear
-                    options={(masterData || []).map((item) => ({
-                      label: item.placeName,
-                      value: item._id,
-                    }))}
-                  />
-                </Form.Item>
-                <Form.Item
                   name="description"
-                  label="Description"
+                  label={<span className="font-bold">Description</span>}
                   rules={[
                     {
                       required: true,
@@ -339,7 +319,7 @@ export default function CMSForm({ id }) {
 
                 <Form.Item
                   name={["blogMeta", "featuredImage"]}
-                  label="Featured Image"
+                  label={<span className="font-bold">Featured Image</span>}
                   rules={[
                     {
                       required: true,
@@ -396,7 +376,7 @@ export default function CMSForm({ id }) {
 
               <Form.Item
                 name="isPublished"
-                label="Published"
+                label={<span className="font-bold">Published</span>}
                 valuePropName="checked"
               >
                 <Switch />

@@ -12,7 +12,7 @@ import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
 
 import dayjs from "dayjs";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function MobileDateRangeField({
   value,
@@ -78,6 +78,15 @@ export default function MobileDateRangeField({
 
     setOpen?.(true);
   };
+
+  useEffect(() => {
+  if (!open) return;
+
+  setActiveField("checkIn");
+  setSelectedCheckIn(toCalendarDate(value?.[0]));
+  setSelectedCheckOut(toCalendarDate(value?.[1]));
+  setIsSelectingNewCheckIn(false);
+}, [open]);
 
   // ==========================================
   // CLOSE
