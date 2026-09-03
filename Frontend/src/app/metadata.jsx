@@ -1,5 +1,7 @@
 export const metadata = {
-  metadataBase: new URL(process.env.NEXTAUTH_URL || "http://localhost:3000"),
+  metadataBase: new URL(
+    process.env.NEXTAUTH_URL || "http://localhost:3000"
+  ),
 
   title: {
     default: "PAN Journey",
@@ -9,41 +11,34 @@ export const metadata = {
   description:
     "Book hotels, flights and buses easily with PAN Journey. Find the best travel deals and destinations.",
 
-  /* Open Graph - WhatsApp, Facebook, LinkedIn */
-openGraph: {
-  title: "PAN Journey - Travel & Booking",
+  openGraph: {
+    title: "PAN Journey - Travel & Booking",
+    description:
+      "Book hotels, flights and travel packages with PAN Journey.",
+    url: "/",
+    siteName: "PAN Journey",
 
-  description: "Book hotels, flights and travel packages with PAN Journey.",
+    images: [
+      {
+        url: "/images/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "PAN Journey - Travel & Booking",
+      },
+    ],
 
-  url: "/",
+    locale: "en_IN",
+    type: "website",
+  },
 
-  siteName: "PAN Journey",
-
-  images: [
-    {
-      url: "/images/L1.jpeg",
-      width: 1200,
-      height: 630,
-      alt: "PAN Journey - Travel & Booking",
-    },
-  ],
-
-  locale: "en_IN",
-  type: "website",
-},
-
-  /* Twitter / X */
   twitter: {
     card: "summary_large_image",
-
     title: "PAN Journey - Travel & Booking",
-
-    description: "Book hotels, flights and travel packages with PAN Journey.",
-
+    description:
+      "Book hotels, flights and travel packages with PAN Journey.",
     images: ["/images/og-image.png"],
   },
 
-  /* Icons */
   icons: {
     icon: [
       {
@@ -77,14 +72,5 @@ openGraph: {
     index: false,
     follow: false,
     nocache: true,
-
-    googleBot: {
-      index: false,
-      follow: false,
-      noimageindex: true,
-      "max-video-preview": -1,
-      "max-image-preview": "none",
-      "max-snippet": -1,
-    },
   },
 };

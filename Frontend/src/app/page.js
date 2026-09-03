@@ -64,19 +64,30 @@ export async function generateMetadata() {
       },
     },
 
-    openGraph: {
-      title,
-      description,
-      url: SITE_URL,
-      siteName: "PAN Journey",
-      type: "website",
-      locale: "en_IN",
-    },
+openGraph: {
+  title,
+  description,
+  url: SITE_URL,
+  siteName: "PAN Journey",
+  type: "website",
+  locale: "en_IN",
 
+  images: [
+    {
+      url: `${SITE_URL}/images/og-image.png`,
+      width: 1200,
+      height: 630,
+      alt: "PAN Journey - Travel & Booking",
+    },
+  ],
+},
+
+  
     twitter: {
       card: "summary_large_image",
       title,
       description,
+      images: [`${SITE_URL}/images/og-image.png`],
     },
   };
 }
