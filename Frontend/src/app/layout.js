@@ -20,6 +20,9 @@ import { Suspense } from "react";
 import "./globals.css";
 import AppProviders from "./providers";
 
+// ✅ Metadata अलग file से import
+import { metadata as siteMetadata } from "./metadata";
+
 /* -------------------------------------------------------------------------- */
 /* Fonts                                                                      */
 /* -------------------------------------------------------------------------- */
@@ -47,60 +50,8 @@ export const dynamic = "force-dynamic";
 /* Metadata                                                                   */
 /* -------------------------------------------------------------------------- */
 
-export const metadata = {
-  metadataBase: new URL(process.env.NEXTAUTH_URL || "http://localhost:3000"),
-
-  title: {
-    default: "PAN Journey",
-    template: "%s",
-  },
-
-  description: "Booking platform",
-
-  icons: {
-    icon: [
-      {
-        url: "/favicon.ico",
-        sizes: "any",
-      },
-      {
-        url: "/icon-16x16.png",
-        sizes: "16x16",
-        type: "image/png",
-      },
-      {
-        url: "/icon-32x32.png",
-        sizes: "32x32",
-        type: "image/png",
-      },
-    ],
-
-    apple: [
-      {
-        url: "/apple-icon.png",
-        sizes: "180x180",
-        type: "image/png",
-      },
-    ],
-  },
-
-  manifest: "/manifest.webmanifest",
-
-  robots: {
-    index: false,
-    follow: false,
-    nocache: true,
-
-    googleBot: {
-      index: false,
-      follow: false,
-      noimageindex: true,
-      "max-video-preview": -1,
-      "max-image-preview": "none",
-      "max-snippet": -1,
-    },
-  },
-};
+// ✅ metadata.js से metadata use होगा
+export const metadata = siteMetadata;
 
 /* -------------------------------------------------------------------------- */
 /* Root Layout                                                                */
@@ -125,8 +76,16 @@ export default async function RootLayout({ children }) {
       style={themeVariables}
     >
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="preload" as="image" href="/images/homepage/home.svg" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1"
+        />
+
+        <link
+          rel="preload"
+          as="image"
+          href="/images/homepage/home.svg"
+        />
 
         {/* Google Analytics */}
         <Script
@@ -136,15 +95,16 @@ export default async function RootLayout({ children }) {
 
         <Script id="google-analytics" strategy="afterInteractive">
           {`
-      window.dataLayer = window.dataLayer || [];
+            window.dataLayer = window.dataLayer || [];
 
-      function gtag() {
-        dataLayer.push(arguments);
-      }
+            function gtag() {
+              dataLayer.push(arguments);
+            }
 
-      gtag('js', new Date());
-      gtag('config', 'G-DYY7076V0W');
-    `}
+            gtag('js', new Date());
+
+            gtag('config', 'G-DYY7076V0W');
+          `}
         </Script>
       </head>
 
@@ -159,6 +119,7 @@ export default async function RootLayout({ children }) {
           <main className="flex-1">
             <AntdApp>
               <GlobalLoginModal />
+
               {children}
             </AntdApp>
           </main>
