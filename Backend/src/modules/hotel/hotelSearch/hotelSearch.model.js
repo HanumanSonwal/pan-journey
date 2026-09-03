@@ -98,7 +98,10 @@ const hotelSearchSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-
+cacheKey: {
+  type: String,
+  index: true,
+},
     moreHotels: {
       type: Boolean,
       default: false,
@@ -112,10 +115,13 @@ const hotelSearchSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.Mixed,
     },
 
-    expiresAt: {
-      type: Date,
-      index: true,
-    },
+   expiresAt: {
+  type: Date,
+  required: true,
+  index: {
+    expireAfterSeconds: 0,
+  },
+},
   },
   {
     timestamps: true,
