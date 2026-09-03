@@ -1,6 +1,6 @@
 export const metadata = {
   metadataBase: new URL(
-    process.env.NEXTAUTH_URL || "http://localhost:3000"
+    process.env.NEXTAUTH_URL || "https://www.panjourney.com",
   ),
 
   title: {
@@ -13,14 +13,13 @@ export const metadata = {
 
   openGraph: {
     title: "PAN Journey - Travel & Booking",
-    description:
-      "Book hotels, flights and travel packages with PAN Journey.",
-    url: "/",
+    description: "Book hotels, flights and travel packages with PAN Journey.",
+    url: "https://www.panjourney.com/",
     siteName: "PAN Journey",
 
     images: [
       {
-        url: "/images/og-image.png",
+        url: "/images/ogImage.png",
         width: 1200,
         height: 630,
         alt: "PAN Journey - Travel & Booking",
@@ -34,9 +33,8 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: "PAN Journey - Travel & Booking",
-    description:
-      "Book hotels, flights and travel packages with PAN Journey.",
-    images: ["/images/og-image.png"],
+    description: "Book hotels, flights and travel packages with PAN Journey.",
+    images: ["/images/ogImage.png"],
   },
 
   icons: {
