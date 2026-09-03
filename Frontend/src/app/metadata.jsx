@@ -1,6 +1,6 @@
 export const metadata = {
   metadataBase: new URL(
-    process.env.NEXTAUTH_URL || "https://www.panjourney.com",
+    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
   ),
 
   title: {
@@ -14,7 +14,7 @@ export const metadata = {
   openGraph: {
     title: "PAN Journey - Travel & Booking",
     description: "Book hotels, flights and travel packages with PAN Journey.",
-    url: "https://www.panjourney.com/",
+    url: "/",
     siteName: "PAN Journey",
 
     images: [
