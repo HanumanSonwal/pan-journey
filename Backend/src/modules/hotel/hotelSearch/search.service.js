@@ -1,343 +1,770 @@
-// import { searchHotelAPI } from "./adapters/flyshop/hotelSearch.api.js";
-// import { mapHotelSearchRequest } from "./adapters/flyshop/hotelSearch.request.mapper.js";
-// import { mapHotelSearchResponse } from "./adapters/flyshop/hotelSearch.response.mapper.js";
-// import { saveHotelSearch,findHotelSearchCache } from "./hotelSearch.repository.js";
+import HotelSearch from "./hotelSearch.model.js";
 
-// export const searchHotelService = async (payload) => {
-//   const supplierPayload =
-//     mapHotelSearchRequest(payload);
-
-//   const supplierResponse =
-//     await searchHotelAPI(supplierPayload);
-
-//   await saveHotelSearch({
-//     searchId: supplierResponse?.SearchID,
-//     searchKey: supplierResponse?.SearchKey,
-
-//     supplier: "flyshop",
-
-//     destination: supplierPayload.Origin,
-
-//     checkIn: new Date(payload.checkIn),
-//     checkOut: new Date(payload.checkOut),
-
-//     rooms: payload.rooms,
-
-//     hotels: (supplierResponse?.HotelDetails || []).map(
-//       (hotel) => ({
-//         hotelId: hotel.HotelId,
-//         hotelKey: hotel.HotelKey,
-
-//         name: hotel.HotelName,
-
-//         address: hotel.Address,
-//         city: hotel.City,
-//         state: hotel.state,
-//         pincode: hotel.Pincode,
-
-//         latitude: hotel.Latitude
-//           ? Number(hotel.Latitude)
-//           : null,
-
-//         longitude: hotel.Longitude
-//           ? Number(hotel.Longitude)
-//           : null,
-
-//         image: hotel.HotelImage,
-
-//         starCategory: hotel.StarCategoryId
-//           ? Number(hotel.StarCategoryId)
-//           : null,
-
-//         facilities: (
-//           hotel.HotelFacilities || []
-//         ).map((facility) => ({
-//           id: facility.FacilityId,
-//           name: facility.FacilityName?.trim(),
-//         })),
-
-//         pricing: {
-//           basicAmount: Number(
-//             hotel.LowestBasicAmount || 0
-//           ),
-
-//           tax: Number(
-//             hotel.LowestRateTax || 0
-//           ),
-
-//           totalAmount: Number(
-//             hotel.TotalAmount || 0
-//           ),
-
-//           serviceFee: Number(
-//             hotel.ServiceFeeAmount || 0
-//           ),
-
-//           markup: Number(
-//             hotel.TradeMarkupAmount || 0
-//           ),
-
-//           gst: Number(hotel.GST || 0),
-//         },
-
-//         checkIn: {
-//           date: hotel.CheckInDate,
-//           time: hotel.CheckInTime,
-//         },
-
-//         checkOut: {
-//           date: hotel.CheckOutDate,
-//           time: hotel.CheckOutTime,
-//         },
-
-//         supplier: "flyshop",
-//       })
-//     ),
-
-//     totalHotels:
-//       supplierResponse?.HotelDetails?.length || 0,
-
-//     moreHotels:
-//       supplierResponse?.MoreHotels || false,
-
-//     responseStatus:
-//       supplierResponse?.Response_Header?.ErrorCode,
-
-//     rawResponse: supplierResponse,
-
-//     // 30 minutes
-//     expiresAt: new Date(
-//       Date.now() + 30 * 60 * 1000
-//     ),
-//   });
-
-//   return mapHotelSearchResponse(
-//     supplierResponse
-//   );
-// };                                                         q
-
-import { searchHotelAPI } from "./adapters/flyshop/hotelSearch.api.js";
+import {
+  searchHotelAPI,
+  searchMoreHotelsAPI,
+} from "./adapters/flyshop/hotelSearch.api.js";
 
 import {
   mapHotelSearchRequest,
 } from "./adapters/flyshop/hotelSearch.request.mapper.js";
 
 import {
-  saveHotelSearch,
+  mapHotelSearchResponse,
+} from "./adapters/flyshop/hotelSearch.response.mapper.js";
+
+import {
   findHotelSearchCache,
+  saveHotelSearch,
+  appendHotelSearchHotels,
 } from "./hotelSearch.repository.js";
 
-import HotelSearch from "./hotelSearch.model.js";
 
-import { queryBuilder } from "../../../utils/queryBuilder.js";
-const pricing = "pricing.totalAmount";
-const getHotelSearchResult = async ({ cacheKey, payload }) => {
-  return queryBuilder({
-    model: HotelSearch,
+// ============================================================
+// RUNNING MORE HOTEL SEARCHES
+// ============================================================
 
-    query: {
-      ...payload,
-      cacheKey,
-    },
+const runningMoreHotelSearches = new Set();
 
-    // Current cache document ko hi target karega
-    filterFields: ["cacheKey"],
 
-    // hotels embedded array hai
-    arrayField: "hotels",
+// ============================================================
+// MAP SUPPLIER HOTEL
+// ============================================================
 
-    // Hotel ke andar search
-    searchFields: ["name", "city", "address"],
+const mapSupplierHotel = (hotel) => ({
+  hotelId:
+    hotel?.HotelId ||
+    null,
 
-    // Hotel ke filters
-    arrayFilterFields: ["starCategory"],
+  hotelKey:
+    hotel?.HotelKey ||
+    null,
 
-    // Allowed sorting fields
-    sortFields: [
-      "name",
-      "city",
-      "starCategory",
-      "pricing.totalAmount",
-      "pricing.basicAmount",
-    ],
+  name:
+    hotel?.HotelName ||
+    null,
 
-    defaultPage: 1,
-    defaultLimit: 10,
-    maxLimit: 100,
-  });
+  description:
+    hotel?.HotelDesc ||
+    null,
+
+  location: {
+    address:
+      hotel?.Address ||
+      null,
+
+    city:
+      hotel?.City ||
+      null,
+
+    state:
+      hotel?.state ||
+      null,
+
+    country:
+      hotel?.Country ||
+      null,
+
+    pincode:
+      hotel?.Pincode ||
+      null,
+
+    latitude:
+      hotel?.Latitude !== undefined &&
+      hotel?.Latitude !== null &&
+      hotel?.Latitude !== ""
+        ? Number(hotel.Latitude)
+        : null,
+
+    longitude:
+      hotel?.Longitude !== undefined &&
+      hotel?.Longitude !== null &&
+      hotel?.Longitude !== ""
+        ? Number(hotel.Longitude)
+        : null,
+  },
+
+  contact: {
+    phone:
+      hotel?.HotelPhone ||
+      null,
+
+    email:
+      hotel?.HotelEmail ||
+      null,
+  },
+
+  starCategory:
+    hotel?.StarCategoryId !== undefined &&
+    hotel?.StarCategoryId !== null &&
+    hotel?.StarCategoryId !== ""
+      ? Number(hotel.StarCategoryId)
+      : null,
+
+  image:
+    hotel?.HotelImage ||
+    null,
+
+  facilities: (
+    Array.isArray(
+      hotel?.HotelFacilities
+    )
+      ? hotel.HotelFacilities
+      : []
+  ).map((facility) => ({
+    id:
+      facility?.FacilityId ||
+      null,
+
+    name:
+      facility?.FacilityName?.trim() ||
+      null,
+  })),
+
+  pricing: {
+    currency:
+      hotel?.Currencycode ||
+      null,
+
+    basicAmount:
+      Number(
+        hotel?.LowestBasicAmount || 0
+      ),
+
+    tax:
+      Number(
+        hotel?.LowestRateTax || 0
+      ),
+
+    totalAmount:
+      Number(
+        hotel?.TotalAmount || 0
+      ),
+
+    serviceFee:
+      Number(
+        hotel?.ServiceFeeAmount || 0
+      ),
+
+    markup:
+      Number(
+        hotel?.TradeMarkupAmount || 0
+      ),
+
+    gst:
+      Number(
+        hotel?.GST || 0
+      ),
+  },
+
+  checkIn: {
+    date:
+      hotel?.CheckInDate ||
+      null,
+
+    time:
+      hotel?.CheckInTime ||
+      null,
+  },
+
+  checkOut: {
+    date:
+      hotel?.CheckOutDate ||
+      null,
+
+    time:
+      hotel?.CheckOutTime ||
+      null,
+  },
+
+  policy: {
+    applicableCode:
+      hotel?.ApplicablePolicyCode ||
+      null,
+
+    state:
+      hotel?.PolicyState ||
+      null,
+
+    outPolicyReason:
+      hotel?.OutPolicyReason ||
+      null,
+  },
+
+  supplier: "flyshop",
+});
+
+
+// ============================================================
+// MAP SUPPLIER HOTELS
+// ============================================================
+
+const mapSupplierHotels = (
+  hotels = []
+) => {
+  if (!Array.isArray(hotels)) {
+    return [];
+  }
+
+  return hotels.map(
+    mapSupplierHotel
+  );
 };
-export const searchHotelService = async (payload) => {
-  /*
-  |--------------------------------------------------------------------------
-  | SUPPLIER PAYLOAD
-  |--------------------------------------------------------------------------
-  */
 
-  const supplierPayload = mapHotelSearchRequest(payload);
 
-  /*
-  |--------------------------------------------------------------------------
-  | CACHE KEY
-  |--------------------------------------------------------------------------
-  */
+// ============================================================
+// GET HOTELS DIRECTLY FROM CACHE
+// ============================================================
+//
+// IMPORTANT:
+// queryBuilder ko yahan intentionally use nahi kar rahe.
+//
+// DB me hotels already available hain:
+// hotels: Array(85)
+//
+// Direct findOne se wahi array lekar old response mapper
+// me bhej rahe hain.
+// ============================================================
 
-  const cacheKey = JSON.stringify({
-    supplier: "flyshop",
-    destination: supplierPayload.Origin,
-    checkIn: payload.checkIn,
-    checkOut: payload.checkOut,
-    rooms: payload.rooms,
-  });
+const getHotelsFromCache = async ({
+  cacheKey,
+}) => {
+  const cachedData =
+    await HotelSearch.findOne(
+      {
+        cacheKey,
+      },
+      {
+        hotels: 1,
+        searchId: 1,
+        searchKey: 1,
+        moreHotels: 1,
+      }
+    ).lean();
 
-  /*
-  |--------------------------------------------------------------------------
-  | CHECK CACHE
-  |--------------------------------------------------------------------------
-  */
-
-  const cachedSearch = await findHotelSearchCache({
-    cacheKey,
-  });
-
-  /*
-  |--------------------------------------------------------------------------
-  | CACHE HIT
-  |--------------------------------------------------------------------------
-  */
-
-  if (cachedSearch) {
-    console.log("Hotel search cache HIT:", cachedSearch.searchId);
-
-    const result = await getHotelSearchResult({
-      cacheKey,
-      payload,
-    });
-
+  if (!cachedData) {
     return {
-      searchId: cachedSearch.searchId,
-      searchKey: cachedSearch.searchKey,
-
-      ...result,
-
-      moreHotels: cachedSearch.moreHotels,
-
-      fromCache: true,
+      hotels: [],
+      searchId: null,
+      searchKey: null,
+      moreHotels: false,
     };
   }
-  /*
-  |--------------------------------------------------------------------------
-  | CACHE MISS
-  |--------------------------------------------------------------------------
-  */
-
-  console.log("Hotel search cache MISS - calling supplier");
-
-  const supplierResponse = await searchHotelAPI(supplierPayload);
-
-  /*
-  |--------------------------------------------------------------------------
-  | SAVE CACHE
-  |--------------------------------------------------------------------------
-  */
-
-  const savedSearch = await saveHotelSearch({
-    cacheKey,
-
-    searchId: supplierResponse?.SearchID,
-
-    searchKey: supplierResponse?.SearchKey,
-
-    supplier: "flyshop",
-
-    destination: supplierPayload.Origin,
-
-    checkIn: new Date(payload.checkIn),
-
-    checkOut: new Date(payload.checkOut),
-
-    rooms: payload.rooms,
-
-    hotels: (supplierResponse?.HotelDetails || []).map((hotel) => ({
-      hotelId: hotel.HotelId,
-      hotelKey: hotel.HotelKey,
-
-      name: hotel.HotelName,
-
-      address: hotel.Address,
-      city: hotel.City,
-      state: hotel.state,
-      pincode: hotel.Pincode,
-
-      latitude: hotel.Latitude ? Number(hotel.Latitude) : null,
-
-      longitude: hotel.Longitude ? Number(hotel.Longitude) : null,
-
-      image: hotel.HotelImage,
-
-      starCategory: hotel.StarCategoryId ? Number(hotel.StarCategoryId) : null,
-
-      facilities: (hotel.HotelFacilities || []).map((facility) => ({
-        id: facility.FacilityId,
-        name: facility.FacilityName?.trim(),
-      })),
-
-      pricing: {
-        basicAmount: Number(hotel.LowestBasicAmount || 0),
-
-        tax: Number(hotel.LowestRateTax || 0),
-
-        totalAmount: Number(hotel.TotalAmount || 0),
-
-        serviceFee: Number(hotel.ServiceFeeAmount || 0),
-
-        markup: Number(hotel.TradeMarkupAmount || 0),
-
-        gst: Number(hotel.GST || 0),
-      },
-
-      checkIn: {
-        date: hotel.CheckInDate,
-        time: hotel.CheckInTime,
-      },
-
-      checkOut: {
-        date: hotel.CheckOutDate,
-        time: hotel.CheckOutTime,
-      },
-
-      supplier: "flyshop",
-    })),
-
-    totalHotels: supplierResponse?.HotelDetails?.length || 0,
-
-    moreHotels: supplierResponse?.MoreHotels || false,
-
-    responseStatus: supplierResponse?.Response_Header?.ErrorCode,
-
-    rawResponse: supplierResponse,
-
-    expiresAt: new Date(Date.now() + 30 * 60 * 1000),
-  });
-
-  /*
-  |--------------------------------------------------------------------------
-  | RESPONSE
-  |--------------------------------------------------------------------------
-  */
-
-  const result = await getHotelSearchResult({
-    cacheKey,
-    payload,
-  });
 
   return {
-    searchId: savedSearch.searchId,
-    searchKey: savedSearch.searchKey,
+    hotels:
+      Array.isArray(
+        cachedData.hotels
+      )
+        ? cachedData.hotels
+        : [],
 
-    ...result,
+    searchId:
+      cachedData.searchId ||
+      null,
 
-    moreHotels: savedSearch.moreHotels,
+    searchKey:
+      cachedData.searchKey ||
+      null,
 
-    fromCache: false,
+    moreHotels:
+      cachedData.moreHotels ??
+      false,
+  };
+};
+
+
+// ============================================================
+// BACKGROUND MORE HOTEL SEARCH
+// ============================================================
+
+const fetchAndSaveMoreHotels = async ({
+  searchId,
+  searchKey,
+}) => {
+
+  // ----------------------------------------------------------
+  // Prevent duplicate background request
+  // ----------------------------------------------------------
+
+  if (
+    runningMoreHotelSearches.has(
+      searchId
+    )
+  ) {
+    console.log(
+      "HotelSearchMore already running:",
+      searchId
+    );
+
+    return;
+  }
+
+  runningMoreHotelSearches.add(
+    searchId
+  );
+
+  try {
+
+    console.log(
+      "=========================================="
+    );
+
+    console.log(
+      "Background HotelSearchMore started:",
+      searchId
+    );
+
+    console.log(
+      "=========================================="
+    );
+
+
+    // --------------------------------------------------------
+    // Call supplier
+    // --------------------------------------------------------
+
+    const moreResponse =
+      await searchMoreHotelsAPI({
+        searchId,
+        searchKey,
+      });
+
+
+    // --------------------------------------------------------
+    // Map supplier response
+    // --------------------------------------------------------
+
+    const moreHotels =
+      mapSupplierHotels(
+        moreResponse?.HotelDetails ||
+          []
+      );
+
+
+    console.log(
+      "HotelSearchMore received:",
+      moreHotels.length
+    );
+
+
+    // --------------------------------------------------------
+    // Save hotels
+    // --------------------------------------------------------
+
+    if (
+      moreHotels.length > 0
+    ) {
+
+      await appendHotelSearchHotels({
+        searchId,
+
+        hotels:
+          moreHotels,
+
+        moreHotels:
+          moreResponse?.MoreHotels ??
+          false,
+      });
+
+    } else {
+
+      // ------------------------------------------------------
+      // No more hotels
+      // ------------------------------------------------------
+
+      await HotelSearch.updateOne(
+        {
+          searchId,
+        },
+        {
+          $set: {
+            moreHotels:
+              moreResponse?.MoreHotels ??
+              false,
+          },
+        }
+      );
+    }
+
+
+    console.log(
+      `${moreHotels.length} more hotels saved for ${searchId}`
+    );
+
+    console.log(
+      "HotelSearchMore completed:",
+      searchId
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Background HotelSearchMore failed:",
+      searchId,
+      error?.message ||
+        error
+    );
+
+  } finally {
+
+    runningMoreHotelSearches.delete(
+      searchId
+    );
+  }
+};
+
+
+// ============================================================
+// MAIN HOTEL SEARCH SERVICE
+// ============================================================
+
+export const searchHotelService = async (
+  payload
+) => {
+
+  // ==========================================================
+  // 1. MAP REQUEST FOR SUPPLIER
+  // ==========================================================
+
+  const supplierPayload =
+    mapHotelSearchRequest(
+      payload
+    );
+
+
+  // ==========================================================
+  // 2. CREATE CACHE KEY
+  // ==========================================================
+
+  const cacheKey =
+    JSON.stringify({
+      supplier: "flyshop",
+
+      destination:
+        supplierPayload.Origin,
+
+      checkIn:
+        payload.checkIn,
+
+      checkOut:
+        payload.checkOut,
+
+      rooms:
+        payload.rooms,
+    });
+
+
+  console.log(
+    "Hotel Cache Key:",
+    cacheKey
+  );
+
+
+  // ==========================================================
+  // 3. CHECK CACHE
+  // ==========================================================
+
+  const cachedSearch =
+    await findHotelSearchCache({
+      cacheKey,
+    });
+
+
+  // ==========================================================
+  // 4. CACHE HIT
+  // ==========================================================
+
+  if (cachedSearch) {
+
+    console.log(
+      "=========================================="
+    );
+
+    console.log(
+      "Hotel search cache HIT:",
+      cachedSearch.searchId
+    );
+
+    console.log(
+      "=========================================="
+    );
+
+
+    // --------------------------------------------------------
+    // Start background more hotel search
+    // --------------------------------------------------------
+
+    if (
+      cachedSearch.moreHotels ===
+      true
+    ) {
+
+      console.log(
+        "Starting background HotelSearchMore:",
+        cachedSearch.searchId
+      );
+
+
+      fetchAndSaveMoreHotels({
+        searchId:
+          cachedSearch.searchId,
+
+        searchKey:
+          cachedSearch.searchKey,
+      }).catch((error) => {
+
+        console.error(
+          "Unhandled HotelSearchMore error:",
+          error?.message ||
+            error
+        );
+
+      });
+    }
+
+
+    // --------------------------------------------------------
+    // DIRECTLY FETCH HOTELS FROM MONGODB
+    // --------------------------------------------------------
+
+    const cachedData =
+      await getHotelsFromCache({
+        cacheKey,
+      });
+
+
+    console.log(
+      "CACHE HOTELS:",
+      cachedData.hotels.length
+    );
+
+
+    // --------------------------------------------------------
+    // OLD RESPONSE MAPPER
+    // --------------------------------------------------------
+
+    const mappedResult =
+      mapHotelSearchResponse({
+        hotels:
+          cachedData.hotels,
+      });
+
+
+    console.log(
+      "MAPPED CACHE HOTELS:",
+      mappedResult?.hotels?.length ||
+        0
+    );
+
+
+    // ========================================================
+    // RETURN OLD RESPONSE FORMAT
+    // ========================================================
+
+    return {
+
+    
+
+      ...mappedResult,
+
+      moreHotels:
+        cachedSearch.moreHotels,
+
+      fromCache:
+        true,
+    };
+  }
+
+
+  // ==========================================================
+  // 5. CACHE MISS
+  // ==========================================================
+
+  console.log(
+    "=========================================="
+  );
+
+  console.log(
+    "Hotel search cache MISS"
+  );
+
+  console.log(
+    "Calling Flyshop supplier..."
+  );
+
+  console.log(
+    "=========================================="
+  );
+
+
+  // ==========================================================
+  // 6. CALL SUPPLIER
+  // ==========================================================
+
+  const supplierResponse =
+    await searchHotelAPI(
+      supplierPayload
+    );
+
+
+  // ==========================================================
+  // 7. MAP SUPPLIER HOTELS
+  // ==========================================================
+
+  const hotels =
+    mapSupplierHotels(
+      supplierResponse?.HotelDetails ||
+        []
+    );
+
+
+  console.log(
+    "Initial hotels received:",
+    hotels.length
+  );
+
+
+  // ==========================================================
+  // 8. SAVE SEARCH IN DATABASE
+  // ==========================================================
+
+  const savedSearch =
+    await saveHotelSearch({
+
+      cacheKey,
+
+      searchId:
+        supplierResponse?.SearchID,
+
+      searchKey:
+        supplierResponse?.SearchKey,
+
+      supplier:
+        "flyshop",
+
+      destination:
+        supplierPayload.Origin,
+
+      checkIn:
+        new Date(
+          payload.checkIn
+        ),
+
+      checkOut:
+        new Date(
+          payload.checkOut
+        ),
+
+      rooms:
+        payload.rooms,
+
+      hotels,
+
+      totalHotels:
+        hotels.length,
+
+      moreHotels:
+        supplierResponse?.MoreHotels ||
+        false,
+
+      responseStatus:
+        supplierResponse
+          ?.Response_Header
+          ?.ErrorCode,
+
+      rawResponse:
+        supplierResponse,
+
+      expiresAt:
+        new Date(
+          Date.now() +
+            30 * 60 * 1000
+        ),
+    });
+
+
+  // ==========================================================
+  // 9. FETCH SAVED HOTELS DIRECTLY
+  // ==========================================================
+
+  const savedData =
+    await getHotelsFromCache({
+      cacheKey,
+    });
+
+
+  console.log(
+    "SAVED CACHE HOTELS:",
+    savedData.hotels.length
+  );
+
+
+  // ==========================================================
+  // 10. MAP TO OLD RESPONSE FORMAT
+  // ==========================================================
+
+  const mappedResult =
+    mapHotelSearchResponse({
+      hotels:
+        savedData.hotels,
+    });
+
+
+  console.log(
+    "MAPPED HOTELS:",
+    mappedResult?.hotels?.length ||
+      0
+  );
+
+
+  // ==========================================================
+  // 11. START BACKGROUND MORE SEARCH
+  // ==========================================================
+
+  if (
+    savedSearch.moreHotels ===
+    true
+  ) {
+
+    console.log(
+      "Starting background HotelSearchMore:",
+      savedSearch.searchId
+    );
+
+
+    fetchAndSaveMoreHotels({
+      searchId:
+        savedSearch.searchId,
+
+      searchKey:
+        savedSearch.searchKey,
+    }).catch((error) => {
+
+      console.error(
+        "Unhandled HotelSearchMore error:",
+        error?.message ||
+          error
+      );
+
+    });
+  }
+
+
+  // ==========================================================
+  // 12. RETURN OLD RESPONSE FORMAT
+  // ==========================================================
+
+  return {
+
+  
+
+    ...mappedResult,
+
+    moreHotels:
+      savedSearch.moreHotels,
+
+    fromCache:
+      false,
   };
 };
