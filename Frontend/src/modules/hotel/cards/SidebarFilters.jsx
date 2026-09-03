@@ -63,6 +63,7 @@ function SidebarFilters({
       setFilters(callback);
     }
   };
+
   const handleSearch = useCallback(
     (e) => {
       const value = e.target.value;
@@ -74,6 +75,7 @@ function SidebarFilters({
     },
     [updateFilters],
   );
+
   const currentFilters = isMobile ? tempFilters : filters;
   const handleCheckbox = useCallback(
     (key, value) => {
@@ -94,7 +96,8 @@ function SidebarFilters({
     (rating) => {
       updateFilters((prev) => ({
         ...prev,
-        starRating: prev.starRating === String(rating) ? "" : String(rating),
+        starCategory:
+          prev.starCategory === String(rating) ? "" : String(rating),
       }));
     },
     [updateFilters],
@@ -238,7 +241,7 @@ function SidebarFilters({
             {starOptions.map((rating) => (
               <Checkbox
                 key={rating}
-                checked={currentFilters?.starRating === String(rating)}
+                checked={currentFilters?.starCategory === String(rating)}
                 onChange={() => handleStarRating(rating)}
               >
                 {rating} Star
@@ -310,7 +313,7 @@ function SidebarFilters({
           <div className="absolute inset-0 flex items-center justify-center">
             <button
               type="button"
-            className="buttion-background-color most-boder-colour most-text-color background-color cursor-pointer rounded border bg-white px-2 py-1 text-[10px] font-semibold shadow-md transition-all duration-200 sm:px-3 sm:py-1.5 sm:text-[11px] md:px-4 md:py-2 md:text-xs lg:px-5 lg:py-2.5 lg:text-sm"
+              className="buttion-background-color most-boder-colour most-text-color background-color cursor-pointer rounded border bg-white px-2 py-1 text-[10px] font-semibold shadow-md transition-all duration-200 sm:px-3 sm:py-1.5 sm:text-[11px] md:px-4 md:py-2 md:text-xs lg:px-5 lg:py-2.5 lg:text-sm"
             >
               Explore on Map
             </button>
@@ -361,7 +364,7 @@ function SidebarFilters({
                   const resetFilters = {
                     freeCancellation: false,
                     search: "",
-                    starRating: "",
+                    starCategory: "",
                     minPrice: "",
                     maxPrice: "",
                     suggested: [],

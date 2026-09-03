@@ -22,7 +22,7 @@ import HotelMobile from "./HotelMobile";
 const defaultFilters = {
   freeCancellation: false,
   search: "",
-  starRating: "",
+  starCategory: "",
   minPrice: "",
   maxPrice: "",
   suggested: [],
@@ -572,7 +572,7 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
                         label = "Free Cancellation";
                       }
 
-                      if (key === "starRating") {
+                      if (key === "starCategory") {
                         label = `${value} Star`;
                       }
 
