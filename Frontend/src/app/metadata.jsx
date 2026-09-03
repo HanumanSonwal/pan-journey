@@ -21,7 +21,7 @@ openGraph: {
 
   images: [
     {
-      url: "/images/og-image.png",
+      url: "/images/L1.jpeg",
       width: 1200,
       height: 630,
       alt: "PAN Journey - Travel & Booking",
