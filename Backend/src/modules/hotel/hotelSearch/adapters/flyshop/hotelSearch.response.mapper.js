@@ -11,16 +11,14 @@ export const mapHotelSearchResponse = (response) => {
     response?.hotelDetailId || null;
 
   return {
+      hotelDetailId:
+      response?.hotelDetailId || null,
     hotels: hotels.map((hotel) => ({
       id:
         hotel?.HotelId ||
         hotel?.hotelId ||
         null,
-   hotelDetailId,
-      name:
-        hotel?.HotelName ||
-        hotel?.name ||
-        null,
+
 
       description:
         hotel?.HotelDesc ||
