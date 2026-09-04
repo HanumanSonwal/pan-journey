@@ -1,129 +1,163 @@
-// import { supplierAPI } from "../../../config/supplierApi.js";
-// import { getAuthHeader } from "../../../config/supplierAuth.service.js";
-// import HotelCache from "../hotelCache.model.js";
-// import { searchHotelsFromSupplier } from "../searchservice.js";
+import HotelSearch from "../search/hotelSearch.model.js";
 
-// export const fetchHotelDetailsFromSupplier = async ({
-//   hotelId,
-//   hotelMeta,
-//   searchContext,
-// }) => {
-//   try {
-//     let hotel = null;
-//     let activeCache = null;
+import {
+  getHotelDetailsAPI,
+} from "./adapters/flyshop/hotelDetails.api.js";
 
-//     const supplierSearchCityId = `99${hotelId}`;
 
-//     console.log("========== HOTEL DETAILS DEBUG START ==========");
-//     console.log("Incoming hotelId:", hotelId);
-//     console.log("Incoming hotelMeta:", hotelMeta);
-//     console.log("Generated supplierSearchCityId:", supplierSearchCityId);
-//     console.log("Incoming searchContext:", searchContext);
+// ============================================================
+// GET HOTEL DETAILS
+// ============================================================
 
-//     // STEP 1 → direct hotelId lookup
-//     console.log("🔍 Looking hotel in cache by hotelId...");
+export const getHotelDetailsService = async ({
+  hotelId,
+}) => {
 
-//     const cacheLookup = {
-//       "hotels.hotelId": String(hotelId),
-//       checkInDate: searchContext.CheckInDate,
-//       checkOutDate: searchContext.CheckOutDate,
-//       roomCount: Number(searchContext.RoomCount || 1),
-//     };
+  // ----------------------------------------------------------
+  // 1. VALIDATE HOTEL ID
+  // ----------------------------------------------------------
 
-//     console.log("🔍 Looking hotel in cache:", cacheLookup);
+  if (!hotelId) {
+    throw new Error("Hotel ID is required");
+  }
 
-//     activeCache = await HotelCache.findOne(cacheLookup);
-//     console.log("📦 CACHE FOUND:", !!activeCache);
 
-//     // STEP 2 → if cache found, find hotel
-//     if (activeCache) {
-//       hotel = activeCache.hotels.find((h) => h.hotelId === String(hotelId));
+  // ----------------------------------------------------------
+  // 2. FIND HOTEL FROM SEARCH CACHE
+  // ----------------------------------------------------------
 
-//       console.log("🏨 Hotel found inside cache:", !!hotel);
-//     }
+  const hotelSearch =
+    await HotelSearch.findOne(
+      {
+        "hotels.hotelId": String(hotelId),
+      },
+      {
+        searchKey: 1,
+        supplier: 1,
+        hotels: 1,
+      }
+    ).lean();
 
-//     // STEP 3 → fallback search
-//     if (!activeCache || !hotel) {
-//       console.log("⚠️ Cache miss → running search fallback");
 
-//       const searchPayload = {
-//         id: supplierSearchCityId, // supplier search cityId
-//         fullName: searchContext.fullName,
-//         CheckInDate: searchContext.CheckInDate,
-//         CheckOutDate: searchContext.CheckOutDate,
-//         RoomCount: searchContext.RoomCount || 1,
-//         stateName: hotelMeta.stateName,
-//         cityName: hotelMeta.cityName,
-//         countryCode: hotelMeta.countryCode,
-//         filters: {},
-//         sort: "",
-//         pagination: {
-//           page: 1,
-//           limit: 10,
-//         },
-//       };
+  // ----------------------------------------------------------
+  // 3. HOTEL NOT FOUND
+  // ----------------------------------------------------------
 
-//       console.log("📤 Search API Payload:", searchPayload);
+  if (!hotelSearch) {
+    throw new Error(
+      "Hotel not found in search cache"
+    );
+  }
 
-//       await searchHotelsFromSupplier(searchPayload);
 
-//       console.log("🔄 Search completed. Re-checking cache...");
+  // ----------------------------------------------------------
+  // 4. FIND PARTICULAR HOTEL
+  // ----------------------------------------------------------
 
-//       // STEP 4 → refresh cache
-//       const cacheLookup = {
-//         cityId: supplierSearchCityId,
-//         checkInDate: searchContext.CheckInDate,
-//         checkOutDate: searchContext.CheckOutDate,
-//         roomCount: searchContext.RoomCount || 1,
-//       };
+  const hotel =
+    hotelSearch.hotels.find(
+      (item) =>
+        String(item.hotelId) ===
+        String(hotelId)
+    );
 
-//       console.log("🔍 Cache Recheck Query:", cacheLookup);
 
-//       const caches = await HotelCache.find(cacheLookup);
+  if (!hotel) {
+    throw new Error(
+      "Hotel not found"
+    );
+  }
 
-//       console.log("Total matched:", caches.length);
 
-//       activeCache = caches[0];
+  // ----------------------------------------------------------
+  // 5. GET HOTEL KEY
+  // ----------------------------------------------------------
 
-//       if (!activeCache) {
-//         throw new Error("Search ran but cache not created");
-//       }
-//       // STEP 5 → find hotel again
-//       hotel = activeCache.hotels.find((h) => h.hotelId === String(hotelId));
+  const hotelKey =
+    hotel.hotelKey;
 
-//       if (!hotel) {
-//         throw new Error("Hotel not found even after cache refresh");
-//       }
-//       console.log("✅ Hotel found after fallback search");
-//     }
-//     // STEP 6 → supplier keys
-//     const supplierHotelKey = hotel.hotelkey;
-//     const searchKey = activeCache.searchKey;
 
-//     // STEP 7 → supplier payload
-//     const payload = {
-//       ...getAuthHeader(),
-//       HotelKey: supplierHotelKey,
-//       SearchKey: searchKey,
-//     };
+  // ----------------------------------------------------------
+  // 6. GET SEARCH KEY
+  // ----------------------------------------------------------
 
-//     console.log("📤 Supplier Details Payload:", payload);
-//     // STEP 8 → call supplier details API
-//     const { data } = await supplierAPI.post(
-//       "/JSONService/HotelDetails",
-//       payload,
-//     );
-//     console.log("✅ Supplier Details API Success");
-//     console.log("========== HOTEL DETAILS DEBUG END ==========");
+  const searchKey =
+    hotelSearch.searchKey;
 
-//     return {
-//       success: true,
-//       hotelId,
-//       hotelMeta,
-//       searchKey,
-//       supplierResponse: data,
-//     };
-//   } catch (error) {
-//     throw new Error(error.message || "Supplier HotelDetails API failed");
-//   }
-// };
+
+  if (!hotelKey) {
+    throw new Error(
+      "HotelKey not found for this hotel"
+    );
+  }
+
+
+  if (!searchKey) {
+    throw new Error(
+      "SearchKey not found for this hotel"
+    );
+  }
+
+
+  console.log(
+    "Hotel found:",
+    hotel.name
+  );
+
+  console.log(
+    "HotelKey:",
+    hotelKey
+  );
+
+  console.log(
+    "SearchKey:",
+    searchKey
+  );
+
+
+  // ----------------------------------------------------------
+  // 7. CALL SUPPLIER HOTEL DETAILS API
+  // ----------------------------------------------------------
+
+  const supplierResponse =
+    await getHotelDetailsAPI({
+      hotelKey,
+      searchKey,
+    });
+
+
+  // ----------------------------------------------------------
+  // 8. RETURN RESPONSE
+  // ----------------------------------------------------------
+
+  return {
+    hotelId,
+
+    hotelKey,
+
+    searchKey,
+
+    hotel: {
+      name: hotel.name,
+      image: hotel.image,
+      starCategory: hotel.starCategory,
+
+      address: hotel.address,
+      city: hotel.city,
+      state: hotel.state,
+      pincode: hotel.pincode,
+
+      latitude: hotel.latitude,
+      longitude: hotel.longitude,
+
+      facilities: hotel.facilities,
+
+      pricing: hotel.pricing,
+
+      checkIn: hotel.checkIn,
+      checkOut: hotel.checkOut,
+    },
+
+    supplierResponse,
+  };
+};

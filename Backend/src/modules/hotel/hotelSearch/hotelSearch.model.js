@@ -7,21 +7,26 @@ const hotelSearchHotelSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-
+       hotelDetailId: {
+  type: String,
+  required: true,
+  unique: true,
+  index: true,
+},
     hotelKey: {
       type: String,
       required: true,
     },
+name: String,
+    location:  {
 
-    name: String,
+      address: String,
+      city: String,
+      state: String,
+      pincode: String,
 
-    address: String,
-    city: String,
-    state: String,
-    pincode: String,
-
-    latitude: Number,
-    longitude: Number,
+      latitude: Number,
+      longitude: Number,},
 
     image: String,
 

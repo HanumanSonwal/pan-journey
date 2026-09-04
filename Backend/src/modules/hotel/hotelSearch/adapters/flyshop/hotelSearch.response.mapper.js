@@ -7,6 +7,8 @@ export const mapHotelSearchResponse = (response) => {
     response?.HotelDetails ||
     response?.hotels ||
     [];
+     const hotelDetailId =
+    response?.hotelDetailId || null;
 
   return {
     hotels: hotels.map((hotel) => ({
@@ -14,7 +16,7 @@ export const mapHotelSearchResponse = (response) => {
         hotel?.HotelId ||
         hotel?.hotelId ||
         null,
-
+   hotelDetailId,
       name:
         hotel?.HotelName ||
         hotel?.name ||

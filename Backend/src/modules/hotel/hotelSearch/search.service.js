@@ -1,5 +1,6 @@
 
 import HotelSearch from "./hotelSearch.model.js";
+import mongoose from "mongoose";
 
 import {
   searchHotelAPI,
@@ -28,7 +29,8 @@ import { queryBuilder } from "../../../utils/queryBuilder.js";
 // ============================================================
 
 const runningMoreHotelSearches = new Set();
-
+const hotelDetailId =
+  new mongoose.Types.ObjectId().toString();
 
 // ============================================================
 // MAP SUPPLIER HOTEL
@@ -546,6 +548,7 @@ export const searchHotelService = async (
       mapHotelSearchResponse({
         hotels:
           result.data,
+             hotelDetailId: cachedSearch.hotelDetailId,
       });
 
 
@@ -628,7 +631,7 @@ export const searchHotelService = async (
 
   const savedSearch =
     await saveHotelSearch({
-
+hotelDetailId,
       cacheKey,
 
       searchId:
@@ -639,7 +642,7 @@ export const searchHotelService = async (
 
       supplier:
         "flyshop",
-
+location:hotels.location,
       destination:
         supplierPayload.Origin,
 
@@ -669,8 +672,8 @@ export const searchHotelService = async (
           ?.Response_Header
           ?.ErrorCode,
 
-      rawResponse:
-        supplierResponse,
+      // rawResponse:
+      //   supplierResponse,
 
       expiresAt:
         new Date(
@@ -730,6 +733,7 @@ export const searchHotelService = async (
     mapHotelSearchResponse({
       hotels:
         result.data,
+          hotelDetailId: savedSearch.hotelDetailId,
     });
 
 

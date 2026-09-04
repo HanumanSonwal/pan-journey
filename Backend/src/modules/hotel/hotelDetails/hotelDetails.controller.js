@@ -1,52 +1,68 @@
+import {
+  getHotelDetailsService,
+} from "./hotelDetails.service.js";
 
-// import { fetchHotelDetailsFromSupplier } from "../hotelDetails/hotelDetails.service.js";
-// import { applyPricing } from "../hotelDetails/hotelPricing.service.js";
-// import { sendSuccess, sendError } from "../../../utils/response/ApiResponse.js";
+
+// ============================================================
+// HOTEL DETAILS CONTROLLER
+// ============================================================
+
+export const getHotelDetailsController =
+  async (req, res) => {
+
+    try {
+
+      const {
+        hotelId,
+      } = req.body;
 
 
-// export const getHotelDetails = async (req, res) => {
-//   try {
-//     req.body.currency = req.currency;
+      // ------------------------------------------------------
+      // VALIDATION
+      // ------------------------------------------------------
 
-//     // FIX HERE
-//     const { hotelId, hotelMeta, searchContext } = req.body;
+      if (!hotelId) {
+        return res.status(400).json({
+          success: false,
+          message: "Hotel ID is required",
+        });
+      }
 
-//     if (!hotelId) {
-//       return sendError(res, "hotelId is required", 400);
-//     }
 
-//     if (!hotelMeta) {
-//       return sendError(res, "hotelMeta required", 400);
-//     }
+      // ------------------------------------------------------
+      // SERVICE
+      // ------------------------------------------------------
 
-//     const supplierData =
-//       await fetchHotelDetailsFromSupplier({
-//         hotelId,
-//         hotelMeta,
-//         searchContext
-//       });
+      const data =
+        await getHotelDetailsService({
+          hotelId,
+        });
 
-//    const pricingData = await applyPricing(
-//   supplierData,
-   
-//   {
-//     ...hotelMeta,
-//     hotelId
-//   },
-//   req.currency
-// );
 
-//     return sendSuccess(
-//       res,
-//       "Hotel details fetched",
-//       pricingData
-//     );
+      // ------------------------------------------------------
+      // RESPONSE
+      // ------------------------------------------------------
 
-//   } catch (err) {
-//     return sendError(
-//       res,
-//       err.message || "Something went wrong",
-//       500
-//     );
-//   }
-// };
+      return res.status(200).json({
+        success: true,
+        message:
+          "Hotel details fetched successfully",
+        data,
+      });
+
+    } catch (error) {
+
+      console.error(
+        "Hotel Details Controller Error:",
+        error
+      );
+
+
+      return res.status(500).json({
+        success: false,
+        message:
+          error?.message ||
+          "Failed to fetch hotel details",
+      });
+    }
+  };
