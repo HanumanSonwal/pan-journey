@@ -63,14 +63,14 @@ export default function FooterLinks() {
         <div className="footer-backgound-color mt-6 space-y-2 text-sm">
           <a
             href="mailto:support@panjourney.com"
-            className="!most-text-color block font-medium transition-colors hover:text-[#0c5863]"
+            className="!most-text-color block font-medium transition-colors footer-hover-most-text-color"
           >
             support@panjourney.com
           </a>
 
           <a
             href="tel:+91 9876543210"
-            className="!most-text-color block font-medium transition-colors hover:text-[#0c5863]"
+            className="!most-text-color block font-medium transition-colors footer-hover-most-text-color"
           >
             +91 9876543210
           </a>

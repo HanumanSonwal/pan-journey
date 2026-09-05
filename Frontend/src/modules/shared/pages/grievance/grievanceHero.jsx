@@ -78,7 +78,7 @@ export default function GrievanceHero() {
 
       {/* Contact Cards */}
       <div className="absolute top-[280px] left-1/2 z-30 w-full max-w-[1400px] -translate-x-1/2 px-3">
-       <div className="flex gap-4 overflow-x-auto pb-2 lg:grid lg:grid-cols-4 lg:overflow-visible">
+        <div className="flex gap-4 overflow-x-auto pb-2 lg:grid lg:grid-cols-4 lg:overflow-visible">
           {grievanceCards.map((card, index) => {
             const Icon = card.icon;
 
@@ -94,7 +94,7 @@ export default function GrievanceHero() {
                     </div>
 
                     <div className="min-w-0">
-                      <h3 className="truncate text-[14px] font-semibold text-[#0f6b78]">
+                      <h3 className="most-text-color truncate text-[14px] font-semibold">
                         {card.title}
                       </h3>
 
