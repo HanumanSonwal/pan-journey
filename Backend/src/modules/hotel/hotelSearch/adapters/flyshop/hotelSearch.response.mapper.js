@@ -18,6 +18,10 @@ export const mapHotelSearchResponse = (response) => {
         hotel?.HotelId ||
         hotel?.hotelId ||
         null,
+          hotelName:
+        hotel?.name ||
+        hotel?.name ||
+        null,
 
 
       description:
