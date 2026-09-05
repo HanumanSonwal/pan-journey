@@ -37,6 +37,7 @@ export const mapHotelsForCard = ({
     const images = additionalImages.length > 0 ? additionalImages : [image];
 
     const hotelId = hotel?.id || hotel?.hotelId || hotel?.HotelId || "";
+    const hotelDetailId = hotel?.hotelDetailId || "";
 
     const hotelName =
       hotel?.name || hotel?.hotelName || hotel?.HotelName || "Hotel Name";
@@ -82,6 +83,7 @@ export const mapHotelsForCard = ({
 
     return {
       id: hotelId,
+      hotelDetailId,
 
       currencySymbol,
 

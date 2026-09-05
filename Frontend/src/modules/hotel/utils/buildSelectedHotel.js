@@ -1,9 +1,16 @@
 import { slugify } from "@/utils/slug/slugify";
 
 export const buildSelectedHotel = ({ hotel = {}, searchData = {} }) => {
-  const hotelId = hotel?.id || hotel?.hotelId || hotel?.HotelId || "";
+  const hotelId =
+    hotel?.id || hotel?.hotelId || hotel?.HotelId || "";
 
-  const hotelName = hotel?.name || hotel?.hotelName || hotel?.HotelName || "";
+  const hotelDetailId = hotel?.hotelDetailId || "";
+
+  const hotelName =
+    hotel?.name ||
+    hotel?.hotelName ||
+    hotel?.HotelName ||
+    "";
 
   const cityData = searchData?.cityData || {};
 
@@ -17,21 +24,38 @@ export const buildSelectedHotel = ({ hotel = {}, searchData = {} }) => {
     "";
 
   const stateName =
-    cityData?.state || cityData?.stateName || hotelLocation?.state || "";
+    cityData?.state ||
+    cityData?.stateName ||
+    hotelLocation?.state ||
+    "";
 
-  const country = cityData?.country || hotelLocation?.country || "";
+  const country =
+    cityData?.country ||
+    hotelLocation?.country ||
+    "";
 
   const countryCode = cityData?.countryCode || "";
 
   return {
-    hotelKey: hotel?.hotelKey || hotel?.HotelKey || hotel?.hotelkey || "",
+    hotelKey:
+      hotel?.hotelKey ||
+      hotel?.HotelKey ||
+      hotel?.hotelkey ||
+      "",
 
-    searchKey: hotel?.searchKey || hotel?.SearchKey || "",
+    searchKey:
+      hotel?.searchKey ||
+      hotel?.SearchKey ||
+      "",
 
     hotelMeta: {
       hotelId,
 
-      hotelSlug: hotel?.hotelSlug || slugify(hotelName),
+      hotelDetailId,
+
+      hotelSlug:
+        hotel?.hotelSlug ||
+        slugify(hotelName),
 
       cityId: cityData?.id || "",
 
@@ -43,9 +67,11 @@ export const buildSelectedHotel = ({ hotel = {}, searchData = {} }) => {
 
       countryCode,
 
-      destinationType: cityData?.type || "city",
+      destinationType:
+        cityData?.type || "city",
 
-      displayName: cityData?.displayName || cityName,
+      displayName:
+        cityData?.displayName || cityName,
     },
   };
 };
