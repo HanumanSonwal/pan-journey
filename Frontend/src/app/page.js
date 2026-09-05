@@ -22,10 +22,9 @@ import { fetchHomeContent } from "@/modules/shared/home/services/homeContentFetc
 /* Site Configuration                                                         */
 /* -------------------------------------------------------------------------- */
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-const OG_IMAGE = `${SITE_URL}/images/ogImage.png`;
+const OG_IMAGE = `${SITE_URL}/images/OGIMAGE1.png`;
 
 /* -------------------------------------------------------------------------- */
 /* Home Page Metadata                                                         */
@@ -80,14 +79,10 @@ export async function generateMetadata() {
     openGraph: {
       title,
       description,
-
       url: SITE_URL,
-
       siteName: "PAN Journey",
-
-      locale: "en_IN",
-
       type: "website",
+      locale: "en_IN",
 
       images: [
         {
@@ -105,11 +100,8 @@ export async function generateMetadata() {
 
     twitter: {
       card: "summary_large_image",
-
       title,
-
       description,
-
       images: [OG_IMAGE],
     },
   };
@@ -128,20 +120,14 @@ export default async function Page() {
     fetchHomeContent(),
   ]);
 
-  const {
-    banner,
-    placesAsPerYourVibe,
-    topRatedHotels,
-    popularDestinations,
-  } = homeContent ?? {};
+  const { banner, placesAsPerYourVibe, topRatedHotels, popularDestinations } =
+    homeContent ?? {};
 
   /* ------------------------------------------------------------------------ */
   /* FAQ Schema                                                               */
   /* ------------------------------------------------------------------------ */
 
-  const faqBlock = homeCms?.data?.blocks?.find(
-    (block) => block.type === "faq"
-  );
+  const faqBlock = homeCms?.data?.blocks?.find((block) => block.type === "faq");
 
   const faqItems = faqBlock?.data?.items ?? [];
 
@@ -259,9 +245,7 @@ export default async function Page() {
 
       <TestimonialsSection />
 
-      <DestinationsSection
-        destinations={popularDestinations}
-      />
+      <DestinationsSection destinations={popularDestinations} />
 
       {homeCms && <CMSContentRenderer cms={homeCms} />}
 

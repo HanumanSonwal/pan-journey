@@ -1,7 +1,6 @@
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-const OG_IMAGE = "/images/ogImage.png";
+const OG_IMAGE = "/images/OGIMAGE1.png";
 
 export const metadata = {
   metadataBase: new URL(SITE_URL),
@@ -29,16 +28,10 @@ export const metadata = {
 
   openGraph: {
     title: "PAN Journey - Travel & Booking",
-
-    description:
-      "Book hotels, flights and travel packages with PAN Journey.",
-
+    description: "Book hotels, flights and travel packages with PAN Journey.",
     url: "/",
-
     siteName: "PAN Journey",
-
     locale: "en_IN",
-
     type: "website",
 
     images: [
@@ -53,12 +46,8 @@ export const metadata = {
 
   twitter: {
     card: "summary_large_image",
-
     title: "PAN Journey - Travel & Booking",
-
-    description:
-      "Book hotels, flights and travel packages with PAN Journey.",
-
+    description: "Book hotels, flights and travel packages with PAN Journey.",
     images: [OG_IMAGE],
   },
 
