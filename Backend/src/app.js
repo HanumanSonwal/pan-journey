@@ -41,6 +41,7 @@ import wishlistRoutes from "./modules/wishlist/wishlist.routes.js";
 import theme from "./modules/theme/theme.route.js";
 import testRoutes from "./test.routes.js";
 import searchApi from "./modules/hotel/hotelSearch/search.routes.js"
+import hoteldetails from "./modules/hotel/hotelDetail/hotelDetail.route.js"
 import path from "path";
 
 
@@ -86,6 +87,7 @@ app.use("/api/v1/couponCode", couponCode);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/homecontent", homecontent);
 app.use("/api/v1/HotelSearch", searchApi);
+app.use("/api/v1/HotelDetail", hoteldetails);
 
 app.use("/api/v1/cms", cmsRoutes);
 app.use("/api/v1/theme", theme);

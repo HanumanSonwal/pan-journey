@@ -7,18 +7,18 @@ export const mapHotelSearchResponse = (response) => {
     response?.HotelDetails ||
     response?.hotels ||
     [];
+     const hotelDetailId =
+    response?.hotelDetailId || null;
 
   return {
+      hotelDetailId:
+      response?.hotelDetailId || null,
     hotels: hotels.map((hotel) => ({
       id:
         hotel?.HotelId ||
         hotel?.hotelId ||
         null,
 
-      name:
-        hotel?.HotelName ||
-        hotel?.name ||
-        null,
 
       description:
         hotel?.HotelDesc ||
