@@ -342,7 +342,7 @@ function DestinationSearchField({
               {value?.cityData?.country || value?.cityData?.countryCode || ""}
             </span>
           ) : (
-            <span className="text-xs text-gray-500 md:text-sm">
+            <span className="!z-34 text-xs !font-bold text-gray-700 md:text-sm">
               {value?.cityData?.country ||
                 value?.cityData?.countryCode ||
                 "Search destinations"}
