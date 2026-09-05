@@ -18,10 +18,17 @@ import TrustSection from "@/modules/shared/home/components/hero_section/TrustSec
 
 import { fetchHomeContent } from "@/modules/shared/home/services/homeContentFetch";
 
-const SITE_URL = process.env.NEXTAUTH_URL || "https://panjourney.com";
+/* -------------------------------------------------------------------------- */
+/* Site Configuration                                                         */
+/* -------------------------------------------------------------------------- */
+
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+const OG_IMAGE = `${SITE_URL}/images/ogImage.png`;
 
 /* -------------------------------------------------------------------------- */
-/* Metadata                                                                   */
+/* Home Page Metadata                                                         */
 /* -------------------------------------------------------------------------- */
 
 export async function generateMetadata() {
@@ -37,19 +44,21 @@ export async function generateMetadata() {
 
   const keywords = Array.isArray(homeCms?.keywords)
     ? homeCms.keywords.join(", ")
-    : homeCms?.keywords;
+    : homeCms?.keywords || undefined;
 
   return {
     title,
     description,
     keywords,
 
-    metadataBase: new URL(SITE_URL),
-
     alternates: {
       canonical: SITE_URL,
     },
 
+    /*
+     * IMPORTANT:
+     * Keep indexing disabled for now.
+     */
     robots: {
       index: false,
       follow: false,
@@ -64,30 +73,44 @@ export async function generateMetadata() {
       },
     },
 
-openGraph: {
-  title,
-  description,
-  url: SITE_URL,
-  siteName: "PAN Journey",
-  type: "website",
-  locale: "en_IN",
+    /* ---------------------------------------------------------------------- */
+    /* Open Graph                                                             */
+    /* ---------------------------------------------------------------------- */
 
-  images: [
-    {
-      url: `${SITE_URL}/images/og-image.png`,
-      width: 1200,
-      height: 630,
-      alt: "PAN Journey - Travel & Booking",
-    },
-  ],
-},
-
-  
-    twitter: {
-      card: "summary_large_image",
+    openGraph: {
       title,
       description,
-      images: [`${SITE_URL}/images/og-image.png`],
+
+      url: SITE_URL,
+
+      siteName: "PAN Journey",
+
+      locale: "en_IN",
+
+      type: "website",
+
+      images: [
+        {
+          url: OG_IMAGE,
+          width: 1200,
+          height: 630,
+          alt: "PAN Journey - Travel & Booking",
+        },
+      ],
+    },
+
+    /* ---------------------------------------------------------------------- */
+    /* Twitter                                                                */
+    /* ---------------------------------------------------------------------- */
+
+    twitter: {
+      card: "summary_large_image",
+
+      title,
+
+      description,
+
+      images: [OG_IMAGE],
     },
   };
 }
@@ -98,25 +121,27 @@ openGraph: {
 
 export default async function Page() {
   /*
-   * Fetch both resources in parallel.
-   *
-   * fetchCmsBySlug is wrapped with React cache()
-   * so generateMetadata() and Page() can reuse the
-   * same CMS request within the same render/request.
+   * Fetch CMS and Home Content in parallel.
    */
   const [homeCms, homeContent] = await Promise.all([
     fetchCmsBySlug("home"),
     fetchHomeContent(),
   ]);
 
-  const { banner, placesAsPerYourVibe, topRatedHotels, popularDestinations } =
-    homeContent ?? {};
+  const {
+    banner,
+    placesAsPerYourVibe,
+    topRatedHotels,
+    popularDestinations,
+  } = homeContent ?? {};
 
   /* ------------------------------------------------------------------------ */
   /* FAQ Schema                                                               */
   /* ------------------------------------------------------------------------ */
 
-  const faqBlock = homeCms?.data?.blocks?.find((block) => block.type === "faq");
+  const faqBlock = homeCms?.data?.blocks?.find(
+    (block) => block.type === "faq"
+  );
 
   const faqItems = faqBlock?.data?.items ?? [];
 
@@ -125,9 +150,12 @@ export default async function Page() {
       ? {
           "@context": "https://schema.org",
           "@type": "FAQPage",
+
           mainEntity: faqItems.map((item) => ({
             "@type": "Question",
+
             name: item.question,
+
             acceptedAnswer: {
               "@type": "Answer",
               text: item.answer,
@@ -142,13 +170,18 @@ export default async function Page() {
 
   const websiteSchema = {
     "@context": "https://schema.org",
+
     "@type": "WebSite",
+
     name: "PAN Journey",
+
     url: SITE_URL,
 
     potentialAction: {
       "@type": "SearchAction",
+
       target: `${SITE_URL}/hotels?search={search_term_string}`,
+
       "query-input": "required name=search_term_string",
     },
   };
@@ -159,11 +192,19 @@ export default async function Page() {
 
   const orgSchema = {
     "@context": "https://schema.org",
+
     "@type": "Organization",
+
     name: "PAN Journey",
+
     url: SITE_URL,
+
     logo: `${SITE_URL}/logo.png`,
   };
+
+  /* ------------------------------------------------------------------------ */
+  /* Render                                                                   */
+  /* ------------------------------------------------------------------------ */
 
   return (
     <>
@@ -218,7 +259,9 @@ export default async function Page() {
 
       <TestimonialsSection />
 
-      <DestinationsSection destinations={popularDestinations} />
+      <DestinationsSection
+        destinations={popularDestinations}
+      />
 
       {homeCms && <CMSContentRenderer cms={homeCms} />}
 
