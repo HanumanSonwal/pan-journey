@@ -29,41 +29,28 @@ import ViewHotelTabs from "../components/hotels/viewhotles/ViewHotelTabs";
 import HotelCmsSection from "../sections/HotelCmsSection";
 import RelatedHotels from "../sections/RelatedHotels";
 import DynamicHotelSeoFallback from "../seo/DynamicHotelSeoFallback";
-import { useHotelBookingStore } from "../store/booking.store";
+// import { useHotelBookingStore } from "../store/booking.store";
 import { useHotelSearchStore } from "../store/serchData.store";
 import { buildHotelDetailsPayload } from "../utils/buildHotelDetailsPayload";
 import { buildWishlistPayload } from "../utils/buildWishlistPayload";
 import { shareHotel } from "../utils/shareHotel";
+
 import HotelDetailsMobile from "./HotelDetailsMobile";
 
 function HotelDetails({ initialPayload = null, cms = null }) {
   const { selectedHotel } = useSelectedHotelStore();
-
   const { appliedSearchData } = useHotelSearchStore();
-
-  const { setBookingData } = useHotelBookingStore();
+  // const { setBookingData } = useHotelBookingStore();
 
   const [activeTab, setActiveTab] = useState("Rooms");
-
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
-
-  const [sessionExpired] = useState(false);
-
-  const [reloadingHotels] = useState(false);
-
   const [isScrolled, setIsScrolled] = useState(false);
 
   const { requireAuth } = useAuthGuard();
-
   const { mutateAsync } = useToggleWishlist();
-
   const { data: wishlistData } = useWishlistIds();
 
   const isMobile = useIsMobile();
-
-  /* -------------------------------------------------------------------------- */
-  /*                            HOTEL DETAILS PAYLOAD                            */
-  /* -------------------------------------------------------------------------- */
 
   const payload = useMemo(() => {
     return buildHotelDetailsPayload({
@@ -72,24 +59,16 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     });
   }, [selectedHotel, initialPayload]);
 
-  /* -------------------------------------------------------------------------- */
-  /*                                  WISHLIST                                  */
-  /* -------------------------------------------------------------------------- */
-
-  const wishlistIds = useMemo(
-    () => new Set(wishlistData || []),
-    [wishlistData],
-  );
+  const wishlistIds = useMemo(() => {
+    return new Set(wishlistData || []);
+  }, [wishlistData]);
 
   const hotelId = payload?.hotelId?.toString() || "";
 
   const isWishlisted = hotelId ? wishlistIds.has(hotelId) : false;
 
-  /* -------------------------------------------------------------------------- */
-  /*                               HOTEL DETAILS                                */
-  /* -------------------------------------------------------------------------- */
-
-  const isValidPayload = !!payload?.hotelId && !!payload?.hotelDetailId;
+  const isValidPayload =
+    Boolean(payload?.hotelId) && Boolean(payload?.hotelDetailId);
 
   const { data, isLoading, isFetching, refetch } = useHotelDetails(
     isValidPayload ? payload : null,
@@ -97,55 +76,261 @@ function HotelDetails({ initialPayload = null, cms = null }) {
 
   const showSkeleton = isLoading || isFetching;
 
-  const hotelData = data ?? {};
+  const hotelData = data || {};
+  const hotel = hotelData?.hotel || {};
+  const details = hotelData?.details || {};
 
-  const supplierData = hotelData?.supplierResponse || {};
+  const location = hotel?.location || {};
+  const contact = hotel?.contact || {};
+  const pricing = hotel?.pricing || {};
+  const policy = hotel?.policy || {};
+  const checkIn = hotel?.checkIn || {};
+  const checkOut = hotel?.checkOut || {};
 
-  const {
-    HotelGallery = [],
-    Amenities = "",
-    RatePlanRecommendations,
-  } = supplierData;
+  const supplierData = useMemo(() => {
+    return {
+      HotelId: hotel?.hotelId || hotelId || "",
+      hotelId: hotel?.hotelId || hotelId || "",
 
-  const ratePlans = Array.isArray(RatePlanRecommendations)
-    ? RatePlanRecommendations
-    : [];
+      HotelKey: hotel?.hotelKey || "",
+      hotelKey: hotel?.hotelKey || "",
 
-  const firstRatePlan = ratePlans[0] || null;
+      HotelName: hotel?.name || "",
+      hotelName: hotel?.name || "",
 
-  const pricing = firstRatePlan?.PricingBreakdown ?? {};
+      Description: hotel?.description || "",
+      description: hotel?.description || "",
 
-  const {
-    basePrice = 0,
-    platformFeeAndTax = 0,
-    finalPrice = 0,
-    currencySymbol = "₹",
-  } = pricing;
+      Address: location?.address || "",
+      address: location?.address || "",
 
-  const amenities = Amenities
-    ? Amenities.split(",")
+      City: location?.city || "",
+      city: location?.city || "",
+
+      State: location?.state || "",
+      state: location?.state || "",
+
+      Country: location?.country || "",
+      country: location?.country || "",
+
+      Pincode: location?.pincode || "",
+      pincode: location?.pincode || "",
+
+      Latitude: location?.latitude ?? null,
+      latitude: location?.latitude ?? null,
+
+      Longitude: location?.longitude ?? null,
+      longitude: location?.longitude ?? null,
+
+      Phone: contact?.phone || "",
+      phone: contact?.phone || "",
+
+      Email: contact?.email || "",
+      email: contact?.email || "",
+
+      HotelImage: hotel?.image || "",
+      hotelImage: hotel?.image || "",
+
+      StarCategory: hotel?.starCategory ?? 0,
+      starCategory: hotel?.starCategory ?? 0,
+
+      Facilities: Array.isArray(hotel?.facilities) ? hotel.facilities : [],
+
+      facilities: Array.isArray(hotel?.facilities) ? hotel.facilities : [],
+
+      Pricing: pricing,
+      pricing,
+
+      CheckIn: checkIn,
+      checkIn,
+
+      CheckOut: checkOut,
+      checkOut,
+
+      Policy: policy,
+      policy,
+
+      Supplier: hotel?.supplier || "",
+      supplier: hotel?.supplier || "",
+
+      AboutHotel: details?.aboutHotel || "",
+      aboutHotel: details?.aboutHotel || "",
+
+      Amenities: details?.amenities || [],
+      amenities: details?.amenities || [],
+
+      HotelGallery: Array.isArray(details?.gallery) ? details.gallery : [],
+
+      gallery: Array.isArray(details?.gallery) ? details.gallery : [],
+
+      ImportantInformation: details?.importantInformation || null,
+
+      importantInformation: details?.importantInformation || null,
+
+      Rooms: Array.isArray(details?.rooms) ? details.rooms : [],
+
+      rooms: Array.isArray(details?.rooms) ? details.rooms : [],
+    };
+  }, [
+    hotel,
+    hotelId,
+    location,
+    contact,
+    pricing,
+    checkIn,
+    checkOut,
+    policy,
+    details,
+  ]);
+
+  const hotelImages = useMemo(() => {
+    const gallery = Array.isArray(details?.gallery) ? details.gallery : [];
+
+    const images = gallery
+      .map((item) => {
+        if (typeof item === "string") {
+          return item;
+        }
+
+        return item?.url || item?.image || item?.src || "";
+      })
+      .filter(Boolean);
+
+    if (images.length) {
+      return images;
+    }
+
+    return hotel?.image ? [hotel.image] : [];
+  }, [details?.gallery, hotel?.image]);
+
+  const amenities = useMemo(() => {
+    const rawAmenities = details?.amenities;
+
+    if (Array.isArray(rawAmenities)) {
+      return rawAmenities
+        .map((item) => {
+          if (typeof item === "string") {
+            return item;
+          }
+
+          return item?.name || item?.title || item?.description || "";
+        })
+        .filter(Boolean);
+    }
+
+    if (typeof rawAmenities === "string") {
+      return rawAmenities
+        .split(",")
         .map((item) => item.trim())
-        .filter(Boolean)
-    : [];
+        .filter(Boolean);
+    }
 
-  const hotelImages = HotelGallery;
+    if (Array.isArray(hotel?.facilities)) {
+      return hotel.facilities
+        .map((item) => {
+          if (typeof item === "string") {
+            return item;
+          }
 
-  const hotelDetails = supplierData;
+          return item?.name || item?.title || "";
+        })
+        .filter(Boolean);
+    }
 
-  /* -------------------------------------------------------------------------- */
-  /*                                  SCROLL                                    */
-  /* -------------------------------------------------------------------------- */
+    return [];
+  }, [details?.amenities, hotel?.facilities]);
+
+  const ratePlans = useMemo(() => {
+    const rooms = Array.isArray(details?.rooms) ? details.rooms : [];
+
+    if (rooms.length) {
+      return rooms;
+    }
+
+    return [
+      {
+        HotelId: hotel?.hotelId || hotelId || "",
+
+        HotelKey: hotel?.hotelKey || "",
+
+        HotelName: hotel?.name || "",
+
+        PricingBreakdown: {
+          basePrice: Number(pricing?.basicAmount || 0),
+
+          platformFeeAndTax: Number(pricing?.tax || 0),
+
+          finalPrice: Number(pricing?.totalAmount || 0),
+
+          currencySymbol: pricing?.currency || "₹",
+        },
+
+        pricing: {
+          basicAmount: Number(pricing?.basicAmount || 0),
+
+          tax: Number(pricing?.tax || 0),
+
+          totalAmount: Number(pricing?.totalAmount || 0),
+
+          serviceFee: Number(pricing?.serviceFee || 0),
+
+          markup: Number(pricing?.markup || 0),
+
+          gst: Number(pricing?.gst || 0),
+
+          currency: pricing?.currency || "INR",
+        },
+      },
+    ];
+  }, [
+    details?.rooms,
+    hotel?.hotelId,
+    hotel?.hotelKey,
+    hotel?.name,
+    hotelId,
+    pricing,
+  ]);
+
+  const firstRatePlan = ratePlans?.[0] || null;
+
+  const pricingBreakdown = firstRatePlan?.PricingBreakdown || {};
+
+  const basePrice = Number(
+    pricingBreakdown?.basePrice ?? pricing?.basicAmount ?? 0,
+  );
+
+  const platformFeeAndTax = Number(
+    pricingBreakdown?.platformFeeAndTax ?? pricing?.tax ?? 0,
+  );
+
+  const finalPrice = Number(
+    pricingBreakdown?.finalPrice ?? pricing?.totalAmount ?? 0,
+  );
+
+  const currencySymbol =
+    pricingBreakdown?.currencySymbol || pricing?.currency || "₹";
+
+  const hotelDetails = useMemo(() => {
+    return {
+      ...details,
+      aboutHotel: details?.aboutHotel || "",
+      amenities: details?.amenities || [],
+      gallery: details?.gallery || [],
+      importantInformation: details?.importantInformation || null,
+      rooms: details?.rooms || [],
+    };
+  }, [details]);
 
   useEffect(() => {
     const handleScroll = () => {
       const scrolled = window.scrollY > 5;
 
-      setIsScrolled((prev) => {
-        if (prev !== scrolled) {
+      setIsScrolled((previous) => {
+        if (previous !== scrolled) {
           return scrolled;
         }
 
-        return prev;
+        return previous;
       });
     };
 
@@ -160,69 +345,54 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     };
   }, []);
 
-  /* -------------------------------------------------------------------------- */
-  /*                              BOOKING STORE                                 */
-  /* -------------------------------------------------------------------------- */
+  // useEffect(() => {
+  //   if (!hotel?.hotelKey) {
+  //     return;
+  //   }
 
-  useEffect(() => {
-    if (!supplierData?.HotelKey) {
-      return;
-    }
+  //   setBookingData({
+  //     supplierData,
 
-    if (!hotelData?.searchKey) {
-      return;
-    }
+  //     searchData: appliedSearchData,
 
-    setBookingData({
-      supplierData,
+  //     selectedHotel: {
+  //       hotelId: hotel?.hotelId || hotelId,
 
-      searchData: appliedSearchData,
+  //       hotelDetailId: payload?.hotelDetailId || "",
 
-      selectedHotel: {
-        hotelKey: supplierData.HotelKey,
+  //       hotelKey: hotel?.hotelKey || "",
 
-        searchKey: hotelData.searchKey,
+  //       hotelName: hotel?.name || "",
 
-        hotelName: supplierData?.HotelName,
+  //       hotelImage: hotel?.image || "",
 
-        hotelImage:
-          supplierData?.HotelImage || supplierData?.HotelGallery?.[0] || "",
+  //       address: location?.address || "",
 
-        address: supplierData?.Address,
+  //       city: location?.city || "",
 
-        city: supplierData?.City,
+  //       state: location?.state || "",
 
-        country: supplierData?.Country,
-      },
-    });
-  }, [
-    supplierData?.HotelKey,
-    supplierData?.HotelName,
-    hotelData?.searchKey,
-    appliedSearchData,
-    setBookingData,
-  ]);
-
-  /* -------------------------------------------------------------------------- */
-  /*                                  ACTIONS                                   */
-  /* -------------------------------------------------------------------------- */
-
-  const handleReloadHotels = async () => {
-    await refetch();
-  };
+  //       country: location?.country || "",
+  //     },
+  //   });
+  // }, [
+  //   hotel,
+  //   hotelId,
+  //   payload?.hotelDetailId,
+  //   supplierData,
+  //   appliedSearchData,
+  //   setBookingData,
+  //   location,
+  // ]);
 
   const handleWishlist = () => {
     requireAuth(async () => {
       try {
         const wishlistPayload = buildWishlistPayload({
           hotelId: payload?.hotelId,
-
           supplierData,
-
           searchData: appliedSearchData,
-
           hotelMeta: payload?.hotelMeta,
-
           pricing: {
             basePrice,
             platformFeeAndTax,
@@ -242,19 +412,13 @@ function HotelDetails({ initialPayload = null, cms = null }) {
 
   const handleShare = async () => {
     await shareHotel({
-      hotelName: supplierData?.HotelName,
-
-      cityName: appliedSearchData?.city,
-
+      hotelName: hotel?.name || "",
+      cityName: location?.city || appliedSearchData?.city || "",
       hotelId: payload?.hotelId,
     });
   };
 
   const handleSearch = useCallback(() => {}, []);
-
-  /* -------------------------------------------------------------------------- */
-  /*                                MOBILE                                      */
-  /* -------------------------------------------------------------------------- */
 
   if (isMobile === null) {
     return <HotelDetailsSkeleton />;
@@ -277,18 +441,9 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     );
   }
 
-  /* -------------------------------------------------------------------------- */
-  /*                                DESKTOP                                     */
-  /*                         1024PX AND ABOVE                                   */
-  /* -------------------------------------------------------------------------- */
-
   return (
     <div className="min-h-screen w-full bg-[#eaf3f9]">
-      {/* SEARCH BAR */}
-
       <SearchBar searchData={supplierData} onSearch={handleSearch} />
-
-      {/* MAIN CONTAINER */}
 
       <div
         className={`relative mx-auto w-full max-w-7xl px-3 sm:px-4 md:px-5 lg:px-6 xl:px-0 ${
@@ -300,30 +455,22 @@ function HotelDetails({ initialPayload = null, cms = null }) {
             <HotelDetailsSkeleton />
           ) : (
             <Card className="overflow-visible rounded-md border-0 p-3 shadow-lg sm:p-4 md:p-5 lg:p-5 xl:p-6">
-              {/* ---------------------------------------------------------------- */}
-              {/* HEADER                                                          */}
-              {/* ---------------------------------------------------------------- */}
-
               <div className="flex min-w-0 items-start justify-between gap-3 lg:gap-4">
-                {/* HOTEL NAME + LOCATION */}
-
                 <div className="min-w-0 flex-1">
                   <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
                     <h1 className="min-w-0 truncate text-[20px] leading-tight font-semibold text-[#303030] lg:text-[23px] xl:text-[26px]">
-                      {supplierData?.HotelName || "Hotel Name"}
+                      {hotel?.name || "Hotel Name"}
                     </h1>
 
-                    {(supplierData?.City || supplierData?.Country) && (
+                    {(location?.city || location?.country) && (
                       <span className="most-text-color max-w-full shrink-0 rounded-full bg-[#eef8fd] px-2 py-1 text-[11px] font-medium lg:px-3 lg:text-xs xl:text-sm">
-                        {[supplierData?.City, supplierData?.Country]
+                        {[location?.city, location?.country]
                           .filter(Boolean)
                           .join(", ")}
                       </span>
                     )}
                   </div>
                 </div>
-
-                {/* ACTION BUTTONS */}
 
                 <div className="flex shrink-0 items-center gap-2 lg:gap-2.5">
                   <button
@@ -358,13 +505,7 @@ function HotelDetails({ initialPayload = null, cms = null }) {
                 </div>
               </div>
 
-              {/* ---------------------------------------------------------------- */}
-              {/* GALLERY + PRICE CARD                                            */}
-              {/* ---------------------------------------------------------------- */}
-
               <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)] lg:items-start lg:gap-5 xl:gap-6">
-                {/* LEFT SIDE */}
-
                 <div className="min-w-0 self-start">
                   <ViewHotelGallery
                     images={hotelImages}
@@ -376,19 +517,14 @@ function HotelDetails({ initialPayload = null, cms = null }) {
                   </div>
                 </div>
 
-                {/* RIGHT SIDE */}
-
                 <div className="min-w-0 lg:sticky lg:top-24">
                   <ViewHotelPriceCard
                     ratePlans={ratePlans}
                     supplierData={supplierData}
+                    hotelDetailId={payload?.hotelDetailId || ""}
                   />
                 </div>
               </div>
-
-              {/* ---------------------------------------------------------------- */}
-              {/* HOTEL INFO                                                       */}
-              {/* ---------------------------------------------------------------- */}
 
               <div className="mt-5 lg:mt-6">
                 <ViewHotelInfo supplierData={supplierData} />
@@ -396,10 +532,6 @@ function HotelDetails({ initialPayload = null, cms = null }) {
             </Card>
           )}
         </div>
-
-        {/* -------------------------------------------------------------------- */}
-        {/* HOTEL SECTION TABS                                                   */}
-        {/* -------------------------------------------------------------------- */}
 
         {!showSkeleton && (
           <>
@@ -410,10 +542,6 @@ function HotelDetails({ initialPayload = null, cms = null }) {
               />
             </div>
 
-            {/* ---------------------------------------------------------------- */}
-            {/* CONTENT                                                          */}
-            {/* ---------------------------------------------------------------- */}
-
             <div className="mt-0">
               <HotelSectionsContent
                 activeTab={activeTab}
@@ -421,27 +549,20 @@ function HotelDetails({ initialPayload = null, cms = null }) {
                 ratePlans={ratePlans}
                 amenities={amenities}
                 hotelDetails={hotelDetails}
+                hotelDetailId={payload?.hotelDetailId || ""}
               />
             </div>
-
-            {/* ---------------------------------------------------------------- */}
-            {/* CMS                                                              */}
-            {/* ---------------------------------------------------------------- */}
 
             <HotelCmsSection>
               {cms ? (
                 <CMSContentRenderer cms={cms} />
               ) : (
                 <DynamicHotelSeoFallback
-                  hotelName={supplierData?.HotelName}
-                  cityName={supplierData?.City}
+                  hotelName={hotel?.name}
+                  cityName={location?.city}
                 />
               )}
             </HotelCmsSection>
-
-            {/* ---------------------------------------------------------------- */}
-            {/* RELATED HOTELS                                                   */}
-            {/* ---------------------------------------------------------------- */}
 
             <RelatedHotels
               cityId={appliedSearchData?.cityData?.id}
@@ -453,25 +574,11 @@ function HotelDetails({ initialPayload = null, cms = null }) {
         )}
       </div>
 
-      {/* ---------------------------------------------------------------------- */}
-      {/* GALLERY MODAL                                                         */}
-      {/* ---------------------------------------------------------------------- */}
-
       <ViewHotelModal
         open={isGalleryOpen}
         images={hotelImages}
         onClose={() => setIsGalleryOpen(false)}
       />
-
-      {/* ---------------------------------------------------------------------- */}
-      {/* SESSION EXPIRED MODAL                                                 */}
-      {/* ---------------------------------------------------------------------- */}
-{/* 
-      <SessionExpiredModal
-        open={sessionExpired}
-        loading={reloadingHotels}
-        onReload={handleReloadHotels}
-      /> */}
     </div>
   );
 }

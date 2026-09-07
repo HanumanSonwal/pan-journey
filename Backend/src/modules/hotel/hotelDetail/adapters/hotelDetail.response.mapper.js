@@ -3,19 +3,13 @@
 // ============================================================
 
 const toNumber = (value, defaultValue = 0) => {
-  if (
-    value === null ||
-    value === undefined ||
-    value === ""
-  ) {
+  if (value === null || value === undefined || value === "") {
     return defaultValue;
   }
 
   const number = Number(value);
 
-  return Number.isNaN(number)
-    ? defaultValue
-    : number;
+  return Number.isNaN(number) ? defaultValue : number;
 };
 
 // ============================================================
@@ -39,11 +33,7 @@ const toBoolean = (value) => {
 // ============================================================
 
 const toNull = (value) => {
-  if (
-    value === undefined ||
-    value === null ||
-    value === ""
-  ) {
+  if (value === undefined || value === null || value === "") {
     return null;
   }
 
@@ -60,9 +50,7 @@ const mapAmenities = (amenities) => {
   }
 
   if (Array.isArray(amenities)) {
-    return amenities
-      .map((item) => String(item).trim())
-      .filter(Boolean);
+    return amenities.map((item) => String(item).trim()).filter(Boolean);
   }
 
   return String(amenities)
@@ -91,8 +79,7 @@ const mapGallery = (gallery) => {
 
     if (!uniqueImages.has(url)) {
       uniqueImages.set(url, {
-        description:
-          toNull(image?.ImageDesc),
+        description: toNull(image?.ImageDesc),
         url,
       });
     }
@@ -107,54 +94,41 @@ const mapGallery = (gallery) => {
 
 const mapRoom = (room) => {
   return {
-    roomType:
-      toNull(room?.HotelRoomTypeDesc),
+    roomType: toNull(room?.HotelRoomTypeDesc),
 
-    ratePlanId:
-      toNull(room?.RateplanId),
+    ratePlanId: toNull(room?.RateplanId),
 
-    roomTypeId:
-      toNull(room?.RoomTypeID),
+    roomTypeId: toNull(room?.RoomTypeID),
 
-    inclusion:
-      toNull(room?.Inclusion),
+    inclusion: toNull(room?.Inclusion),
 
-    additionalInfo:
-      toNull(room?.AdditionalInfo),
+    additionalInfo: toNull(room?.AdditionalInfo),
 
     pricing: {
       // SAME PRICE KEYS AS SEARCH API
-      currency:
-        toNull(room?.LocalCurrency),
+      currency: toNull(room?.LocalCurrency),
 
-      basicAmount:
-        toNumber(room?.Basic_Amount),
+      basicAmount: toNumber(room?.Basic_Amount),
 
-      tax:
-        toNumber(room?.Tax),
+      tax: toNumber(room?.Tax),
 
-      totalAmount:
-        toNumber(room?.Total_Amount),
+      totalAmount: toNumber(room?.Total_Amount),
 
-      serviceFee:
-        toNumber(room?.Service_Fee_Amount),
+      serviceFee: toNumber(room?.Service_Fee_Amount),
 
-      markup:
-        toNumber(room?.Trade_Markup_Amount),
+      markup: toNumber(room?.Trade_Markup_Amount),
 
-      gst:
-        toNumber(room?.GST),
+      gst: toNumber(room?.GST),
     },
 
-    cancellationPolicy:
-      toNull(room?.CancellationPolicy),
+    cancellationPolicy: toNull(room?.CancellationPolicy),
+
+    cancellationCharges: toNull(room?.cancellationCharges),
 
     payment: {
-      creditCardRequired:
-        toBoolean(room?.CCRequired),
+      creditCardRequired: toBoolean(room?.CCRequired),
 
-      panMandatory:
-        toBoolean(room?.PANMandatory),
+      panMandatory: toBoolean(room?.PANMandatory),
     },
   };
 };
@@ -163,72 +137,44 @@ const mapRoom = (room) => {
 // HOTEL DETAILS MAPPER
 // ============================================================
 
-export const mapHotelDetailResponse = ({
-  hotel,
-  details,
-}) => {
+export const mapHotelDetailResponse = ({ hotel, details }) => {
   return {
     hotel: {
       // ======================================================
       // HOTEL BASIC INFORMATION
       // ======================================================
 
-      hotelId:
-        toNull(hotel?.hotelId),
+      hotelId: toNull(hotel?.hotelId),
 
-      hotelKey:
-        toNull(hotel?.hotelKey),
+      hotelKey: toNull(hotel?.hotelKey),
 
-      name:
-        toNull(hotel?.name),
+      name: toNull(hotel?.name),
 
-      description:
-        toNull(hotel?.description),
+      description: toNull(hotel?.description),
 
       // ======================================================
       // LOCATION
       // ======================================================
 
       location: {
-        address:
-          toNull(hotel?.location?.address),
+        address: toNull(hotel?.location?.address),
 
-        city:
-          toNull(
-            hotel?.location?.city ||
-              details?.City
-          ),
+        city: toNull(hotel?.location?.city || details?.City),
 
-        state:
-          toNull(
-            hotel?.location?.state
-          ),
+        state: toNull(hotel?.location?.state),
 
-        country:
-          toNull(
-            hotel?.location?.country ||
-              details?.Country
-          ),
+        country: toNull(hotel?.location?.country || details?.Country),
 
-        pincode:
-          toNull(hotel?.location?.pincode),
+        pincode: toNull(hotel?.location?.pincode),
 
         latitude:
-          hotel?.location?.latitude !==
-          undefined
-            ? toNumber(
-                hotel.location.latitude,
-                null
-              )
+          hotel?.location?.latitude !== undefined
+            ? toNumber(hotel.location.latitude, null)
             : null,
 
         longitude:
-          hotel?.location?.longitude !==
-          undefined
-            ? toNumber(
-                hotel.location.longitude,
-                null
-              )
+          hotel?.location?.longitude !== undefined
+            ? toNumber(hotel.location.longitude, null)
             : null,
       },
 
@@ -237,19 +183,16 @@ export const mapHotelDetailResponse = ({
       // ======================================================
 
       contact: {
-        phone:
-          toNull(hotel?.contact?.phone),
+        phone: toNull(hotel?.contact?.phone),
 
-        email:
-          toNull(hotel?.contact?.email),
+        email: toNull(hotel?.contact?.email),
       },
 
       // ======================================================
       // IMAGE
       // ======================================================
 
-      image:
-        toNull(hotel?.image),
+      image: toNull(hotel?.image),
 
       // ======================================================
       // STAR
@@ -257,20 +200,14 @@ export const mapHotelDetailResponse = ({
 
       starCategory:
         hotel?.starCategory !== undefined
-          ? toNumber(
-              hotel.starCategory,
-              null
-            )
+          ? toNumber(hotel.starCategory, null)
           : null,
 
       // ======================================================
       // FACILITIES
       // ======================================================
 
-      facilities:
-        Array.isArray(hotel?.facilities)
-          ? hotel.facilities
-          : [],
+      facilities: Array.isArray(hotel?.facilities) ? hotel.facilities : [],
 
       // ======================================================
       // PRICING
@@ -278,40 +215,19 @@ export const mapHotelDetailResponse = ({
       // ======================================================
 
       pricing: {
-        currency:
-          toNull(
-            hotel?.pricing?.currency
-          ),
+        currency: toNull(hotel?.pricing?.currency),
 
-        basicAmount:
-          toNumber(
-            hotel?.pricing?.basicAmount
-          ),
+        basicAmount: toNumber(hotel?.pricing?.basicAmount),
 
-        tax:
-          toNumber(
-            hotel?.pricing?.tax
-          ),
+        tax: toNumber(hotel?.pricing?.tax),
 
-        totalAmount:
-          toNumber(
-            hotel?.pricing?.totalAmount
-          ),
+        totalAmount: toNumber(hotel?.pricing?.totalAmount),
 
-        serviceFee:
-          toNumber(
-            hotel?.pricing?.serviceFee
-          ),
+        serviceFee: toNumber(hotel?.pricing?.serviceFee),
 
-        markup:
-          toNumber(
-            hotel?.pricing?.markup
-          ),
+        markup: toNumber(hotel?.pricing?.markup),
 
-        gst:
-          toNumber(
-            hotel?.pricing?.gst
-          ),
+        gst: toNumber(hotel?.pricing?.gst),
       },
 
       // ======================================================
@@ -319,11 +235,9 @@ export const mapHotelDetailResponse = ({
       // ======================================================
 
       checkIn: {
-        date:
-          toNull(hotel?.checkIn?.date),
+        date: toNull(hotel?.checkIn?.date),
 
-        time:
-          toNull(hotel?.checkIn?.time),
+        time: toNull(hotel?.checkIn?.time),
       },
 
       // ======================================================
@@ -331,11 +245,9 @@ export const mapHotelDetailResponse = ({
       // ======================================================
 
       checkOut: {
-        date:
-          toNull(hotel?.checkOut?.date),
+        date: toNull(hotel?.checkOut?.date),
 
-        time:
-          toNull(hotel?.checkOut?.time),
+        time: toNull(hotel?.checkOut?.time),
       },
 
       // ======================================================
@@ -343,26 +255,18 @@ export const mapHotelDetailResponse = ({
       // ======================================================
 
       policy: {
-        applicableCode:
-          toNull(
-            hotel?.policy?.applicableCode
-          ),
+        applicableCode: toNull(hotel?.policy?.applicableCode),
 
-        state:
-          toNull(hotel?.policy?.state),
+        state: toNull(hotel?.policy?.state),
 
-        outPolicyReason:
-          toNull(
-            hotel?.policy?.outPolicyReason
-          ),
+        outPolicyReason: toNull(hotel?.policy?.outPolicyReason),
       },
 
       // ======================================================
       // SUPPLIER
       // ======================================================
 
-      supplier:
-        toNull(hotel?.supplier),
+      supplier: toNull(hotel?.supplier),
     },
 
     // ========================================================
@@ -370,28 +274,17 @@ export const mapHotelDetailResponse = ({
     // ========================================================
 
     details: {
-      aboutHotel:
-        toNull(details?.AboutHotel),
+      aboutHotel: toNull(details?.AboutHotel),
 
-      amenities:
-        mapAmenities(details?.Amenities),
+      amenities: mapAmenities(details?.Amenities),
 
-      gallery:
-        mapGallery(details?.HotelGallery),
+      gallery: mapGallery(details?.HotelGallery),
 
-      importantInformation:
-        toNull(
-          details?.ImportantInformation
-        ),
+      importantInformation: toNull(details?.ImportantInformation),
 
-      rooms:
-        Array.isArray(
-          details?.HotelRatePlanDetails
-        )
-          ? details.HotelRatePlanDetails.map(
-              mapRoom
-            )
-          : [],
+      rooms: Array.isArray(details?.HotelRatePlanDetails)
+        ? details.HotelRatePlanDetails.map(mapRoom)
+        : [],
     },
   };
 };
