@@ -125,6 +125,9 @@ const mapRoom = (room) => {
 
     cancellationCharges: toNull(room?.cancellationCharges),
 
+        cancellationCharges:
+      toNull(room?.cancellationCharges),
+
     payment: {
       creditCardRequired: toBoolean(room?.CCRequired),
 
@@ -139,12 +142,15 @@ const mapRoom = (room) => {
 
 export const mapHotelDetailResponse = ({ hotel, details }) => {
   return {
+    hotelDetailId: toNull(hotel?.hotelDetailId),
     hotel: {
       // ======================================================
       // HOTEL BASIC INFORMATION
       // ======================================================
 
-      hotelId: toNull(hotel?.hotelId),
+      hotelId:
+        toNull(hotel?.hotelId),
+        
 
       hotelKey: toNull(hotel?.hotelKey),
 

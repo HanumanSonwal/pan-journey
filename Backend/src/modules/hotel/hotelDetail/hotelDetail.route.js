@@ -1,6 +1,6 @@
 import express from "express";
 import {
-  getHotelDetail,
+  getHotelDetail,getRoomPricing
 } from "./hotelDetail.controller.js";
 
 const router = express.Router();
@@ -8,6 +8,11 @@ const router = express.Router();
 router.post(
   "/",
   getHotelDetail
+);
+
+router.post(
+  "/room-pricing",
+  getRoomPricing
 );
 
 export default router;
