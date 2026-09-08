@@ -11,35 +11,34 @@ const HotelSectionsContent = ({
   supplierData = {},
   ratePlans = [],
   amenities = [],
+  hotelDetailId = "",
 }) => {
   return (
     <div className="space-y-6">
-      {/* Rooms */}
       <section id="rooms-section" className="scroll-mt-36">
-        <RoomOptions ratePlans={ratePlans} supplierData={supplierData} />
+        <RoomOptions
+          ratePlans={ratePlans}
+          supplierData={supplierData}
+          hotelDetailId={hotelDetailId}
+        />
       </section>
 
-      {/* Amenities */}
       <section id="amenities-section" className="scroll-mt-36">
         <Amenities amenities={amenities} />
       </section>
 
-      {/* Policies */}
       <section id="policies-section" className="scroll-mt-36">
         <Policies ratePlans={ratePlans} />
       </section>
 
-      {/* Fees */}
       <section id="fees-section" className="scroll-mt-36">
-        <FeesRules ratePlans={ratePlans} />
+        <FeesRules supplierData={supplierData} />
       </section>
 
-      {/* Location */}
       <section id="location-section" className="scroll-mt-36">
         <LocationSection supplierData={supplierData} />
       </section>
 
-      {/* About */}
       <section id="about-section" className="scroll-mt-36">
         <AboutHotel about={supplierData?.AboutHotel} />
       </section>

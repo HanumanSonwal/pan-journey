@@ -1,4 +1,148 @@
 
+// import mongoose from "mongoose";
+
+// const hotelSearchHotelSchema = new mongoose.Schema(
+//   {
+//     hotelId: {
+//       type: String,
+//       required: true,
+//     },
+       
+//     hotelKey: {
+//       type: String,
+//       required: true,
+//     },
+// name: String,
+//     location:  {
+
+//       address: String,
+//       city: String,
+//       state: String,
+//       pincode: String,
+
+//       latitude: Number,
+//       longitude: Number,},
+
+//     image: String,
+
+//     starCategory: Number,
+
+//     facilities: [
+//       {
+//         id: String,
+//         name: String,
+//       },
+//     ],
+
+//     pricing: {
+//       basicAmount: Number,
+//       tax: Number,
+//       totalAmount: Number,
+//       serviceFee: Number,
+//       markup: Number,
+//       gst: Number,
+//     },
+
+//     checkIn: {
+//       date: String,
+//       time: String,
+//     },
+
+//     checkOut: {
+//       date: String,
+//       time: String,
+//     },
+
+//     supplier: {
+//       type: String,
+//       required: true,
+//     },
+//   },
+//   { _id: false }
+// );
+
+// const hotelSearchSchema = new mongoose.Schema(
+//   {
+//     hotelDetailId: {
+//   type: String,
+//   required: true,
+//   unique: true,
+//   index: true,
+// },
+//     searchId: {
+//       type: String,
+//       required: true,
+//       unique: true,
+//       index: true,
+//     },
+
+//     searchKey: {
+//       type: String,
+//       default: null,
+//     },
+
+//     supplier: {
+//       type: String,
+//       required: true,
+//       index: true,
+//     },
+
+//     destination: {
+//       type: String,
+//       index: true,
+//     },
+
+//     checkIn: Date,
+
+//     checkOut: Date,
+
+//     rooms: mongoose.Schema.Types.Mixed,
+
+//     hotels: [hotelSearchHotelSchema],
+
+//     totalHotels: {
+//       type: Number,
+//       default: 0,
+//     },
+// cacheKey: {
+//   type: String,
+//   index: true,
+// },
+//     moreHotels: {
+//       type: Boolean,
+//       default: false,
+//     },
+
+//     responseStatus: {
+//       type: String,
+//     },
+
+//     rawResponse: {
+//       type: mongoose.Schema.Types.Mixed,
+//     },
+
+//    expiresAt: {
+//   type: Date,
+//   required: true,
+//   index: {
+//     expireAfterSeconds: 0,
+//   },
+// },
+//   },
+//   {
+//     timestamps: true,
+//   }
+// );
+
+// hotelSearchSchema.index({
+//   expiresAt: 1,
+// });
+
+// export default mongoose.model(
+//   "HotelSearch",
+//   hotelSearchSchema
+// );
+
 import mongoose from "mongoose";
 
 const hotelSearchHotelSchema = new mongoose.Schema(
@@ -15,13 +159,22 @@ const hotelSearchHotelSchema = new mongoose.Schema(
 
     name: String,
 
-    address: String,
-    city: String,
-    state: String,
-    pincode: String,
+    description: String,
 
-    latitude: Number,
-    longitude: Number,
+    location: {
+      address: String,
+      city: String,
+      state: String,
+      country: String,
+      pincode: String,
+      latitude: Number,
+      longitude: Number,
+    },
+
+    contact: {
+      phone: String,
+      email: String,
+    },
 
     image: String,
 
@@ -35,6 +188,7 @@ const hotelSearchHotelSchema = new mongoose.Schema(
     ],
 
     pricing: {
+      currency: String,
       basicAmount: Number,
       tax: Number,
       totalAmount: Number,
@@ -53,16 +207,39 @@ const hotelSearchHotelSchema = new mongoose.Schema(
       time: String,
     },
 
+    policy: {
+      applicableCode: String,
+      state: String,
+      outPolicyReason: String,
+    },
+
     supplier: {
       type: String,
       required: true,
     },
   },
-  { _id: false }
+  {
+    _id: false,
+  }
 );
+
+
+// ============================================================
+// ROOT HOTEL SEARCH SCHEMA
+// ============================================================
 
 const hotelSearchSchema = new mongoose.Schema(
   {
+    // IMPORTANT:
+    // hotelDetailId is ROOT LEVEL ONLY
+
+    hotelDetailId: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+    },
+
     searchId: {
       type: String,
       required: true,
@@ -92,16 +269,20 @@ const hotelSearchSchema = new mongoose.Schema(
 
     rooms: mongoose.Schema.Types.Mixed,
 
-    hotels: [hotelSearchHotelSchema],
+    hotels: [
+      hotelSearchHotelSchema,
+    ],
 
     totalHotels: {
       type: Number,
       default: 0,
     },
-cacheKey: {
-  type: String,
-  index: true,
-},
+
+    cacheKey: {
+      type: String,
+      index: true,
+    },
+
     moreHotels: {
       type: Boolean,
       default: false,
@@ -115,25 +296,85 @@ cacheKey: {
       type: mongoose.Schema.Types.Mixed,
     },
 
-   expiresAt: {
-  type: Date,
-  required: true,
-  index: {
-    expireAfterSeconds: 0,
-  },
-},
+    expiresAt: {
+      type: Date,
+      required: true,
+      index: {
+        expireAfterSeconds: 0,
+      },
+    },
   },
   {
     timestamps: true,
   }
 );
 
-hotelSearchSchema.index({
-  expiresAt: 1,
-});
+
+// ============================================================
+// DO NOT ADD ANOTHER expiresAt INDEX
+// ============================================================
+
+
+// ============================================================
+// DEBUG - CHECK RUNTIME SCHEMA
+// ============================================================
+
+console.log(
+  "ROOT hotelDetailId:",
+  hotelSearchSchema.path(
+    "hotelDetailId"
+  )?.options
+);
+
+console.log(
+  "NESTED hotels.hotelDetailId:",
+  hotelSearchSchema
+    .path("hotels")
+    ?.schema
+    ?.path("hotelDetailId")
+);
+// ============================================================
+// DEBUG - CHECK RUNTIME SCHEMA
+// ============================================================
+
+console.log(
+  "========== HOTEL SEARCH MODEL DEBUG =========="
+);
+
+console.log(
+  "ROOT hotelDetailId:",
+  hotelSearchSchema.path("hotelDetailId")?.options
+);
+
+console.log(
+  "NESTED hotels.hotelDetailId:",
+  hotelSearchSchema
+    .path("hotels")
+    ?.schema
+    ?.path("hotelDetailId")
+);
+
+console.log(
+  "ROOT PATHS:",
+  Object.keys(hotelSearchSchema.paths)
+);
+
+console.log(
+  "NESTED HOTEL PATHS:",
+  Object.keys(
+    hotelSearchSchema.path("hotels").schema.paths
+  )
+);
+
+console.log(
+  "=============================================="
+);
+
+// ============================================================
+// MODEL
+// ============================================================
 
 export default mongoose.model(
   "HotelSearch",
   hotelSearchSchema
 );
-

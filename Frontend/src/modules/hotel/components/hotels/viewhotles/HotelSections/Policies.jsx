@@ -1,139 +1,150 @@
 "use client";
 
 import {
-  CalendarOutlined,
-  ClockCircleOutlined,
-  DollarCircleOutlined,
+  CreditCardOutlined,
   FileProtectOutlined,
-  InfoCircleOutlined,
   SafetyCertificateOutlined,
 } from "@ant-design/icons";
 
 const Policies = ({ ratePlans = [] }) => {
-  const details = ratePlans?.[0]?.RatePlanDetails?.[0];
-  const essential = details?.EssentialInformation || [];
-  const cancellation = details?.CancellationPolicy;
+  const rooms = Array.isArray(ratePlans) ? ratePlans : [];
 
-  const getIcon = (type = "") => {
-    const key = type.toLowerCase();
-    if (key.includes("check-in")) return <CalendarOutlined />;
-    if (key.includes("check-out")) return <ClockCircleOutlined />;
-    if (key.includes("instruction")) return <InfoCircleOutlined />;
-    if (key.includes("know")) return <SafetyCertificateOutlined />;
-    if (key.includes("fee")) return <DollarCircleOutlined />;
-    return <FileProtectOutlined />;
+  const getCancellationText = (policy) => {
+    if (!policy) {
+      return "";
+    }
+
+    if (typeof policy === "string") {
+      return policy;
+    }
+
+    if (Array.isArray(policy)) {
+      return policy
+        .map((item) => {
+          if (typeof item === "string") {
+            return item;
+          }
+
+          return item?.description || item?.text || item?.value || "";
+        })
+        .filter(Boolean)
+        .join("<br />");
+    }
+
+    if (typeof policy === "object") {
+      return policy?.description || policy?.text || policy?.value || "";
+    }
+
+    return "";
   };
 
-  const getColor = (type = "") => {
-    const key = type.toLowerCase();
-    if (key.includes("check")) {
-      return {
-        bg: "bg-blue-50",
-        border: "border-blue-100",
-        icon: "text-blue-600",
-      };
-    }
+  const roomsWithPolicies = rooms.filter((room) => {
+    const cancellationPolicy = getCancellationText(room?.cancellationPolicy);
 
-    if (key.includes("know")) {
-      return {
-        bg: "bg-green-50",
-        border: "border-green-100",
-        icon: "text-green-600",
-      };
-    }
+    const creditCardRequired = room?.payment?.creditCardRequired === true;
 
-    if (key.includes("fee")) {
-      return {
-        bg: "bg-orange-50",
-        border: "border-orange-100",
-        icon: "text-orange-600",
-      };
-    }
+    const panMandatory = room?.payment?.panMandatory === true;
 
-    return {
-      bg: "bg-slate-50",
-      border: "border-slate-100",
-      icon: "text-slate-600",
-    };
-  };
+    return Boolean(cancellationPolicy) || creditCardRequired || panMandatory;
+  });
 
   return (
     <div className="space-y-6">
-      {/* Cancellation */}
-      <div className="rounded border border-red-100 bg-red-50 p-6 shadow-sm">
-        <div className="block !xl:flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-red-100 text-lg text-red-600">
-            <FileProtectOutlined />
-          </div>
+      {roomsWithPolicies.map((room, index) => {
+        const cancellationPolicy = getCancellationText(
+          room?.cancellationPolicy,
+        );
 
-          <div>
-            <h2 className="text-xl font-semibold text-red-700">
-              Cancellation Policy
-            </h2>
+        const creditCardRequired = room?.payment?.creditCardRequired === true;
 
-            <p className="text-sm text-red-500">
-              Review refund & cancellation terms
-            </p>
-          </div>
-        </div>
+        const panMandatory = room?.payment?.panMandatory === true;
 
-        <div
-          className="leading-8 text-red-700"
-          dangerouslySetInnerHTML={{
-            __html: cancellation || "No cancellation policy available",
-          }}
-        />
-      </div>
+        return (
+          <div
+            key={room?.ratePlanId || room?.roomTypeId || `policy-${index}`}
+            className="rounded border border-gray-200 bg-white p-6 shadow-sm"
+          >
+            <div className="mb-5">
+              <h2 className="text-xl font-semibold text-gray-800">
+                {room?.roomType || "Room Policy"}
+              </h2>
 
-      {/* Property Policies */}
-      <div className="rounded border border-gray-200 bg-white p-6 shadow-sm">
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold text-gray-800">
-            Property Policies
-          </h2>
+              <p className="mt-1 text-sm text-gray-500">
+                Room-specific policies and booking requirements
+              </p>
+            </div>
 
-          <p className="mt-1 text-sm text-gray-500">
-            Important stay, check-in and hotel rules
-          </p>
-        </div>
-
-        <div className="grid gap-4">
-          {essential.map((item, i) => {
-            const color = getColor(item.type);
-
-            return (
-              <div
-                key={i}
-                className={`rounded border p-4 ${color.bg} ${color.border}`}
-              >
-                <div className=" items-start gap-4  !">
-                  {/* Icon */}
-                  <div
-                    className={`flex h-11 w-11 shrink-0 items-center justify-center most-text-color most-boder-colour rounded bg-white text-lg shadow-sm ${color.icon}`}
-                  >
-                    {getIcon(item.type)}
+            {cancellationPolicy && (
+              <div className="rounded border border-red-100 bg-red-50 p-5">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-red-100 text-red-600">
+                    <FileProtectOutlined />
                   </div>
 
-                  {/* Text */}
-                  <div className="min-w-0 flex-1">
-                    <h4 className="mb-2 text-[15px] font-semibold text-gray-800">
-                      {item.type}
-                    </h4>
+                  <div>
+                    <h3 className="text-lg font-semibold text-red-700">
+                      Cancellation Policy
+                    </h3>
 
-                    <p className="leading-7 text-gray-600">{item.text}</p>
+                    <p className="text-sm text-red-500">
+                      Cancellation terms for this room
+                    </p>
                   </div>
                 </div>
-              </div>
-            );
-          })}
 
-          {!essential.length && (
-            <div className="rounded border border-dashed p-6 text-center text-gray-500">
-              No policy information available
-            </div>
-          )}
+                <div
+                  className="mt-4 leading-7 text-red-700"
+                  dangerouslySetInnerHTML={{
+                    __html: cancellationPolicy,
+                  }}
+                />
+              </div>
+            )}
+
+            {(creditCardRequired || panMandatory) && (
+              <div className="mt-4 rounded border border-blue-100 bg-blue-50 p-5">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-blue-100 text-blue-600">
+                    <CreditCardOutlined />
+                  </div>
+
+                  <div>
+                    <h3 className="text-lg font-semibold text-blue-700">
+                      Payment Requirements
+                    </h3>
+
+                    <p className="text-sm text-blue-500">
+                      Requirements for booking this room
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-4 space-y-2">
+                  {creditCardRequired && (
+                    <div className="flex items-center gap-2 text-sm text-blue-700">
+                      <SafetyCertificateOutlined />
+                      <span>Credit card is required for booking.</span>
+                    </div>
+                  )}
+
+                  {panMandatory && (
+                    <div className="flex items-center gap-2 text-sm text-blue-700">
+                      <SafetyCertificateOutlined />
+                      <span>PAN is mandatory for booking.</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })}
+
+      {!roomsWithPolicies.length && (
+        <div className="rounded border border-dashed p-8 text-center text-gray-500">
+          No room policy information available
         </div>
-      </div>
+      )}
     </div>
   );
 };

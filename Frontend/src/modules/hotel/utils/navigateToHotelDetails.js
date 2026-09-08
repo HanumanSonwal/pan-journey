@@ -27,8 +27,15 @@ export const navigateToHotelDetails = ({
 
   const hotelId = hotel?.id || hotel?.hotelId || hotel?.HotelId || "";
 
-  if (!hotelId) {
-    console.error("Hotel id not found", hotel);
+  const hotelDetailId = hotel?.hotelDetailId || "";
+
+  if (!hotelId || !hotelDetailId) {
+    console.error("Hotel id or hotelDetailId not found", {
+      hotelId,
+      hotelDetailId,
+      hotel,
+    });
+
     return;
   }
 
@@ -39,5 +46,5 @@ export const navigateToHotelDetails = ({
     }),
   );
 
-  router.push(`/hotel-details/${citySlug}/${hotelSlug}?hid=${hotelId}`);
+  router.push(`/hotel-details/${citySlug}/${hotelSlug}`);
 };
