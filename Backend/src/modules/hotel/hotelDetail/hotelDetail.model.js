@@ -121,7 +121,10 @@ hotelId: {
       type: String,
       default: null,
     },
-
+importantInformation: {
+  type: [String],
+  default: [],
+},
     searchKey: {
       type: String,
       default: null,
