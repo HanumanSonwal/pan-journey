@@ -1,6 +1,6 @@
 export const lightTheme = {
   token: {
-    colorPrimary: "#0F6A75",
+    colorPrimary: "#05144B",
     colorInfo: "#72C0F0",
 
     borderRadius: 5,
@@ -17,15 +17,15 @@ export const lightTheme = {
 
   components: {
     Button: {
-      colorPrimary: "#0F6A75",
-      colorPrimaryHover: "#138391",
+      colorPrimary: " #05144B",
+      colorPrimaryHover: "#24346D",
     },
 
     Menu: {
-      itemSelectedBg: "#0F6A75",
+      itemSelectedBg: "#05144B",
       itemSelectedColor: "#ffffff",
       itemHoverBg: "rgba(114,192,240,.15)",
-      itemHoverColor: "#0F6A75",
+      itemHoverColor: "#05144B",
     },
 
     Layout: {
@@ -35,19 +35,19 @@ export const lightTheme = {
     },
 
     Switch: {
-      colorPrimary: "#0F6A75",
+      colorPrimary: "#05144B",
     },
 
     Tabs: {
-      itemSelectedColor: "#0F6A75",
-      inkBarColor: "#0F6A75",
+      itemSelectedColor: "#05144B",
+      inkBarColor: "#05144B",
     },
   },
 };
 
 export const darkTheme = {
   token: {
-    colorPrimary: "#72C0F0",
+    colorPrimary: "#BA611E",
     colorInfo: "#0F6A75",
 
     borderRadius: 5,

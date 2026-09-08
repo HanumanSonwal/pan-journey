@@ -55,7 +55,7 @@ const Sidebar = ({ collapsed }) => {
       style={{
         background: isDark
           ? "linear-gradient(180deg,#0D1B1E 0%,#08161A 100%)"
-          : "linear-gradient(180deg,#72C0F0 0%,#0F6A75 100%)",
+          : "#05144B",
         height: "100vh",
         boxShadow: isDark
           ? "2px 0 25px rgba(0,0,0,.35)"
@@ -90,12 +90,12 @@ const Sidebar = ({ collapsed }) => {
             <div
               style={{
                 width: collapsed ? 40 : 130,
-                height: 50,
+                height: 180,
                 position: "relative",
               }}
             >
               <Image
-                src="/images/mmt_logo.avif"
+                src="/images/LOGO-DW-w.webp"
                 alt="logo"
                 fill
                 style={{ objectFit: "contain" }}

@@ -1,8 +1,8 @@
 "use client";
 
-import { useApiMutation } from "@/modules/shared/hooks/useApiMutation";
 import { loginUser } from "@/modules/auth/api/auth.service";
 import { useAuthStore } from "@/modules/auth/store/auth.store";
+import { useApiMutation } from "@/modules/shared/hooks/useApiMutation";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Card, Checkbox, Form, Input, theme, Typography } from "antd";
 import { useRouter } from "next/navigation";
@@ -21,12 +21,12 @@ const LoginPage = () => {
 
   const { mutate, isPending } = useApiMutation(loginUser, {
     onSuccess: (res) => {
-       console.log("1. Login Success", res);
+      console.log("1. Login Success", res);
       if (res.success) {
         const userData = res.data?.user;
-         console.log("2. Before setUser", userData);
+        console.log("2. Before setUser", userData);
         setUser(userData);
-           console.log("3. After setUser", useAuthStore.getState());
+        console.log("3. After setUser", useAuthStore.getState());
         router.replace("/dashboard");
         console.log("4. After router.replace");
       }
@@ -118,8 +118,8 @@ const LoginPage = () => {
               size="large"
               loading={isPending}
               style={{
-                background: "#e53935",
-                borderColor: "#e53935",
+                background: "#BA611E",
+                borderColor: "#BA611E",
                 height: 42,
               }}
             >
