@@ -21,7 +21,11 @@ import StaySummaryCard from "./StaySummaryCard";
 
 import HotelBookingContents from "../../mobile-componant/HotelBookingContents";
 
-export default function HotelBookingContent({ hotelBookingData }) {
+export default function HotelBookingContent({
+  hotelBookingData,
+  hotelDetailId,
+  roomId,
+}) {
   const [isMobile, setIsMobile] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -31,6 +35,18 @@ export default function HotelBookingContent({ hotelBookingData }) {
 
   const { bookingData: storeBookingData, setBookingData } =
     useHotelBookingStore();
+
+  const mergedBookingData = {
+    ...hotelBookingData,
+    searchData: storeBookingData?.searchData || null,
+    selectedRoom: storeBookingData?.selectedRoom || null,
+    selectedRatePlan: storeBookingData?.selectedRatePlan || null,
+    selectedHotel: storeBookingData?.selectedHotel || null,
+  };
+
+  console.log("ROOM PRICING BOOKING DATA:", hotelBookingData);
+  console.log("HOTEL DETAIL ID:", hotelDetailId);
+  console.log("ROOM ID:", roomId);
 
   console.log("storeBookingData in hotelBooking", storeBookingData);
 
@@ -106,7 +122,7 @@ export default function HotelBookingContent({ hotelBookingData }) {
   };
 
   const bookingProps = {
-    hotelBookingData,
+    hotelBookingData: mergedBookingData,
 
     guestFormRef,
 
@@ -164,7 +180,7 @@ export default function HotelBookingContent({ hotelBookingData }) {
                   loading={isPending}
                   disabled={!agreement}
                   onClick={handleBooking}
-                  className="!h-[44px] w-full !rounded-lg buttion-background-color !text-sm sm:!h-[48px] sm:w-auto sm:!rounded-xl sm:!text-base"
+                  className="buttion-background-color !h-[44px] w-full !rounded-lg !text-sm sm:!h-[48px] sm:w-auto sm:!rounded-xl sm:!text-base"
                 >
                   Continue To Booking
                 </Button>

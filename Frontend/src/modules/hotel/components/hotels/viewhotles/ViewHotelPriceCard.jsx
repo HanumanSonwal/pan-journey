@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuthGuard } from "@/modules/auth/hooks/useAuthGuard";
-// import { useHotelBookingStore } from "@/modules/hotel/store/booking.store";
 import { Button } from "antd";
 import { useRouter } from "next/navigation";
 
@@ -12,7 +11,6 @@ const ViewHotelPriceCard = ({
 }) => {
   const router = useRouter();
   const { requireAuth } = useAuthGuard();
-  // const { setBookingData } = useHotelBookingStore();
   const selectedPlan = ratePlans?.[0] || null;
   const roomName = selectedPlan?.roomType || "Best Available Room";
   const roomDescription =

@@ -29,7 +29,6 @@ import ViewHotelTabs from "../components/hotels/viewhotles/ViewHotelTabs";
 import HotelCmsSection from "../sections/HotelCmsSection";
 import RelatedHotels from "../sections/RelatedHotels";
 import DynamicHotelSeoFallback from "../seo/DynamicHotelSeoFallback";
-// import { useHotelBookingStore } from "../store/booking.store";
 import { useHotelSearchStore } from "../store/serchData.store";
 import { buildHotelDetailsPayload } from "../utils/buildHotelDetailsPayload";
 import { buildWishlistPayload } from "../utils/buildWishlistPayload";
@@ -40,7 +39,6 @@ import HotelDetailsMobile from "./HotelDetailsMobile";
 function HotelDetails({ initialPayload = null, cms = null }) {
   const { selectedHotel } = useSelectedHotelStore();
   const { appliedSearchData } = useHotelSearchStore();
-  // const { setBookingData } = useHotelBookingStore();
 
   const [activeTab, setActiveTab] = useState("Rooms");
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
@@ -250,30 +248,21 @@ function HotelDetails({ initialPayload = null, cms = null }) {
     return [
       {
         HotelId: hotel?.hotelId || hotelId || "",
-
         HotelKey: hotel?.hotelKey || "",
-
         HotelName: hotel?.name || "",
 
         PricingBreakdown: {
           basePrice: Number(pricing?.basicAmount || 0),
-
           platformFeeAndTax: Number(pricing?.tax || 0),
-
           finalPrice: Number(pricing?.totalAmount || 0),
-
           currencySymbol: pricing?.currency || "₹",
         },
 
         pricing: {
           basicAmount: Number(pricing?.basicAmount || 0),
-
           tax: Number(pricing?.tax || 0),
-
           totalAmount: Number(pricing?.totalAmount || 0),
-
           serviceFee: Number(pricing?.serviceFee || 0),
-
           markup: Number(pricing?.markup || 0),
 
           gst: Number(pricing?.gst || 0),
@@ -344,46 +333,6 @@ function HotelDetails({ initialPayload = null, cms = null }) {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
-  // useEffect(() => {
-  //   if (!hotel?.hotelKey) {
-  //     return;
-  //   }
-
-  //   setBookingData({
-  //     supplierData,
-
-  //     searchData: appliedSearchData,
-
-  //     selectedHotel: {
-  //       hotelId: hotel?.hotelId || hotelId,
-
-  //       hotelDetailId: payload?.hotelDetailId || "",
-
-  //       hotelKey: hotel?.hotelKey || "",
-
-  //       hotelName: hotel?.name || "",
-
-  //       hotelImage: hotel?.image || "",
-
-  //       address: location?.address || "",
-
-  //       city: location?.city || "",
-
-  //       state: location?.state || "",
-
-  //       country: location?.country || "",
-  //     },
-  //   });
-  // }, [
-  //   hotel,
-  //   hotelId,
-  //   payload?.hotelDetailId,
-  //   supplierData,
-  //   appliedSearchData,
-  //   setBookingData,
-  //   location,
-  // ]);
 
   const handleWishlist = () => {
     requireAuth(async () => {
