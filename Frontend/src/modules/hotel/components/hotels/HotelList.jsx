@@ -18,23 +18,12 @@ function HotelList({
   onLoadingChange,
   onResultChange,
 }) {
-  /* =========================================================
-     WISHLIST
-  ========================================================= */
-
   const { data: wishlistIdsData } = useWishlistIds();
 
   const wishlistIds = useMemo(
     () => new Set(wishlistIdsData || []),
     [wishlistIdsData],
   );
-
-  /* =========================================================
-     BUILD API PAYLOAD
-     
-     searchData + filters + sort
-     are converted into the backend payload.
-  ========================================================= */
 
   const payload = useMemo(() => {
     return buildHotelPayload({
@@ -43,12 +32,6 @@ function HotelList({
       sort,
     });
   }, [searchData, filters, sort]);
-
-  /* =========================================================
-     HOTEL API
-     
-     Pagination is handled inside useInfiniteHotels.
-  ========================================================= */
 
   const {
     data,
@@ -59,17 +42,9 @@ function HotelList({
     isFetchingNextPage,
   } = useInfiniteHotels(payload);
 
-  /* =========================================================
-     LOADING CALLBACK
-  ========================================================= */
-
   useEffect(() => {
     onLoadingChange?.(isLoading);
   }, [isLoading, onLoadingChange]);
-
-  /* =========================================================
-     LOAD MORE / INFINITE SCROLL
-  ========================================================= */
 
   const loadMoreRef = useRef(null);
 
@@ -102,10 +77,6 @@ function HotelList({
     };
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
-  /* =========================================================
-     COMBINE ALL PAGES
-  ========================================================= */
-
   const hotels = useMemo(() => {
     const allHotels =
       data?.pages?.flatMap((page) => {
@@ -127,10 +98,6 @@ function HotelList({
     );
   }, [data]);
 
-  /* =========================================================
-     RESPONSE META
-  ========================================================= */
-
   const currencySymbol =
     data?.pages?.[0]?.data?.currencySymbol ||
     data?.pages?.[0]?.data?.CurrencySymbol ||
@@ -141,10 +108,6 @@ function HotelList({
     data?.pages?.[0]?.data?.SearchKey ||
     "";
 
-  /* =========================================================
-     MAP API HOTELS → HOTEL CARD DATA
-  ========================================================= */
-
   const mappedHotels = useMemo(() => {
     return mapHotelsForCard({
       hotels,
@@ -153,54 +116,28 @@ function HotelList({
     });
   }, [hotels, currencySymbol, searchKey]);
 
-  /* =========================================================
-     HOTELS CALLBACK
-  ========================================================= */
-
   useEffect(() => {
     onHotelsChange?.(mappedHotels);
   }, [mappedHotels, onHotelsChange]);
-
-  /* =========================================================
-     RESULT CALLBACK
-  ========================================================= */
 
   useEffect(() => {
     onResultChange?.(mappedHotels.length > 0);
   }, [mappedHotels, onResultChange]);
 
-  /* =========================================================
-     LOADING
-  ========================================================= */
-
   if (isLoading) {
     return <HotelContentLoader />;
   }
-
-  /* =========================================================
-     ERROR
-  ========================================================= */
 
   if (isError) {
     return <HotelNotFound type="error" />;
   }
 
-  /* =========================================================
-     EMPTY
-  ========================================================= */
-
   if (!mappedHotels.length) {
     return <HotelNotFound type="not-found" />;
   }
 
-  /* =========================================================
-     RENDER
-  ========================================================= */
-
   return (
     <div className="w-full space-y-4">
-      {/* HOTEL LIST */}
-
       {mappedHotels.map((hotel, index) => (
         <HotelCard
           key={hotel?.id || hotel?.hotelId || index}
@@ -208,12 +145,6 @@ function HotelList({
           wishlistIds={wishlistIds}
         />
       ))}
-
-      {/* =====================================================
-          LOAD MORE
-          
-          This appears only when another page is available.
-      ===================================================== */}
 
       {(hasNextPage || isFetchingNextPage) && (
         <div ref={loadMoreRef} className="flex justify-center py-6">

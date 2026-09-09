@@ -4,8 +4,7 @@ import { useCurrencyStore } from "@/modules/shared/store/currency.store";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { searchHotels } from "../services/hotel.service";
-
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 20;
 
 export const useInfiniteHotels = (params) => {
   const currency = useCurrencyStore((state) => state.selectedCurrency.code);

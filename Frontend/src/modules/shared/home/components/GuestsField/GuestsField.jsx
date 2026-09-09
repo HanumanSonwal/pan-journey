@@ -2,8 +2,8 @@
 
 import useIsMobile from "@/hooks/useIsMobile";
 import { Button, Drawer, Popover } from "antd";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 
 import {
   CHILD_AGES,
@@ -24,27 +24,96 @@ function GuestsField({
   variant = "default",
   icon,
 }) {
-  const safeValue = useMemo(
-    () => ({
-      ...DEFAULT_GUEST_VALUE,
-      ...(value || {}),
-    }),
-    [value],
+  const normalizeRoomGuests = useCallback(
+    (adults, children, childAges = [], requestedRooms = 1) => {
+      const totalAdults = Math.min(
+        MAX_ADULTS,
+        Math.max(1, Number(adults) || 1),
+      );
+
+      const totalChildren = Math.min(
+        MAX_CHILDREN,
+        Math.max(0, Number(children) || 0),
+      );
+
+      const requiredRooms = Math.max(
+        1,
+        Math.ceil((totalAdults + totalChildren) / 4),
+        Math.ceil(totalChildren / 2),
+        Math.ceil(totalAdults / 4),
+      );
+
+      const rooms = Math.min(
+        MAX_ROOMS,
+        Math.max(requiredRooms, Number(requestedRooms) || 1),
+      );
+
+      const validRooms = Math.min(rooms, totalAdults);
+
+      const roomAdults = Array.from(
+        { length: validRooms },
+        (_, index) =>
+          Math.floor(totalAdults / validRooms) +
+          (index < totalAdults % validRooms ? 1 : 0),
+      );
+
+      const roomChildren = Array.from({ length: validRooms }, () => []);
+      let remainingChildren = totalChildren;
+      for (let roomIndex = 0; roomIndex < validRooms; roomIndex++) {
+        const adultCount = roomAdults[roomIndex];
+        const capacityByPersons = Math.max(0, 4 - adultCount);
+        const roomChildLimit = Math.min(2, capacityByPersons);
+        const childCount = Math.min(remainingChildren, roomChildLimit);
+        for (let childIndex = 0; childIndex < childCount; childIndex++) {
+          const age = childAges[totalChildren - remainingChildren + childIndex];
+
+          roomChildren[roomIndex].push({
+            age: age ?? "",
+          });
+        }
+
+        remainingChildren -= childCount;
+      }
+
+      if (remainingChildren > 0) {
+        return null;
+      }
+
+      return roomAdults.map((roomAdultCount, index) => ({
+        adults: roomAdultCount,
+        children: roomChildren[index],
+      }));
+    },
+    [],
   );
 
-  const [draftGuests, setDraftGuests] = useState(safeValue);
+  const safeValue = useMemo(() => {
+    const adults = Number(value?.adults ?? DEFAULT_GUEST_VALUE.adults);
+    const children = Number(value?.children ?? DEFAULT_GUEST_VALUE.children);
+    const childAges = Array.isArray(value?.childAges) ? value.childAges : [];
+    const rooms = Number(value?.rooms ?? DEFAULT_GUEST_VALUE.rooms);
+    const roomGuests =
+      Array.isArray(value?.roomGuests) && value.roomGuests.length
+        ? value.roomGuests
+        : normalizeRoomGuests(adults, children, childAges, rooms) ||
+          DEFAULT_GUEST_VALUE.roomGuests;
 
+    return {
+      ...DEFAULT_GUEST_VALUE,
+      ...(value || {}),
+      adults,
+      children,
+      childAges,
+      rooms: roomGuests.length,
+      roomGuests,
+    };
+  }, [value, normalizeRoomGuests]);
+
+  const [draftGuests, setDraftGuests] = useState(safeValue);
   const isMobile = useIsMobile();
   const [drawerOpen, setDrawerOpen] = useState(false);
-
   const pathname = usePathname();
-
-  // ------------------------------------------------------------
-  // ONLY HOME PAGE
-  // ------------------------------------------------------------
-  const isHomePage =
-    pathname === "/" ||
-    pathname === "/home";
+  const isHomePage = pathname === "/" || pathname === "/home";
 
   useEffect(() => {
     if (open) {
@@ -59,174 +128,211 @@ function GuestsField({
     }));
   }, []);
 
-  // ------------------------------------------------------------
-  // ADULTS
-  // ------------------------------------------------------------
-
   const updateAdults = (val) => {
-    const adults = Math.min(
-      MAX_ADULTS,
-      Math.max(1, val),
-    );
+    const adults = Math.min(MAX_ADULTS, Math.max(1, Number(val) || 1));
 
-    const rooms = Math.min(
-      MAX_ROOMS,
-      Math.max(
-        Math.ceil(adults / 2),
-        draftGuests.rooms,
-      ),
-    );
+    setDraftGuests((prev) => {
+      const children = Number(prev.children) || 0;
+      const maxChildrenForAdults = adults * 2;
+      const safeChildren = Math.min(
+        children,
+        maxChildrenForAdults,
+        MAX_CHILDREN,
+      );
 
-    setDraftGuests((prev) => ({
-      ...prev,
-      adults,
-      rooms,
-    }));
+      const childAges = (prev.childAges || []).slice(0, safeChildren);
+
+      const requiredRooms = Math.max(
+        1,
+        Math.ceil((adults + safeChildren) / 4),
+        Math.ceil(safeChildren / 2),
+        Math.ceil(adults / 4),
+      );
+
+      const rooms = Math.min(
+        MAX_ROOMS,
+        Math.max(requiredRooms, Number(prev.rooms) || 1),
+      );
+
+      const roomGuests = normalizeRoomGuests(
+        adults,
+        safeChildren,
+        childAges,
+        rooms,
+      );
+
+      return {
+        ...prev,
+        adults,
+        children: safeChildren,
+        childAges,
+        rooms: roomGuests?.length || rooms,
+        roomGuests: roomGuests || [],
+      };
+    });
   };
-
-  // ------------------------------------------------------------
-  // ROOMS
-  // ------------------------------------------------------------
 
   const updateRooms = (val) => {
-    const rooms = Math.min(
-      MAX_ROOMS,
-      Math.max(1, val),
-    );
+    setDraftGuests((prev) => {
+      const requestedRooms = Math.min(MAX_ROOMS, Math.max(1, Number(val) || 1));
 
-    let adults = draftGuests.adults;
+      const adults = Math.max(1, Number(prev.adults) || 1);
 
-    if (adults < rooms) {
-      adults = rooms;
-    }
+      const children = Math.max(0, Number(prev.children) || 0);
 
-    if (adults > rooms * 2) {
-      adults = rooms * 2;
-    }
+      const requiredRooms = Math.max(
+        1,
+        Math.ceil((adults + children) / 4),
+        Math.ceil(children / 2),
+        Math.ceil(adults / 4),
+      );
 
-    setDraftGuests((prev) => ({
-      ...prev,
-      rooms,
-      adults,
-    }));
+      const rooms = Math.min(
+        MAX_ROOMS,
+        Math.max(requestedRooms, requiredRooms),
+      );
+
+      const roomGuests = normalizeRoomGuests(
+        adults,
+        children,
+        prev.childAges || [],
+        rooms,
+      );
+
+      return {
+        ...prev,
+        rooms: roomGuests?.length || rooms,
+        adults,
+        children,
+        roomGuests: roomGuests || [],
+      };
+    });
   };
-
-  // ------------------------------------------------------------
-  // CHILD AGE
-  // ------------------------------------------------------------
 
   const updateChildAge = (index, age) => {
-    const newAges = [
-      ...(draftGuests?.childAges || []),
-    ];
+    setDraftGuests((prev) => {
+      const newAges = [...(prev.childAges || [])];
 
-    newAges[index] = age;
+      newAges[index] = age;
 
-    update("childAges", newAges);
+      const roomGuests = normalizeRoomGuests(
+        Number(prev.adults) || 1,
+        Number(prev.children) || 0,
+        newAges,
+        Number(prev.rooms) || 1,
+      );
+
+      return {
+        ...prev,
+        childAges: newAges,
+        roomGuests: roomGuests || prev.roomGuests || [],
+      };
+    });
   };
 
-  // ------------------------------------------------------------
-  // CHILDREN
-  // ------------------------------------------------------------
-
   const handleChildrenChange = (val) => {
-    const children = Math.min(
-      MAX_CHILDREN,
-      Math.max(0, val),
-    );
+    setDraftGuests((prev) => {
+      const adults = Math.max(1, Number(prev.adults) || 1);
 
-    let newAges = [
-      ...(draftGuests?.childAges || []),
-    ];
+      let children = Math.min(MAX_CHILDREN, Math.max(0, Number(val) || 0));
 
-    while (newAges.length < children) {
-      newAges.push("");
-    }
+      const maxChildrenForAdults = adults * 2;
 
-    while (newAges.length > children) {
-      newAges.pop();
-    }
+      children = Math.min(children, maxChildrenForAdults);
 
-    setDraftGuests((prev) => ({
-      ...prev,
-      children,
-      childAges: newAges,
-    }));
+      let childAges = [...(prev.childAges || [])];
 
-    // ----------------------------------------------------------
-    // AUTO SCROLL ONLY ON HOME PAGE
-    // ----------------------------------------------------------
+      while (childAges.length < children) {
+        childAges.push("");
+      }
 
-    if (isHomePage && children > 0) {
-      requestAnimationFrame(() => {
-        const element = document.getElementById(
-          "guest-content",
-        );
+      childAges = childAges.slice(0, children);
 
-        if (element) {
-          element.scrollIntoView({
+      const requiredRooms = Math.max(
+        1,
+        Math.ceil((adults + children) / 4),
+        Math.ceil(children / 2),
+        Math.ceil(adults / 4),
+      );
+
+      const rooms = Math.min(
+        MAX_ROOMS,
+        Math.max(requiredRooms, Number(prev.rooms) || 1),
+      );
+
+      const roomGuests = normalizeRoomGuests(
+        adults,
+        children,
+        childAges,
+        rooms,
+      );
+
+      if (isHomePage && children > 0) {
+        setTimeout(() => {
+          document.getElementById("guest-content")?.scrollIntoView({
             behavior: "smooth",
             block: "nearest",
           });
-        }
-      });
-    }
+        }, 0);
+      }
+
+      return {
+        ...prev,
+        adults,
+        children,
+        childAges,
+        rooms: roomGuests?.length || rooms,
+        roomGuests: roomGuests || [],
+      };
+    });
   };
 
-  // ------------------------------------------------------------
-  // APPLY
-  // ------------------------------------------------------------
+  const handleApply = () => {
+    if (!childAgesValid) {
+      return;
+    }
 
-  const handleApply = useCallback(() => {
-    if (!childAgesValid) return;
+    const roomGuests = normalizeRoomGuests(
+      Number(draftGuests.adults) || 1,
+      Number(draftGuests.children) || 0,
+      draftGuests.childAges || [],
+      Number(draftGuests.rooms) || 1,
+    );
 
-    onChange?.(draftGuests);
+    if (!roomGuests) {
+      return;
+    }
+
+    const finalGuests = {
+      ...draftGuests,
+      rooms: roomGuests.length,
+      roomGuests,
+    };
+
+    onChange?.(finalGuests);
 
     if (isMobile) {
       setDrawerOpen(false);
     } else {
       setOpen?.(false);
     }
-  }, [
-    draftGuests,
-    isMobile,
-    onChange,
-    setOpen,
-  ]);
-
-  // ------------------------------------------------------------
-  // CHILD AGE VALIDATION
-  // ------------------------------------------------------------
+  };
 
   const childAgesValid = useMemo(() => {
     return (
       draftGuests.children === 0 ||
       draftGuests.childAges.every(
-        (age) =>
-          age !== "" &&
-          age !== null &&
-          age !== undefined,
+        (age) => age !== "" && age !== null && age !== undefined,
       )
     );
-  }, [
-    draftGuests.children,
-    draftGuests.childAges,
-  ]);
+  }, [draftGuests.children, draftGuests.childAges]);
 
-  // ------------------------------------------------------------
-  // DROPDOWN CONTENT
-  // ------------------------------------------------------------
-
-  const renderDropdownContent = ({
-    mobile = false,
-  } = {}) => (
+  const renderDropdownContent = ({ mobile = false } = {}) => (
     <div
       id="guest-content"
       onClick={(e) => e.stopPropagation()}
       className={`rounded-xl bg-white p-4 ${
-        mobile
-          ? "w-full max-w-none"
-          : "w-[calc(100vw-32px)] max-w-[340px]"
+        mobile ? "w-full max-w-none" : "w-[calc(100vw-32px)] max-w-[340px]"
       }`}
     >
       {/* ROOM */}
@@ -272,49 +378,40 @@ function GuestsField({
 
           <div
             className={`pr-1 ${
-              mobile
-                ? ""
-                : "max-h-[180px] overflow-y-auto sm:max-h-[220px]"
+              mobile ? "" : "max-h-[180px] overflow-y-auto sm:max-h-[220px]"
             }`}
           >
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-              {(draftGuests.childAges || []).map(
-                (age, i) => (
-                  <div
-                    key={i}
-                    className="flex min-w-0 items-center justify-between gap-1 rounded border border-[#e3f0f5] bg-[#fafefe] px-0 py-2"
+              {(draftGuests.childAges || []).map((age, i) => (
+                <div
+                  key={i}
+                  className="flex min-w-0 items-center justify-between gap-1 rounded border border-[#e3f0f5] bg-[#fafefe] px-0 py-2"
+                >
+                  <span className="shrink-0 text-[12px] font-medium text-gray-800">
+                    Child {i + 1}
+                  </span>
+
+                  <select
+                    value={age || ""}
+                    onChange={(e) => updateChildAge(i, Number(e.target.value))}
+                    className={`h-[34px] min-w-[86px] rounded border px-2 text-[12px] transition-all outline-none ${
+                      !age
+                        ? "border-red-300 bg-red-50 text-red-500"
+                        : "border-gray-300 bg-white text-gray-900"
+                    }`}
                   >
-                    <span className="shrink-0 text-[12px] font-medium text-gray-800">
-                      Child {i + 1}
-                    </span>
+                    <option value="" disabled>
+                      Select Age
+                    </option>
 
-                    <select
-                      value={age || ""}
-                      onChange={(e) =>
-                        updateChildAge(
-                          i,
-                          Number(e.target.value),
-                        )
-                      }
-                      className={`h-[34px] min-w-[86px] rounded border px-2 text-[12px] transition-all outline-none ${
-                        !age
-                          ? "border-red-300 bg-red-50 text-red-500"
-                          : "border-gray-300 bg-white text-gray-900"
-                      }`}
-                    >
-                      <option value="" disabled>
-                        Select Age
+                    {CHILD_AGES.map((a) => (
+                      <option key={a} value={a}>
+                        {a} yrs
                       </option>
-
-                      {CHILD_AGES.map((a) => (
-                        <option key={a} value={a}>
-                          {a} yrs
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                ),
-              )}
+                    ))}
+                  </select>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -326,12 +423,7 @@ function GuestsField({
           <input
             type="checkbox"
             checked={draftGuests.pets || false}
-            onChange={(e) =>
-              update(
-                "pets",
-                e.target.checked,
-              )
-            }
+            onChange={(e) => update("pets", e.target.checked)}
             className="mt-1 cursor-pointer"
           />
 
@@ -360,29 +452,14 @@ function GuestsField({
     </div>
   );
 
-  // ------------------------------------------------------------
-  // TRIGGER
-  // ------------------------------------------------------------
-
   const triggerUI = (
-    <GuestTrigger
-      variant={variant}
-      value={safeValue}
-      icon={icon}
-    />
+    <GuestTrigger variant={variant} value={safeValue} icon={icon} />
   );
-
-  // ------------------------------------------------------------
-  // MOBILE
-  // ------------------------------------------------------------
 
   if (isMobile) {
     return (
       <>
-        <div
-          onClick={() => setDrawerOpen(true)}
-          className="cursor-pointer"
-        >
+        <div onClick={() => setDrawerOpen(true)} className="cursor-pointer">
           {triggerUI}
         </div>
 
@@ -420,10 +497,6 @@ function GuestsField({
     );
   }
 
-  // ------------------------------------------------------------
-  // DESKTOP
-  // ------------------------------------------------------------
-
   return (
     <Popover
       trigger="click"
@@ -435,11 +508,7 @@ function GuestsField({
       content={renderDropdownContent()}
     >
       <div className="cursor-pointer">
-        <GuestTrigger
-          variant={variant}
-          value={safeValue}
-          icon={icon}
-        />
+        <GuestTrigger variant={variant} value={safeValue} icon={icon} />
       </div>
     </Popover>
   );

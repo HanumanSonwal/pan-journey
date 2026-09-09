@@ -5,7 +5,9 @@ import { Card, Tag, Typography } from "antd";
 const { Title, Text } = Typography;
 
 export default function RoomPackageCard({ bookingData }) {
-  const room = bookingData?.rooms?.[0] || bookingData?.selectedRoom || {};
+  const room = bookingData?.rooms || bookingData?.selectedRoom || {};
+
+  console.log("RoomPackageCard bookingData:", bookingData);
 
   const inclusionSource = room?.inclusion || room?.Inclusion || "";
 

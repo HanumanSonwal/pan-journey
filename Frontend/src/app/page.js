@@ -18,29 +18,17 @@ import TrustSection from "@/modules/shared/home/components/hero_section/TrustSec
 
 import { fetchHomeContent } from "@/modules/shared/home/services/homeContentFetch";
 
-/* -------------------------------------------------------------------------- */
-/* Site Configuration                                                         */
-/* -------------------------------------------------------------------------- */
-
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-
 const OG_IMAGE = `${SITE_URL}/images/OGIMAGE1.png`;
-
-/* -------------------------------------------------------------------------- */
-/* Home Page Metadata                                                         */
-/* -------------------------------------------------------------------------- */
 
 export async function generateMetadata() {
   const homeCms = await fetchCmsBySlug("home");
-
   const title =
     homeCms?.metaTitle ||
     "PAN Journey – Book Hotels, Flights & Travel Deals Online";
-
   const description =
     homeCms?.metaDescription ||
     "Book hotels, flights and travel packages with PAN Journey.";
-
   const keywords = Array.isArray(homeCms?.keywords)
     ? homeCms.keywords.join(", ")
     : homeCms?.keywords || undefined;
@@ -49,15 +37,10 @@ export async function generateMetadata() {
     title,
     description,
     keywords,
-
     alternates: {
       canonical: SITE_URL,
     },
 
-    /*
-     * IMPORTANT:
-     * Keep indexing disabled for now.
-     */
     robots: {
       index: false,
       follow: false,
@@ -71,10 +54,6 @@ export async function generateMetadata() {
         "max-snippet": -1,
       },
     },
-
-    /* ---------------------------------------------------------------------- */
-    /* Open Graph                                                             */
-    /* ---------------------------------------------------------------------- */
 
     openGraph: {
       title,
@@ -94,10 +73,6 @@ export async function generateMetadata() {
       ],
     },
 
-    /* ---------------------------------------------------------------------- */
-    /* Twitter                                                                */
-    /* ---------------------------------------------------------------------- */
-
     twitter: {
       card: "summary_large_image",
       title,
@@ -107,14 +82,7 @@ export async function generateMetadata() {
   };
 }
 
-/* -------------------------------------------------------------------------- */
-/* Home Page                                                                  */
-/* -------------------------------------------------------------------------- */
-
 export default async function Page() {
-  /*
-   * Fetch CMS and Home Content in parallel.
-   */
   const [homeCms, homeContent] = await Promise.all([
     fetchCmsBySlug("home"),
     fetchHomeContent(),
@@ -122,13 +90,7 @@ export default async function Page() {
 
   const { banner, placesAsPerYourVibe, topRatedHotels, popularDestinations } =
     homeContent ?? {};
-
-  /* ------------------------------------------------------------------------ */
-  /* FAQ Schema                                                               */
-  /* ------------------------------------------------------------------------ */
-
   const faqBlock = homeCms?.data?.blocks?.find((block) => block.type === "faq");
-
   const faqItems = faqBlock?.data?.items ?? [];
 
   const faqSchema =
@@ -150,54 +112,28 @@ export default async function Page() {
         }
       : null;
 
-  /* ------------------------------------------------------------------------ */
-  /* Website Schema                                                           */
-  /* ------------------------------------------------------------------------ */
-
   const websiteSchema = {
     "@context": "https://schema.org",
-
     "@type": "WebSite",
-
     name: "PAN Journey",
-
     url: SITE_URL,
-
     potentialAction: {
       "@type": "SearchAction",
-
       target: `${SITE_URL}/hotels?search={search_term_string}`,
-
       "query-input": "required name=search_term_string",
     },
   };
 
-  /* ------------------------------------------------------------------------ */
-  /* Organization Schema                                                      */
-  /* ------------------------------------------------------------------------ */
-
   const orgSchema = {
     "@context": "https://schema.org",
-
     "@type": "Organization",
-
     name: "PAN Journey",
-
     url: SITE_URL,
-
     logo: `${SITE_URL}/logo.png`,
   };
 
-  /* ------------------------------------------------------------------------ */
-  /* Render                                                                   */
-  /* ------------------------------------------------------------------------ */
-
   return (
     <>
-      {/* ------------------------------------------------------------------ */}
-      {/* Structured Data                                                    */}
-      {/* ------------------------------------------------------------------ */}
-
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -221,34 +157,18 @@ export default async function Page() {
         />
       )}
 
-      {/* ------------------------------------------------------------------ */}
-      {/* Home Page Sections                                                 */}
-      {/* ------------------------------------------------------------------ */}
-
       <ScrollToTopButton />
-
       <Hero banner={banner} />
-
       <TrustSection />
-
       <GiftCardSlider />
-
       <VacationSection vibes={placesAsPerYourVibe} />
-
       <Herobanner />
-
       <WhySection />
-
       <TopRatedHotels hotels={topRatedHotels} />
-
       <ComingSoonSection />
-
       <TestimonialsSection />
-
       <DestinationsSection destinations={popularDestinations} />
-
       {homeCms && <CMSContentRenderer cms={homeCms} />}
-
       <NewsletterSection />
     </>
   );
