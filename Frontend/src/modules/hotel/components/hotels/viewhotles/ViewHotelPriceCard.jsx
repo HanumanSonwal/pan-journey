@@ -11,7 +11,6 @@ const ViewHotelPriceCard = ({
 }) => {
   const router = useRouter();
   const { requireAuth } = useAuthGuard();
-
   const selectedPlan = ratePlans?.[0] || null;
 
   const roomName = selectedPlan?.roomType || "Best Available Room";

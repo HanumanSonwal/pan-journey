@@ -21,7 +21,7 @@ import grievanceRedressal from "./modules/grievanceRedressal/grievanceRedressal.
 import hotelCancellation from "./modules/hotel/hotelCancellation/cancellation.route.js";
 //import hotelDetails from "./modules/hotel/hotelDetails/hotel.routes.js";
 import hotelRequery from "./modules/hotel/hotelRequery/requery.route.js";
-import tempbookingRoutes from "./modules/hotel/hotelTempBooking/hoteltempbookingroutes.js";
+
 import hotelTicketing from "./modules/hotel/hotelTicketing/hotelTicketing.route.js";
 import invoiceRoutes from "./modules/hotel/invoice/invoice.route.js";
 
@@ -42,6 +42,8 @@ import theme from "./modules/theme/theme.route.js";
 import testRoutes from "./test.routes.js";
 import searchApi from "./modules/hotel/hotelSearch/search.routes.js"
 import hoteldetails from "./modules/hotel/hotelDetail/hotelDetail.route.js"
+import hotelTempBooking from "./modules/hotel/hotelTempbooking/tempBooking.route.js"
+
 import path from "path";
 
 
@@ -88,14 +90,15 @@ app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/homecontent", homecontent);
 app.use("/api/v1/HotelSearch", searchApi);
 app.use("/api/v1/HotelDetails", hoteldetails);
-
+app.use("/api/v1/hotelTempBooking", hotelTempBooking);
 app.use("/api/v1/cms", cmsRoutes);
 app.use("/api/v1/theme", theme);
 app.use("/api/v1/roles", roleRoutes);
 app.use("/api/v1/destination", destinationSearch);
 app.use("/api/webhooks", gatewayroutewebhook);
-// app.use("/api/v1/Hotels", hotelSearch);
-app.use("/api/v1", tempbookingRoutes);
+
+
+
 app.use("/api/v1", hotelRequery);
 app.use("/api/v1", addBalanceRoute);
 app.use("/api/v1", hotelCancellation);

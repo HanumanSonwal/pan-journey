@@ -1,16 +1,18 @@
 "use client";
 
 import { useAuthGuard } from "@/modules/auth/hooks/useAuthGuard";
-// import { useHotelBookingStore } from "@/modules/hotel/store/booking.store";
 import { Button } from "antd";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-const RoomOptions = ({ ratePlans = [], supplierData = {} }) => {
+const RoomOptions = ({
+  ratePlans = [],
+  supplierData = {},
+  hotelDetailId = "",
+}) => {
   const router = useRouter();
 
   const { requireAuth } = useAuthGuard();
-  // const { setBookingData } = useHotelBookingStore();
 
   const galleryImages = Array.isArray(supplierData?.HotelGallery)
     ? supplierData.HotelGallery.map((item) => {

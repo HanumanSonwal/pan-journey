@@ -7,21 +7,25 @@ import Image from "next/image";
 const { Title, Text } = Typography;
 
 export default function BookingHeaderCard({ bookingData }) {
-  const hotel = bookingData?.supplierData ?? {};
-  const room = bookingData?.selectedRoom ?? {};
+  const hotelName = bookingData?.name || "Hotel";
+  const location = bookingData?.location || {};
 
-  const { HotelImage, HotelName, Address, City, State, Country, StarRating } =
-    hotel;
+  const address = location?.address || "";
 
-  const fullLocation = [City, State, Country].filter(Boolean).join(", ");
+  const fullLocation = [location?.city, location?.state, location?.country]
+    .filter(Boolean)
+    .join(", ");
 
-  const roomName = room?.GroupName || "Standard Room";
+  const hotelImage = bookingData?.image || "/no-room.jpg";
 
-  const hotelImage = HotelImage
-    ? HotelImage.replace("_b.", "_z.").replace("_t.", "_z.")
-    : "/no-room.jpg";
+  const rating = Math.min(
+    Math.max(Number(bookingData?.starCategory || 0), 0),
+    5,
+  );
 
-  const rating = Number(StarRating || 0);
+  const room = bookingData?.rooms?.[0] || bookingData?.selectedRoom || {};
+
+  const roomName = room?.roomType || room?.GroupName || "Selected Room";
 
   return (
     <Card
@@ -32,152 +36,117 @@ export default function BookingHeaderCard({ bookingData }) {
         },
       }}
     >
-
-      {/* MOBILE VIEW */}
       <div className="flex gap-3 lg:hidden">
-
-        {/* Image */}
-        <div className="relative  h-[140px] w-[110px] sm:h-[160px] sm:w-[125px] md:h-[150px] md:w-[240px]  shrink-0 overflow-hidden rounded">
+        <div className="relative h-[140px] w-[110px] shrink-0 overflow-hidden rounded sm:h-[160px] sm:w-[125px] md:h-[150px] md:w-[240px]">
           <Image
-            src={hotel?.HotelImage || "/no-room.jpg"}
-            alt={hotel?.HotelName || "Hotel"}
+            src={hotelImage}
+            alt={hotelName}
             fill
             className="object-cover"
           />
         </div>
 
-
-        {/* Details */}
         <div className="min-w-0 flex-1">
-
           <Title
             level={5}
-            className="!mb-2 truncate font-roboto! !text-[16px] font-bold!"
+            className="font-roboto! !mb-2 truncate !text-[16px] font-bold!"
           >
-            {hotel?.HotelName}
+            {hotelName}
           </Title>
 
-
           <div className="mb-2 flex flex-wrap items-center gap-1">
-
             <div className="flex gap-[2px] text-[#f4b400]">
-              {[1, 2, 3, 4, 5].map((i) => (
+              {[1, 2, 3, 4, 5].map((item) => (
                 <StarFilled
-                  key={i}
-                  className="!text-[11px]"
+                  key={item}
+                  className={`!text-[11px] ${
+                    item <= rating ? "opacity-100" : "opacity-20"
+                  }`}
                 />
               ))}
             </div>
 
-
-            <Tag className="!m-0 rounded-full !px-2 !text-[11px]">
-              Selected
-            </Tag>
-
+            <Tag className="!m-0 rounded-full !px-2 !text-[11px]">Selected</Tag>
 
             <Tag className="!m-0 !border-0 !bg-green-50 !px-2 !text-[11px] !text-green-600">
               Confirming
             </Tag>
-
           </div>
 
+          {address && (
+            <Text className="block truncate text-[12px] text-[#666]">
+              {address}
+            </Text>
+          )}
 
-          <Text className="block truncate text-[12px] text-[#666]">
-            {hotel?.Address}
-          </Text>
+          {fullLocation && (
+            <Text className="block text-[12px] text-[#666]">
+              {fullLocation}
+            </Text>
+          )}
 
-
-          <Text className="block text-[12px] text-[#666]">
-            {hotel?.City}, {hotel?.Country}
-          </Text>
-
-
-             <div className="mt-4 max-w-full">
+          <div className="mt-4 max-w-full">
             <Tag
               color="blue"
-              className="!whitespace-normal !break-words !h-auto !max-w-full"
+              className="!h-auto !max-w-full !break-words !whitespace-normal"
             >
-              {room?.GroupName}
+              {roomName}
             </Tag>
           </div>
-
-
         </div>
-
       </div>
 
-
-
-
-      {/* DESKTOP VIEW */}
       <div className="hidden lg:block">
-
-        {/* Hotel Image */}
         <div className="relative h-[250px] w-full overflow-hidden rounded">
           <Image
-            src={hotel?.HotelImage || "/no-room.jpg"}
-            alt={hotel?.HotelName || "Hotel"}
+            src={hotelImage}
+            alt={hotelName}
             fill
             className="object-cover"
             priority
           />
         </div>
 
-
-        {/* Content */}
         <div className="p-4">
-
           <Title
             level={4}
             className="font-roboto! !mb-5 !text-[20px] font-bold!"
           >
-            {hotel?.HotelName}
+            {hotelName}
           </Title>
 
-
           <div className="mb-3 flex flex-wrap items-center gap-3">
-
             <div className="flex gap-1 text-[#f4b400]">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <StarFilled key={i} />
+              {[1, 2, 3, 4, 5].map((item) => (
+                <StarFilled
+                  key={item}
+                  className={item <= rating ? "opacity-100" : "opacity-20"}
+                />
               ))}
             </div>
 
-
-            <Tag className="rounded-full">
-              Selected
-            </Tag>
-
+            <Tag className="rounded-full">Selected</Tag>
 
             <Tag className="!border-0 !bg-green-50 !text-green-600">
               Confirming
             </Tag>
-
           </div>
 
+          {address && (
+            <Text className="block text-[14px] text-[#666]">{address}</Text>
+          )}
 
-          <Text className="block text-[14px] text-[#666]">
-            {hotel?.Address}
-          </Text>
-
-
-          <Text className="block text-[14px] text-[#666]">
-            {hotel?.City}, {hotel?.Country}
-          </Text>
-
+          {fullLocation && (
+            <Text className="block text-[14px] text-[#666]">
+              {fullLocation}
+            </Text>
+          )}
 
           <div className="mt-4">
-            <Tag color="blue">
-              {room?.GroupName}
-            </Tag>
+            <Tag color="blue">{roomName}</Tag>
           </div>
-
-
         </div>
-
       </div>
-
-
     </Card>
   );
 }

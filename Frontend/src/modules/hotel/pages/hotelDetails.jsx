@@ -30,7 +30,10 @@ import ViewHotelTabs from "../components/hotels/viewhotles/ViewHotelTabs";
 import HotelCmsSection from "../sections/HotelCmsSection";
 import RelatedHotels from "../sections/RelatedHotels";
 import DynamicHotelSeoFallback from "../seo/DynamicHotelSeoFallback";
+<<<<<<< HEAD
 
+=======
+>>>>>>> 612403043df7de72d8f57e31b99c77c3cb3574bb
 import { useHotelSearchStore } from "../store/serchData.store";
 import { buildHotelDetailsPayload } from "../utils/buildHotelDetailsPayload";
 import { buildWishlistPayload } from "../utils/buildWishlistPayload";
@@ -461,57 +464,23 @@ function HotelDetails({ initialPayload = null, cms = null }) {
 
     return [
       {
-        HotelId:
-          hotel?.hotelId ||
-          hotelId ||
-          "",
-
-        HotelKey:
-          hotel?.hotelKey ||
-          "",
-
-        HotelName:
-          hotel?.name ||
-          "",
+        HotelId: hotel?.hotelId || hotelId || "",
+        HotelKey: hotel?.hotelKey || "",
+        HotelName: hotel?.name || "",
 
         PricingBreakdown: {
-          basePrice: Number(
-            pricing?.basicAmount || 0,
-          ),
-
-          platformFeeAndTax: Number(
-            pricing?.tax || 0,
-          ),
-
-          finalPrice: Number(
-            pricing?.totalAmount || 0,
-          ),
-
-          currencySymbol:
-            pricing?.currency ||
-            "₹",
+          basePrice: Number(pricing?.basicAmount || 0),
+          platformFeeAndTax: Number(pricing?.tax || 0),
+          finalPrice: Number(pricing?.totalAmount || 0),
+          currencySymbol: pricing?.currency || "₹",
         },
 
         pricing: {
-          basicAmount: Number(
-            pricing?.basicAmount || 0,
-          ),
-
-          tax: Number(
-            pricing?.tax || 0,
-          ),
-
-          totalAmount: Number(
-            pricing?.totalAmount || 0,
-          ),
-
-          serviceFee: Number(
-            pricing?.serviceFee || 0,
-          ),
-
-          markup: Number(
-            pricing?.markup || 0,
-          ),
+          basicAmount: Number(pricing?.basicAmount || 0),
+          tax: Number(pricing?.tax || 0),
+          totalAmount: Number(pricing?.totalAmount || 0),
+          serviceFee: Number(pricing?.serviceFee || 0),
+          markup: Number(pricing?.markup || 0),
 
           gst: Number(
             pricing?.gst || 0,
@@ -628,10 +597,6 @@ function HotelDetails({ initialPayload = null, cms = null }) {
       );
     };
   }, []);
-
-  /* =========================================================
-     WISHLIST
-  ========================================================= */
 
   const handleWishlist = () => {
     requireAuth(async () => {
