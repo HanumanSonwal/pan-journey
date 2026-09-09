@@ -12,18 +12,29 @@ export default function BookingAgreement({ checked, onChange, bookingData }) {
         },
       }}
     >
-      <PriceBreakupCard bookingData={bookingData} />
-      <div className="rounded py-4">
-        <Checkbox
-          checked={checked}
-          onChange={(e) => onChange(e.target.checked)}
-          className="agreement-checkbox"
-        >
-          <span className="font-roboto! text-[15px]! leading-7! font-medium! text-[#555]">
-            I agree to PAN Journey terms, cancellation policy and booking
-            conditions.
-          </span>
-        </Checkbox>
+      <div className="w-full">
+        {/* ==================================================
+            PRICE BREAKUP
+            ================================================== */}
+
+        <PriceBreakupCard bookingData={bookingData} />
+
+        {/* ==================================================
+            AGREEMENT
+            ================================================== */}
+
+        <div className="rounded py-3">
+          <Checkbox
+            checked={checked}
+            onChange={(e) => onChange(e.target.checked)}
+            className="agreement-checkbox"
+          >
+            <span className="font-roboto! text-[14px]! leading-6! font-medium! text-[#555]">
+              I agree to PAN Journey terms, cancellation policy and booking
+              conditions.
+            </span>
+          </Checkbox>
+        </div>
       </div>
     </ConfigProvider>
   );

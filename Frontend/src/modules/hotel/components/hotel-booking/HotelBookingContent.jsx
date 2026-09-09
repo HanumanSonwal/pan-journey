@@ -14,13 +14,12 @@ import BookingAgreement from "./BookingAgreement";
 import BookingHeaderCard from "./BookingHeaderCard";
 import GuestDetailsForm from "./GuestDetailsForm";
 import ImportantInfoCard from "./ImportantInfoCard";
-import PriceBreakupCard from "./PriceBreakupCard";
 import RoomPackageCard from "./RoomPackageCard";
 import SpecialRequestCard from "./SpecialRequestCard";
 import StaySummaryCard from "./StaySummaryCard";
+import CouponsBankOffers from "./CouponsBankOffers";
 
 import HotelBookingContents from "../../mobile-componant/HotelBookingContents";
-import CouponsBankOffers from "./CouponsBankOffers";
 
 export default function HotelBookingContent({
   hotelBookingData,
@@ -34,28 +33,68 @@ export default function HotelBookingContent({
 
   const router = useRouter();
 
-  const { bookingData: storeBookingData, setBookingData } =
-    useHotelBookingStore();
+  const {
+    bookingData: storeBookingData,
+    setBookingData,
+  } = useHotelBookingStore();
+
+  // ============================================================
+  // MERGED BOOKING DATA
+  // ============================================================
 
   const mergedBookingData = {
     ...hotelBookingData,
+
     searchData: storeBookingData?.searchData || null,
-    selectedRoom: storeBookingData?.selectedRoom || null,
-    selectedRatePlan: storeBookingData?.selectedRatePlan || null,
-    selectedHotel: storeBookingData?.selectedHotel || null,
+
+    selectedRoom:
+      storeBookingData?.selectedRoom || null,
+
+    selectedRatePlan:
+      storeBookingData?.selectedRatePlan || null,
+
+    selectedHotel:
+      storeBookingData?.selectedHotel || null,
   };
 
-  console.log("ROOM PRICING BOOKING DATA:", hotelBookingData);
-  console.log("HOTEL DETAIL ID:", hotelDetailId);
-  console.log("ROOM ID:", roomId);
+  console.log(
+    "ROOM PRICING BOOKING DATA:",
+    hotelBookingData
+  );
 
-  console.log("storeBookingData in hotelBooking", storeBookingData);
+  console.log(
+    "MERGED BOOKING DATA:",
+    mergedBookingData
+  );
+
+  console.log(
+    "HOTEL DETAIL ID:",
+    hotelDetailId
+  );
+
+  console.log(
+    "ROOM ID:",
+    roomId
+  );
+
+  console.log(
+    "storeBookingData in hotelBooking",
+    storeBookingData
+  );
+
+  // ============================================================
+  // STATES
+  // ============================================================
 
   const [agreement, setAgreement] = useState(false);
 
   const guestFormRef = useRef(null);
 
   const { data: session } = useSession();
+
+  // ============================================================
+  // MOBILE CHECK
+  // ============================================================
 
   useEffect(() => {
     setMounted(true);
@@ -66,12 +105,22 @@ export default function HotelBookingContent({
 
     checkMobile();
 
-    window.addEventListener("resize", checkMobile);
+    window.addEventListener(
+      "resize",
+      checkMobile
+    );
 
     return () => {
-      window.removeEventListener("resize", checkMobile);
+      window.removeEventListener(
+        "resize",
+        checkMobile
+      );
     };
   }, []);
+
+  // ============================================================
+  // SPECIAL REQUEST
+  // ============================================================
 
   const handleRequestChange = (value) => {
     setBookingData({
@@ -79,48 +128,73 @@ export default function HotelBookingContent({
     });
   };
 
+  // ============================================================
+  // GUEST FORM
+  // ============================================================
+
   const handleGuestSubmit = (values) => {
     setBookingData({
       guestData: values,
     });
   };
 
+  // ============================================================
+  // BOOKING
+  // ============================================================
+
   const handleBooking = async () => {
     let latestGuestData;
 
     try {
-      latestGuestData = await guestFormRef.current.submitForm();
+      latestGuestData =
+        await guestFormRef.current.submitForm();
     } catch (errors) {
       console.log(errors);
       return;
     }
 
-    // Optional: store update
+    // Store latest guest data
     setBookingData({
       guestData: latestGuestData,
     });
 
+    // Build booking payload
     const payload = buildBookingPayload({
       bookingData: {
         ...storeBookingData,
         guestData: latestGuestData,
       },
+
       guestData: latestGuestData,
-      requestData: storeBookingData?.requestData,
+
+      requestData:
+        storeBookingData?.requestData,
     });
+
+    console.log(
+      "FINAL BOOKING PAYLOAD:",
+      payload
+    );
 
     bookHotel(payload, {
       onSuccess: (response) => {
-        const bookingRefNo = response?.data?.BookingRefNo;
+        const bookingRefNo =
+          response?.data?.BookingRefNo;
 
         setBookingData({
           bookingRefNo,
         });
 
-        router.push(`/hotel-checkout?bookingRefNo=${bookingRefNo}`);
+        router.push(
+          `/hotel-checkout?bookingRefNo=${bookingRefNo}`
+        );
       },
     });
   };
+
+  // ============================================================
+  // BOOKING PROPS
+  // ============================================================
 
   const bookingProps = {
     hotelBookingData: mergedBookingData,
@@ -139,70 +213,158 @@ export default function HotelBookingContent({
     isPending,
   };
 
-  // Avoid hydration mismatch
+  // ============================================================
+  // HYDRATION PROTECTION
+  // ============================================================
+
   if (!mounted) {
     return null;
   }
 
+  // ============================================================
   // MOBILE UI
+  // ============================================================
+
   if (isMobile) {
-    return <HotelBookingContents {...bookingProps} />;
+    return (
+      <HotelBookingContents
+        {...bookingProps}
+      />
+    );
   }
 
+  // ============================================================
   // DESKTOP UI
+  // ============================================================
+
   return (
     <div className="w-full">
       <BackgroundSection />
 
       <div className="mx-auto max-w-[1250px] !pb-6 sm:px-4">
         <Row gutter={[14, 23]}>
-          {/* LEFT */}
+
+          {/* ==================================================
+              LEFT COLUMN
+          ================================================== */}
 
           <Col xs={24} lg={15}>
             <div className="-mt-10! space-y-4 px-1 sm:space-y-5 sm:px-0">
+
+              {/* GUEST DETAILS */}
+
               <GuestDetailsForm
                 ref={guestFormRef}
                 onSubmit={handleGuestSubmit}
               />
 
+              {/* SPECIAL REQUEST */}
+
               <SpecialRequestCard
-                value={storeBookingData?.requestData}
-                onChange={handleRequestChange}
+                value={
+                  storeBookingData?.requestData
+                }
+                onChange={
+                  handleRequestChange
+                }
               />
 
-              <ImportantInfoCard bookingData={hotelBookingData} />
+              {/* IMPORTANT INFORMATION */}
 
-              <BookingAgreement checked={agreement} onChange={setAgreement} />
+              <ImportantInfoCard
+                bookingData={
+                  mergedBookingData
+                }
+              />
 
-              <div className="mb-[36px] pt-2 md:mb-[49px] xl:mb-0">
+              {/* ==================================================
+                  PRICE BREAKUP + AGREEMENT
+                  
+                  PriceBreakupCard ab yahin render hoga
+                  ================================================== */}
+
+              <BookingAgreement
+                checked={agreement}
+                onChange={setAgreement}
+                bookingData={
+                  mergedBookingData
+                }
+              />
+
+              {/* CONTINUE BUTTON */}
+
+              <div className="mb-[36px] pt-1 md:mb-[49px] xl:mb-0">
                 <Button
                   type="primary"
                   size="large"
                   loading={isPending}
                   disabled={!agreement}
                   onClick={handleBooking}
-                  className="buttion-background-color !h-[44px] w-full !rounded-lg !text-sm sm:!h-[48px] sm:w-auto sm:!rounded-xl sm:!text-base"
+                  className="
+                    buttion-background-color
+                    !h-[44px]
+                    w-full
+                    !rounded-lg
+                    !text-sm
+                    sm:!h-[48px]
+                    sm:w-auto
+                    sm:!rounded-xl
+                    sm:!text-base
+                  "
                 >
                   Continue To Booking
                 </Button>
               </div>
+
             </div>
           </Col>
 
-          {/* RIGHT */}
+          {/* ==================================================
+              RIGHT COLUMN
+          ================================================== */}
 
           <Col xs={24} lg={8}>
             <div className="-mt-10! space-y-4 px-1 sm:space-y-5 sm:px-0">
-              <BookingHeaderCard bookingData={hotelBookingData} />
 
-              <StaySummaryCard bookingData={hotelBookingData} />
+              {/* BOOKING HEADER */}
 
-              <RoomPackageCard bookingData={hotelBookingData} />
+              <BookingHeaderCard
+                bookingData={
+                  mergedBookingData
+                }
+              />
 
-      
-              <CouponsBankOffers bookingData={hotelBookingData} />
+              {/* STAY SUMMARY */}
+
+              <StaySummaryCard
+                bookingData={
+                  mergedBookingData
+                }
+              />
+
+              {/* ROOM PACKAGE */}
+
+              <RoomPackageCard
+                bookingData={
+                  mergedBookingData
+                }
+              />
+
+              {/* ==================================================
+                  PRICE BREAKUP REMOVED FROM HERE
+                  ================================================== */}
+
+              {/* COUPONS */}
+
+              <CouponsBankOffers
+                bookingData={
+                  mergedBookingData
+                }
+              />
+
             </div>
           </Col>
+
         </Row>
       </div>
     </div>
