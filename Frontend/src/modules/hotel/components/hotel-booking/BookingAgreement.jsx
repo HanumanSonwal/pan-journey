@@ -1,16 +1,18 @@
 "use client";
 
 import { Checkbox, ConfigProvider } from "antd";
+import PriceBreakupCard from "./PriceBreakupCard";
 
-export default function BookingAgreement({ checked, onChange }) {
+export default function BookingAgreement({ checked, onChange, bookingData }) {
   return (
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: "#1677ff", // apna theme color
+          colorPrimary: "#1677ff",
         },
       }}
     >
+      <PriceBreakupCard bookingData={bookingData} />
       <div className="rounded py-4">
         <Checkbox
           checked={checked}

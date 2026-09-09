@@ -20,6 +20,7 @@ import SpecialRequestCard from "./SpecialRequestCard";
 import StaySummaryCard from "./StaySummaryCard";
 
 import HotelBookingContents from "../../mobile-componant/HotelBookingContents";
+import CouponsBankOffers from "./CouponsBankOffers";
 
 export default function HotelBookingContent({
   hotelBookingData,
@@ -153,7 +154,7 @@ export default function HotelBookingContent({
     <div className="w-full">
       <BackgroundSection />
 
-      <div className="mx-auto max-w-[1250px] sm:px-4">
+      <div className="mx-auto max-w-[1250px] !pb-6 sm:px-4">
         <Row gutter={[14, 23]}>
           {/* LEFT */}
 
@@ -198,7 +199,8 @@ export default function HotelBookingContent({
 
               <RoomPackageCard bookingData={hotelBookingData} />
 
-              <PriceBreakupCard bookingData={hotelBookingData} />
+      
+              <CouponsBankOffers bookingData={hotelBookingData} />
             </div>
           </Col>
         </Row>
