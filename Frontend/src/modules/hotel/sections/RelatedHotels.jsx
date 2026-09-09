@@ -88,12 +88,12 @@ export default function RelatedHotels({
   };
 
   return (
-    <div className="mt-8">
+    <div className="!mt-8">
       <h3 className="mb-5 text-2xl font-semibold text-[#303030]">
         Similar Hotels
       </h3>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="pb-7 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {hotels.map((hotel, index) => {
           const hotelId =
             hotel?.id ||

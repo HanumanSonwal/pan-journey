@@ -129,7 +129,7 @@ const RoomOptions = ({
         return (
           <div
             key={plan?.ratePlanId || plan?.roomTypeId || `room-${index}`}
-            className="overflow-hidden rounded border border-gray-200 bg-white text-[#0f172a]! shadow-sm"
+            className="mt-6 overflow-hidden rounded border border-gray-200 bg-white text-[#0f172a]! shadow-sm"
           >
             <div className="grid items-stretch gap-5 p-5 lg:grid-cols-[280px_1fr_300px]">
               <div className="relative h-[240px] overflow-hidden rounded bg-gray-100 lg:h-full lg:min-h-[260px]">

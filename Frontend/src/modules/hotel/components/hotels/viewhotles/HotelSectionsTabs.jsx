@@ -31,9 +31,16 @@ const HotelSectionsTabs = ({ activeTab = "Rooms", setActiveTab }) => {
   const [height, setHeight] = useState(0);
   const [offsetTop, setOffsetTop] = useState(0);
 
+  // ------------------------------------------------------------
+  // HEADER OFFSET
+  // ------------------------------------------------------------
+
   const getHeaderOffset = () => (window.innerWidth >= 768 ? 170 : 110);
 
-  // Measure initial position
+  // ------------------------------------------------------------
+  // MEASURE INITIAL POSITION
+  // ------------------------------------------------------------
+
   useEffect(() => {
     const update = () => {
       if (!ref.current) return;
@@ -41,6 +48,7 @@ const HotelSectionsTabs = ({ activeTab = "Rooms", setActiveTab }) => {
       setHeight(ref.current.offsetHeight);
 
       const rect = ref.current.getBoundingClientRect();
+
       setOffsetTop(rect.top + window.scrollY);
 
       footerRef.current = document.getElementById("site-footer");
@@ -57,7 +65,10 @@ const HotelSectionsTabs = ({ activeTab = "Rooms", setActiveTab }) => {
     };
   }, []);
 
-  // Sticky Logic
+  // ------------------------------------------------------------
+  // STICKY LOGIC
+  // ------------------------------------------------------------
+
   useEffect(() => {
     const handleScroll = () => {
       if (!ref.current) return;
@@ -68,7 +79,9 @@ const HotelSectionsTabs = ({ activeTab = "Rooms", setActiveTab }) => {
 
       if (footer) {
         const footerTop = footer.getBoundingClientRect().top;
+
         const stickyHeight = ref.current.offsetHeight;
+
         const headerOffset = getHeaderOffset();
 
         if (footerTop <= stickyHeight + headerOffset) {
@@ -82,15 +95,20 @@ const HotelSectionsTabs = ({ activeTab = "Rooms", setActiveTab }) => {
     handleScroll();
 
     window.addEventListener("scroll", handleScroll);
+
     window.addEventListener("resize", handleScroll);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
+
       window.removeEventListener("resize", handleScroll);
     };
   }, [offsetTop]);
 
-  // Scroll Spy
+  // ------------------------------------------------------------
+  // SCROLL SPY
+  // ------------------------------------------------------------
+
   useEffect(() => {
     const handleScrollSpy = () => {
       if (ignoreScroll.current) return;
@@ -128,6 +146,10 @@ const HotelSectionsTabs = ({ activeTab = "Rooms", setActiveTab }) => {
     };
   }, [currentTab, setActiveTab]);
 
+  // ------------------------------------------------------------
+  // TAB SCROLL
+  // ------------------------------------------------------------
+
   const handleScrollTo = (tab) => {
     const el = document.getElementById(sectionIds[tab]);
 
@@ -141,8 +163,20 @@ const HotelSectionsTabs = ({ activeTab = "Rooms", setActiveTab }) => {
 
     ignoreScroll.current = true;
 
+    // ----------------------------------------------------------
+    // EXTRA OFFSET FOR ROOMS
+    // ----------------------------------------------------------
+    // Rooms par click karne par 40px extra upar jayega.
+    // Baaki tabs ka scroll same rahega.
+    // ----------------------------------------------------------
+
+    const extraOffset = tab === "Rooms" ? 40 : 0;
+
     const y =
-      el.getBoundingClientRect().top + window.pageYOffset - getHeaderOffset();
+      el.getBoundingClientRect().top +
+      window.pageYOffset -
+      getHeaderOffset() -
+      extraOffset;
 
     window.scrollTo({
       top: y,
@@ -154,8 +188,13 @@ const HotelSectionsTabs = ({ activeTab = "Rooms", setActiveTab }) => {
     }, 700);
   };
 
+  // ------------------------------------------------------------
+  // UI
+  // ------------------------------------------------------------
+
   return (
     <>
+      {/* Placeholder when tabs become fixed */}
       {isFixed && <div style={{ height }} />}
 
       <div
