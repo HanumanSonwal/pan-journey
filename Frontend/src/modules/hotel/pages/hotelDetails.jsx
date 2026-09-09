@@ -30,10 +30,6 @@ import ViewHotelTabs from "../components/hotels/viewhotles/ViewHotelTabs";
 import HotelCmsSection from "../sections/HotelCmsSection";
 import RelatedHotels from "../sections/RelatedHotels";
 import DynamicHotelSeoFallback from "../seo/DynamicHotelSeoFallback";
-<<<<<<< HEAD
-
-=======
->>>>>>> 612403043df7de72d8f57e31b99c77c3cb3574bb
 import { useHotelSearchStore } from "../store/serchData.store";
 import { buildHotelDetailsPayload } from "../utils/buildHotelDetailsPayload";
 import { buildWishlistPayload } from "../utils/buildWishlistPayload";
