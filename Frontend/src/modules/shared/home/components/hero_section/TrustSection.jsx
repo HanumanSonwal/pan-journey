@@ -72,7 +72,6 @@ export default function TrustSection() {
 
   if (isMobile === null) return null;
 
-  // ================= MOBILE =================
   if (isMobile) {
     return (
       <div className="background-color-bg w-full">
@@ -81,7 +80,6 @@ export default function TrustSection() {
     );
   }
 
-  // ================= DESKTOP =================
   return (
     <section className="background-color-bg !background-color-bg !lg:pt-[40px] w-full md:pt-[60px] xl:pt-[80px] 2xl:pt-[99px]">
       <div className="mx-auto w-[94%] overflow-hidden rounded-lg border border-[#e5e7eb] bg-white sm:w-[94%] md:w-[92%] lg:w-[94%] xl:w-[82%] 2xl:w-[82%]">
@@ -95,10 +93,8 @@ export default function TrustSection() {
                   : ""
               } `}
             >
-              {/* ICON */}
               <div className="shrink-0 pt-[2px]">{item.icon}</div>
 
-              {/* CONTENT */}
               <div className="min-w-0">
                 <h3 className="text-[13px] leading-[18px] font-semibold text-[#1F2937]">
                   {item.title}

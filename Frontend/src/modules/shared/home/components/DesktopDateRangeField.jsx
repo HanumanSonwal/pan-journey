@@ -40,17 +40,9 @@ export default function DesktopDateRangeField({
     left: 0,
   });
 
-  // ==========================================
-  // MOUNT
-  // ==========================================
-
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  // ==========================================
-  // UPDATE POPUP POSITION
-  // ==========================================
 
   const updatePopupPosition = () => {
     if (!fieldRef.current) return;
@@ -63,60 +55,26 @@ export default function DesktopDateRangeField({
     });
   };
 
-  // ==========================================
-  // SCROLL PAGE SO CALENDAR IS FULLY VISIBLE
-  // ==========================================
-
   const scrollPageToShowCalendar = () => {
     if (!popupRef.current) return;
 
     const popupRect = popupRef.current.getBoundingClientRect();
-
     const viewportHeight = window.innerHeight;
-
-    // Space from viewport top
     const topMargin = 20;
-
-    // Space from viewport bottom
     const bottomMargin = 20;
-
     const popupTop = popupRect.top;
     const popupBottom = popupRect.bottom;
     const popupHeight = popupRect.height;
 
-    // ==========================================
-    // CASE 1:
-    // CALENDAR IS CUT FROM BOTTOM
-    // ==========================================
-
     if (popupBottom > viewportHeight - bottomMargin) {
       const requiredScroll = popupBottom - (viewportHeight - bottomMargin);
-
-      /*
-       * Positive scroll means:
-       * Page content upar jayega.
-       *
-       * Example:
-       * Calendar bottom = 850
-       * Viewport = 768
-       * Required = 102px
-       *
-       * Page 102px neeche scroll hoga
-       * aur calendar screen ke andar aa jayega.
-       */
 
       window.scrollBy({
         top: requiredScroll,
         behavior: "smooth",
       });
-
       return;
     }
-
-    // ==========================================
-    // CASE 2:
-    // CALENDAR IS CUT FROM TOP
-    // ==========================================
 
     if (popupTop < topMargin) {
       const requiredScroll = popupTop - topMargin;
@@ -129,35 +87,15 @@ export default function DesktopDateRangeField({
       return;
     }
 
-    // ==========================================
-    // CASE 3:
-    // CALENDAR ALREADY FULLY VISIBLE
-    // ==========================================
-
     if (popupTop >= topMargin && popupBottom <= viewportHeight - bottomMargin) {
       return;
     }
-
-    // Prevent unused variable warning in some setups
     if (popupHeight <= 0) return;
   };
 
-  // ==========================================
-  // WHEN CALENDAR OPENS
-  // ==========================================
-
   useEffect(() => {
     if (!open) return;
-
-    /*
-     * First popup position calculate karo.
-     */
     updatePopupPosition();
-
-    /*
-     * Popup DOM me render hone ke baad
-     * uski actual height measure karo.
-     */
     const timer = setTimeout(() => {
       updatePopupPosition();
 
@@ -171,10 +109,6 @@ export default function DesktopDateRangeField({
     };
   }, [open]);
 
-  // ==========================================
-  // UPDATE POSITION ON RESIZE / SCROLL
-  // ==========================================
-
   useEffect(() => {
     if (!open) return;
 
@@ -183,26 +117,15 @@ export default function DesktopDateRangeField({
     };
 
     window.addEventListener("resize", handlePositionUpdate);
-
-    /*
-     * Capture phase me scroll listen kar rahe hain
-     * kyunki page scroll hone par popup ko
-     * field ke according reposition karna hai.
-     */
     window.addEventListener("scroll", handlePositionUpdate, true);
 
     return () => {
       window.removeEventListener("resize", handlePositionUpdate);
-
       window.removeEventListener("scroll", handlePositionUpdate, true);
     };
   }, [open]);
 
   const todayDate = today(getLocalTimeZone());
-
-  // ==========================================
-  // DAYJS -> CALENDAR DATE
-  // ==========================================
 
   const toCalendarDate = (date) => {
     if (!date) return null;
@@ -211,10 +134,6 @@ export default function DesktopDateRangeField({
 
     return new CalendarDate(d.year(), d.month() + 1, d.date());
   };
-
-  // ==========================================
-  // CALENDAR DATE -> DAYJS
-  // ==========================================
 
   const toDayjs = (date) => {
     if (!date) return null;
@@ -230,31 +149,17 @@ export default function DesktopDateRangeField({
   const checkInValue = toCalendarDate(value?.[0]);
   const checkOutValue = toCalendarDate(value?.[1]);
 
-  // ==========================================
-  // OPEN
-  // ==========================================
-
   const handleOpen = () => {
     setActiveField("checkIn");
 
     setCalendarKey((prev) => prev + 1);
 
-    /*
-     * Popup ki initial position calculate karo.
-     */
     requestAnimationFrame(() => {
       updatePopupPosition();
     });
 
-    /*
-     * Calendar open karo.
-     */
     setOpen?.(true);
   };
-
-  // ==========================================
-  // CLOSE
-  // ==========================================
 
   const handleClose = () => {
     setActiveField(null);
@@ -262,17 +167,9 @@ export default function DesktopDateRangeField({
     setOpen?.(false);
   };
 
-  // ==========================================
-  // DATE CLICK
-  // ==========================================
-
   const handleDatePress = () => {
     setActiveField("checkOut");
   };
-
-  // ==========================================
-  // RANGE COMPLETE
-  // ==========================================
 
   const handleRangeChange = (range) => {
     if (!range?.start || !range?.end) {
@@ -291,10 +188,6 @@ export default function DesktopDateRangeField({
     });
   };
 
-  // ==========================================
-  // CALENDAR CELL STYLE
-  // ==========================================
-
   const getCellClass = ({
     isSelected,
     isSelectionStart,
@@ -302,10 +195,6 @@ export default function DesktopDateRangeField({
     isDisabled,
     isOutsideMonth,
   }) => {
-    // ==========================================
-    // DISABLED / OUTSIDE MONTH
-    // ==========================================
-
     if (isDisabled || isOutsideMonth) {
       return `
         flex
@@ -321,10 +210,6 @@ export default function DesktopDateRangeField({
         text-gray-300
       `;
     }
-
-    // ==========================================
-    // CHECK IN / CHECK OUT
-    // ==========================================
 
     if (isSelectionStart || isSelectionEnd) {
       return `
@@ -346,10 +231,6 @@ export default function DesktopDateRangeField({
       `;
     }
 
-    // ==========================================
-    // MIDDLE RANGE
-    // ==========================================
-
     if (isSelected) {
       return `
         flex
@@ -370,10 +251,6 @@ export default function DesktopDateRangeField({
       `;
     }
 
-    // ==========================================
-    // NORMAL DATE
-    // ==========================================
-
     return `
       flex
       h-8 w-8
@@ -392,10 +269,6 @@ export default function DesktopDateRangeField({
       transition-all
     `;
   };
-
-  // ==========================================
-  // CALENDAR
-  // ==========================================
 
   const calendar = (
     <RangeCalendar
@@ -416,15 +289,11 @@ export default function DesktopDateRangeField({
       onChange={handleRangeChange}
       className="w-full"
     >
-      {/* ==========================================
-          HEADER
-      ========================================== */}
-
       <div className="mb-3 flex items-center gap-2 sm:mb-4">
         <Button
           slot="previous"
           aria-label="Previous months"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#E5E7EB] bg-[#F5F7FF] most-text-color transition hover:bg-[#E8F0FF] disabled:cursor-not-allowed disabled:opacity-30 sm:h-9 sm:w-9"
+          className="most-text-color flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#E5E7EB] bg-[#F5F7FF] transition hover:bg-[#E8F0FF] disabled:cursor-not-allowed disabled:opacity-30 sm:h-9 sm:w-9"
         >
           <ChevronLeft
             size={17}
@@ -433,12 +302,12 @@ export default function DesktopDateRangeField({
           />
         </Button>
 
-        <Heading className="flex-1 text-center text-[13px] font-bold whitespace-nowrap most-text-color sm:text-[14px] lg:text-[16px]" />
+        <Heading className="most-text-color flex-1 text-center text-[13px] font-bold whitespace-nowrap sm:text-[14px] lg:text-[16px]" />
 
         <Button
           slot="next"
           aria-label="Next months"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#E5E7EB] bg-[#F5F7FF] most-text-color transition hover:bg-[#E8F0FF] disabled:cursor-not-allowed disabled:opacity-30 sm:h-9 sm:w-9"
+          className="most-text-color flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#E5E7EB] bg-[#F5F7FF] transition hover:bg-[#E8F0FF] disabled:cursor-not-allowed disabled:opacity-30 sm:h-9 sm:w-9"
         >
           <ChevronRight
             size={17}
@@ -448,13 +317,7 @@ export default function DesktopDateRangeField({
         </Button>
       </div>
 
-      {/* ==========================================
-          TWO MONTHS
-      ========================================== */}
-
       <div className="grid grid-cols-2 gap-1 sm:gap-2 lg:gap-8">
-        {/* FIRST MONTH */}
-
         <CalendarGrid className="w-full min-w-0">
           {(date) => (
             <CalendarCell
@@ -464,8 +327,6 @@ export default function DesktopDateRangeField({
             />
           )}
         </CalendarGrid>
-
-        {/* SECOND MONTH */}
 
         <CalendarGrid offset={{ months: 1 }} className="w-full min-w-0">
           {(date) => (
@@ -480,24 +341,12 @@ export default function DesktopDateRangeField({
     </RangeCalendar>
   );
 
-  // ==========================================
-  // PORTAL POPUP
-  // ==========================================
-
   const portalPopup =
     mounted &&
     open &&
     createPortal(
       <>
-        {/* ==========================================
-            OVERLAY
-        ========================================== */}
-
         <div className="fixed inset-0 z-[9999999998]" onClick={handleClose} />
-
-        {/* ==========================================
-            CALENDAR POPUP
-        ========================================== */}
 
         <div
           ref={popupRef}
@@ -508,10 +357,6 @@ export default function DesktopDateRangeField({
           }}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* ==========================================
-              ACTIVE FIELD
-          ========================================== */}
-
           <div className="mb-3 flex items-center justify-between border-b border-gray-200 px-1 pb-3 sm:mb-4">
             <span
               className={`text-[12px] sm:text-[14px] ${
@@ -542,10 +387,6 @@ export default function DesktopDateRangeField({
       document.body,
     );
 
-  // ==========================================
-  // COMPACT VARIANT
-  // ==========================================
-
   if (variant === "compact") {
     return (
       <>
@@ -557,11 +398,7 @@ export default function DesktopDateRangeField({
             onClick={handleOpen}
           >
             <div className="flex h-full w-full items-center gap-1 sm:gap-2">
-              {/* ICON */}
-
               {icon && <div className="shrink-0">{icon}</div>}
-
-              {/* CHECK IN */}
 
               <div className="flex min-w-0 flex-1 flex-col">
                 <span
@@ -585,8 +422,6 @@ export default function DesktopDateRangeField({
                 </div>
               </div>
 
-              {/* CENTER */}
-
               <div className="flex shrink-0 flex-col items-center">
                 <span className="text-[14px] text-gray-400 sm:text-[16px]">
                   →
@@ -598,8 +433,6 @@ export default function DesktopDateRangeField({
                   </span>
                 )}
               </div>
-
-              {/* CHECK OUT */}
 
               <div className="flex min-w-0 flex-1 flex-col items-end">
                 <span
@@ -626,23 +459,13 @@ export default function DesktopDateRangeField({
           </div>
         </div>
 
-        {/* PORTAL */}
-
         {portalPopup}
       </>
     );
   }
 
-  // ==========================================
-  // DEFAULT VARIANT
-  // ==========================================
-
   return (
     <>
-      {/* ==========================================
-          LABELS
-      ========================================== */}
-
       <div className="mb-2 flex items-center justify-evenly">
         <span
           className={`text-[12px] transition-all sm:text-[13px] lg:text-[14px] ${
@@ -665,20 +488,12 @@ export default function DesktopDateRangeField({
         </span>
       </div>
 
-      {/* ==========================================
-          FIELD
-      ========================================== */}
-
       <div ref={fieldRef} className="relative w-full">
         <div
           className="flex h-[60px] w-full cursor-pointer items-center rounded-md border border-[#d9d9d9] bg-white px-2 py-2 transition-all hover:border-[#0077b6] sm:h-[62px] sm:px-2 sm:py-3 lg:h-[65px]"
           onClick={handleOpen}
         >
-          {/* ICON */}
-
           {icon && <div className="mr-1 shrink-0 sm:mr-2">{icon}</div>}
-
-          {/* CHECK IN */}
 
           <div className="flex min-w-0 flex-1 flex-col justify-center">
             <div className="flex items-start gap-1">
@@ -698,15 +513,11 @@ export default function DesktopDateRangeField({
             </span>
           </div>
 
-          {/* ARROW */}
-
           <div className="mx-2 shrink-0 sm:mx-3 lg:mx-4">
             <span className="most-text-color text-[20px] sm:text-[24px] lg:text-[28px]">
               →
             </span>
           </div>
-
-          {/* CHECK OUT */}
 
           <div className="flex min-w-0 flex-1 flex-col items-end justify-center">
             <div className="flex items-start gap-1">
@@ -726,8 +537,6 @@ export default function DesktopDateRangeField({
             </span>
           </div>
 
-          {/* NIGHTS */}
-
           {nights > 0 && (
             <div className="buttion-background-color ml-2 hidden shrink-0 rounded-md px-2 py-1 text-[9px] font-semibold text-white sm:block lg:ml-5 lg:text-[10px]">
               {nights}N
@@ -735,8 +544,6 @@ export default function DesktopDateRangeField({
           )}
         </div>
       </div>
-
-      {/* PORTAL */}
 
       {portalPopup}
     </>
