@@ -1,101 +1,108 @@
 "use client";
-
-import { Card, Tag, Typography } from "antd";
-
+import { Card, Typography } from "antd";
 const { Title, Text } = Typography;
-
 export default function RoomPackageCard({ bookingData }) {
   const room = bookingData?.rooms || bookingData?.selectedRoom || {};
-
-  console.log("RoomPackageCard bookingData:", bookingData);
-
   const inclusionSource = room?.inclusion || room?.Inclusion || "";
-
   const inclusion = Array.isArray(inclusionSource)
     ? inclusionSource
     : String(inclusionSource || "")
         .split(",")
         .map((item) => item.trim())
         .filter(Boolean);
-
   const cancellationPolicy =
     room?.policy?.outPolicyReason || room?.cancellationPolicy || "";
-
   const payment = room?.payment || {};
-
   return (
-    <Card className="font-roboto! !mb-2 rounded border-0 !shadow-[0_4px_12px_rgba(0,0,0,0.25)] shadow-sm">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <Tag color="gold" className="rounded-full px-4 py-1 text-sm">
-          Room Package
-        </Tag>
-
-        {cancellationPolicy && (
-          <Tag color="green" className="rounded-full px-4 py-1 text-sm">
-            Cancellation Available
-          </Tag>
-        )}
-      </div>
-
-      <div className="mt-5">
-        <Title level={4} className="font-roboto! !mb-3 !text-[20px] font-bold!">
-          {room?.roomType || "Selected Room"}
-        </Title>
-
+    <Card
+      className="!mb-3 !rounded-xl !border !border-gray-200 !bg-white !shadow-[0_2px_10px_rgba(0,0,0,0.06)]"
+      styles={{ body: { padding: 0 } }}
+    >
+      <div className="p-4 sm:p-5">
+        {/* ================= HEADER ================= */}
+        <div className="flex items-start justify-between gap-4 border-b border-gray-100 pb-4">
+          <div className="min-w-0">
+            <Text className="!block !text-[10px] !font-medium !tracking-[0.08em] !text-gray-400 !uppercase">
+              Room Package
+            </Text>
+            <Title
+              level={4}
+              className="!mt-1.5 !mb-0 !truncate !text-[17px] !leading-6 !font-semibold !text-[#172033] sm:!text-[18px]"
+            >
+              {room?.roomType || "Selected Room"}
+            </Title>
+          </div>
+          {cancellationPolicy && (
+            <span className="shrink-0 rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-medium text-emerald-600 sm:text-[11px]">
+              Free Cancellation
+            </span>
+          )}
+        </div>
+        {/* ================= ADDITIONAL INFO ================= */}
         {room?.additionalInfo && (
-          <Text className="text-[14px] text-[#666]">{room.additionalInfo}</Text>
+          <div className="border-b border-gray-100 py-0">
+            <Text className="!block !text-[12px] !leading-5 !text-gray-500">
+              {room.additionalInfo}
+            </Text>
+          </div>
+        )}
+        {/* ================= INCLUSIONS ================= */}
+        {!!inclusion.length && (
+          <div className="py-4">
+            <Text className="!mb-2.5 !block !text-[12px] !font-semibold !text-[#172033]">
+              Inclusions
+            </Text>
+            <div className="flex flex-wrap gap-x-4 gap-y-2">
+              {inclusion.map((item, index) => (
+                <div
+                  key={`${item}-${index}`}
+                  className="flex items-center gap-1.5 text-[11px] text-gray-600 sm:text-[12px]"
+                >
+                  <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-[9px] font-bold text-emerald-600">
+                    ✓
+                  </span>
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        {/* ================= CANCELLATION ================= */}
+        {cancellationPolicy && (
+          <div className="border-t border-gray-100 pt-4">
+            <Text className="!mb-2 !block !text-[12px] !font-semibold !text-[#172033]">
+              Cancellation Policy
+            </Text>
+            <div className="rounded-lg border border-emerald-100 bg-emerald-50/60 px-3.5 py-3">
+              <Text className="!block !text-[11px] !leading-5 !text-emerald-700 sm:!text-[12px]">
+                {cancellationPolicy}
+              </Text>
+            </div>
+          </div>
+        )}
+        {/* ================= PAYMENT REQUIREMENTS ================= */}
+        {(payment?.creditCardRequired || payment?.panMandatory) && (
+          <div className="border-t border-gray-100 pt-4">
+            <Text className="!mb-2.5 !block !text-[12px] !font-semibold !text-[#172033]">
+              Payment Requirements
+            </Text>
+            <div className="space-y-2">
+              {payment?.creditCardRequired && (
+                <div className="flex items-start gap-2 text-[11px] leading-5 text-gray-600 sm:text-[12px]">
+                  <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-gray-400" />
+                  <span> Credit card is required for this booking. </span>
+                </div>
+              )}
+              {payment?.panMandatory && (
+                <div className="flex items-start gap-2 text-[11px] leading-5 text-gray-600 sm:text-[12px]">
+                  <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-gray-400" />
+                  <span> PAN number is mandatory for this booking. </span>
+                </div>
+              )}
+            </div>
+          </div>
         )}
       </div>
-
-      {!!inclusion.length && (
-        <div className="mt-6">
-          <Title level={5} className="!mb-3 !text-[15px] !font-semibold">
-            Inclusions
-          </Title>
-
-          <div className="flex flex-wrap gap-2">
-            {inclusion.map((item, index) => (
-              <Tag
-                key={`${item}-${index}`}
-                color="green"
-                className="rounded-full px-3 py-1"
-              >
-                {item}
-              </Tag>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {cancellationPolicy && (
-        <div className="mt-7">
-          <Title level={5} className="!mb-1 !text-[15px] !font-semibold">
-            Cancellation Policy
-          </Title>
-
-          <div className="mt-3 rounded-xl border border-green-200 bg-green-50 p-4 text-[14px] leading-7 text-green-700">
-            {cancellationPolicy}
-          </div>
-        </div>
-      )}
-
-      {(payment?.creditCardRequired || payment?.panMandatory) && (
-        <div className="mt-6">
-          <Title level={5} className="!mb-3 !text-[15px] !font-semibold">
-            Payment Requirements
-          </Title>
-
-          <div className="space-y-2 text-[14px] text-[#555]">
-            {payment?.creditCardRequired && (
-              <div>Credit card is required for this booking.</div>
-            )}
-
-            {payment?.panMandatory && (
-              <div>PAN number is mandatory for this booking.</div>
-            )}
-          </div>
-        </div>
-      )}
     </Card>
   );
 }

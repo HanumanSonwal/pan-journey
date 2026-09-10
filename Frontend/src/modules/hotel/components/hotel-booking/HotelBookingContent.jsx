@@ -3,7 +3,7 @@
 import { Button, Col, Row } from "antd";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useHotelBooking } from "../../hooks/useHotelBooking";
 import { useHotelBookingStore } from "../../store/booking.store";
@@ -12,89 +12,89 @@ import { buildBookingPayload } from "../../utils/buildBookingPayload";
 import BackgroundSection from "./BackgroundSection";
 import BookingAgreement from "./BookingAgreement";
 import BookingHeaderCard from "./BookingHeaderCard";
+import CouponsBankOffers from "./CouponsBankOffers";
 import GuestDetailsForm from "./GuestDetailsForm";
 import ImportantInfoCard from "./ImportantInfoCard";
 import RoomPackageCard from "./RoomPackageCard";
 import SpecialRequestCard from "./SpecialRequestCard";
 import StaySummaryCard from "./StaySummaryCard";
-import CouponsBankOffers from "./CouponsBankOffers";
 
 import HotelBookingContents from "../../mobile-componant/HotelBookingContents";
 
 export default function HotelBookingContent({
-  hotelBookingData,
-  hotelDetailId,
-  roomId,
+  hotelBookingData = {},
+  hotelDetailId = "",
+  roomId = "",
 }) {
   const [isMobile, setIsMobile] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [agreement, setAgreement] = useState(false);
+
+  const guestFormRef = useRef(null);
 
   const { mutate: bookHotel, isPending } = useHotelBooking();
 
   const router = useRouter();
 
-  const {
-    bookingData: storeBookingData,
-    setBookingData,
-  } = useHotelBookingStore();
-
-  // ============================================================
-  // MERGED BOOKING DATA
-  // ============================================================
-
-  const mergedBookingData = {
-    ...hotelBookingData,
-
-    searchData: storeBookingData?.searchData || null,
-
-    selectedRoom:
-      storeBookingData?.selectedRoom || null,
-
-    selectedRatePlan:
-      storeBookingData?.selectedRatePlan || null,
-
-    selectedHotel:
-      storeBookingData?.selectedHotel || null,
-  };
-
-  console.log(
-    "ROOM PRICING BOOKING DATA:",
-    hotelBookingData
-  );
-
-  console.log(
-    "MERGED BOOKING DATA:",
-    mergedBookingData
-  );
-
-  console.log(
-    "HOTEL DETAIL ID:",
-    hotelDetailId
-  );
-
-  console.log(
-    "ROOM ID:",
-    roomId
-  );
-
-  console.log(
-    "storeBookingData in hotelBooking",
-    storeBookingData
-  );
-
-  // ============================================================
-  // STATES
-  // ============================================================
-
-  const [agreement, setAgreement] = useState(false);
-
-  const guestFormRef = useRef(null);
-
   const { data: session } = useSession();
 
-  // ============================================================
-  // MOBILE CHECK
-  // ============================================================
+  const { bookingData: storeBookingData, setBookingData } =
+    useHotelBookingStore();
+
+  const searchData = storeBookingData?.searchData || null;
+
+  const bookingData = useMemo(
+    () => ({
+      ...hotelBookingData,
+      hotelDetailId: hotelBookingData?.hotelDetailId || hotelDetailId || "",
+      hotelId: hotelBookingData?.hotelId || "",
+      roomId: hotelBookingData?.roomId || roomId || "",
+      searchData,
+    }),
+    [hotelBookingData, hotelDetailId, roomId, searchData],
+  );
+
+  const occupancy = useMemo(() => {
+    const apiRooms = Array.isArray(hotelBookingData?.guestDetails?.rooms)
+      ? hotelBookingData.guestDetails.rooms
+      : Array.isArray(hotelBookingData?.rooms)
+        ? hotelBookingData.rooms
+        : [];
+
+    if (apiRooms.length) {
+      return apiRooms;
+    }
+
+    const roomCount = Math.max(Number(searchData?.rooms) || 1, 1);
+    const adultCount = Math.max(Number(searchData?.adults) || 1, 1);
+    const childCount = Math.max(Number(searchData?.children) || 0, 0);
+
+    const rooms = Array.from({ length: roomCount }, (_, index) => ({
+      roomNo: index + 1,
+      adults: 1,
+      children: 0,
+    }));
+
+    let remainingAdults = Math.max(adultCount - roomCount, 0);
+    let adultRoomIndex = 0;
+
+    while (remainingAdults > 0) {
+      rooms[adultRoomIndex % rooms.length].adults += 1;
+      remainingAdults -= 1;
+      adultRoomIndex += 1;
+    }
+
+    let remainingChildren = childCount;
+    let childRoomIndex = 0;
+
+    while (remainingChildren > 0) {
+      rooms[childRoomIndex % rooms.length].children += 1;
+      remainingChildren -= 1;
+      childRoomIndex += 1;
+    }
+
+    return rooms;
+  }, [hotelBookingData, searchData]);
 
   useEffect(() => {
     setMounted(true);
@@ -105,22 +105,12 @@ export default function HotelBookingContent({
 
     checkMobile();
 
-    window.addEventListener(
-      "resize",
-      checkMobile
-    );
+    window.addEventListener("resize", checkMobile);
 
     return () => {
-      window.removeEventListener(
-        "resize",
-        checkMobile
-      );
+      window.removeEventListener("resize", checkMobile);
     };
   }, []);
-
-  // ============================================================
-  // SPECIAL REQUEST
-  // ============================================================
 
   const handleRequestChange = (value) => {
     setBookingData({
@@ -128,245 +118,141 @@ export default function HotelBookingContent({
     });
   };
 
-  // ============================================================
-  // GUEST FORM
-  // ============================================================
-
   const handleGuestSubmit = (values) => {
     setBookingData({
       guestData: values,
     });
   };
 
-  // ============================================================
-  // BOOKING
-  // ============================================================
-
   const handleBooking = async () => {
     let latestGuestData;
 
     try {
-      latestGuestData =
-        await guestFormRef.current.submitForm();
+      latestGuestData = await guestFormRef.current.submitForm();
     } catch (errors) {
-      console.log(errors);
+      console.log("GUEST FORM ERRORS:", errors);
       return;
     }
 
-    // Store latest guest data
     setBookingData({
       guestData: latestGuestData,
     });
 
-    // Build booking payload
     const payload = buildBookingPayload({
-      bookingData: {
-        ...storeBookingData,
-        guestData: latestGuestData,
-      },
-
+      bookingData,
       guestData: latestGuestData,
-
-      requestData:
-        storeBookingData?.requestData,
+      requestData: storeBookingData?.requestData || {},
+      hotelDetailId,
+      roomId,
     });
 
     console.log(
-      "FINAL BOOKING PAYLOAD:",
-      payload
+      "FINAL HOTEL TEMP BOOKING PAYLOAD:",
+      JSON.stringify(payload, null, 2),
     );
 
     bookHotel(payload, {
       onSuccess: (response) => {
         const bookingRefNo =
-          response?.data?.BookingRefNo;
+          response?.data?.BookingRefNo ||
+          response?.data?.bookingRefNo ||
+          response?.BookingRefNo ||
+          response?.bookingRefNo;
+
+        if (!bookingRefNo) {
+          console.error("BOOKING REF NO NOT FOUND:", response);
+          return;
+        }
 
         setBookingData({
           bookingRefNo,
         });
 
         router.push(
-          `/hotel-checkout?bookingRefNo=${bookingRefNo}`
+          `/hotel-checkout?bookingRefNo=${encodeURIComponent(bookingRefNo)}`,
         );
       },
     });
   };
 
-  // ============================================================
-  // BOOKING PROPS
-  // ============================================================
-
   const bookingProps = {
-    hotelBookingData: mergedBookingData,
-
+    hotelBookingData: bookingData,
+    hotelDetailId,
+    roomId,
+    occupancy,
     guestFormRef,
-
     agreement,
     setAgreement,
-
     storeBookingData,
-
     handleGuestSubmit,
     handleRequestChange,
     handleBooking,
-
     isPending,
+    session,
   };
-
-  // ============================================================
-  // HYDRATION PROTECTION
-  // ============================================================
 
   if (!mounted) {
     return null;
   }
 
-  // ============================================================
-  // MOBILE UI
-  // ============================================================
-
-  if (isMobile) {
-    return (
-      <HotelBookingContents
-        {...bookingProps}
-      />
-    );
-  }
-
-  // ============================================================
-  // DESKTOP UI
-  // ============================================================
-
   return (
-    <div className="w-full">
-      <BackgroundSection />
+    <>
+      {isMobile ? (
+        <HotelBookingContents {...bookingProps} />
+      ) : (
+        <div className="w-full">
+          <BackgroundSection />
 
-      <div className="mx-auto max-w-[1250px] !pb-6 sm:px-4">
-        <Row gutter={[14, 23]}>
+          <div className="mx-auto max-w-[1250px] !pb-6 sm:px-4">
+            <Row gutter={[14, 23]}>
+              <Col xs={24} lg={15}>
+                <div className="-mt-10! space-y-4 px-1 sm:space-y-5 sm:px-0">
+                  <GuestDetailsForm
+                    ref={guestFormRef}
+                    onSubmit={handleGuestSubmit}
+                    occupancy={occupancy}
+                  />
 
-          {/* ==================================================
-              LEFT COLUMN
-          ================================================== */}
+                  <SpecialRequestCard
+                    value={storeBookingData?.requestData || {}}
+                    onChange={handleRequestChange}
+                  />
 
-          <Col xs={24} lg={15}>
-            <div className="-mt-10! space-y-4 px-1 sm:space-y-5 sm:px-0">
+                  <ImportantInfoCard bookingData={bookingData} />
 
-              {/* GUEST DETAILS */}
+                  <BookingAgreement
+                    checked={agreement}
+                    onChange={setAgreement}
+                    bookingData={bookingData}
+                  />
 
-              <GuestDetailsForm
-                ref={guestFormRef}
-                onSubmit={handleGuestSubmit}
-              />
+                  <div className="mb-[36px] pt-1 md:mb-[49px] xl:mb-0">
+                    <Button
+                      type="primary"
+                      size="large"
+                      loading={isPending}
+                      disabled={!agreement}
+                      onClick={handleBooking}
+                      className="buttion-background-color !h-[44px] w-full !rounded-lg !text-sm sm:!h-[48px] sm:w-auto sm:!rounded-xl sm:!text-base"
+                    >
+                      Continue To Booking
+                    </Button>
+                  </div>
+                </div>
+              </Col>
 
-              {/* SPECIAL REQUEST */}
-
-              <SpecialRequestCard
-                value={
-                  storeBookingData?.requestData
-                }
-                onChange={
-                  handleRequestChange
-                }
-              />
-
-              {/* IMPORTANT INFORMATION */}
-
-              <ImportantInfoCard
-                bookingData={
-                  mergedBookingData
-                }
-              />
-
-              {/* ==================================================
-                  PRICE BREAKUP + AGREEMENT
-                  
-                  PriceBreakupCard ab yahin render hoga
-                  ================================================== */}
-
-              <BookingAgreement
-                checked={agreement}
-                onChange={setAgreement}
-                bookingData={
-                  mergedBookingData
-                }
-              />
-
-              {/* CONTINUE BUTTON */}
-
-              <div className="mb-[36px] pt-1 md:mb-[49px] xl:mb-0">
-                <Button
-                  type="primary"
-                  size="large"
-                  loading={isPending}
-                  disabled={!agreement}
-                  onClick={handleBooking}
-                  className="
-                    buttion-background-color
-                    !h-[44px]
-                    w-full
-                    !rounded-lg
-                    !text-sm
-                    sm:!h-[48px]
-                    sm:w-auto
-                    sm:!rounded-xl
-                    sm:!text-base
-                  "
-                >
-                  Continue To Booking
-                </Button>
-              </div>
-
-            </div>
-          </Col>
-
-          {/* ==================================================
-              RIGHT COLUMN
-          ================================================== */}
-
-          <Col xs={24} lg={8}>
-            <div className="-mt-10! space-y-4 px-1 sm:space-y-5 sm:px-0">
-
-              {/* BOOKING HEADER */}
-
-              <BookingHeaderCard
-                bookingData={
-                  mergedBookingData
-                }
-              />
-
-              {/* STAY SUMMARY */}
-
-              <StaySummaryCard
-                bookingData={
-                  mergedBookingData
-                }
-              />
-
-              {/* ROOM PACKAGE */}
-
-              <RoomPackageCard
-                bookingData={
-                  mergedBookingData
-                }
-              />
-
-              {/* ==================================================
-                  PRICE BREAKUP REMOVED FROM HERE
-                  ================================================== */}
-
-              {/* COUPONS */}
-
-              <CouponsBankOffers
-                bookingData={
-                  mergedBookingData
-                }
-              />
-
-            </div>
-          </Col>
-
-        </Row>
-      </div>
-    </div>
+              <Col xs={24} lg={8}>
+                <div className="-mt-10! space-y-4 px-1 sm:space-y-5 sm:px-0">
+                  <BookingHeaderCard bookingData={bookingData} />
+                  <StaySummaryCard bookingData={bookingData} />
+                  <RoomPackageCard bookingData={bookingData} />
+                  <CouponsBankOffers bookingData={bookingData} />
+                </div>
+              </Col>
+            </Row>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

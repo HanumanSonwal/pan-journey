@@ -2,7 +2,7 @@ import { api } from "@/services/axios";
 
 export const createBooking = async (payload) => {
   try {
-    const response = await api.post("/hotel-temp-booking", payload);
+    const response = await api.post("/hotelTempBooking", payload);
 
     return response.data;
   } catch (error) {

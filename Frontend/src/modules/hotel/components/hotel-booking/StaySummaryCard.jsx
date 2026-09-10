@@ -1,80 +1,99 @@
 "use client";
-
 import { ArrowRightOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { Card, Col, Row, Typography } from "antd";
 import dayjs from "dayjs";
-
 const { Text } = Typography;
-
 export default function StaySummaryCard({ bookingData }) {
   const searchData = bookingData?.searchData || {};
   const checkIn = bookingData?.checkIn?.date || searchData?.checkIn || "";
   const checkOut = bookingData?.checkOut?.date || searchData?.checkOut || "";
   const nights =
     checkIn && checkOut ? dayjs(checkOut).diff(dayjs(checkIn), "day") : 0;
-  const adults = searchData?.adults || searchData?.rooms?.[0]?.adults || 0;
-  const rooms = searchData?.rooms?.length || searchData?.roomCount || 1;
-
+  const adults =
+    Number(searchData?.adults) || Number(searchData?.rooms?.[0]?.adults) || 0;
+  const children = Number(searchData?.children) || 0;
+  const rooms =
+    searchData?.rooms?.length ||
+    searchData?.roomCount ||
+    searchData?.roomsCount ||
+    1;
   return (
     <Card
-      className="font-roboto! !mb-2 rounded border-0 !shadow-[0_4px_12px_rgba(0,0,0,0.25)] shadow-sm"
-      styles={{
-        body: {
-          padding: 12,
-        },
-      }}
+      className="!mb-3 !rounded-xl !border !border-gray-200 !bg-white !shadow-[0_2px_10px_rgba(0,0,0,0.06)]"
+      styles={{ body: { padding: 0 } }}
     >
-      <Row gutter={[4, 8]} align="middle">
-        <Col xs={8} md={8}>
-          <div className="text-center md:text-left">
-            <Text className="text-[11px] text-[#666] md:text-xs">Check-in</Text>
-
-            <h3 className="mt-1 text-[12px] font-semibold sm:text-[14px] md:text-[16px]">
-              {checkIn ? dayjs(checkIn).format("DD MMM YYYY") : "-"}
-            </h3>
-
-            {bookingData?.checkIn?.time && (
-              <Text className="text-[10px] text-[#666] md:text-xs">
-                {bookingData.checkIn.time}
+      <div className="p-3.5 sm:p-4">
+        <Row gutter={[8, 12]} align="middle" className="!m-0">
+          {/* ================= CHECK-IN ================= */}
+          <Col xs={9} sm={9} md={9} className="!px-0">
+            <div className="text-left">
+              <Text className="!block !text-[10px] !font-medium !tracking-wide !text-gray-400 !uppercase sm:!text-[11px]">
+                Check-in
               </Text>
-            )}
-          </div>
-        </Col>
-
-        <Col xs={8} md={8}>
-          <div className="flex flex-col items-center">
-            <ArrowRightOutlined className="text-[10px] md:text-xs" />
-
-            <div className="mt-1 flex items-center gap-1 rounded-full border px-2 py-1">
-              <ClockCircleOutlined className="text-[10px] md:text-xs" />
-
-              <span className="text-[10px] md:text-xs">{nights} Nights</span>
+              <div className="mt-1">
+                <span className="text-[13px] leading-5 font-semibold text-[#172033] sm:text-[15px] md:text-[16px]">
+                  {checkIn ? dayjs(checkIn).format("DD MMM YYYY") : "-"}
+                </span>
+              </div>
+              {bookingData?.checkIn?.time && (
+                <Text className="!mt-0.5 !block !text-[10px] !text-gray-500 sm:!text-[11px]">
+                  {bookingData.checkIn.time}
+                </Text>
+              )}
             </div>
-
-            <Text className="mt-1 text-center text-[10px] md:mt-2 md:text-xs">
-              {adults} Adults | {rooms} Room
-            </Text>
-          </div>
-        </Col>
-
-        <Col xs={8} md={8}>
-          <div className="text-center md:text-right">
-            <Text className="text-[11px] text-[#666] md:text-xs">
-              Check-out
-            </Text>
-
-            <h3 className="mt-1 text-[12px] font-semibold sm:text-[14px] md:text-[16px]">
-              {checkOut ? dayjs(checkOut).format("DD MMM YYYY") : "-"}
-            </h3>
-
-            {bookingData?.checkOut?.time && (
-              <Text className="text-[10px] text-[#666] md:text-xs">
-                {bookingData.checkOut.time}
+          </Col>
+          {/* ================= STAY INFO ================= */}
+          <Col xs={6} sm={6} md={6} className="!px-0">
+            <div className="flex flex-col items-center">
+              {/* Connecting line */}
+              <div className="flex w-full items-center justify-center">
+                <span className="hidden h-px flex-1 bg-gray-200 sm:block" />
+                <div className="mx-1 flex h-6 w-6 items-center justify-center rounded-full border border-gray-200 bg-white sm:mx-2">
+                  <ArrowRightOutlined className="!text-[9px] !text-gray-500" />
+                </div>
+                <span className="hidden h-px flex-1 bg-gray-200 sm:block" />
+              </div>
+              {/* Nights */}
+              <div className="mt-1.5 flex items-center gap-1.5 rounded-full bg-gray-50 px-2.5 py-1">
+                <ClockCircleOutlined className="!text-[10px] !text-gray-500" />
+                <span className="text-[10px] font-medium text-gray-600 sm:text-[11px]">
+                  {nights} {nights === 1 ? "Night" : "Nights"}
+                </span>
+              </div>
+              {/* Guests / Rooms */}
+              <Text className="!mt-1.5 !text-[9px] !font-medium !whitespace-nowrap !text-gray-500 sm:!text-[10px]">
+                {adults} {adults === 1 ? "Adult" : "Adults"}
+                <span className="mx-1 text-gray-300"> | </span> {rooms}
+                {rooms === 1 ? "Room" : "Rooms"}
+                {children > 0 && (
+                  <>
+                    <span className="mx-1 text-gray-300"> | </span> {children}
+                    {children === 1 ? "Child" : "Children"}
+                  </>
+                )}
               </Text>
-            )}
-          </div>
-        </Col>
-      </Row>
+            </div>
+          </Col>
+          {/* ================= CHECK-OUT ================= */}
+          <Col xs={9} sm={9} md={9} className="!px-0">
+            <div className="text-right">
+              <Text className="!block !text-[10px] !font-medium !tracking-wide !text-gray-400 !uppercase sm:!text-[11px]">
+                Check-out
+              </Text>
+              <div className="mt-1">
+                <span className="text-[13px] leading-5 font-semibold text-[#172033] sm:text-[15px] md:text-[16px]">
+                  {checkOut ? dayjs(checkOut).format("DD MMM YYYY") : "-"}
+                </span>
+              </div>
+              {bookingData?.checkOut?.time && (
+                <Text className="!mt-0.5 !block !text-[10px] !text-gray-500 sm:!text-[11px]">
+                  {bookingData.checkOut.time}
+                </Text>
+              )}
+            </div>
+          </Col>
+        </Row>
+      </div>
     </Card>
   );
 }
