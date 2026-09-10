@@ -33,13 +33,11 @@ export default function DestinationsSection({ destinations }) {
   return (
     <section className="background-color-bg !mt-[-30px] overflow-hidden !px-0 px-3 py-0 text-black sm:!mt-[-30px] sm:!px-0 sm:py-0 md:!mt-[-30px] md:!px-2 md:py-24 lg:!mt-[-70px] lg:!px-3 xl:!mt-[-90px] xl:!px-4 2xl:!mt-[-50px] 2xl:!px-0">
       <div className="mx-auto w-full lg:!mt-[-170px] lg:w-[88.87%] xl:!mt-[10px]">
-        {/* Heading */}
         <SectionHeading
           title={destinations?.title || "Popular Destinations"}
           description="We’re committed to offering more than just products we provide exceptional experiences."
         />
 
-        {/* Tabs */}
         <div className="mt-5 flex justify-center">
           <div className="scrollbar-hide flex max-w-full items-center gap-4 overflow-x-auto pb-2 whitespace-nowrap sm:gap-6 lg:gap-8">
             <ButtonTab
@@ -50,7 +48,6 @@ export default function DestinationsSection({ destinations }) {
           </div>
         </div>
 
-        {/* ================= MOBILE ================= */}
         <div className="mt-4 md:hidden">
           <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-2">
             {activeDestinations.map((item) => (
@@ -60,10 +57,7 @@ export default function DestinationsSection({ destinations }) {
             ))}
           </div>
         </div>
-
-        {/* ================= DESKTOP ================= */}
         <div className="hidden md:block">
-          {/* First Row */}
           {activeDestinations.length >= 2 && (
             <div className="mt-16 grid grid-cols-2 gap-5">
               {activeDestinations.slice(0, 2).map((item) => (
@@ -72,7 +66,6 @@ export default function DestinationsSection({ destinations }) {
             </div>
           )}
 
-          {/* Second Row */}
           {activeDestinations.length > 2 && (
             <div className="mt-5 grid grid-cols-3 gap-5">
               {activeDestinations.slice(2, 5).map((item) => (
@@ -80,8 +73,6 @@ export default function DestinationsSection({ destinations }) {
               ))}
             </div>
           )}
-
-          {/* Third Row */}
           {activeDestinations.length > 5 && (
             <div className="mt-5 grid grid-cols-2 gap-5">
               {activeDestinations.slice(5, 7).map((item) => (
@@ -90,7 +81,6 @@ export default function DestinationsSection({ destinations }) {
             </div>
           )}
 
-          {/* Fourth Row */}
           {activeDestinations.length > 7 && (
             <div className="mt-5 grid grid-cols-3 gap-5">
               {activeDestinations.slice(7, 10).map((item) => (
@@ -103,7 +93,6 @@ export default function DestinationsSection({ destinations }) {
     </section>
   );
 }
-/* ================= Destination Card ================= */
 
 function DestinationCard({ item }) {
   const router = useRouter();
@@ -124,7 +113,6 @@ function DestinationCard({ item }) {
       onClick={handleSearch}
       className={`group relative h-[260px] cursor-pointer overflow-hidden rounded-xl shadow-md transition-all duration-500 hover:shadow-xl sm:h-[300px] sm:rounded-2xl md:h-[340px] lg:rounded-[20px] ${item.height} `}
     >
-      {/* Image */}
       <Image
         src={item.image}
         alt={item.alt || item.name}
@@ -135,10 +123,8 @@ function DestinationCard({ item }) {
         className="object-cover"
       />
 
-      {/* Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
-      {/* Content */}
       <div className="absolute bottom-3 left-3 z-10 sm:bottom-5 sm:left-5 lg:bottom-7 lg:left-7">
         <h3 className="text-lg font-bold text-white sm:text-2xl md:text-3xl lg:text-4xl">
           {item.name}

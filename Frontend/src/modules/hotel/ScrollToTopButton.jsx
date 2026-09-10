@@ -27,33 +27,26 @@ const ScrollToTopButton = () => {
       <button
         onClick={scrollToTop}
         aria-label="Scroll To Top"
-        className={`fixed right-6 bottom-20 z-[99] h-[42px] w-[42px] rounded-full transition-all duration-500 md:bottom-12 ${show
-          ? "translate-y-0 scale-100 opacity-100"
-          : "pointer-events-none translate-y-20 scale-75 opacity-0"
-          }`}
+        className={`fixed right-6 bottom-20 z-[99] h-[42px] w-[42px] rounded-full transition-all duration-500 md:bottom-12 ${
+          show
+            ? "translate-y-0 scale-100 opacity-100"
+            : "pointer-events-none translate-y-20 scale-75 opacity-0"
+        }`}
       >
-        {/* Animated Ring */}
         <span
-          className="absolute inset-0 animate-spin rounded-full most-boder-colour "
+          className="most-boder-colour absolute inset-0 animate-spin rounded-full"
           style={{
             animationDuration: "4s",
           }}
         />
 
-        {/* Main Button */}
-        <span className="absolute inset-[4px] flex items-center justify-center overflow-hidden rounded-full ">
-          {/* Gloss */}
-          <span className="absolute left-1/2 top-1 h-6 w-10 -translate-x-1/2 rounded-full " />
+        <span className="absolute inset-[4px] flex items-center justify-center overflow-hidden rounded-full">
+          <span className="absolute top-1 left-1/2 h-6 w-10 -translate-x-1/2 rounded-full" />
 
-          {/* Arrow */}
-          <UpOutlined className="relative z-10 text-[24px] most-text-color drop-shadow-lg" />
+          <UpOutlined className="most-text-color relative z-10 text-[24px] drop-shadow-lg" />
         </span>
 
-        {/* Outer Glow */}
-        <span
-          className="absolute inset-0 animate-pulse rounded-full"
-
-        />
+        <span className="absolute inset-0 animate-pulse rounded-full" />
       </button>
     </>
   );

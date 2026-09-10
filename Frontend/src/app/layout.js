@@ -20,12 +20,7 @@ import { Suspense } from "react";
 import "./globals.css";
 import AppProviders from "./providers";
 
-// ✅ Metadata अलग file से import
 import { metadata as siteMetadata } from "./metadata";
-
-/* -------------------------------------------------------------------------- */
-/* Fonts                                                                      */
-/* -------------------------------------------------------------------------- */
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -40,32 +35,10 @@ const jost = Jost({
   weight: ["400", "500", "700"],
 });
 
-/* -------------------------------------------------------------------------- */
-/* IMPORTANT: Always fetch latest theme on server                             */
-/* -------------------------------------------------------------------------- */
-
 export const dynamic = "force-dynamic";
-
-/* -------------------------------------------------------------------------- */
-/* Metadata                                                                   */
-/* -------------------------------------------------------------------------- */
-
-// ✅ metadata.js से metadata use होगा
 export const metadata = siteMetadata;
-
-/* -------------------------------------------------------------------------- */
-/* Root Layout                                                                */
-/* -------------------------------------------------------------------------- */
-
 export default async function RootLayout({ children }) {
-  /*
-   * Fetch theme on the server BEFORE rendering the page.
-   */
   const theme = await getThemeServer();
-
-  /*
-   * Convert API theme object into CSS variables.
-   */
   const themeVariables = getThemeCSSVariables(theme);
 
   return (
@@ -76,18 +49,10 @@ export default async function RootLayout({ children }) {
       style={themeVariables}
     >
       <head>
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1"
-        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        <link
-          rel="preload"
-          as="image"
-          href="/images/homepage/home.svg"
-        />
+        <link rel="preload" as="image" href="/images/homepage/home.svg" />
 
-        {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-DYY7076V0W"
           strategy="afterInteractive"
@@ -96,13 +61,10 @@ export default async function RootLayout({ children }) {
         <Script id="google-analytics" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
-
             function gtag() {
               dataLayer.push(arguments);
             }
-
             gtag('js', new Date());
-
             gtag('config', 'G-DYY7076V0W');
           `}
         </Script>
@@ -111,23 +73,17 @@ export default async function RootLayout({ children }) {
       <body className="flex min-h-full flex-col">
         <AppProviders>
           <Header />
-
           <ScrollToTopButton />
-
           <ProfileCompletionHandler />
-
           <main className="flex-1">
             <AntdApp>
               <GlobalLoginModal />
-
               {children}
             </AntdApp>
           </main>
-
           <Suspense fallback={null}>
             <BottomNav />
           </Suspense>
-
           <Footer />
         </AppProviders>
       </body>

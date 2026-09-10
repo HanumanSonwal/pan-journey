@@ -31,17 +31,13 @@ function DestinationSearchField({
 
       setRecentSearches(stored);
 
-      // AUTO SELECT RECENT
       if (autoSelectRecent && stored.length > 0 && !value?.city) {
         onChange({
           city: stored[0]?.displayName || stored[0]?.name || "",
           cityData: {
             ...stored[0],
-
             stateName: stored[0]?.stateName || stored[0]?.state || "",
-
             countryCode: stored[0]?.countryCode || stored[0]?.country || "",
-
             normalizedCity: stored[0]?.city || stored[0]?.name || "",
           },
         });
@@ -185,7 +181,6 @@ function DestinationSearchField({
           ]
         : []),
 
-      // Hotels
       ...(hotels.length > 0
         ? [
             {
@@ -195,7 +190,6 @@ function DestinationSearchField({
           ]
         : []),
 
-      // Locations
       ...(locations.length > 0
         ? [
             {
@@ -259,11 +253,9 @@ function DestinationSearchField({
               : "min-h-[6px] flex-col justify-center px-1 md:px-2"
           }`}
         >
-          {/* ICON */}
 
           {icon && <div className="flex shrink-0 items-center">{icon}</div>}
 
-          {/* SELECT */}
 
           <div className="flex w-full min-w-0 items-center gap-2 overflow-hidden">
             {icon || <SearchOutlined className="!text-[20px] text-gray-400" />}
@@ -330,7 +322,6 @@ function DestinationSearchField({
             </div>
           </div>
 
-          {/* COUNTRY */}
 
           {compact ? (
             <span

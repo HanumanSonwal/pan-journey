@@ -8,26 +8,15 @@ import SectionHeading from "@/components/common/SectionHeading";
 import SectionWrapper from "@/components/common/SectionWrapper";
 
 export default function VacationSection({ vibes }) {
-  console.log("vibes", vibes);
-
   const categories = vibes?.categories || [];
-
   const [activeTab, setActiveTab] = useState(categories[0]?.category || "");
-
-  // useEffect(() => {
-  //   if (categories.length > 0) {
-  //     setActiveTab(categories[0].category);
-  //   }
-  // }, [categories]);
 
   return (
     <SectionWrapper className="background-color-bg">
-      {/* Heading */}
       <div>
         <SectionHeading title={vibes?.title || "Places As Per Your Vibe"} />
       </div>
 
-      {/* Tabs */}
       <div className="scrollbar-hide mt-2 mb-8 flex justify-center overflow-x-auto px-0 sm:mt-6 md:mt-6 lg:mt-6">
         <ButtonTab
           tabs={categories}
@@ -36,7 +25,6 @@ export default function VacationSection({ vibes }) {
         />
       </div>
 
-      {/* Hotels */}
       <div className="pb-8">
         <HotelType activeTab={activeTab} vibes={categories} />
       </div>

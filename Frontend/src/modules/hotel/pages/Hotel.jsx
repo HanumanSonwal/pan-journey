@@ -49,48 +49,22 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
   } = useHotelSearchStore();
 
   const searchParams = useSearchParams();
-
-  /* ----------------------------------
-     Refs
-  ---------------------------------- */
-
   const hotelListRef = useRef(null);
   const cmsTriggerRef = useRef(null);
-
   const scrollFrameRef = useRef(null);
   const sidebarZ0Ref = useRef(false);
-
-  /* ----------------------------------
-     States
-  ---------------------------------- */
-
   const [mounted, setMounted] = useState(false);
-
   const [filters, setFilters] = useState(defaultFilters);
-
   const [hotelsLoading, setHotelsLoading] = useState(true);
-
   const [hasHotels, setHasHotels] = useState(false);
-
   const [sort, setSort] = useState("recommended");
-
   const [mapOpen, setMapOpen] = useState(false);
-
   const [hotelsForMap, setHotelsForMap] = useState([]);
-
   const [sidebarZ0, setSidebarZ0] = useState(false);
-
-  /* ----------------------------------
-     Mounted
-  ---------------------------------- */
 
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  /* ----------------------------------
-     Sidebar Z-Index
-  ---------------------------------- */
 
   const updateSidebarZIndex = useCallback((value) => {
     if (sidebarZ0Ref.current === value) {
@@ -104,19 +78,9 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
   const handleSearch = useCallback(
     (searchData) => {
       if (!searchData) return;
-
       setDraftSearchData(searchData);
       setAppliedSearchData(searchData);
-
-      /*
-       * New search ke time sidebar ko
-       * normal hotel-list state par reset karo.
-       */
       updateSidebarZIndex(false);
-
-      /*
-       * Hotel list ki beginning par smoothly le jao.
-       */
       requestAnimationFrame(() => {
         scrollToHotelList();
       });
@@ -124,101 +88,52 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
     [setDraftSearchData, setAppliedSearchData, updateSidebarZIndex],
   );
 
-  /* ----------------------------------
-     FILTER
-  ---------------------------------- */
-
   const handleFilterChange = useCallback((updater) => {
     setFilters(updater);
     scrollToHotelList();
   }, []);
-
-  /* ----------------------------------
-     SORT
-  ---------------------------------- */
 
   const handleSortChange = useCallback((value) => {
     setSort(value);
     scrollToHotelList();
   }, []);
 
-  /* ----------------------------------
-     FAST SCROLL Z-INDEX
-  ---------------------------------- */
-
   useEffect(() => {
     if (!mounted || isMobile) return;
 
     const checkSidebarPosition = () => {
       scrollFrameRef.current = null;
-
       const scrollY = window.scrollY || window.pageYOffset;
-
       const hotelElement = hotelListRef.current;
       const cmsTrigger = cmsTriggerRef.current;
-
-      /* ----------------------------------
-         1. HOTEL LOADING
-
-         Search ke baad hotels load ho rahe
-         hain to fast scroll par sidebar
-         z-0 ho jayega.
-      ---------------------------------- */
 
       if (hotelsLoading) {
         updateSidebarZIndex(scrollY > 50);
         return;
       }
 
-      /* ----------------------------------
-         2. NO HOTEL RESULT
-      ---------------------------------- */
-
       if (!hasHotels) {
         updateSidebarZIndex(scrollY > 50);
         return;
       }
 
-      /* ----------------------------------
-         3. CMS TRIGGER
-
-         CMS actual content ki height
-         important nahi hai.
-
-         Invisible trigger CMS ke top par
-         fixed hai.
-      ---------------------------------- */
-
       if (cmsTrigger) {
         const triggerRect = cmsTrigger.getBoundingClientRect();
-
         const cmsReached = triggerRect.top <= CMS_TRIGGER_OFFSET;
-
         if (cmsReached) {
           updateSidebarZIndex(true);
           return;
         }
       }
 
-      /* ----------------------------------
-         4. HOTEL LIST END
-      ---------------------------------- */
-
       if (hotelElement) {
         const hotelRect = hotelElement.getBoundingClientRect();
-
         const hotelListFinished = hotelRect.bottom <= STICKY_OFFSET;
-
         if (hotelListFinished) {
           updateSidebarZIndex(true);
           return;
         }
       }
-
-      /* ----------------------------------
-         5. NORMAL HOTEL AREA
-      ---------------------------------- */
-
       updateSidebarZIndex(false);
     };
 
@@ -226,7 +141,6 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
       if (scrollFrameRef.current !== null) {
         return;
       }
-
       scrollFrameRef.current =
         window.requestAnimationFrame(checkSidebarPosition);
     };
@@ -234,47 +148,27 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
     window.addEventListener("scroll", handleScroll, {
       passive: true,
     });
-
-    /*
-     * Initial calculation
-     */
     checkSidebarPosition();
-
     return () => {
       window.removeEventListener("scroll", handleScroll);
-
       if (scrollFrameRef.current !== null) {
         window.cancelAnimationFrame(scrollFrameRef.current);
-
         scrollFrameRef.current = null;
       }
     };
   }, [mounted, isMobile, hotelsLoading, hasHotels, updateSidebarZIndex]);
 
-  /* ----------------------------------
-     CMS POSITION OBSERVER
-
-     CMS ki height dynamically change
-     hone par trigger ki position recalculate
-     hogi.
-  ---------------------------------- */
-
   useEffect(() => {
     if (!mounted || isMobile) return;
-
     const cmsTrigger = cmsTriggerRef.current;
-
     if (!cmsTrigger) return;
-
     const checkCmsPosition = () => {
       if (hotelsLoading || !hasHotels) {
         return;
       }
 
       const rect = cmsTrigger.getBoundingClientRect();
-
       const cmsReached = rect.top <= CMS_TRIGGER_OFFSET;
-
       updateSidebarZIndex(cmsReached);
     };
 
@@ -282,7 +176,6 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
       if (scrollFrameRef.current !== null) {
         return;
       }
-
       scrollFrameRef.current = window.requestAnimationFrame(() => {
         scrollFrameRef.current = null;
 
@@ -291,9 +184,7 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
     });
 
     resizeObserver.observe(cmsTrigger);
-
     window.addEventListener("resize", checkCmsPosition);
-
     checkCmsPosition();
 
     return () => {
@@ -303,25 +194,16 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
     };
   }, [mounted, isMobile, cms, hotelsLoading, hasHotels, updateSidebarZIndex]);
 
-  /* ----------------------------------
-     SEARCH DATA FROM URL / INITIAL DATA
-  ---------------------------------- */
-
   useEffect(() => {
     if (!mounted) return;
-
     if (initialSearchData) {
       setDraftSearchData(initialSearchData);
-
       setAppliedSearchData(initialSearchData);
-
       return;
     }
 
     const today = dayjs().startOf("day");
-
     const savedCheckIn = dayjs(draftSearchData?.checkIn);
-
     const savedCheckOut = dayjs(draftSearchData?.checkOut);
 
     if (
@@ -353,38 +235,23 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
 
       cityData: {
         id: searchParams.get("cityId") || "",
-
         name: searchParams.get("destinationCity") || destinationCity,
-
         type: searchParams.get("destinationType") || "city",
-
         city: destinationCity,
-
         state: searchParams.get("stateName") || "",
-
         stateName: searchParams.get("stateName") || "",
-
         country: searchParams.get("country") || "",
-
         countryCode: searchParams.get("countryCode") || "",
-
         displayName,
-
         normalizedCity: destinationCity,
       },
 
       checkIn: searchParams.get("checkIn") || "",
-
       checkOut: searchParams.get("checkOut") || "",
-
       rooms: Number(searchParams.get("rooms")) || 1,
-
       adults: Number(searchParams.get("adults")) || 2,
-
       children: Number(searchParams.get("children")) || 0,
-
       childAges: [],
-
       pets: searchParams.get("pets") === "true",
     };
 
@@ -402,10 +269,6 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
     setDraftSearchData,
     setAppliedSearchData,
   ]);
-
-  /* ----------------------------------
-     FILTER HELPERS
-  ---------------------------------- */
 
   const isFilterActive = useCallback((value) => {
     if (
@@ -447,10 +310,6 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
     scrollToHotelList();
   }, []);
 
-  /* ----------------------------------
-     ACTIVE FILTERS
-  ---------------------------------- */
-
   const activeFilters = useMemo(() => {
     return Object.entries(filters);
   }, [filters]);
@@ -459,18 +318,10 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
     return activeFilters.some(([_, value]) => isFilterActive(value));
   }, [activeFilters, isFilterActive]);
 
-  /* ----------------------------------
-     HYDRATION
-  ---------------------------------- */
-
   if (!mounted) return null;
 
   return (
     <>
-      {/* ==================================
-          MOBILE
-      ================================== */}
-
       {isMobile ? (
         <HotelMobile
           appliedSearchData={appliedSearchData}
@@ -487,20 +338,10 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
           cms={cms}
         />
       ) : (
-        /* ==================================
-           DESKTOP
-        ================================== */
-
         <div className="background-color-bg">
-          {/* SEARCH BAR */}
-
           <SearchBar searchData={draftSearchData} onSearch={handleSearch} />
 
           <div className="relative mx-auto mt-[-28px] flex max-w-7xl gap-4 p-3 md:flex-nowrap">
-            {/* ==================================
-                SIDEBAR
-            ================================== */}
-
             <div
               className={`sticky top-[98px] max-h-[calc(100vh-40px)] w-full overflow-y-auto sm:w-64 md:w-72 ${
                 sidebarZ0 ? "z-0" : "!z-20"
@@ -515,10 +356,6 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
               />
             </div>
 
-            {/* ==================================
-                RIGHT CONTENT
-            ================================== */}
-
             <div className="min-w-0 flex-1">
               {/* SORT BAR */}
 
@@ -529,10 +366,6 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
               >
                 <SortBar sort={sort} setSort={handleSortChange} />
               </div>
-
-              {/* ==================================
-                  ACTIVE FILTERS
-              ================================== */}
 
               {hasActiveFilters && (
                 <div
@@ -591,8 +424,6 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
                       );
                     })}
 
-                    {/* PRICE FILTER */}
-
                     {(filters?.minPrice || filters?.maxPrice) && (
                       <div className="flex items-center gap-1 rounded bg-blue-100 px-3 py-1 text-xs text-blue-600">
                         ₹{filters?.minPrice || 0}
@@ -610,8 +441,6 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
                       </div>
                     )}
 
-                    {/* CLEAR ALL */}
-
                     <button
                       onClick={clearAll}
                       className="rounded bg-red-200 px-3 py-1 text-xs text-red-600"
@@ -621,10 +450,6 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
                   </div>
                 </div>
               )}
-
-              {/* ==================================
-                  HOTEL LIST
-              ================================== */}
 
               <div id="hotel-list-section" ref={hotelListRef} className="pt-3">
                 <HotelList
@@ -637,28 +462,12 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
                 />
               </div>
 
-              {/* ==================================
-                  CMS CONTENT
-
-                  IMPORTANT:
-                  CMS content ki actual height
-                  z-index calculation me use nahi
-                  ho rahi.
-
-                  Invisible fixed trigger CMS ke
-                  top par hai.
-              ================================== */}
-
               <div className="relative">
-                {/* CMS TRIGGER */}
-
                 <div
                   ref={cmsTriggerRef}
                   className="pointer-events-none absolute top-0 left-0 h-[120px] w-full"
                   aria-hidden="true"
                 />
-
-                {/* CMS */}
 
                 {cms ? (
                   <HotelsSeoSection>
@@ -678,10 +487,6 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
         </div>
       )}
 
-      {/* ==================================
-          MAP MODAL
-      ================================== */}
-
       <Modal
         open={mapOpen}
         footer={null}
@@ -696,8 +501,6 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
           },
         }}
       >
-        {/* HEADER */}
-
         <div className="flex items-center justify-between border-b px-4 py-3">
           <h2 className="text-lg font-semibold md:text-xl">Hotels on Map</h2>
 
@@ -709,16 +512,10 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
           </button>
         </div>
 
-        {/* CONTENT */}
-
         <div className="flex h-[70vh] md:h-[80vh] lg:h-[85vh]">
-          {/* MAP */}
-
           <div className="flex-1">
             <HotelMap hotels={hotelsForMap} />
           </div>
-
-          {/* SIDEBAR */}
 
           <div className="hidden overflow-y-auto border-l bg-white md:block md:w-[280px] lg:w-[340px]">
             <SidebarFilters
