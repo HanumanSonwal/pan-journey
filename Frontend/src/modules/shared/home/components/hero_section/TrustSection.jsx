@@ -83,7 +83,7 @@ export default function TrustSection() {
 
   // ================= DESKTOP =================
   return (
-    <section className="background-color-bg !background-color-bg !lg:pt-[40px] w-full md:pt-[60px] xl:pt-[80px] 2xl:pt-[99px]">
+    <section className="background-color-bg !lg:mt-[6vh] w-full pt-[30px] md:mt-[90px] xl:mt-[80px] 2xl:mt-[99px]">
       <div className="mx-auto w-[94%] overflow-hidden rounded-lg border border-[#e5e7eb] bg-white sm:w-[94%] md:w-[92%] lg:w-[94%] xl:w-[82%] 2xl:w-[82%]">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
           {trustItems.map((item, index) => (
