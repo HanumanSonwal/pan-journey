@@ -388,8 +388,16 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[#eaf3f9]">
-      <SearchBar searchData={supplierData} onSearch={handleSearch} />
+    <div className="min-h-screen w-full background-color-bg">
+
+      {/* =====================================================
+          SEARCH BAR
+      ===================================================== */}
+
+      <SearchBar
+        searchData={supplierData}
+        onSearch={handleSearch}
+      />
 
       <div
         className={`relative mx-auto w-full max-w-7xl px-3 sm:px-4 md:px-5 lg:px-6 xl:px-0 ${

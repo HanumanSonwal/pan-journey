@@ -43,7 +43,7 @@ export default function HotleBooking() {
 
   if (isLoading || isFetching) {
     return (
-      <div className="flex min-h-screen w-full items-center justify-center bg-[#eaf4fb]">
+      <div className="flex min-h-screen w-full items-center justify-center background-color-bg">
         <Spin size="large" />
       </div>
     );
@@ -51,7 +51,7 @@ export default function HotleBooking() {
 
   if (isError || !roomPricingData) {
     return (
-      <div className="flex min-h-screen w-full flex-col items-center justify-center gap-4 bg-[#eaf4fb] px-4 text-center">
+      <div className="flex min-h-screen w-full flex-col items-center justify-center gap-4 background-color-bg px-4 text-center">
         <h2 className="text-xl font-semibold">Unable to load room details</h2>
 
         <p className="text-sm text-gray-500">
@@ -72,7 +72,7 @@ export default function HotleBooking() {
   console.log("ROOM PRICING DATA:", roomPricingData);
 
   return (
-    <div className="min-h-screen w-full bg-[#eaf4fb] px-0 py-0 md:px-2 md:py-0">
+    <div className="min-h-screen w-full background-color-bg px-0 py-0 md:px-2 md:py-0">
       <HotelBookingContent
         hotelBookingData={roomPricingData}
         hotelDetailId={hotelDetailId}

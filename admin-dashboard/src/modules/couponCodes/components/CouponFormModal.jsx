@@ -214,10 +214,17 @@ export default function CouponFormModal({
               ]}
             >
               <Select
-                size="large"
-                placeholder="Select Type"
-                options={discountTypeOptions}
-              />
+  size="large"
+  placeholder="Select Type"
+  options={discountTypeOptions}
+  onChange={(value) => {
+    form.setFieldsValue({
+      discountType: value,
+      discountValue: undefined,
+      minAmount: undefined,
+    });
+  }}
+/>
             </Form.Item>
           </Col>
 
