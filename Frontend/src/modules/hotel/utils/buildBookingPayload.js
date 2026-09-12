@@ -21,9 +21,11 @@ export const buildBookingPayload = ({
   return {
     hotelDetailId: hotelDetailId || bookingData?.hotelDetailId || "",
     roomId: roomId || bookingData?.roomId || "",
+
     customerAddress: guestData?.customerAddress || "",
     customerMobile: guestData?.customerMobile || primaryGuest?.mobile || "",
     customerPostalCode: guestData?.customerPostalCode || "",
+
     paxDetails: paxDetails.map((guest) => ({
       employeeID: "1",
       firstName: guest?.firstName || "",

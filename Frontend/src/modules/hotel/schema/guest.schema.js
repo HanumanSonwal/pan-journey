@@ -4,9 +4,6 @@ const guestFieldsSchema = z.object({
   title: z.string().min(1, "Select gender"),
   firstName: z.string().trim().min(2, "First name required"),
   lastName: z.string().trim().optional(),
-  email: z.string().email("Enter valid email"),
-  mobile: z.string().regex(/^[0-9]{10}$/, "Enter valid mobile"),
-  phoneCode: z.string().optional(),
 });
 
 export const primaryGuestSchema = z.object({
@@ -16,7 +13,11 @@ export const primaryGuestSchema = z.object({
     .string()
     .trim()
     .regex(/^[0-9]{6}$/, "Enter valid postal code"),
+
   panNumber: z.string().trim().optional(),
+  customerEmail: z.string().trim().email("Enter valid email"),
+  customerMobile: z.string().regex(/^[0-9]{10}$/, "Enter valid mobile"),
+  customerPhoneCode: z.string().optional(),
   paxDetails: z.record(guestFieldsSchema),
 });
 

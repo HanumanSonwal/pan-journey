@@ -29,20 +29,13 @@ export default function HotelBookingContent({
   const [isMobile, setIsMobile] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [agreement, setAgreement] = useState(false);
-
   const guestFormRef = useRef(null);
-
   const { mutate: bookHotel, isPending } = useHotelBooking();
-
   const router = useRouter();
-
   const { data: session } = useSession();
-
   const { bookingData: storeBookingData, setBookingData } =
     useHotelBookingStore();
-
   const searchData = storeBookingData?.searchData || null;
-
   const bookingData = useMemo(
     () => ({
       ...hotelBookingData,
@@ -92,21 +85,16 @@ export default function HotelBookingContent({
       remainingChildren -= 1;
       childRoomIndex += 1;
     }
-
     return rooms;
   }, [hotelBookingData, searchData]);
 
   useEffect(() => {
     setMounted(true);
-
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-
     checkMobile();
-
     window.addEventListener("resize", checkMobile);
-
     return () => {
       window.removeEventListener("resize", checkMobile);
     };
@@ -145,11 +133,6 @@ export default function HotelBookingContent({
       hotelDetailId,
       roomId,
     });
-
-    console.log(
-      "FINAL HOTEL TEMP BOOKING PAYLOAD:",
-      JSON.stringify(payload, null, 2),
-    );
 
     bookHotel(payload, {
       onSuccess: (response) => {
@@ -244,7 +227,10 @@ export default function HotelBookingContent({
               <Col xs={24} lg={8}>
                 <div className="-mt-10! space-y-4 px-1 sm:space-y-5 sm:px-0">
                   <BookingHeaderCard bookingData={bookingData} />
-                  <StaySummaryCard bookingData={bookingData} />
+                  <StaySummaryCard
+                    bookingData={bookingData}
+                    occupancy={occupancy}
+                  />
                   <RoomPackageCard bookingData={bookingData} />
                   <CouponsBankOffers bookingData={bookingData} />
                 </div>
