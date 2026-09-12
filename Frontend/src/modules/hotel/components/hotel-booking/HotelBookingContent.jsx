@@ -48,14 +48,35 @@ export default function HotelBookingContent({
   );
 
   const occupancy = useMemo(() => {
-    const apiRooms = Array.isArray(hotelBookingData?.guestDetails?.rooms)
+    const apiGuests = Array.isArray(hotelBookingData?.rooms?.guests)
+      ? hotelBookingData.rooms.guests
+      : [];
+
+    if (apiGuests.length > 0) {
+      return apiGuests.map((room, index) => ({
+        roomNo: index + 1,
+        adults: Math.max(Number(room?.adults) || 0, 0),
+        children: Array.isArray(room?.children)
+          ? room.children.length
+          : Math.max(Number(room?.children) || 0, 0),
+      }));
+    }
+
+    // 2. Old API / existing structure fallback
+    const oldApiRooms = Array.isArray(hotelBookingData?.guestDetails?.rooms)
       ? hotelBookingData.guestDetails.rooms
       : Array.isArray(hotelBookingData?.rooms)
         ? hotelBookingData.rooms
         : [];
 
-    if (apiRooms.length) {
-      return apiRooms;
+    if (oldApiRooms.length > 0) {
+      return oldApiRooms.map((room, index) => ({
+        roomNo: Number(room?.roomNo) || index + 1,
+        adults: Math.max(Number(room?.adults) || 0, 0),
+        children: Array.isArray(room?.children)
+          ? room.children.length
+          : Math.max(Number(room?.children) || 0, 0),
+      }));
     }
 
     const roomCount = Math.max(Number(searchData?.rooms) || 1, 1);
@@ -85,6 +106,7 @@ export default function HotelBookingContent({
       remainingChildren -= 1;
       childRoomIndex += 1;
     }
+
     return rooms;
   }, [hotelBookingData, searchData]);
 
