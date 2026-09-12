@@ -42,7 +42,9 @@ export const createRoleService = async ({
 export const getRolesService = async () => {
   return await Role.find({
     type: { $ne: "admin" },
-  }).select("-type");
+  })
+    .select("-type")
+    .sort({ createdAt: -1 });
 };
 //////////////////////////////////////////////////////////////
 // 🔹 Get Role By ID
