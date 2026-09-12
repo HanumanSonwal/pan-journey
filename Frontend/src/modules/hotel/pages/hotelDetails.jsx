@@ -689,7 +689,7 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   ========================================================= */
 
   return (
-    <div className="min-h-screen w-full bg-[#eaf3f9]">
+    <div className="min-h-screen w-full background-color-bg">
 
       {/* =====================================================
           SEARCH BAR

@@ -157,7 +157,7 @@ const ViewHotelPriceCard = ({
       {/* ================= ROOM ================= */}
 
       <div>
-        <h3 className="line-clamp-2 p-2 text-[21px] leading-[1.25] font-bold tracking-[-0.02em] text-[#111827]">
+        <h3 className="line-clamp-2 p-2 pb-auto text-[21px] leading-[1.25] font-bold tracking-[-0.02em] text-[#111827]">
           {roomName}
         </h3>
 
@@ -171,7 +171,7 @@ const ViewHotelPriceCard = ({
       {/* ================= CHECK IN / OUT ================= */}
 
       {(checkIn?.date || checkOut?.date) && (
-        <div className="grid grid-cols-2 overflow-hidden rounded-lg border border-gray-100 bg-gray-50">
+        <div className="bg-gray-50m relative grid grid-cols-2 overflow-hidden rounded-lg border border-gray-100">
           <div className="border-r border-gray-200 px-3 py-1">
             <p className="!m-0 text-[13px] leading-tight tracking-wide text-gray-400 uppercase">
               Check-in
