@@ -97,8 +97,6 @@ app.use("/api/v1/roles", roleRoutes);
 app.use("/api/v1/destination", destinationSearch);
 app.use("/api/webhooks", gatewayroutewebhook);
 
-
-
 app.use("/api/v1", hotelRequery);
 app.use("/api/v1", addBalanceRoute);
 app.use("/api/v1", hotelCancellation);
