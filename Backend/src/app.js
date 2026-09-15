@@ -96,7 +96,6 @@ app.use("/api/v1/theme", theme);
 app.use("/api/v1/roles", roleRoutes);
 app.use("/api/v1/destination", destinationSearch);
 app.use("/api/webhooks", gatewayroutewebhook);
-
 app.use("/api/v1", hotelRequery);
 app.use("/api/v1", addBalanceRoute);
 app.use("/api/v1", hotelCancellation);
@@ -107,7 +106,6 @@ app.use("/api/v1/currency", currencyRoutes);
 app.use("/api/v1", testRoutes);
 app.use("/api/v1/newsletter", newsletter);
 app.use("/api/v1", invoiceRoutes);
-
 app.use("/api/v1/masterData", masterRoutes);
 app.use("/api/v1/customer", customerProfileRoutes);
 app.use("/api/v1", countryRoutes);
