@@ -241,7 +241,7 @@ function DestinationSearchField({
 
       <div
         title={value?.city || ""}
-        className={`relative w-full min-w-0 overflow-visible rounded border !bg-white px-3 py-1 transition-all hover:border-[#0077b6] ${
+        className={`relative w-full min-w-0 overflow-visible rounded border !bg-white px-3 py-1 transition-all hover:border-[#0077b6]  ${
           error ? "border-red-500" : "border-gray-300"
         } ${wrapperClassName}`}
         style={{ height }}

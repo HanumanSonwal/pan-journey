@@ -297,7 +297,9 @@ function SidebarFilters({
   ]);
 
   return (
-    <div className={`flex h-full flex-col bg-white p-3 shadow-md md:p-4`}>
+    <div
+      className={`boder flex h-full flex-col rounded-[6px] bg-white p-3 shadow-md md:p-4`}
+    >
       {!hideMapSection && (
         <div
           onClick={() => onMapClick?.()}

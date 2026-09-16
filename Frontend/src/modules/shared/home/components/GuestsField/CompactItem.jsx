@@ -12,9 +12,8 @@ function CompactItem({ value, label, center = false, right = false }) {
       <span className="font-jost text-[18px] leading-none font-semibold text-black">
         {value}
       </span>
-      <span className="mt-1 text-[11px] text-gray-500">{label}</span>
+      <span className="text-[11px] text-gray-500">{label}</span>
     </div>
   );
 }
-
 export default memo(CompactItem);

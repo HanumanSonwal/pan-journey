@@ -341,9 +341,9 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
         <div className="background-color-bg">
           <SearchBar searchData={draftSearchData} onSearch={handleSearch} />
 
-          <div className="relative mx-auto mt-[-28px] flex max-w-7xl gap-4 p-3 md:flex-nowrap">
+          <div className="relative mx-auto mt-[-39px] flex max-w-7xl gap-4 p-3 md:flex-nowrap">
             <div
-              className={`sticky top-[98px] max-h-[calc(100vh-40px)] w-full overflow-y-auto sm:w-64 md:w-72 ${
+              className={`sticky top-[120px] max-h-[calc(100vh-20px)] w-full overflow-y-auto sm:w-64 md:w-72 ${
                 sidebarZ0 ? "z-0" : "!z-20"
               }`}
             >
@@ -360,9 +360,9 @@ export default function HotelContent({ initialSearchData = null, cms = null }) {
               {/* SORT BAR */}
 
               <div
-                className={`sticky top-[98px] ${
+                className={`sticky top-[120px] ${
                   sidebarZ0 ? "!-z-10" : "!z-20"
-                } bg-[#edf7ff]`}
+                } `}
               >
                 <SortBar sort={sort} setSort={handleSortChange} />
               </div>

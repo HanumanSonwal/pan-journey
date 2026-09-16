@@ -8,7 +8,11 @@ import {
   RangeCalendar,
 } from "react-aria-components";
 
-import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
+import {
+  CalendarDate,
+  getLocalTimeZone,
+  today,
+} from "@internationalized/date";
 
 import dayjs from "dayjs";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -26,7 +30,8 @@ export default function DesktopDateRangeField({
   const start = value?.[0] || dayjs();
   const end = value?.[1] || dayjs().add(1, "day");
 
-  const nights = start && end ? Math.max(0, end.diff(start, "day")) : 0;
+  const nights =
+    start && end ? Math.max(0, end.diff(start, "day")) : 0;
 
   const [activeField, setActiveField] = useState(null);
   const [calendarKey, setCalendarKey] = useState(0);
@@ -67,12 +72,14 @@ export default function DesktopDateRangeField({
     const popupHeight = popupRect.height;
 
     if (popupBottom > viewportHeight - bottomMargin) {
-      const requiredScroll = popupBottom - (viewportHeight - bottomMargin);
+      const requiredScroll =
+        popupBottom - (viewportHeight - bottomMargin);
 
       window.scrollBy({
         top: requiredScroll,
         behavior: "smooth",
       });
+
       return;
     }
 
@@ -87,15 +94,21 @@ export default function DesktopDateRangeField({
       return;
     }
 
-    if (popupTop >= topMargin && popupBottom <= viewportHeight - bottomMargin) {
+    if (
+      popupTop >= topMargin &&
+      popupBottom <= viewportHeight - bottomMargin
+    ) {
       return;
     }
+
     if (popupHeight <= 0) return;
   };
 
   useEffect(() => {
     if (!open) return;
+
     updatePopupPosition();
+
     const timer = setTimeout(() => {
       updatePopupPosition();
 
@@ -121,7 +134,11 @@ export default function DesktopDateRangeField({
 
     return () => {
       window.removeEventListener("resize", handlePositionUpdate);
-      window.removeEventListener("scroll", handlePositionUpdate, true);
+      window.removeEventListener(
+        "scroll",
+        handlePositionUpdate,
+        true,
+      );
     };
   }, [open]);
 
@@ -132,7 +149,11 @@ export default function DesktopDateRangeField({
 
     const d = dayjs(date);
 
-    return new CalendarDate(d.year(), d.month() + 1, d.date());
+    return new CalendarDate(
+      d.year(),
+      d.month() + 1,
+      d.date(),
+    );
   };
 
   const toDayjs = (date) => {
@@ -151,7 +172,6 @@ export default function DesktopDateRangeField({
 
   const handleOpen = () => {
     setActiveField("checkIn");
-
     setCalendarKey((prev) => prev + 1);
 
     requestAnimationFrame(() => {
@@ -163,7 +183,6 @@ export default function DesktopDateRangeField({
 
   const handleClose = () => {
     setActiveField(null);
-
     setOpen?.(false);
   };
 
@@ -246,7 +265,7 @@ export default function DesktopDateRangeField({
         sm:text-[12px]
         lg:text-[13px]
         font-medium
-       most-text-color
+        most-text-color
         transition-all
       `;
     }
@@ -328,7 +347,10 @@ export default function DesktopDateRangeField({
           )}
         </CalendarGrid>
 
-        <CalendarGrid offset={{ months: 1 }} className="w-full min-w-0">
+        <CalendarGrid
+          offset={{ months: 1 }}
+          className="w-full min-w-0"
+        >
           {(date) => (
             <CalendarCell
               date={date}
@@ -346,7 +368,10 @@ export default function DesktopDateRangeField({
     open &&
     createPortal(
       <>
-        <div className="fixed inset-0 z-[9999999998]" onClick={handleClose} />
+        <div
+          className="fixed inset-0 z-[9999999998]"
+          onClick={handleClose}
+        />
 
         <div
           ref={popupRef}
@@ -391,66 +416,68 @@ export default function DesktopDateRangeField({
     return (
       <>
         <div ref={fieldRef} className="relative w-full">
-          {/* FIELD */}
-
           <div
-            className="relative h-[50px] w-full cursor-pointer rounded border border-gray-300 bg-white px-2 sm:px-3"
+            className="relative h-[51px] w-full cursor-pointer rounded-[6px] border-0 bg-white px-2 sm:px-3"
             onClick={handleOpen}
           >
             <div className="flex h-full w-full items-center gap-1 sm:gap-2">
-              {icon && <div className="shrink-0">{icon}</div>}
+              {icon && (
+                <div className="shrink-0">
+                  {icon}
+                </div>
+              )}
 
-              <div className="flex min-w-0 flex-1 flex-col">
+              <div className="flex min-w-0 flex-1 flex-col justify-center">
                 <span
-                  className={`truncate text-[8px] sm:text-[9px] ${
+                  className={`truncate text-[10px] leading-none sm:text-[11px] ${
                     activeField === "checkIn"
                       ? "font-bold text-[#05144B]"
-                      : "text-gray-500"
+                      : "font-semibold text-gray-600"
                   }`}
                 >
                   Check In
                 </span>
 
-                <div className="flex items-center gap-1">
-                  <span className="text-[16px] font-semibold sm:text-[18px]">
+                <div className="mt-[2px] flex items-center gap-1">
+                  <span className="text-[16px] leading-none font-bold text-[#222] sm:text-[17px]">
                     {start.format("DD")}
                   </span>
 
-                  <span className="text-[9px] text-gray-600 sm:text-[10px]">
+                  <span className="text-[10px] leading-none font-semibold text-gray-600 sm:text-[11px]">
                     {start.format("MMM")}
                   </span>
                 </div>
               </div>
 
-              <div className="flex shrink-0 flex-col items-center">
-                <span className="text-[14px] text-gray-400 sm:text-[16px]">
+              <div className="flex shrink-0 flex-col items-center justify-center">
+                <span className="text-[13px] font-medium text-gray-400 sm:text-[14px]">
                   →
                 </span>
 
                 {nights > 0 && (
-                  <span className="text-[7px] font-semibold text-[#0077B6] sm:text-[8px]">
+                  <span className="text-[8px] font-bold leading-none text-[#0077B6]">
                     {nights}N
                   </span>
                 )}
               </div>
 
-              <div className="flex min-w-0 flex-1 flex-col items-end">
+              <div className="flex min-w-0 flex-1 flex-col items-end justify-center">
                 <span
-                  className={`truncate text-[8px] sm:text-[9px] ${
+                  className={`truncate text-[10px] leading-none sm:text-[11px] ${
                     activeField === "checkOut"
                       ? "font-bold text-[#05144B]"
-                      : "text-gray-500"
+                      : "font-semibold text-gray-600"
                   }`}
                 >
                   Check Out
                 </span>
 
-                <div className="flex items-center gap-1">
-                  <span className="text-[16px] font-semibold sm:text-[18px]">
+                <div className="mt-[2px] flex items-center gap-1">
+                  <span className="text-[16px] leading-none font-bold text-[#222] sm:text-[17px]">
                     {end.format("DD")}
                   </span>
 
-                  <span className="text-[9px] text-gray-600 sm:text-[10px]">
+                  <span className="text-[10px] leading-none font-semibold text-gray-600 sm:text-[11px]">
                     {end.format("MMM")}
                   </span>
                 </div>
@@ -493,7 +520,11 @@ export default function DesktopDateRangeField({
           className="flex h-[60px] w-full cursor-pointer items-center rounded-md border border-[#d9d9d9] bg-white px-2 py-2 transition-all hover:border-[#0077b6] sm:h-[62px] sm:px-2 sm:py-3 lg:h-[65px]"
           onClick={handleOpen}
         >
-          {icon && <div className="mr-1 shrink-0 sm:mr-2">{icon}</div>}
+          {icon && (
+            <div className="mr-1 shrink-0 sm:mr-2">
+              {icon}
+            </div>
+          )}
 
           <div className="flex min-w-0 flex-1 flex-col justify-center">
             <div className="flex items-start gap-1">
