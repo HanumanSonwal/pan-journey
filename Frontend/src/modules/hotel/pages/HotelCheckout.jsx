@@ -3,9 +3,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { App } from "antd";
 import { useRouter, useSearchParams } from "next/navigation";
-
 import HotelCheckoutContent from "../components/hotel-checkout/HotelCheckoutContent";
-
 import { useAddBalance } from "../hooks/useAddBalance";
 import {
   useApplyCoupon,
@@ -13,7 +11,6 @@ import {
   useRemoveCoupon,
 } from "../hooks/useBookingDetails";
 import { useHotelTicketing } from "../hooks/useHotelTicketing";
-
 import { useHotelBookingStore } from "../store/booking.store";
 
 export default function HotelCheckout() {
@@ -25,20 +22,13 @@ export default function HotelCheckout() {
   const bookingRefNo = searchParams.get("bookingRefNo");
 
   const { bookingData, setTicketingData } = useHotelBookingStore();
-
   const searchKey = bookingData?.selectedHotel?.searchKey;
 
-  /*
-   * BOOKING DETAILS
-   */
   const { data, isLoading, isError, error, refetch } =
     useBookingDetails(bookingRefNo);
 
   const booking = data?.data ?? {};
 
-  /*
-   * APPLY COUPON
-   */
   const { mutate: applyCoupon, isPending: isApplyCouponLoading } =
     useApplyCoupon({
       onSuccess: () => {
@@ -56,9 +46,6 @@ export default function HotelCheckout() {
       },
     });
 
-  /*
-   * REMOVE COUPON
-   */
   const { mutate: removeCoupon, isPending: isRemoveCouponLoading } =
     useRemoveCoupon({
       onSuccess: () => {
@@ -76,9 +63,6 @@ export default function HotelCheckout() {
       },
     });
 
-  /*
-   * APPLY COUPON HANDLER
-   */
   const handleApplyCoupon = (coupon) => {
     applyCoupon({
       tempBookingId: booking.tempBookingId || booking.bookingId,
@@ -86,30 +70,18 @@ export default function HotelCheckout() {
     });
   };
 
-  /*
-   * REMOVE COUPON HANDLER
-   */
   const handleRemoveCoupon = () => {
     removeCoupon({
       tempBookingId: booking.tempBookingId || booking.bookingId,
     });
   };
 
-  /*
-   * PAYMENT
-   */
   const { mutate: addBalanceMutation, isPending: isPaymentLoading } =
     useAddBalance();
 
-  /*
-   * TICKETING
-   */
   const { mutate: hotelTicketingMutation, isPending: isTicketingLoading } =
     useHotelTicketing();
 
-  /*
-   * PAY NOW
-   */
   const handlePayment = () => {
     if (!bookingRefNo || !searchKey) {
       message.error("Booking information is missing.");
@@ -169,9 +141,6 @@ export default function HotelCheckout() {
     );
   };
 
-  /*
-   * LOADING
-   */
   if (isLoading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
@@ -180,9 +149,6 @@ export default function HotelCheckout() {
     );
   }
 
-  /*
-   * ERROR
-   */
   if (isError) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
@@ -202,9 +168,6 @@ export default function HotelCheckout() {
     );
   }
 
-  /*
-   * CONTENT
-   */
   return (
     <HotelCheckoutContent
       booking={booking}

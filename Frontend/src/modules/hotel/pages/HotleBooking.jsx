@@ -37,31 +37,36 @@ export default function HotleBooking() {
     }
   }, [isError, error]);
 
+  // Missing required params
   if (!hotelDetailId || !roomId) {
     return null;
   }
 
+  // Loading state
   if (isLoading || isFetching) {
     return (
-      <div className="flex min-h-screen w-full items-center justify-center background-color-bg">
+      <div className="background-color-bg flex min-h-screen w-full items-center justify-center overflow-x-hidden px-4">
         <Spin size="large" />
       </div>
     );
   }
 
+  // Error state
   if (isError || !roomPricingData) {
     return (
-      <div className="flex min-h-screen w-full flex-col items-center justify-center gap-4 background-color-bg px-4 text-center">
-        <h2 className="text-xl font-semibold">Unable to load room details</h2>
+      <div className="background-color-bg flex min-h-screen w-full flex-col items-center justify-center gap-4 overflow-x-hidden px-4 py-8 text-center">
+        <h2 className="text-lg font-semibold sm:text-xl">
+          Unable to load room details
+        </h2>
 
-        <p className="text-sm text-gray-500">
+        <p className="max-w-md text-sm text-gray-500 sm:text-base">
           Please go back and select the room again.
         </p>
 
         <button
           type="button"
           onClick={() => router.replace("/hotels")}
-          className="buttion-background-color rounded-lg px-5 py-2 text-white"
+          className="buttion-background-color rounded-lg px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90 sm:text-base"
         >
           Back To Hotels
         </button>
@@ -72,12 +77,14 @@ export default function HotleBooking() {
   console.log("ROOM PRICING DATA:", roomPricingData);
 
   return (
-    <div className="min-h-screen w-full background-color-bg px-0 py-0 md:px-2 md:py-0">
-      <HotelBookingContent
-        hotelBookingData={roomPricingData}
-        hotelDetailId={hotelDetailId}
-        roomId={roomId}
-      />
-    </div>
+    <main className="background-color-bg min-h-screen w-full max-w-full overflow-x-hidden">
+      <div className="w-full max-w-full py-0">
+        <HotelBookingContent
+          hotelBookingData={roomPricingData}
+          hotelDetailId={hotelDetailId}
+          roomId={roomId}
+        />
+      </div>
+    </main>
   );
 }

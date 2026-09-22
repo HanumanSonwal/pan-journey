@@ -1,4 +1,5 @@
 import api from "@/services/api";
+import dayjs from "dayjs";
 
 export const createMarkupApi = async (data) => {
   const res = await api.post("/markup/createMarkup", data, {
@@ -75,15 +76,16 @@ export const getStatesApi = async ({ countryCode, search = "" }) => {
 // ================= CITY / HOTEL =================
 
 export const getCitiesHotelsApi = async (searchText = "") => {
-  if (!searchText?.trim()) {
+  const searchInput = searchText?.trim();
+
+  if (!searchInput) {
     return [];
   }
 
   const response = await api.post(
-    "/Seacrhcity/destination-search",
+    "/destination/search",
     {
-      SearchInput: searchText,
-   
+      searchInput,
     },
     {
       skipToast: true,
@@ -93,6 +95,48 @@ export const getCitiesHotelsApi = async (searchText = "") => {
   return response?.data?.data || [];
 };
 
+export const searchCMSHotelsApi = async ({
+  search = "",
+  city = "",
+  state = "",
+  country = "",
+  page = 1,
+  limit = 20,
+}) => {
+  const response = await api.post(
+    "/HotelSearch/search",
+    {
+      checkIn: dayjs().format("MM-DD-YYYY"),
+      checkOut: dayjs().add(1, "day").format("MM-DD-YYYY"),
+      destination: {
+        type: "hotel",
+        city,
+        state,
+        country,
+      },
+      facility: "",
+      limit,
+      maxPrice: "",
+      minPrice: "",
+      page,
+      rooms: [
+        {
+          adults: 1,
+          children: [],
+        },
+      ],
+      search: search?.trim() || "",
+      sortBy: "",
+      sortOrder: "",
+      starCategory: "",
+    },
+    {
+      skipToast: true,
+    },
+  );
+
+  return response?.data || {};
+};
 // ================= CREATE TAX =================
 
 export const createTaxApi = async (data) => {
