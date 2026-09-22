@@ -22,10 +22,10 @@ import hotelCancellation from "./modules/hotel/hotelCancellation/cancellation.ro
 //import hotelDetails from "./modules/hotel/hotelDetails/hotel.routes.js";
 import hotelRequery from "./modules/hotel/hotelRequery/requery.route.js";
 
-import hotelTicketing from "./modules/hotel/hotelTicketing/hotelTicketing.route.js";
+//import hotelTicketing from "./modules/hotel/hotelTicketing/hotelTicketing.route.js";
 import invoiceRoutes from "./modules/hotel/invoice/invoice.route.js";
 
-import paymentRoutes from "./modules/payments/payment.routes.js";
+//import paymentRoutes from "./modules/payments/payment.routes.js";
 import gatewayroutewebhook from "./modules/gateways/routes/webhook.routes.js";
 import mediaRoutes from "./modules/media/media.routes.js";
 import countryRoutes from "./modules/priceMarkup/countryData/country.routes.js";
@@ -82,7 +82,7 @@ app.use("/api/v1/media", mediaRoutes);
 app.use("/api/v1", contactUs);
 app.use("/api/v1", support);
 app.use("/api/v1", grievanceRedressal);
-app.use("/api/v1/payment", paymentRoutes);
+// app.use("/api/v1/payment", paymentRoutes);
 app.use("/api/v1/newsletter", newsletter);
 app.use("/api/v1/tax", tax);
 app.use("/api/v1/couponCode", couponCode);
@@ -110,7 +110,7 @@ app.use("/api/v1/masterData", masterRoutes);
 app.use("/api/v1/customer", customerProfileRoutes);
 app.use("/api/v1", countryRoutes);
 app.use("/api/v1/states", stateRoutes);
-app.use("/api/v1", hotelTicketing);
+//app.use("/api/v1", hotelTicketing);
 //  app.use("/api/v1/", dashboardhotelsearch);
 app.use("/api/v1", wishlistRoutes);
 //app.use("/api/v1", hotelDetails);

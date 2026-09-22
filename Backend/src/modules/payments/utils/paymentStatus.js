@@ -1,13 +1,13 @@
-export const PAYMENT_STATUS = Object.freeze({
+// export const PAYMENT_STATUS = Object.freeze({
 
-    CREATED: "created",
+//     CREATED: "created",
 
-    PENDING: "pending",
+//     PENDING: "pending",
 
-    SUCCESS: "success",
+//     SUCCESS: "success",
 
-    FAILED: "failed",
+//     FAILED: "failed",
 
-    REFUNDED: "refunded"
+//     REFUNDED: "refunded"
 
-});
+// });
