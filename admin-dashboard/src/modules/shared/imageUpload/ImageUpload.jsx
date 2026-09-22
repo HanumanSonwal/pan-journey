@@ -9,7 +9,7 @@ export default function ImageUpload({
   value,
   onChange,
 
-   folder = "common",
+  folder = "common",
 
   multiple = false,
 
@@ -20,8 +20,6 @@ export default function ImageUpload({
   const { uploadMedia } = useMediaUpload();
 
   const [fileList, setFileList] = useState([]);
-
-  // ================= PREVIEW =================
 
   useEffect(() => {
     if (!value) {
@@ -55,8 +53,6 @@ export default function ImageUpload({
     }
   }, [value, multiple]);
 
-  // ================= BEFORE UPLOAD =================
-
   const beforeUpload = (file) => {
     const isImage = file.type.startsWith("image/");
 
@@ -75,8 +71,6 @@ export default function ImageUpload({
     return true;
   };
 
-  // ================= CUSTOM REQUEST =================
-
   const customRequest = async ({ file, onSuccess, onError }) => {
     try {
       const formData = new FormData();
@@ -85,8 +79,6 @@ export default function ImageUpload({
       formData.append("folder", folder);
 
       const res = await uploadMedia.mutateAsync(formData);
-
-      // response me url adjust kar lena
 
       const url = res?.data?.url || res?.data?.secure_url || res?.url;
 
@@ -111,8 +103,6 @@ export default function ImageUpload({
       onError(error);
     }
   };
-
-  // ================= REMOVE =================
 
   const handleRemove = (file) => {
     if (multiple) {

@@ -20,9 +20,10 @@ function HotelList({
 }) {
   const { data: wishlistIdsData } = useWishlistIds();
 
-  const wishlistIds = useMemo(() => {
-    return new Set(wishlistIdsData || []);
-  }, [wishlistIdsData]);
+  const wishlistIds = useMemo(
+    () => new Set(wishlistIdsData || []),
+    [wishlistIdsData],
+  );
 
   const payload = useMemo(() => {
     return buildHotelPayload({
@@ -36,7 +37,6 @@ function HotelList({
     data,
     isLoading,
     isError,
-    error,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
@@ -50,10 +50,15 @@ function HotelList({
 
   useEffect(() => {
     const target = loadMoreRef.current;
-    if (!target) return;
+
+    if (!target) {
+      return;
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
+
         if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
           fetchNextPage();
         }
@@ -74,12 +79,19 @@ function HotelList({
 
   const hotels = useMemo(() => {
     const allHotels =
-      data?.pages?.flatMap((page) => page?.data?.hotels || []) || [];
+      data?.pages?.flatMap((page) => {
+        const hotelDetailId = page?.data?.hotelDetailId || "";
+
+        return (page?.data?.hotels || []).map((hotel) => ({
+          ...hotel,
+          hotelDetailId,
+        }));
+      }) || [];
 
     return Array.from(
       new Map(
         allHotels.map((hotel, index) => [
-          hotel?.hotelId || hotel?.id || hotel?.HotelId || `hotel-${index}`,
+          hotel?.id || hotel?.hotelId || hotel?.HotelId || `hotel-${index}`,
           hotel,
         ]),
       ).values(),
@@ -97,50 +109,12 @@ function HotelList({
     "";
 
   const mappedHotels = useMemo(() => {
-    const result = mapHotelsForCard({
+    return mapHotelsForCard({
       hotels,
       currencySymbol,
       searchKey,
     });
-
-    return result.map((mappedHotel, index) => {
-      const originalHotel = hotels[index];
-
-      return {
-        ...originalHotel,
-        ...mappedHotel,
-
-        images:
-          mappedHotel?.images ??
-          mappedHotel?.hotelImages ??
-          mappedHotel?.photos ??
-          mappedHotel?.gallery ??
-          originalHotel?.images ??
-          originalHotel?.hotelImages ??
-          originalHotel?.photos ??
-          originalHotel?.gallery ??
-          [],
-
-        hotelImages:
-          mappedHotel?.hotelImages ?? originalHotel?.hotelImages ?? [],
-        photos: mappedHotel?.photos ?? originalHotel?.photos ?? [],
-        gallery: mappedHotel?.gallery ?? originalHotel?.gallery ?? [],
-      };
-    });
   }, [hotels, currencySymbol, searchKey]);
-
-  useEffect(() => {
-    console.log("================ HOTEL LIST API ================");
-    console.log("TOTAL RAW HOTELS 👉", hotels.length);
-    console.log("FIRST RAW HOTEL 👉", hotels[0]);
-    console.log("FIRST RAW HOTEL IMAGES 👉", hotels[0]?.images);
-    console.log("FIRST RAW HOTEL HOTELIMAGES 👉", hotels[0]?.hotelImages);
-    console.log("FIRST RAW HOTEL PHOTOS 👉", hotels[0]?.photos);
-    console.log("FIRST RAW HOTEL GALLERY 👉", hotels[0]?.gallery);
-    console.log("FIRST MAPPED HOTEL 👉", mappedHotels[0]);
-    console.log("FIRST MAPPED HOTEL IMAGES 👉", mappedHotels[0]?.images);
-    console.log("================================================");
-  }, [hotels, mappedHotels]);
 
   useEffect(() => {
     onHotelsChange?.(mappedHotels);
@@ -164,8 +138,6 @@ function HotelList({
 
   return (
     <div className="w-full space-y-4">
-      {/* HOTELS */}
-
       {mappedHotels.map((hotel, index) => (
         <HotelCard
           key={hotel?.id || hotel?.hotelId || index}
@@ -173,8 +145,6 @@ function HotelList({
           wishlistIds={wishlistIds}
         />
       ))}
-
-      {/* LOAD MORE */}
 
       {(hasNextPage || isFetchingNextPage) && (
         <div ref={loadMoreRef} className="flex justify-center py-6">

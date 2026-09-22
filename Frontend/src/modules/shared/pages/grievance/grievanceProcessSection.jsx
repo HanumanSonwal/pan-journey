@@ -73,7 +73,7 @@ export default function GrievanceProcessSection() {
                   {step.desc}
                 </p>
 
-                <div className="mt-3 text-xs font-semibold tracking-wide text-[#0f6b78] uppercase">
+                <div className="most-text-color mt-3 text-xs font-semibold tracking-wide uppercase">
                   Step {index + 1}
                 </div>
               </div>

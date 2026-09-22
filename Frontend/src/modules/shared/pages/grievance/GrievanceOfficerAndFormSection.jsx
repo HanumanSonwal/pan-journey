@@ -121,12 +121,12 @@ export default function GrievanceOfficerAndFormSection() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_1.2fr] lg:gap-8">
           <div className="rounded bg-white p-6 shadow-[0_8px_30px_rgba(0,0,0,0.06)] lg:p-8">
             <div className="mb-6">
-              <span className="rounded-full bg-[#eef5fa] px-3 py-1 text-xs font-medium text-[#0f6b78]">
+              <span className="most-text-color rounded-full bg-[#eef5fa] px-3 py-1 text-xs font-medium">
                 Customer Protection
               </span>
             </div>
 
-            <h2 className="mb-3 text-[28px] font-bold text-[#0f6b78]">
+            <h2 className="mb-3 text-[28px] font-bold most-text-color">
               Grievance Officer
             </h2>
 
@@ -139,14 +139,14 @@ export default function GrievanceOfficerAndFormSection() {
             <div className="mb-1 grid grid-cols-2 gap-2">
               <div className="rounded-lg bg-[#eef5fa] px-5 py-2">
                 <p className="text-[11px] text-gray-500">Review Time</p>
-                <p className="mt-0.5 text-[18px] font-bold text-[#0f6b78]">
+                <p className="most-text-color mt-0.5 text-[18px] font-bold">
                   48 Hours
                 </p>
               </div>
 
               <div className="rounded-lg bg-[#eef5fa] px-5 py-2">
                 <p className="text-[11px] text-gray-500">Resolution</p>
-                <p className="mt-0.5 text-[18px] font-bold text-[#0f6b78]">
+                <p className="most-text-color mt-0.5 text-[18px] font-bold">
                   7 Days
                 </p>
               </div>
@@ -181,7 +181,7 @@ export default function GrievanceOfficerAndFormSection() {
             </div>
 
             <div className="mt-6 rounded-xl border border-[#dcecf1] bg-[#f8fcfd] p-4">
-              <p className="font-medium text-[#0f6b78]">
+              <p className="most-text-color font-medium">
                 Before Raising A Grievance
               </p>
 
@@ -272,7 +272,7 @@ export default function GrievanceOfficerAndFormSection() {
 
                 <button
                   type="submit"
-                  className="w-full rounded-lg bg-gradient-to-b from-[#67b5e2] to-[#006c7a] px-8 py-3.5 font-medium text-white! transition-all duration-300 hover:shadow-lg"
+                  className="w-full rounded-lg buttion-background-color px-8 py-3.5 font-medium text-white! transition-all duration-300 hover:shadow-lg"
                 >
                   Submit Grievance
                 </button>

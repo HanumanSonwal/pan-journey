@@ -20,9 +20,7 @@ import { Suspense } from "react";
 import "./globals.css";
 import AppProviders from "./providers";
 
-/* -------------------------------------------------------------------------- */
-/* Fonts                                                                      */
-/* -------------------------------------------------------------------------- */
+import { metadata as siteMetadata } from "./metadata";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -37,84 +35,10 @@ const jost = Jost({
   weight: ["400", "500", "700"],
 });
 
-/* -------------------------------------------------------------------------- */
-/* IMPORTANT: Always fetch latest theme on server                             */
-/* -------------------------------------------------------------------------- */
-
 export const dynamic = "force-dynamic";
-
-/* -------------------------------------------------------------------------- */
-/* Metadata                                                                   */
-/* -------------------------------------------------------------------------- */
-
-export const metadata = {
-  metadataBase: new URL(process.env.NEXTAUTH_URL || "http://localhost:3000"),
-
-  title: {
-    default: "PAN Journey",
-    template: "%s",
-  },
-
-  description: "Booking platform",
-
-  icons: {
-    icon: [
-      {
-        url: "/favicon.ico",
-        sizes: "any",
-      },
-      {
-        url: "/icon-16x16.png",
-        sizes: "16x16",
-        type: "image/png",
-      },
-      {
-        url: "/icon-32x32.png",
-        sizes: "32x32",
-        type: "image/png",
-      },
-    ],
-
-    apple: [
-      {
-        url: "/apple-icon.png",
-        sizes: "180x180",
-        type: "image/png",
-      },
-    ],
-  },
-
-  manifest: "/manifest.webmanifest",
-
-  robots: {
-    index: false,
-    follow: false,
-    nocache: true,
-
-    googleBot: {
-      index: false,
-      follow: false,
-      noimageindex: true,
-      "max-video-preview": -1,
-      "max-image-preview": "none",
-      "max-snippet": -1,
-    },
-  },
-};
-
-/* -------------------------------------------------------------------------- */
-/* Root Layout                                                                */
-/* -------------------------------------------------------------------------- */
-
+export const metadata = siteMetadata;
 export default async function RootLayout({ children }) {
-  /*
-   * Fetch theme on the server BEFORE rendering the page.
-   */
   const theme = await getThemeServer();
-
-  /*
-   * Convert API theme object into CSS variables.
-   */
   const themeVariables = getThemeCSSVariables(theme);
 
   return (
@@ -126,9 +50,9 @@ export default async function RootLayout({ children }) {
     >
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+
         <link rel="preload" as="image" href="/images/homepage/home.svg" />
 
-        {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-DYY7076V0W"
           strategy="afterInteractive"
@@ -136,37 +60,30 @@ export default async function RootLayout({ children }) {
 
         <Script id="google-analytics" strategy="afterInteractive">
           {`
-      window.dataLayer = window.dataLayer || [];
-
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-
-      gtag('js', new Date());
-      gtag('config', 'G-DYY7076V0W');
-    `}
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+              dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', 'G-DYY7076V0W');
+          `}
         </Script>
       </head>
 
       <body className="flex min-h-full flex-col">
         <AppProviders>
           <Header />
-
           <ScrollToTopButton />
-
           <ProfileCompletionHandler />
-
           <main className="flex-1">
             <AntdApp>
               <GlobalLoginModal />
               {children}
             </AntdApp>
           </main>
-
           <Suspense fallback={null}>
             <BottomNav />
           </Suspense>
-
           <Footer />
         </AppProviders>
       </body>

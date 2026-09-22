@@ -131,7 +131,7 @@ export default function HotelBookingSuccess() {
   });
 
   return (
-    <div className="min-h-screen bg-[#eaf4fb] px-4 py-8! md:px-6">
+    <div className="background-color-bg min-h-screen px-4 py-8! md:px-6">
       <div className="mx-auto flex max-w-[1180px] flex-col gap-6">
         {/* SUCCESS HEADER */}
         <Card className="overflow-hidden rounded border-0 shadow-xl">

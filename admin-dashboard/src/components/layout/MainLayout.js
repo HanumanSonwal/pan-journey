@@ -12,20 +12,21 @@ const { Content } = Layout;
 
 const MainLayout = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
-  const { isDark } = useTheme();
   const [mounted, setMounted] = useState(false);
 
+  const { isDark } = useTheme();
+
+  const isScrollLocked = useDashboardUIStore((state) => state.isScrollLocked);
+
+  // Prevent hydration mismatch
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const isScrollLocked = useDashboardUIStore((state) => state.isScrollLocked);
-
+  // Ant Design theme
   const antdTheme = useMemo(() => {
     return {
-      algorithm: isDark
-        ? theme.darkAlgorithm
-        : theme.defaultAlgorithm,
+      algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
 
       ...(isDark ? darkTheme : lightTheme),
     };
@@ -35,36 +36,34 @@ const MainLayout = ({ children }) => {
     <ConfigProvider theme={antdTheme}>
       {mounted ? (
         <Layout className="min-h-screen">
+          {/* ================= SIDEBAR ================= */}
           <Sidebar collapsed={collapsed} />
 
+          {/* ================= MAIN LAYOUT ================= */}
           <Layout
             className={`
               h-screen
-              ${
-                isDark
-                  ? "bg-[#08161A]"
-                  : "bg-[#edf7fa]"
-              }
+              ${isDark ? "bg-[#08161A]" : "bg-[#edf7fa]"}
             `}
           >
-            <HeaderBar
-              collapsed={collapsed}
-              setCollapsed={setCollapsed}
-            />
+            {/* ================= HEADER ================= */}
+            <HeaderBar collapsed={collapsed} setCollapsed={setCollapsed} />
 
+            {/* ================= CONTENT ================= */}
             <Content
-              style={{
-                margin: "16px",
-                padding: "24px",
-                borderRadius: "5px",
-                background: isDark ? "#102027" : "#f8fcfd",
-                boxShadow: isDark
-                  ? "0 10px 30px rgba(0,0,0,.25)"
-                  : "0 10px 30px rgba(15,106,117,.05)",
-                flex: 1,
-                overflowY: isScrollLocked ? "hidden" : "auto",
-                height: "calc(100vh - 64px)",
-              }}
+              className={`
+                m-4
+                flex-1
+                h-[calc(100vh-64px)]
+                rounded-[5px]
+                p-6
+                ${
+                  isDark
+                    ? "bg-[#102027] shadow-[0_10px_30px_rgba(0,0,0,0.25)]"
+                    : "bg-[#f8fcfd] shadow-[0_10px_30px_rgba(15,106,117,0.05)]"
+                }
+                ${isScrollLocked ? "overflow-y-hidden" : "overflow-y-auto"}
+              `}
             >
               {children}
             </Content>

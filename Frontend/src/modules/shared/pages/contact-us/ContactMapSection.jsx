@@ -21,7 +21,7 @@ export default function ContactMapSection() {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           {/* Office Details */}
           <div className="rounded-xl bg-white p-6 shadow-[0_8px_40px_rgba(0,0,0,0.08)] lg:p-8">
-            <h3 className="mb-3 text-[28px] font-bold text-[#0f6b78]">
+            <h3 className="most-text-color mb-3 text-[28px] font-bold">
               Need Immediate Assistance?
             </h3>
 
@@ -53,17 +53,17 @@ export default function ContactMapSection() {
             {/* Stats */}
             <div className="mb-8 grid grid-cols-3 gap-4 text-center">
               <div>
-                <p className="text-[24px] font-bold text-[#0f6b78]">24h</p>
+                <p className="text-[24px] font-bold most-text-color">24h</p>
                 <p className="text-xs text-gray-500">Response Time</p>
               </div>
 
               <div>
-                <p className="text-[24px] font-bold text-[#0f6b78]">24/7</p>
+                <p className="text-[24px] font-bold most-text-color">24/7</p>
                 <p className="text-xs text-gray-500">Support</p>
               </div>
 
               <div>
-                <p className="text-[24px] font-bold text-[#0f6b78]">98%</p>
+                <p className="text-[24px] font-bold most-text-color">98%</p>
                 <p className="text-xs text-gray-500">Satisfaction</p>
               </div>
             </div>

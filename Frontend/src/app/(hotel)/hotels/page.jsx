@@ -14,27 +14,15 @@ export async function generateMetadata({ searchParams }) {
   console.log("SEARCH PAGE QUERY:", query);
   const preview = query?.preview === "true";
   const siteUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
-
   const rawCity = query?.cityName || query?.city || "";
-
   const cityName = rawCity?.split(",")?.[0]?.trim() || "Hotels";
-
-  /*
-    CITY SLUG
-  */
   const citySlug = cityName
     ?.toLowerCase()
     ?.replace(/[^a-z0-9\s-]/g, "")
     ?.replace(/\s+/g, "-");
 
-  /*
-    CMS FETCH
-  */
   const cms = citySlug ? await fetchCmsBySlug(citySlug) : null;
 
-  /*
-    CMS SEO
-  */
   if (cms) {
     const metadata = buildCmsMetadata(cms);
 
@@ -51,9 +39,7 @@ export async function generateMetadata({ searchParams }) {
 
     return metadata;
   }
-  /*
-    DEFAULT SEO
-  */
+
   const canonical = citySlug
     ? `${siteUrl}/hotels/${citySlug}`
     : `${siteUrl}/hotels`;
@@ -61,11 +47,8 @@ export async function generateMetadata({ searchParams }) {
   return {
     metadataBase: new URL(siteUrl),
     title: buildHotelTitle(cityName),
-
     description: buildHotelDescription(cityName),
-
     keywords: buildHotelKeywords(cityName),
-
     alternates: {
       canonical,
     },
@@ -85,9 +68,7 @@ export async function generateMetadata({ searchParams }) {
 
     openGraph: {
       title: buildHotelTitle(cityName),
-
       description: buildHotelDescription(cityName),
-
       url: canonical,
       siteName: "PAN Journey",
       type: "website",
@@ -97,25 +78,13 @@ export async function generateMetadata({ searchParams }) {
 
 export default async function Page({ searchParams }) {
   const query = await searchParams;
-
   const rawCity = query?.cityName || query?.city || "";
-
   const cityName = rawCity?.split(",")?.[0]?.trim() || "";
-
-  /*
-    CITY SLUG
-  */
   const citySlug = cityName
     ?.toLowerCase()
     ?.replace(/[^a-z0-9\s-]/g, "")
     ?.replace(/\s+/g, "-");
-
-  /*
-    CMS FETCH
-  */
   const cms = citySlug ? await fetchCmsBySlug(citySlug) : null;
-
-  console.log("SEARCH PAGE CMS:", cms);
 
   return (
     <Suspense fallback={<div>Loading...</div>}>

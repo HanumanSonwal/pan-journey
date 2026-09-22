@@ -18,34 +18,25 @@ import TrustSection from "@/modules/shared/home/components/hero_section/TrustSec
 
 import { fetchHomeContent } from "@/modules/shared/home/services/homeContentFetch";
 
-const SITE_URL = process.env.NEXTAUTH_URL || "https://panjourney.com";
-
-/* -------------------------------------------------------------------------- */
-/* Metadata                                                                   */
-/* -------------------------------------------------------------------------- */
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+const OG_IMAGE = `${SITE_URL}/images/OGIMAGE1.png`;
 
 export async function generateMetadata() {
   const homeCms = await fetchCmsBySlug("home");
-
   const title =
     homeCms?.metaTitle ||
     "PAN Journey – Book Hotels, Flights & Travel Deals Online";
-
   const description =
     homeCms?.metaDescription ||
     "Book hotels, flights and travel packages with PAN Journey.";
-
   const keywords = Array.isArray(homeCms?.keywords)
     ? homeCms.keywords.join(", ")
-    : homeCms?.keywords;
+    : homeCms?.keywords || undefined;
 
   return {
     title,
     description,
     keywords,
-
-    metadataBase: new URL(SITE_URL),
-
     alternates: {
       canonical: SITE_URL,
     },
@@ -71,28 +62,27 @@ export async function generateMetadata() {
       siteName: "PAN Journey",
       type: "website",
       locale: "en_IN",
+
+      images: [
+        {
+          url: OG_IMAGE,
+          width: 1200,
+          height: 630,
+          alt: "PAN Journey - Travel & Booking",
+        },
+      ],
     },
 
     twitter: {
       card: "summary_large_image",
       title,
       description,
+      images: [OG_IMAGE],
     },
   };
 }
 
-/* -------------------------------------------------------------------------- */
-/* Home Page                                                                  */
-/* -------------------------------------------------------------------------- */
-
 export default async function Page() {
-  /*
-   * Fetch both resources in parallel.
-   *
-   * fetchCmsBySlug is wrapped with React cache()
-   * so generateMetadata() and Page() can reuse the
-   * same CMS request within the same render/request.
-   */
   const [homeCms, homeContent] = await Promise.all([
     fetchCmsBySlug("home"),
     fetchHomeContent(),
@@ -100,13 +90,7 @@ export default async function Page() {
 
   const { banner, placesAsPerYourVibe, topRatedHotels, popularDestinations } =
     homeContent ?? {};
-
-  /* ------------------------------------------------------------------------ */
-  /* FAQ Schema                                                               */
-  /* ------------------------------------------------------------------------ */
-
   const faqBlock = homeCms?.data?.blocks?.find((block) => block.type === "faq");
-
   const faqItems = faqBlock?.data?.items ?? [];
 
   const faqSchema =
@@ -114,9 +98,12 @@ export default async function Page() {
       ? {
           "@context": "https://schema.org",
           "@type": "FAQPage",
+
           mainEntity: faqItems.map((item) => ({
             "@type": "Question",
+
             name: item.question,
+
             acceptedAnswer: {
               "@type": "Answer",
               text: item.answer,
@@ -125,26 +112,17 @@ export default async function Page() {
         }
       : null;
 
-  /* ------------------------------------------------------------------------ */
-  /* Website Schema                                                           */
-  /* ------------------------------------------------------------------------ */
-
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "PAN Journey",
     url: SITE_URL,
-
     potentialAction: {
       "@type": "SearchAction",
       target: `${SITE_URL}/hotels?search={search_term_string}`,
       "query-input": "required name=search_term_string",
     },
   };
-
-  /* ------------------------------------------------------------------------ */
-  /* Organization Schema                                                      */
-  /* ------------------------------------------------------------------------ */
 
   const orgSchema = {
     "@context": "https://schema.org",
@@ -156,10 +134,6 @@ export default async function Page() {
 
   return (
     <>
-      {/* ------------------------------------------------------------------ */}
-      {/* Structured Data                                                    */}
-      {/* ------------------------------------------------------------------ */}
-
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -183,34 +157,18 @@ export default async function Page() {
         />
       )}
 
-      {/* ------------------------------------------------------------------ */}
-      {/* Home Page Sections                                                 */}
-      {/* ------------------------------------------------------------------ */}
-
       <ScrollToTopButton />
-
       <Hero banner={banner} />
-
       <TrustSection />
-
       <GiftCardSlider />
-
       <VacationSection vibes={placesAsPerYourVibe} />
-
       <Herobanner />
-
       <WhySection />
-
       <TopRatedHotels hotels={topRatedHotels} />
-
       <ComingSoonSection />
-
       <TestimonialsSection />
-
       <DestinationsSection destinations={popularDestinations} />
-
       {homeCms && <CMSContentRenderer cms={homeCms} />}
-
       <NewsletterSection />
     </>
   );

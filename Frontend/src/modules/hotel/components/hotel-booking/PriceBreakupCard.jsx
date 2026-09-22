@@ -1,30 +1,49 @@
 "use client";
 
 import { Card, Divider, Typography } from "antd";
-
 const { Title, Text } = Typography;
 
 export default function PriceBreakupCard({ bookingData }) {
-  const pricing = bookingData?.selectedRatePlan?.PricingBreakdown ?? {};
-
-  const basePrice = Number(pricing.basePrice || 0);
-
-  const tax = Number(pricing.platformFeeAndTax || 0);
-
-  const totalAmount = Number(pricing.finalPrice || 0);
-
-  const currencySymbol = pricing.currencySymbol || "₹";
-
+  const pricing =
+    bookingData?.rooms?.[0]?.pricing || bookingData?.pricing || {};
+  const basePrice = Number(pricing?.basicAmount || 0);
+  const tax = Number(pricing?.tax || 0);
+  const serviceFee = Number(pricing?.serviceFee || 0);
+  const markup = Number(pricing?.markup || 0);
+  const gst = Number(pricing?.gst || 0);
+  const totalAmount = Number(pricing?.totalAmount || 0);
+  const currency = pricing?.currency || "₹";
   const rows = [
     {
       label: "Base Price",
       value: basePrice,
     },
     {
-      label: "Tax & Fees",
+      label: "Tax",
       value: tax,
     },
   ];
+
+  if (serviceFee > 0) {
+    rows.push({
+      label: "Service Fee",
+      value: serviceFee,
+    });
+  }
+
+  if (markup > 0) {
+    rows.push({
+      label: "Markup",
+      value: markup,
+    });
+  }
+
+  if (gst > 0) {
+    rows.push({
+      label: "GST",
+      value: gst,
+    });
+  }
 
   return (
     <Card
@@ -48,7 +67,7 @@ export default function PriceBreakupCard({ bookingData }) {
               </Text>
 
               <Text className="!font-['Roboto'] text-[12px] font-medium text-gray-800">
-                {currencySymbol} {Number(item.value).toLocaleString("en-IN")}
+                {currency} {item.value.toLocaleString("en-IN")}
               </Text>
             </div>
 
@@ -65,7 +84,7 @@ export default function PriceBreakupCard({ bookingData }) {
         </Text>
 
         <Text className="!font-['Roboto'] text-[22px] font-bold text-[#1677ff]">
-          {currencySymbol} {totalAmount.toLocaleString("en-IN")}
+          {currency} {totalAmount.toLocaleString("en-IN")}
         </Text>
       </div>
     </Card>

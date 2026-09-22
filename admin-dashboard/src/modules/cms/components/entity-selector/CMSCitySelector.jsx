@@ -1,55 +1,56 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
 import { Form, Select } from "antd";
-
+import { useEffect, useState } from "react";
 import { getCitiesHotelsApi } from "@/modules/markeups/services/markup.service";
 
 export default function CMSCitySelector({ form }) {
-  console.log("CMSCitySelector", form);
-
   const [loading, setLoading] = useState(false);
   const [options, setOptions] = useState([]);
-
   const selectedCity = Form.useWatch("selectedCity", form);
 
   useEffect(() => {
     const cityMeta = form.getFieldValue("cityMeta");
-
     if (
       selectedCity &&
       cityMeta?.destination &&
-      !options.some((o) => o.value === selectedCity)
+      !options.some((option) => option.value === selectedCity)
     ) {
-      setOptions((prev) => [
-        ...prev,
+      setOptions((previous) => [
+        ...previous,
         {
           label: cityMeta.destination,
           value: selectedCity,
           raw: {
             name: cityMeta.destination,
             id: selectedCity,
+            type: "city",
           },
         },
       ]);
     }
-  }, [selectedCity, form]);
+  }, [selectedCity, form, options]);
 
-  const fetchCities = async (value = "jaipur") => {
+  const fetchCities = async (value = "") => {
+    const searchText = value?.trim();
+
+    if (!searchText || searchText.length < 2) {
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const data = await getCitiesHotelsApi(value);
+      const data = await getCitiesHotelsApi(searchText);
 
-      const cities = data.filter((item) => item.type !== "Hotel");
+      const cities = Array.isArray(data)
+        ? data.filter((item) => item?.type?.toLowerCase() === "city")
+        : [];
 
       setOptions(
         cities.map((item) => ({
-          label: item.name,
-
-          value: item.id,
-
+          label: item?.displayName || item?.name || item?.city || "",
+          value: item?.id || item?.destinationId || item?.name || "",
           raw: item,
         })),
       );
@@ -74,19 +75,21 @@ export default function CMSCitySelector({ form }) {
         placeholder="Search city"
         options={options}
         loading={loading}
-        onFocus={() => fetchCities()}
         onSearch={fetchCities}
         onChange={(value, option) => {
+          const city = option?.raw || {};
           form.setFieldValue("entityId", value);
-
           form.setFieldValue("selectedCity", value);
-
           form.setFieldValue("cityMeta", {
-            destination: option.raw?.name,
-
-            destinationId: option.raw?.id,
+            destination: city?.displayName || city?.name || city?.city || "",
+            destinationId: city?.id || city?.destinationId || value,
+            city: city?.city || city?.name || "",
+            state: city?.state || city?.stateName || "",
+            stateName: city?.stateName || city?.state || "",
+            country: city?.country || "",
+            countryCode: city?.countryCode || "",
+            type: city?.type || "city",
           });
-
           form.setFieldValue("selectedHotel", null);
         }}
       />

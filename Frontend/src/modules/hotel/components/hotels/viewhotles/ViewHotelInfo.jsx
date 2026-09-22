@@ -1,35 +1,126 @@
 "use client";
 
 import {
-  CompassOutlined,
+  CloseOutlined,
   EnvironmentOutlined,
   InfoCircleOutlined,
 } from "@ant-design/icons";
+import { Modal } from "antd";
+import { useEffect, useRef, useState } from "react";
 
 const ViewHotelInfo = ({ supplierData = {} }) => {
-  const { AboutHotel, Address, City, Country, State } = supplierData;
+  const { AboutHotel, Address, City, State, Country } = supplierData;
 
-  console.log("supplierData in hotel detail page", supplierData);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const mapQuery = [Address, City, State, Country].filter(Boolean).join(", ");
+  const AboutHotelContent = ({ content }) => {
+    const [isLongContent, setIsLongContent] = useState(false);
+    const contentRef = useRef(null);
 
-  const googleMapLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-    mapQuery,
-  )}`;
+    useEffect(() => {
+      const checkContentHeight = () => {
+        const element = contentRef.current;
+
+        if (!element) return;
+
+        const lineHeight = parseFloat(
+          window.getComputedStyle(element).lineHeight,
+        );
+
+        const maxHeight = lineHeight * 4;
+
+        setIsLongContent(element.scrollHeight > maxHeight + 2);
+      };
+
+      checkContentHeight();
+
+      window.addEventListener("resize", checkContentHeight);
+
+      return () => {
+        window.removeEventListener("resize", checkContentHeight);
+      };
+    }, [content]);
+
+    return (
+      <>
+        {/* Short Description */}
+        <div
+          ref={contentRef}
+          className="prose prose-sm line-clamp-4 max-w-none overflow-hidden leading-7 text-gray-600"
+          dangerouslySetInnerHTML={{
+            __html: content,
+          }}
+        />
+
+        {/* View More */}
+        {isLongContent && (
+          <button
+            type="button"
+            onClick={() => setIsModalOpen(true)}
+            className="most-text-color mt-2 cursor-pointer text-sm font-semibold underline transition"
+          >
+            View More
+          </button>
+        )}
+
+        {/* Full About Hotel Modal */}
+        <Modal
+          open={isModalOpen}
+          onCancel={() => setIsModalOpen(false)}
+          footer={null}
+          centered
+          width={800}
+          closeIcon={
+            <CloseOutlined className="text-gray-500 hover:text-gray-800" />
+          }
+          title={
+            <div className="flex items-center gap-3 border-b border-gray-100 pb-3">
+              <div className="most-text-color most-boder-colour flex h-10 w-10 items-center justify-center rounded border">
+                <InfoCircleOutlined />
+              </div>
+
+              <div>
+                <h2 className="m-0 text-lg font-bold text-gray-800">
+                  About Hotel
+                </h2>
+
+                <p className="m-0 text-sm font-medium text-gray-500">
+                  Complete property overview
+                </p>
+              </div>
+            </div>
+          }
+          styles={{
+            body: {
+              paddingTop: 20,
+              maxHeight: "70vh",
+              overflowY: "auto",
+            },
+          }}
+        >
+          <div
+            className="prose prose-sm max-w-none leading-7 text-gray-600"
+            dangerouslySetInnerHTML={{
+              __html: content,
+            }}
+          />
+        </Modal>
+      </>
+    );
+  };
 
   return (
-    <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
-      {/* LEFT */}
-      <div className="space-y-4 lg:col-span-2">
-        {/* About */}
+    <div className="mt-4">
+      <div className="space-y-4">
+        {/* ================= ABOUT HOTEL ================= */}
         <div className="rounded border border-gray-200 bg-white p-4 shadow-sm">
           <div className="mb-3 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded boder most-boder-colour most-text-colour">
+            <div className="most-boder-colour most-text-colour flex h-10 w-10 items-center justify-center rounded border">
               <InfoCircleOutlined />
             </div>
 
             <div>
-              <h2 className="font-roboto! mb-0! text-[17px] font-bold! text-gray-800">
+              <h2 className="mb-0 text-[17px] font-bold text-gray-800">
                 About Hotel
               </h2>
 
@@ -39,22 +130,24 @@ const ViewHotelInfo = ({ supplierData = {} }) => {
             </div>
           </div>
 
-          <p className="font-roboto line-clamp-6 leading-7 text-gray-600">
-            {AboutHotel?.trim()
-              ? AboutHotel
-              : "No hotel description available."}
-          </p>
+          {AboutHotel ? (
+            <AboutHotelContent content={AboutHotel} />
+          ) : (
+            <p className="leading-7 text-gray-600">
+              No hotel description available.
+            </p>
+          )}
         </div>
 
-        {/* Address */}
+        {/* ================= HOTEL ADDRESS ================= */}
         <div className="rounded border border-gray-200 bg-white p-4 shadow-sm">
           <div className="mb-3 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded boder most-boder-colour most-text-color">
+            <div className="most-boder-colour most-text-color flex h-10 w-10 items-center justify-center rounded border">
               <EnvironmentOutlined />
             </div>
 
             <div>
-              <h2 className="font-roboto! mb-0! text-[17px] font-bold! text-gray-800">
+              <h2 className="mb-0 text-[17px] font-bold text-gray-800">
                 Hotel Address
               </h2>
 
@@ -65,51 +158,15 @@ const ViewHotelInfo = ({ supplierData = {} }) => {
           </div>
 
           <div className="rounded bg-[#f8fbfd] p-3">
-            <p className="font-roboto! m-0! font-semibold text-gray-700">
+            <p className="font-semibold text-gray-700">
               {Address || "Address unavailable"}
             </p>
 
-            <p className="m font-roboto text-sm text-gray-500">
+            <p className="mt-1 text-sm text-gray-500">
               {[City, State, Country].filter(Boolean).join(", ")}
             </p>
           </div>
         </div>
-      </div>
-
-      {/* MAP */}
-      <div className="overflow-hidden rounded border border-gray-200 bg-white shadow-sm">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
-          <div>
-            <h3 className="flex items-center gap-2 text-[17px] font-semibold text-gray-800">
-              <EnvironmentOutlined className="text-[#0ea5e9]" />
-              Location
-            </h3>
-
-            <p className="mt-1 text-xs text-gray-500">Explore hotel map</p>
-          </div>
-
-          {/* Direction Button */}
-          <a
-            href={googleMapLink}
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-center gap-2 rounded border border-[#72C0F0] px-3 py-2 text-xs font-medium text-[#0F6A75] transition hover:bg-[#eef8fd]"
-          >
-            <CompassOutlined />
-            Directions
-          </a>
-        </div>
-
-        {/* Interactive Map */}
-        <iframe
-          src={`https://www.google.com/maps?q=${encodeURIComponent(
-            mapQuery,
-          )}&z=16&output=embed`}
-          title="hotel-map"
-          loading="lazy"
-          className="h-[320px] w-full"
-        />
       </div>
     </div>
   );

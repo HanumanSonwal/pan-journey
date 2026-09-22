@@ -13,7 +13,6 @@ import { useRouter } from "next/navigation";
 export default function TopRatedHotels({ hotels }) {
   const data = hotels?.items || [];
 
-  console.log("TopRatedHotels data", data);
   const { draftSearchData } = useHotelSearchStore();
   const router = useRouter();
   const [perRow, setPerRow] = useState(4);
@@ -26,7 +25,6 @@ export default function TopRatedHotels({ hotels }) {
   const topStartX = useRef(0);
   const bottomStartX = useRef(0);
 
-  // RESPONSIVE
   useEffect(() => {
     const updatePerRow = () => {
       const width = window.innerWidth;
@@ -55,7 +53,6 @@ export default function TopRatedHotels({ hotels }) {
 
   const bottomData = useMemo(() => data.slice(middle), [data, middle]);
 
-  // AUTO SLIDE TOP
   useEffect(() => {
     if (topData.length <= perRow || isDraggingTop) return;
 

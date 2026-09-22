@@ -2,7 +2,7 @@
 
 import { useTheme } from "@/context/ThemeContext";
 import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
-import { Card, Col, Row, Select, Table, theme } from "antd";
+import { Card, Col, Row, Select, Table } from "antd";
 import {
   Area,
   AreaChart,
@@ -15,14 +15,12 @@ import {
 } from "recharts";
 
 const DashboardPage = () => {
-  const { isDark, toggleTheme } = useTheme();
-  const {
-    token: { colorBgContainer, colorText },
-  } = theme.useToken();
+  const { isDark } = useTheme();
 
   const axisColor = "#9ca3af";
 
-  // DATA
+  // ================= DATA =================
+
   const growthData = [
     { name: "Jan", users: 1200 },
     { name: "Feb", users: 1800 },
@@ -42,96 +40,172 @@ const DashboardPage = () => {
   const miniData = [{ v: 10 }, { v: 20 }, { v: 15 }, { v: 30 }, { v: 25 }];
 
   const tableData = [
-    { key: 1, hotel: "Hotel Royal", bookings: 120, revenue: "₹12,000" },
-    { key: 2, hotel: "City Inn", bookings: 90, revenue: "₹9,500" },
-    { key: 3, hotel: "Luxury Stay", bookings: 60, revenue: "₹15,000" },
+    {
+      key: 1,
+      hotel: "Hotel Royal",
+      bookings: 120,
+      revenue: "₹12,000",
+    },
+    {
+      key: 2,
+      hotel: "City Inn",
+      bookings: 90,
+      revenue: "₹9,500",
+    },
+    {
+      key: 3,
+      hotel: "Luxury Stay",
+      bookings: 60,
+      revenue: "₹15,000",
+    },
   ];
 
   const columns = [
-    { title: "Hotel", dataIndex: "hotel" },
-    { title: "Bookings", dataIndex: "bookings" },
-    { title: "Revenue", dataIndex: "revenue" },
+    {
+      title: "Hotel",
+      dataIndex: "hotel",
+    },
+    {
+      title: "Bookings",
+      dataIndex: "bookings",
+    },
+    {
+      title: "Revenue",
+      dataIndex: "revenue",
+    },
+  ];
+
+  // ================= STAT CARDS =================
+
+  const stats = [
+    {
+      title: "Revenue",
+      value: "₹2,45,000",
+      today: "₹12,400 today",
+      change: "+12%",
+      positive: true,
+    },
+    {
+      title: "Bookings",
+      value: "1,240",
+      today: "86 today",
+      change: "+8%",
+      positive: true,
+    },
+    {
+      title: "Users",
+      value: "3,560",
+      today: "45 new",
+      change: "-3%",
+      positive: false,
+    },
+    {
+      title: "Conversion",
+      value: "4.8%",
+      today: "0.3% today",
+      change: "+1.2%",
+      positive: true,
+    },
   ];
 
   return (
-    <>
-      {/* 🔥 HEADER */}
-      <Row justify="space-between" align="middle" wrap style={{ gap: 10 }}>
-        <h2 style={{ color: colorText, margin: 0 }}>Dashboard</h2>
+    <div className="w-full">
+      {/* ================= HEADER ================= */}
+
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2
+          className={`
+            m-0
+            text-xl
+            font-semibold
+            ${isDark ? "text-white" : "text-[#1f2937]"}
+          `}
+        >
+          Dashboard
+        </h2>
 
         <Select
           defaultValue="month"
-          style={{ width: 140 }}
+          className="w-[140px]"
           options={[
-            { value: "week", label: "This Week" },
-            { value: "month", label: "This Month" },
-            { value: "year", label: "This Year" },
+            {
+              value: "week",
+              label: "This Week",
+            },
+            {
+              value: "month",
+              label: "This Month",
+            },
+            {
+              value: "year",
+              label: "This Year",
+            },
           ]}
         />
-      </Row>
+      </div>
 
-      {/* 🔥 CARDS */}
-      <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
-        {[
-          {
-            title: "Revenue",
-            value: "₹2,45,000",
-            today: "₹12,400 today",
-            change: "+12%",
-            positive: true,
-          },
-          {
-            title: "Bookings",
-            value: "1,240",
-            today: "86 today",
-            change: "+8%",
-            positive: true,
-          },
-          {
-            title: "Users",
-            value: "3,560",
-            today: "45 new",
-            change: "-3%",
-            positive: false,
-          },
-          {
-            title: "Conversion",
-            value: "4.8%",
-            today: "0.3% today",
-            change: "+1.2%",
-            positive: true,
-          },
-        ].map((item, i) => (
-          <Col xs={24} sm={12} md={12} lg={6} key={i}>
+      {/* ================= STAT CARDS ================= */}
+
+      <Row gutter={[16, 16]} className="mt-4">
+        {stats.map((item, index) => (
+          <Col xs={24} sm={12} md={12} lg={6} key={index}>
             <Card
               variant="borderless"
-              style={{
-                borderRadius: 5,
-                background: colorBgContainer,
-              }}
+              className={`
+                !overflow-hidden
+                !rounded-[5px]
+                ${
+                  isDark
+                    ? "!bg-[#102027] shadow-[0_8px_30px_rgba(0,0,0,0.25)]"
+                    : "!bg-white shadow-[0_8px_30px_rgba(15,106,117,0.05)]"
+                }
+              `}
             >
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <p style={{ color: "#6b7280", fontSize: 13 }}>{item.title}</p>
+              {/* Card Top */}
+              <div className="flex items-center justify-between">
+                <p
+                  className={`
+                    m-0
+                    text-[13px]
+                    ${isDark ? "text-gray-400" : "text-gray-500"}
+                  `}
+                >
+                  {item.title}
+                </p>
 
                 <span
-                  style={{
-                    color: item.positive ? "#16a34a" : "#dc2626",
-                    fontSize: 12,
-                  }}
+                  className={`
+                    flex
+                    items-center
+                    gap-1
+                    text-xs
+                    font-medium
+                    ${item.positive ? "text-green-600" : "text-red-600"}
+                  `}
                 >
                   {item.positive ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
+
                   {item.change}
                 </span>
               </div>
 
-              <h2 style={{ color: colorText, margin: "6px 0" }}>
+              {/* Main Value */}
+              <h2
+                className={`
+                  my-1.5
+                  text-2xl
+                  font-semibold
+                  ${isDark ? "text-white" : "text-[#1f2937]"}
+                `}
+              >
                 {item.value}
               </h2>
 
-              <p style={{ fontSize: 12, color: "#9ca3af" }}>{item.today}</p>
+              {/* Today */}
+              <p className="m-0 text-xs text-gray-400">{item.today}</p>
 
-              {/* MINI CHART */}
-              <div style={{ height: 40, marginTop: 8 }}>
+              {/* Mini Chart */}
+              <div className="mt-2 h-10 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={miniData}>
                     <Area
@@ -152,81 +226,110 @@ const DashboardPage = () => {
         ))}
       </Row>
 
-      {/* 🔥 CHARTS */}
-      <Row gutter={[16, 16]} style={{ marginTop: 20 }}>
+      {/* ================= CHARTS ================= */}
+
+      <Row gutter={[16, 16]} className="mt-5">
+        {/* USER GROWTH */}
+
         <Col xs={24} lg={16}>
           <Card
             title="User Growth"
             variant="borderless"
-            style={{
-              borderRadius: 5,
-              background: colorBgContainer,
-              boxShadow: isDark
-                ? "0 8px 30px rgba(0,0,0,.25)"
-                : "0 8px 30px rgba(15,106,117,.05)",
-            }}
+            className={`
+              !rounded-[5px]
+              ${
+                isDark
+                  ? "!bg-[#102027] shadow-[0_8px_30px_rgba(0,0,0,0.25)]"
+                  : "!bg-white shadow-[0_8px_30px_rgba(15,106,117,0.05)]"
+              }
+            `}
           >
-            <ResponsiveContainer width="100%" height={280}>
-              <AreaChart data={growthData}>
-                <XAxis stroke={axisColor} dataKey="name" />
-                <YAxis stroke={axisColor} />
-                <Tooltip />
+            <div className="h-[280px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={growthData}>
+                  <XAxis stroke={axisColor} dataKey="name" />
 
-                <Area
-                  type="monotone"
-                  dataKey="users"
-                  stroke="#0F6A75"
-                  fill="#72C0F0"
-                  fillOpacity={0.18}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+                  <YAxis stroke={axisColor} />
+
+                  <Tooltip />
+
+                  <Area
+                    type="monotone"
+                    dataKey="users"
+                    stroke="#0F6A75"
+                    fill="#72C0F0"
+                    fillOpacity={0.18}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
           </Card>
         </Col>
+
+        {/* BOOKINGS */}
 
         <Col xs={24} lg={8}>
           <Card
             title="Bookings"
             variant="borderless"
-            style={{
-              borderRadius: 5,
-              background: colorBgContainer,
-              boxShadow: isDark
-                ? "0 8px 30px rgba(0,0,0,.25)"
-                : "0 8px 30px rgba(15,106,117,.05)",
-            }}
+            className={`
+              !rounded-[5px]
+              ${
+                isDark
+                  ? "!bg-[#102027] shadow-[0_8px_30px_rgba(0,0,0,0.25)]"
+                  : "!bg-white shadow-[0_8px_30px_rgba(15,106,117,0.05)]"
+              }
+            `}
           >
-            <ResponsiveContainer width="100%" height={280}>
-              <BarChart data={bookingData}>
-                <XAxis stroke={axisColor} dataKey="name" />
-                <YAxis stroke={axisColor} />
-                <Tooltip />
+            <div className="h-[280px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={bookingData}>
+                  <XAxis stroke={axisColor} dataKey="name" />
 
-                <Bar dataKey="bookings" fill="#0F6A75" radius={[8, 8, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+                  <YAxis stroke={axisColor} />
+
+                  <Tooltip />
+
+                  <Bar
+                    dataKey="bookings"
+                    fill="#0F6A75"
+                    radius={[8, 8, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </Card>
         </Col>
       </Row>
 
-      {/* 🔥 TABLE */}
-      <Row style={{ marginTop: 20 }}>
+      {/* ================= TABLE ================= */}
+
+      <Row className="mt-5">
         <Col span={24}>
           <Card
             title="Top Hotels"
             variant="borderless"
-            style={{ borderRadius: 5, background: colorBgContainer }}
+            className={`
+              !rounded-[5px]
+              ${
+                isDark
+                  ? "!bg-[#102027] shadow-[0_8px_30px_rgba(0,0,0,0.25)]"
+                  : "!bg-white shadow-[0_8px_30px_rgba(15,106,117,0.05)]"
+              }
+            `}
           >
-            <Table
-              columns={columns}
-              dataSource={tableData}
-              pagination={false}
-              scroll={{ x: "max-content" }} // 🔥 responsive fix
-            />
+            <div className="w-full overflow-x-auto">
+              <Table
+                columns={columns}
+                dataSource={tableData}
+                pagination={false}
+                scroll={{ x: "max-content" }}
+              />
+            </div>
           </Card>
         </Col>
       </Row>
-    </>
+    </div>
   );
 };
 
