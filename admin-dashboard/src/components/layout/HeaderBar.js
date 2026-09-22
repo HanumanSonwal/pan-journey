@@ -127,26 +127,7 @@ const HeaderBar = ({ collapsed, setCollapsed }) => {
           unCheckedChildren="☀️"
         />
 
-        {/* Notifications */}
-        <div
-          className={`
-            flex
-            h-10
-            w-10
-            items-center
-            justify-center
-            rounded-[5px]
-            border
-
-            ${
-              isDark
-                ? "border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.05)] text-white"
-                : "border-[#d9edf5] bg-white text-[#374151]"
-            }
-          `}
-        >
-          <BellOutlined />
-        </div>
+  
 
         {/* User Dropdown */}
         <Dropdown

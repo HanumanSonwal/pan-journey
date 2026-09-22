@@ -200,9 +200,9 @@ const HotelSectionsTabs = ({ activeTab = "Rooms", setActiveTab }) => {
       <div
         ref={ref}
         className={`z-[8] w-full border border-gray-200 bg-white text-[#0ea5e9] shadow-[0_8px_20px_rgba(14,165,233,0.25)] ${
-          isFixed
-            ? "fixed top-[55px] left-0 w-full sm:top-[55px] md:top-[100px] lg:top-[100px] xl:top-[100px]"
-            : "relative"
+         isFixed
+  ? "fixed top-[55px] left-0 w-full sm:top-[55px] md:top-[130px] lg:top-[130px] xl:top-[130px]"
+  : "relative"
         }`}
       >
         <div className="scrollbar-hide flex overflow-x-auto">
