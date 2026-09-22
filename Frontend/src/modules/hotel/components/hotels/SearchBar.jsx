@@ -55,10 +55,9 @@ export default function SearchBar({ onSearch }) {
       <div className="navbar-background-color sticky top-0 z-10 hidden md:block">
         <div className="h-[146px] px-4 !py-[20px]">
           <div className="mx-auto h-[60px] max-w-[1250px]">
-            <div className="flex h-[83px] w-full items-center gap-[14px] rounded-[5px] bg-[#e9edf1] px-4 !py-[6px]">
-
+            <div className="flex h-[83px] w-full items-center gap-[14px] rounded-[5px] bg-[#f5f7f9] px-4 !py-[6px]">
               {/* DESTINATION */}
-              <div className="!h-[52px] min-w-0 rounded-[6px] bg-white border border-[#8f99a5] md:flex-[1.25] md:flex-[1.55]">
+              <div className="!h-[52px] min-w-0 rounded-[6px] border border-[#8f99a5] bg-white md:flex-[1.25] md:flex-[1.55]">
                 <DestinationSearchField
                   error={destinationError}
                   value={{
@@ -101,7 +100,7 @@ export default function SearchBar({ onSearch }) {
               </div>
 
               {/* DATE */}
-              <div className="relative z-[60] min-w-0 rounded-[6px] border border-[#8f99a5] bg-white md:flex-[1.25]">
+              <div className="relative z-[60] min-w-0 rounded-[6px] border border-[#8f99a5] bg-[#f5f7f9] md:flex-[1.25]">
                 <DateRangeField
                   icon={
                     <CalendarOutlined className="text-[17px] text-[#1677ff]" />
@@ -137,9 +136,7 @@ export default function SearchBar({ onSearch }) {
               {/* GUESTS */}
               <div className="relative z-[50] min-w-0 rounded-[6px] border border-[#8f99a5] bg-white md:flex-[1.05]">
                 <GuestsField
-                  icon={
-                    <TeamOutlined className="text-[17px] text-[#1677ff]" />
-                  }
+                  icon={<TeamOutlined className="text-[17px] text-[#1677ff]" />}
                   variant="compact"
                   open={guestOpen}
                   setOpen={setGuestOpen}
@@ -155,7 +152,7 @@ export default function SearchBar({ onSearch }) {
                 <button
                   type="button"
                   onClick={handleSearch}
-                  className="h-[50px] w-full rounded-[22px] border-0 bg-[#e99500] px-2 !text-[18px] font-medium !text-white shadow-none transition-all duration-200 outline-none hover:bg-[#e99500] active:scale-[0.98]"
+                  className="buttion-background-color h-[50px] w-full rounded-[22px] border-0 px-2 !text-[18px] font-medium !text-white shadow-none transition-all duration-200 outline-none active:scale-[0.98]"
                 >
                   Search
                 </button>
@@ -191,15 +188,11 @@ export default function SearchBar({ onSearch }) {
 
                 <span>•</span>
 
-                <span>
-                  {appliedSearchData?.adults || 0} Adults
-                </span>
+                <span>{appliedSearchData?.adults || 0} Adults</span>
 
                 <span>•</span>
 
-                <span>
-                  {appliedSearchData?.rooms || 0} Room
-                </span>
+                <span>{appliedSearchData?.rooms || 0} Room</span>
               </div>
             </div>
 

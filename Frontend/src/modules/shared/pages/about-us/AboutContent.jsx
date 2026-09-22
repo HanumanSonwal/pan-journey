@@ -2,7 +2,7 @@
 
 export default function AboutContent() {
   return (
-    <section className="relative bg-[#f5f5f5] py-10 sm:py-3 md:py-6 lg:py-4 xl:py-8 overflow-hidden">
+    <section className="relative background-color-bg py-10 sm:py-3 md:py-6 lg:py-4 xl:py-8 overflow-hidden">
 
       {/* Decorative Circle */}
       <div className="absolute left-[8%] top-[20%] hidden lg:block">

@@ -467,7 +467,7 @@ export default function ProfileOverview() {
   // ================= VIEW FIELD =================
   const phoneCode = formValues.phoneCode || "+91";
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
       <div className="bg-white p-5">
         <div className="!mb-8 flex items-center justify-between">
           <h2 className="font-roboto! text-[20px] font-semibold text-[#1f1f1f]">
@@ -516,7 +516,7 @@ export default function ProfileOverview() {
                     name="email"
                     label="Email"
                     verified={emailVerified}
-                    otp={emailOtp}                                                                                
+                    otp={emailOtp}
                     setOtp={setEmailOtp}
                     showOtp={showEmailOtp}
                     setShowOtp={setShowEmailOtp}

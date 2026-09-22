@@ -388,23 +388,19 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   }
 
   return (
-    <div className="min-h-screen w-full background-color-bg">
-
+    <div className="background-color-bg min-h-screen w-full">
       {/* =====================================================
           SEARCH BAR
       ===================================================== */}
 
-      <SearchBar
-        searchData={supplierData}
-        onSearch={handleSearch}
-      />
+      <SearchBar searchData={supplierData} onSearch={handleSearch} />
 
       <div
-        className={`relative mx-auto w-full max-w-7xl px-3 sm:px-4 md:px-5 lg:px-6 xl:px-0 ${
+        className={`relative mx-auto w-full max-w-7xl px-3 sm:px-4 md:px-5 lg:px-6 xl:px-4 ${
           isScrolled ? "z-0" : "z-[820]"
         }`}
       >
-        <div className="-mt-3">
+        <div className="-mt-6">
           {showSkeleton ? (
             <HotelDetailsSkeleton />
           ) : (

@@ -58,8 +58,13 @@ function HotelDetailsMobile({
 
   const hotelImages = supplierData?.HotelGallery || [];
 
-  const amenities = supplierData?.Amenities
-    ? supplierData.Amenities.split(",")
+  const amenities = Array.isArray(supplierData?.Amenities)
+  ? supplierData.Amenities
+      .map((item) => String(item).trim())
+      .filter(Boolean)
+  : typeof supplierData?.Amenities === "string"
+    ? supplierData.Amenities
+        .split(",")
         .map((item) => item.trim())
         .filter(Boolean)
     : [];
