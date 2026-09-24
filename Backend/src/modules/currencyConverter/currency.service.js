@@ -89,3 +89,38 @@ export const getCurrencyRate = async ({ from = "INR", to = "USD" }) => {
     throw new Error("Currency conversion failed");
   }
 };
+export const convertCurrency = async (
+  amount,
+  from = "INR",
+  to = "USD"
+) => {
+  if (amount === null || amount === undefined) {
+    return amount;
+  }
+
+  const numericAmount = Number(amount);
+
+  if (Number.isNaN(numericAmount)) {
+    return amount;
+  }
+
+  from = from.toUpperCase();
+  to = to.toUpperCase();
+
+  if (from === to) {
+    return numericAmount;
+  }
+
+  const rate = await getCurrencyRate({
+    from,
+    to,
+  });
+
+  if (!rate) {
+    throw new Error(
+      `Exchange rate not found: ${from} -> ${to}`
+    );
+  }
+
+  return Number((numericAmount * rate).toFixed(2));
+};

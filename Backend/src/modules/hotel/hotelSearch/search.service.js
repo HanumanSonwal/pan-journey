@@ -8,6 +8,8 @@ import {
   searchMoreHotelsAPI,
 } from "./adapters/flyshop/hotelSearch.api.js";
 
+import { convertCurrency } from "../../currencyConverter/currency.service.js";
+
 import {
   mapHotelSearchRequest,
 } from "./adapters/flyshop/hotelSearch.request.mapper.js";
@@ -24,12 +26,97 @@ import {
 
 import { queryBuilder } from "../../../utils/queryBuilder.js";
 
-
 // ============================================================
 // RUNNING MORE HOTEL SEARCHES
 // ============================================================
 
 const runningMoreHotelSearches = new Set();
+
+
+// ============================================================
+// CONVERT HOTEL PRICES
+// IMPORTANT:
+// This function is ONLY used before sending response.
+// MongoDB data remains in supplier currency / INR.
+// ============================================================
+
+const convertHotelPrices = async (hotels = [], targetCurrency) => {
+  if (!Array.isArray(hotels) || !targetCurrency) {
+    return hotels;
+  }
+
+  return Promise.all(
+    hotels.map(async (hotel) => {
+      const pricing = hotel?.pricing;
+
+      if (!pricing) {
+        return hotel;
+      }
+
+      // DB/supplier data INR me stored hai
+      const sourceCurrency = (
+        pricing.currency || "INR"
+      ).toUpperCase();
+
+      const destinationCurrency = targetCurrency.toUpperCase();
+
+      // Same currency -> no conversion
+      if (sourceCurrency === destinationCurrency) {
+        return {
+          ...hotel,
+          pricing: {
+            ...pricing,
+            currency: destinationCurrency,
+          },
+        };
+      }
+
+      return {
+        ...hotel,
+        pricing: {
+          ...pricing,
+          currency: destinationCurrency,
+
+          basicAmount: await convertCurrency(
+            pricing.basicAmount,
+            sourceCurrency,
+            destinationCurrency
+          ),
+
+          tax: await convertCurrency(
+            pricing.tax,
+            sourceCurrency,
+            destinationCurrency
+          ),
+
+          totalAmount: await convertCurrency(
+            pricing.totalAmount,
+            sourceCurrency,
+            destinationCurrency
+          ),
+
+          serviceFee: await convertCurrency(
+            pricing.serviceFee,
+            sourceCurrency,
+            destinationCurrency
+          ),
+
+          markup: await convertCurrency(
+            pricing.markup,
+            sourceCurrency,
+            destinationCurrency
+          ),
+
+          gst: await convertCurrency(
+            pricing.gst,
+            sourceCurrency,
+            destinationCurrency
+          ),
+        },
+      };
+    })
+  );
+};
 
 
 // ============================================================
@@ -327,6 +414,9 @@ const getHotelSearchResult = async ({
 
 // ============================================================
 // BACKGROUND MORE HOTEL SEARCH
+// IMPORTANT:
+// More hotels are saved WITHOUT currency conversion.
+// They remain in INR/supplier currency in MongoDB.
 // ============================================================
 
 const fetchAndSaveMoreHotels = async ({
@@ -450,6 +540,8 @@ const fetchAndSaveMoreHotels = async ({
 
     // ========================================================
     // MAP RESPONSE
+    // IMPORTANT:
+    // NO CURRENCY CONVERSION HERE
     // ========================================================
 
     const moreHotels =
@@ -592,9 +684,10 @@ const fetchAndSaveMoreHotels = async ({
 // MAIN HOTEL SEARCH SERVICE
 // ============================================================
 
-export const searchHotelService = async (
-  payload
-) => {
+export const searchHotelService = async ({
+  payload,
+  currency,
+}) => {
 
   try {
 
@@ -613,6 +706,11 @@ export const searchHotelService = async (
     console.log(
       "Payload:",
       payload
+    );
+
+    console.log(
+      "Requested Currency:",
+      currency
     );
 
     console.log(
@@ -645,6 +743,9 @@ export const searchHotelService = async (
 
     // ========================================================
     // 2. CREATE CACHE KEY
+    // IMPORTANT:
+    // Currency is NOT part of cache key.
+    // MongoDB/cache always stores supplier currency.
     // ========================================================
 
     const cacheKey =
@@ -790,6 +891,19 @@ export const searchHotelService = async (
         });
 
 
+      // ------------------------------------------------------
+      // CONVERT ONLY FOR RESPONSE
+      // IMPORTANT:
+      // DB data remains unchanged.
+      // ------------------------------------------------------
+
+      mappedResult.hotels =
+        await convertHotelPrices(
+          mappedResult.hotels,
+          currency
+        );
+
+
       console.log(
         "=========================================="
       );
@@ -806,6 +920,11 @@ export const searchHotelService = async (
       console.log(
         "Hotels:",
         mappedResult?.hotels?.length || 0
+      );
+
+      console.log(
+        "Response Currency:",
+        currency
       );
 
       console.log(
@@ -927,6 +1046,8 @@ export const searchHotelService = async (
 
     // ========================================================
     // 7. MAP HOTELS
+    // IMPORTANT:
+    // NO CURRENCY CONVERSION HERE
     // ========================================================
 
     const hotels =
@@ -1004,6 +1125,9 @@ export const searchHotelService = async (
 
     // ========================================================
     // 8. SAVE COMPLETE HOTEL SEARCH
+    // IMPORTANT:
+    // hotels are saved exactly as mapped from supplier.
+    // NO CURRENCY CONVERSION.
     // ========================================================
 
     console.log(
@@ -1050,6 +1174,7 @@ export const searchHotelService = async (
       rooms:
         payload.rooms,
 
+      // INR / SUPPLIER CURRENCY DATA
       hotels,
 
       totalHotels:
@@ -1244,6 +1369,20 @@ export const searchHotelService = async (
       });
 
 
+    // ========================================================
+    // CONVERT ONLY FOR RESPONSE
+    // IMPORTANT:
+    // MongoDB remains INR / supplier currency.
+    // Only response gets converted.
+    // ========================================================
+
+    mappedResult.hotels =
+      await convertHotelPrices(
+        mappedResult.hotels,
+        currency
+      );
+
+
     console.log(
       "=========================================="
     );
@@ -1260,6 +1399,11 @@ export const searchHotelService = async (
     console.log(
       "Hotels:",
       mappedResult?.hotels?.length || 0
+    );
+
+    console.log(
+      "Response Currency:",
+      currency
     );
 
     console.log(
@@ -1321,4 +1465,3 @@ export const searchHotelService = async (
     throw error;
   }
 };
-

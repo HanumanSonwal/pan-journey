@@ -408,6 +408,37 @@ const tempBookingSchema = new mongoose.Schema(
       default: "PENDING",
       index: true,
     },
+    paymentStatus: {
+  type: String,
+  enum: [
+    "PENDING",
+    "SUCCESS",
+    "FAILED",
+  ],
+  default: "PENDING",
+  index: true,
+},
+
+paymentResponse: {
+  type: mongoose.Schema.Types.Mixed,
+  default: null,
+},
+
+ticketingStatus: {
+  type: String,
+  enum: [
+    "PENDING",
+    "SUCCESS",
+    "FAILED",
+  ],
+  default: "PENDING",
+  index: true,
+},
+
+ticketingResponse: {
+  type: mongoose.Schema.Types.Mixed,
+  default: null,
+},
   },
   {
     timestamps: true,
