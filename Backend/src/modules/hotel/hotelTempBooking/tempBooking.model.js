@@ -34,7 +34,7 @@ const paxDetailsSchema = new mongoose.Schema(
   },
   {
     _id: false,
-  }
+  },
 );
 
 const locationSchema = new mongoose.Schema(
@@ -76,7 +76,7 @@ const locationSchema = new mongoose.Schema(
   },
   {
     _id: false,
-  }
+  },
 );
 
 const checkInOutSchema = new mongoose.Schema(
@@ -93,7 +93,7 @@ const checkInOutSchema = new mongoose.Schema(
   },
   {
     _id: false,
-  }
+  },
 );
 
 const policySchema = new mongoose.Schema(
@@ -115,7 +115,7 @@ const policySchema = new mongoose.Schema(
   },
   {
     _id: false,
-  }
+  },
 );
 
 const pricingSchema = new mongoose.Schema(
@@ -157,7 +157,7 @@ const pricingSchema = new mongoose.Schema(
   },
   {
     _id: false,
-  }
+  },
 );
 
 const responseHeaderSchema = new mongoose.Schema(
@@ -184,7 +184,7 @@ const responseHeaderSchema = new mongoose.Schema(
   },
   {
     _id: false,
-  }
+  },
 );
 
 const supplierResponseSchema = new mongoose.Schema(
@@ -211,7 +211,7 @@ const supplierResponseSchema = new mongoose.Schema(
   },
   {
     _id: false,
-  }
+  },
 );
 
 const tempBookingSchema = new mongoose.Schema(
@@ -399,50 +399,37 @@ const tempBookingSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: [
-        "PENDING",
-        "TEMP_BOOKED",
-        "PRICE_CHANGED",
-        "FAILED",
-      ],
+      enum: ["PENDING", "TEMP_BOOKED", "PRICE_CHANGED", "FAILED"],
       default: "PENDING",
       index: true,
     },
     paymentStatus: {
-  type: String,
-  enum: [
-    "PENDING",
-    "SUCCESS",
-    "FAILED",
-  ],
-  default: "PENDING",
-  index: true,
-},
+      type: String,
+      enum: ["PENDING", "SUCCESS", "FAILED"],
+      default: "PENDING",
+      index: true,
+    },
 
-paymentResponse: {
-  type: mongoose.Schema.Types.Mixed,
-  default: null,
-},
+    paymentResponse: {
+      type: mongoose.Schema.Types.Mixed,
+      default: null,
+    },
 
-ticketingStatus: {
-  type: String,
-  enum: [
-    "PENDING",
-    "SUCCESS",
-    "FAILED",
-  ],
-  default: "PENDING",
-  index: true,
-},
+    ticketingStatus: {
+      type: String,
+      enum: ["PENDING", "SUCCESS", "FAILED"],
+      default: "PENDING",
+      index: true,
+    },
 
-ticketingResponse: {
-  type: mongoose.Schema.Types.Mixed,
-  default: null,
-},
+    ticketingResponse: {
+      type: mongoose.Schema.Types.Mixed,
+      default: null,
+    },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 tempBookingSchema.index({
@@ -450,9 +437,8 @@ tempBookingSchema.index({
   roomId: 1,
 });
 
-const TempBooking = mongoose.model(
-  "TempBooking",
-  tempBookingSchema
-);
+const TempBooking =
+  mongoose.models.TempBooking ||
+  mongoose.model("TempBooking", tempBookingSchema);
 
 export default TempBooking;
