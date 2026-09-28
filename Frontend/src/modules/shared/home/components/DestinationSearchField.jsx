@@ -90,11 +90,10 @@ function DestinationSearchField({
   };
 
   const isEmptySearch = searchText.trim() === "";
-
   const sortedSearchResults = useMemo(() => {
-    return [...data].sort((a, b) => {
-      const search = searchText.toLowerCase();
+    const search = debouncedSearch.toLowerCase();
 
+    return [...data].sort((a, b) => {
       const aName = a?.name?.toLowerCase() || "";
       const bName = b?.name?.toLowerCase() || "";
 
@@ -106,7 +105,7 @@ function DestinationSearchField({
 
       return 0;
     });
-  }, [data, searchText]);
+  }, [data, debouncedSearch]);
 
   const buildOptions = (items = []) => {
     return items.map((item) => {
@@ -241,7 +240,7 @@ function DestinationSearchField({
 
       <div
         title={value?.city || ""}
-        className={`relative w-full min-w-0 overflow-visible rounded border !bg-white px-3 py-1 transition-all hover:border-[#0077b6]  ${
+        className={`relative w-full min-w-0 overflow-visible rounded border !bg-white px-3 py-1 transition-all hover:border-[#0077b6] ${
           error ? "border-red-500" : "border-gray-300"
         } ${wrapperClassName}`}
         style={{ height }}
@@ -253,9 +252,7 @@ function DestinationSearchField({
               : "min-h-[6px] flex-col justify-center px-1 md:px-2"
           }`}
         >
-
           {icon && <div className="flex shrink-0 items-center">{icon}</div>}
-
 
           <div className="flex w-full min-w-0 items-center gap-2 overflow-hidden">
             {icon || <SearchOutlined className="!text-[20px] text-gray-400" />}
@@ -321,7 +318,6 @@ function DestinationSearchField({
               </Popover>
             </div>
           </div>
-
 
           {compact ? (
             <span
