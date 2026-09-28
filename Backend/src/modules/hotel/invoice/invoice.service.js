@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import HotelTempBooking from "../hotelTempBooking/hotelCart.model.js";
+// import HotelTempBooking from "../hotelTempBooking/hotelCart.model.js";
 import { generateInvoicePdf } from "./utils/pdfGenerator.js";
 
 export const generateHotelInvoiceService = async (

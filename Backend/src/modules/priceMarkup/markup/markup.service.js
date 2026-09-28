@@ -1,18 +1,31 @@
 import Markup from "./markup.model.js";
+import Country from "../countryData/country.model.js";
 
- export const extractNormalizedCity = (input) => {
+export const extractNormalizedCity = (input) => {
   if (!input) return null;
 
-  const parts = input.split(",").map((item) => item.trim());
-
-  if (parts.length >= 3) {
-    return parts.slice(-3).join(", ");
-  }
-
-  return input.trim();
+  return String(input).trim();
 };
 
+export const normalizeName = (value) =>
+  String(value ?? "")
+    .trim()
+    .toLowerCase();
 
+export const getCountryCodeByName = async (countryName) => {
+  if (!countryName) return null;
+
+  const country = await Country.findOne({
+    countryName: {
+      $regex: `^${String(countryName).trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`,
+      $options: "i",
+    },
+  })
+    .select("countryCode")
+    .lean();
+
+  return country?.countryCode?.trim()?.toUpperCase() || null;
+};
 
 export const getMarkup = async ({
   hotelId,
@@ -20,68 +33,56 @@ export const getMarkup = async ({
   stateName,
   countryCode,
 }) => {
+  const normalizedHotelId = String(hotelId ?? "").trim();
+  const normalizedCity = normalizeName(cityName);
+  const normalizedState = normalizeName(stateName);
+  const normalizedCountry = String(countryCode ?? "")
+    .trim()
+    .toUpperCase();
 
-  // 1 hotel
- const normalizeHotelId = (hotelId) => {
-  const id = String(hotelId);
-
-  // Agar already 99 se start ho rahi hai to dobara mat lagao
-  return id.startsWith("99") ? id : `99${id}`;
-};
-
-const normalizedHotelId = normalizeHotelId(hotelId);
-
-console.log("incoming hotel =", hotelId);
-console.log("normalized hotel =", normalizedHotelId);
-
-let markup = await Markup.findOne({
-  level: "hotel",
-  hotelId: normalizedHotelId,
-  isActive: true,
-});
-  // 2 city
-  const normalizedCity = extractNormalizedCity(cityName);
-
-  if (!markup) {
-    markup = await Markup.findOne({
-      level: "city",
-    
-      isActive: true,
-    });
-  }
-
-console.log("incoming cityName =", cityName);
-  // 3 state
-  if (!markup) {
-    markup = await Markup.findOne({
-      level: "state",
-      stateName,
-      isActive: true,
-    });
-  }
-
-  // 4 country
-  if (!markup) {
-    markup = await Markup.findOne({
-      level: "country",
-      countryCode,
-      isActive: true,
-    });
-  }
-  console.log("incoming countryName =", countryCode);
-
-  // 5 worldwide
-  if (!markup) {
-    markup = await Markup.findOne({
-      level: "worldwide",
-      isActive: true,
-    });
-  }
-
-  const serviceTax = await Markup.findOne({
-    level: "serviceTax",
+  const rules = await Markup.find({
     isActive: true,
-  });
+  }).lean();
 
-  return  markup ;
+  const hotelMarkup = rules.find(
+    (rule) =>
+      rule.level === "hotel" &&
+      String(rule.hotelId ?? "").trim() === normalizedHotelId
+  );
+
+  if (hotelMarkup) return hotelMarkup;
+
+  const cityMarkup = rules.find(
+    (rule) =>
+      rule.level === "city" &&
+      normalizeName(rule.cityName) === normalizedCity
+  );
+
+  if (cityMarkup) return cityMarkup;
+
+  const stateMarkup = rules.find(
+    (rule) =>
+      rule.level === "state" &&
+      normalizeName(rule.stateName) === normalizedState &&
+      String(rule.countryCode ?? "")
+        .trim()
+        .toUpperCase() === normalizedCountry
+  );
+
+  if (stateMarkup) return stateMarkup;
+
+  const countryMarkup = rules.find(
+    (rule) =>
+      rule.level === "country" &&
+      String(rule.countryCode ?? "")
+        .trim()
+        .toUpperCase() === normalizedCountry
+  );
+
+  if (countryMarkup) return countryMarkup;
+
+  return (
+    rules.find((rule) => rule.level === "worldwide") ||
+    null
+  );
 };

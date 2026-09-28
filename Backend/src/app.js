@@ -10,7 +10,7 @@ import otpRoutes from "./modules/auth/customer-auth/auth.routes.js";
 import customerProfileRoutes from "./modules/auth/customer-auth/customer-documents/customerDocument.routes.js";
 import profileRoutes from "./modules/auth/customer-auth/customerProfile/profile.routes.js";
 import cmsRoutes from "./modules/cms/cms.routes.js";
-import contactUs from "./modules/contactUsForm/contact.routes.js";
+// import contactUs from "./modules/contactUsForm/contact.routes.js";
 import newsletter from "./modules/contactUsForm/newsletter.routes.js";
 import currencyRoutes from "./modules/currencyConverter/currency.route.js";
 import destinationSearch from "./modules/hotel/destination/destination.routes.js";
@@ -72,7 +72,7 @@ app.use(express.static("public"));
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/media", mediaRoutes);
-app.use("/api/v1", contactUs);
+// app.use("/api/v1", contactUs);
 app.use("/api/v1", support);
 app.use("/api/v1", grievanceRedressal);
 // app.use("/api/v1/payment", paymentRoutes);

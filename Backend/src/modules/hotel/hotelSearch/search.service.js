@@ -26,6 +26,11 @@ import {
 
 import { queryBuilder } from "../../../utils/queryBuilder.js";
 
+import { getAllActiveMarkups } from "../../priceMarkup/markup/markup.bulk.service.js";
+import { resolveRule } from "../../priceMarkup/pricing/markup.resolver.js";
+import { getCountryCodeByName } from "../../priceMarkup/markup/markup.service.js";
+import { applyHotelPricing } from "../../priceMarkup/pricing/pricing.engine.js";
+
 // ============================================================
 // RUNNING MORE HOTEL SEARCHES
 // ============================================================
@@ -214,40 +219,48 @@ const mapSupplierHotel = (hotel) => ({
   })),
 
   pricing: {
-    currency:
-      hotel?.Currencycode ||
-      null,
+  currency:
+    hotel?.Currencycode || null,
 
-    basicAmount:
-      Number(
-        hotel?.LowestBasicAmount || 0
-      ),
+  // =====================================================
+  // SUPPLIER / ORIGINAL VALUES
+  // INTERNAL ONLY
+  // =====================================================
 
-    tax:
-      Number(
-        hotel?.LowestRateTax || 0
-      ),
+  supplierBasicAmount:
+    Number(hotel?.LowestBasicAmount || 0),
 
-    totalAmount:
-      Number(
-        hotel?.TotalAmount || 0
-      ),
+  supplierTax:
+    Number(hotel?.LowestRateTax || 0),
 
-    serviceFee:
-      Number(
-        hotel?.ServiceFeeAmount || 0
-      ),
+  supplierPrice:
+    Number(hotel?.TotalAmount || 0),
 
-    markup:
-      Number(
-        hotel?.TradeMarkupAmount || 0
-      ),
+  // =====================================================
+  // CUSTOMER FACING VALUES
+  // Initially supplier values.
+  // Pricing engine will overwrite these.
+  // =====================================================
 
-    gst:
-      Number(
-        hotel?.GST || 0
-      ),
-  },
+  basicAmount:
+    Number(hotel?.LowestBasicAmount || 0),
+
+  tax:
+    Number(hotel?.LowestRateTax || 0),
+
+  totalAmount:
+    Number(hotel?.TotalAmount || 0),
+
+  serviceFee: 0,
+
+  markup: 0,
+
+  gst:
+    Number(hotel?.GST || 0),
+
+  // INTERNAL ONLY
+  markupLevel: null,
+},
 
   checkIn: {
     date:
@@ -304,6 +317,156 @@ const mapSupplierHotels = (
 };
 
 
+// ============================================================
+// APPLY MARKUP FOR CUSTOMER RESPONSE
+// IMPORTANT:
+// - Search payload supplies city/state/country context.
+// - Hotel response supplies hotelId for hotel-level markup.
+// - DB keeps supplierPrice untouched.
+// - No new response key is introduced.
+// - Existing pricing.totalAmount becomes customer price.
+// ============================================================
+
+// const applyMarkupToHotels = async ({
+//   hotels = [],
+//   payload,
+// }) => {
+//   if (!Array.isArray(hotels) || !hotels.length) {
+//     return hotels;
+//   }
+
+//   const { markups = [] } = await getAllActiveMarkups();
+
+//   if (!markups.length) {
+//     return hotels;
+//   }
+
+//   const destination = payload?.destination || {};
+
+//   const countryCode = await getCountryCodeByName(
+//     destination.country
+//   );
+
+//   return hotels.map((hotel) => {
+//     const markup = resolveRule({
+//   hotelId,
+//   cityName,
+//   stateName,
+//   countryCode,
+//   rules
+// });
+
+//     return applyHotelPricing({
+//       hotel,
+//       markup,
+//     });
+//   });
+// };
+
+// ============================================================
+// APPLY MARKUP + PRICING FOR CUSTOMER RESPONSE
+//
+// IMPORTANT:
+// - Search payload supplies city/state/country context.
+// - Hotel response supplies hotelId for hotel-level markup.
+// - Supplier pricing remains protected in DB.
+// - No new frontend response keys are introduced.
+// ============================================================
+
+const applyMarkupToHotels = async ({
+  hotels = [],
+  payload,
+}) => {
+  if (!Array.isArray(hotels) || !hotels.length) {
+    return hotels;
+  }
+
+  // ==========================================================
+  // 1. GET ACTIVE MARKUP RULES
+  // ==========================================================
+
+  const { markups = [] } =
+    await getAllActiveMarkups();
+
+  // No markup rule
+  // Still return original supplier pricing.
+  if (!markups.length) {
+    return hotels;
+  }
+
+  // ==========================================================
+  // 2. SEARCH DESTINATION
+  // ==========================================================
+
+  const destination =
+    payload?.destination || {};
+
+  // ==========================================================
+  // 3. COUNTRY NAME -> COUNTRY CODE
+  //
+  // Frontend:
+  // India
+  //
+  // Markup / tax:
+  // IN
+  // ==========================================================
+
+  const countryCode =
+    await getCountryCodeByName(
+      destination?.country
+    );
+
+  // ==========================================================
+  // 4. APPLY PRICING HOTEL BY HOTEL
+  // ==========================================================
+
+  return hotels.map((hotel) => {
+
+    // --------------------------------------------------------
+    // RESOLVE MARKUP
+    // --------------------------------------------------------
+
+    const markup = resolveRule({
+      hotelId:
+        hotel?.hotelId,
+
+      destination: {
+        city:
+          destination?.city,
+
+        state:
+          destination?.state,
+
+        country:
+          destination?.country,
+      },
+
+      countryCode,
+
+      rules: markups,
+    });
+
+    // --------------------------------------------------------
+    // APPLY PRICING ENGINE
+    // --------------------------------------------------------
+
+    return applyHotelPricing({
+      pricing:
+        hotel?.pricing,
+
+      markup,
+
+      // Country tax will be connected here
+      // once the tax service contract is confirmed.
+      countryTax: null,
+
+      countryTaxSlabs: [],
+
+      // 5% currency conversion + payment gateway
+      conversionAndGatewayPercent: 5,
+    });
+  });
+};
 // ============================================================
 // GET HOTELS WITH SEARCH / FILTER / SORT / PAGINATION
 // ============================================================
@@ -892,10 +1055,15 @@ export const searchHotelService = async ({
 
 
       // ------------------------------------------------------
-      // CONVERT ONLY FOR RESPONSE
-      // IMPORTANT:
-      // DB data remains unchanged.
+      // APPLY MARKUP THEN CONVERT FOR RESPONSE
+      // DB supplier price remains unchanged.
       // ------------------------------------------------------
+
+      mappedResult.hotels =
+        await applyMarkupToHotels({
+          hotels: mappedResult.hotels,
+          payload,
+        });
 
       mappedResult.hotels =
         await convertHotelPrices(
@@ -1370,11 +1538,17 @@ export const searchHotelService = async ({
 
 
     // ========================================================
-    // CONVERT ONLY FOR RESPONSE
+    // APPLY MARKUP THEN CONVERT FOR RESPONSE
     // IMPORTANT:
-    // MongoDB remains INR / supplier currency.
-    // Only response gets converted.
+    // MongoDB remains supplier/original price.
+    // Only response gets markup + currency conversion.
     // ========================================================
+
+    mappedResult.hotels =
+      await applyMarkupToHotels({
+        hotels: mappedResult.hotels,
+        payload,
+      });
 
     mappedResult.hotels =
       await convertHotelPrices(

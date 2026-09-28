@@ -1,66 +1,114 @@
+const normalize = (value) =>
+  String(value ?? "")
+    .trim()
+    .toLowerCase();
+
+const normalizeUpper = (value) =>
+  String(value ?? "")
+    .trim()
+    .toUpperCase();
+
+/**
+ * Resolve markup rule according to priority:
+ *
+ * HOTEL
+ *   ↓
+ * CITY
+ *   ↓
+ * STATE
+ *   ↓
+ * COUNTRY
+ *   ↓
+ * WORLDWIDE
+ *
+ * Search payload destination format:
+ *
+ * destination: {
+ *   type: "city",
+ *   city: "Jaipur",
+ *   state: "Rajasthan",
+ *   country: "India"
+ * }
+ */
 export const resolveRule = ({
   hotelId,
-  cityName,
-  stateName,
+  destination = {},
   countryCode,
-  rules,
-  normalizeCity = false,
+  rules = [],
 }) => {
-  // HOTEL
-  let found = rules.find(
-    (r) =>
-      r.level === "hotel" &&
-      String(r.hotelId) === String(hotelId)
+  const cityName = destination?.city;
+  const stateName = destination?.state;
+  const countryName = destination?.country;
+
+  // =====================================================
+  // 1. HOTEL LEVEL
+  // =====================================================
+
+  const hotelRule = rules.find(
+    (rule) =>
+      rule.level === "hotel" &&
+      normalize(rule.hotelId) === normalize(hotelId)
   );
 
-  if (found) return found;
-
-  // CITY
-  let finalCity = cityName;
-
-  if (normalizeCity && cityName) {
-    finalCity = cityName
-      .split(",")
-      .slice(-3)
-      .join(", ")
-      .trim();
+  if (hotelRule) {
+    return hotelRule;
   }
 
-  found = rules.find(
-    (r) =>
-      r.level === "city" &&
-      r.cityName?.trim().toLowerCase() ===
-        finalCity?.trim().toLowerCase()
+  // =====================================================
+  // 2. CITY LEVEL
+  // =====================================================
+
+  const cityRule = rules.find(
+    (rule) =>
+      rule.level === "city" &&
+      normalize(rule.cityName) === normalize(cityName)
   );
 
-  if (found) return found;
+  if (cityRule) {
+    return cityRule;
+  }
 
-  // STATE
-  found = rules.find(
-    (r) =>
-      r.level === "state" &&
-      r.stateName?.trim().toLowerCase() ===
-        stateName?.trim().toLowerCase() &&
-      r.countryCode?.trim().toUpperCase() ===
-        countryCode?.trim().toUpperCase()
+  // =====================================================
+  // 3. STATE LEVEL
+  // =====================================================
+
+  const stateRule = rules.find(
+    (rule) =>
+      rule.level === "state" &&
+      normalize(rule.stateName) === normalize(stateName) &&
+      (
+        !rule.countryCode ||
+        normalizeUpper(rule.countryCode) ===
+          normalizeUpper(countryCode)
+      )
   );
 
-  if (found) return found;
+  if (stateRule) {
+    return stateRule;
+  }
 
-  // COUNTRY
-  found = rules.find(
-    (r) =>
-      r.level === "country" &&
-      r.countryCode?.trim().toUpperCase() ===
-        countryCode?.trim().toUpperCase()
+  // =====================================================
+  // 4. COUNTRY LEVEL
+  // =====================================================
+
+  const countryRule = rules.find(
+    (rule) =>
+      rule.level === "country" &&
+      normalizeUpper(rule.countryCode) ===
+        normalizeUpper(countryCode)
   );
 
-  if (found) return found;
+  if (countryRule) {
+    return countryRule;
+  }
 
-  // WORLDWIDE
-  found = rules.find(
-    (r) => r.level === "worldwide"
+  // =====================================================
+  // 5. WORLDWIDE LEVEL
+  // =====================================================
+
+  const worldwideRule = rules.find(
+    (rule) => rule.level === "worldwide"
   );
 
-  return found || null;
+  return worldwideRule || null;
 };

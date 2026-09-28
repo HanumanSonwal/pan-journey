@@ -1,18 +1,18 @@
-// modules/markup/markup.model.js
 import mongoose from "mongoose";
 
 const markupSchema = new mongoose.Schema(
   {
     level: {
       type: String,
-     enum: [
- "worldwide",
- "country",
- "state",
- "city",
- "hotel",
- "additional_tax"
-],
+      enum: [
+        "worldwide",
+        "country",
+        "state",
+        "city",
+        "hotel",
+        "additional_tax",
+        "serviceTax",
+      ],
       required: true,
     },
 
@@ -26,23 +26,39 @@ const markupSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    serviceChargeValue: {
-  type: Number,
-      required: true,
-},
 
     serviceChargeValue: {
       type: Number,
-      required: true,
+      default: 0,
     },
 
-    countryCode: String,
-    stateName: String,
-    cityId: String,
-    hotelId: String,
-    cityName:String,
-    hotelName:String,
-   startDate: Date,
+    countryCode: {
+      type: String,
+      trim: true,
+      uppercase: true,
+    },
+
+    stateName: {
+      type: String,
+      trim: true,
+    },
+
+    cityName: {
+      type: String,
+      trim: true,
+    },
+
+    hotelId: {
+      type: String,
+      trim: true,
+    },
+
+    hotelName: {
+      type: String,
+      trim: true,
+    },
+
+    startDate: Date,
     endDate: Date,
 
     isActive: {
@@ -50,49 +66,62 @@ const markupSchema = new mongoose.Schema(
       default: true,
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
-/////////////////////////////////////////////////////////
-// 🔥 ADD INDEXES HERE (VERY IMPORTANT)
-/////////////////////////////////////////////////////////
-
-/* 🌍 Worldwide unique */
 markupSchema.index(
   { level: 1 },
   {
     unique: true,
-    partialFilterExpression: { level: "worldwide", isActive: true },
-  },
+    partialFilterExpression: {
+      level: "worldwide",
+      isActive: true,
+    },
+  }
 );
 
-/* 🌎 Country unique */
 markupSchema.index(
   { level: 1, countryCode: 1 },
   {
     unique: true,
-    partialFilterExpression: { level: "country", isActive: true },
-  },
+    partialFilterExpression: {
+      level: "country",
+      isActive: true,
+    },
+  }
 );
 
-/* 🏞 State unique */
 markupSchema.index(
   { level: 1, countryCode: 1, stateName: 1 },
-  { unique: true, partialFilterExpression: { level: "state", isActive: true } },
+  {
+    unique: true,
+    partialFilterExpression: {
+      level: "state",
+      isActive: true,
+    },
+  }
 );
 
-/* 🏙 City unique */
 markupSchema.index(
-  { level: 1, cityId: 1 },
-  { unique: true, partialFilterExpression: { level: "city", isActive: true } },
+  { level: 1, cityName: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      level: "city",
+      isActive: true,
+    },
+  }
 );
 
-/* 🏨 Hotel unique */
 markupSchema.index(
   { level: 1, hotelId: 1 },
-  { unique: true, partialFilterExpression: { level: "hotel", isActive: true } },
+  {
+    unique: true,
+    partialFilterExpression: {
+      level: "hotel",
+      isActive: true,
+    },
+  }
 );
-
-/////////////////////////////////////////////////////////
 
 export default mongoose.model("Markup", markupSchema);

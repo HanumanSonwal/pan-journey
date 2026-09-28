@@ -126,7 +126,7 @@ export const createMarkup = async (req, res) => {
       level,
       countryCode,
       stateName,
-      cityId,
+      cityName,
       hotelId,
       startDate,
       endDate,
@@ -165,7 +165,7 @@ export const createMarkup = async (req, res) => {
       filter.stateName = stateName;
     }
 
-    if (level === "city") filter.cityId = cityId;
+    if (level === "city") filter.cityName = cityName;
 
     if (level === "hotel") filter.hotelId = hotelId;
 

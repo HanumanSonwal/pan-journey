@@ -70,40 +70,6 @@ export const createGrievance = async (req, res) => {
     return sendError(res, error.message, 500);
   }
 };
-// export const updateGrievanceStatusAdmin = async (req, res) => {
-//   try {
-//     const result =
-//       await updateGrievanceStatusAdminService(
-//         req.params.id,
-//         req.body
-//       );
-
-//     // respond immediately
-//     sendSuccess(
-//       res,
-//       "Grievance status updated successfully",
-//       result
-//     );
-
-//     // mail in background
-//     if (result?.email) {
-//       sendMail({
-//         to: result.email,
-//         subject: "Grievance Status Updated",
-//         html: grievanceStatusTemplate({
-//           fullName: result.fullName,
-//           grievanceId: result.grievanceRedressalid,
-//           status: result.status,
-//         }),
-//       }).catch((err) => {
-//         console.log("Mail failed =>", err.message);
-//       });
-//     }
-
-//   } catch (error) {
-//     return sendError(res, error.message, 500);
-//   }
-// };
 
 export const updateGrievanceStatusAdmin =
   async (req, res) => {

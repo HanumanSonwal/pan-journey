@@ -1,5 +1,5 @@
 
-import HotelCart from "../hotelTempBooking/hotelCart.model.js";
+// import HotelCart from "../hotelTempBooking/hotelCart.model.js";
 
 export const getHotelRequeryByUserService = async (
   userId,
