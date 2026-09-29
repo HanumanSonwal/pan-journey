@@ -28,8 +28,8 @@ import gatewayroutewebhook from "./modules/gateways/routes/webhook.routes.js";
 import homecontent from "./modules/HomeContent/homeContent.route.js";
 import hoteldetails from "./modules/hotel/hotelDetail/hotelDetail.route.js";
 import searchApi from "./modules/hotel/hotelSearch/search.routes.js";
-// import hotelTempBooking from "./modules/hotel/hotelTempbooking/tempBooking.route.js";
 import hotelTempBooking from "./modules/hotel/hotelTempBooking/tempBooking.route.js";
+import hotelBookingRouter from "./modules/hotel/hotelTicketing/hotelBooking/hotelBooking.route.js";
 import mediaRoutes from "./modules/media/media.routes.js";
 import countryRoutes from "./modules/priceMarkup/countryData/country.routes.js";
 import markeupRoutes from "./modules/priceMarkup/markup/markup.routes.js";
@@ -41,7 +41,6 @@ import tax from "./modules/tax/tax.route.js";
 import theme from "./modules/theme/theme.route.js";
 import userRoutes from "./modules/user/user.routes.js";
 import wishlistRoutes from "./modules/wishlist/wishlist.routes.js";
-import hotelBookingRouter from "./modules/hotel/hotelTicketing/hotelBooking/hotelBooking.route.js"
 import testRoutes from "./test.routes.js";
 
 const app = express();

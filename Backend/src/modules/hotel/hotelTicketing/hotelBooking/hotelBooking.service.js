@@ -1,4 +1,4 @@
-import TempBooking from "../../hotelTempbooking/tempBooking.model.js";
+import TempBooking from "../../hotelTempBooking/tempBooking.model.js";
 
 import {
   addPaymentService,
