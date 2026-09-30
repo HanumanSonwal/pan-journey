@@ -98,10 +98,9 @@ function HotelList({
     );
   }, [data]);
 
-  const currencySymbol =
-    data?.pages?.[0]?.data?.currencySymbol ||
-    data?.pages?.[0]?.data?.CurrencySymbol ||
-    "₹";
+ 
+
+const currencySymbol = hotels?.[0]?.pricing?.currency || "₹";
 
   const searchKey =
     data?.pages?.[0]?.data?.searchKey ||

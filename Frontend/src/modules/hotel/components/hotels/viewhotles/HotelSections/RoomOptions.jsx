@@ -132,7 +132,7 @@ const RoomOptions = ({
             className="mt-6 overflow-hidden rounded border border-gray-200 bg-white text-[#0f172a]! shadow-sm"
           >
             <div className="grid items-stretch gap-5 p-5 lg:grid-cols-[280px_1fr_300px]">
-              <div className="relative h-[240px] overflow-hidden rounded bg-gray-100 lg:h-full lg:min-h-[260px]">
+              <div className="relative h-60 overflow-hidden rounded bg-gray-100 lg:h-full lg:min-h-65">
                 <Image
                   src={getHDImage(roomImage)}
                   alt={plan?.roomType || "Hotel room"}
@@ -313,7 +313,7 @@ const RoomOptions = ({
                       }),
                     )
                   }
-                  className="buttion-background-color !mt-5 !h-[48px] w-full rounded! text-sm font-semibold tracking-wide text-white!"
+                  className="buttion-background-color mt-5! h-12! w-full rounded! text-sm font-semibold tracking-wide text-white!"
                 >
                   Select Room
                 </Button>
