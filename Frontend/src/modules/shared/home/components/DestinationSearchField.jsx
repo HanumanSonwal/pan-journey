@@ -22,6 +22,10 @@ function DestinationSearchField({
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [recentSearches, setRecentSearches] = useState([]);
 
+  // --------------------------------------------------
+  // LOAD RECENT SEARCHES
+  // --------------------------------------------------
+
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -32,27 +36,38 @@ function DestinationSearchField({
       setRecentSearches(stored);
 
       if (autoSelectRecent && stored.length > 0 && !value?.city) {
+        const recent = stored[0];
+
         onChange({
-          city: stored[0]?.displayName || stored[0]?.name || "",
+          city: recent?.displayName || recent?.name || "",
+
           cityData: {
-            ...stored[0],
-            stateName: stored[0]?.stateName || stored[0]?.state || "",
-            countryCode: stored[0]?.countryCode || stored[0]?.country || "",
-            normalizedCity: stored[0]?.city || stored[0]?.name || "",
+            ...recent,
+            stateName: recent?.stateName || recent?.state || "",
+
+            countryCode: recent?.countryCode || recent?.country || "",
+
+            normalizedCity: recent?.city || recent?.name || "",
           },
         });
       }
-    } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error(error);
-      }
+    } catch (err) {
+      console.error("RECENT SEARCH LOAD ERROR:", err);
     }
-  }, []);
+  }, [autoSelectRecent, onChange, value?.city]);
+
+  // --------------------------------------------------
+  // DEBOUNCE
+  // --------------------------------------------------
 
   const debounceSearch = useMemo(
     () =>
-      debounce((value) => {
-        setDebouncedSearch(value);
+      debounce((searchValue) => {
+        const trimmedValue = searchValue.trim();
+
+        console.log("DEBOUNCED DESTINATION SEARCH:", trimmedValue);
+
+        setDebouncedSearch(trimmedValue);
       }, 300),
     [],
   );
@@ -63,12 +78,41 @@ function DestinationSearchField({
     };
   }, [debounceSearch]);
 
-  const handleSearch = (value) => {
-    setSearchText(value);
-    debounceSearch(value);
+  // --------------------------------------------------
+  // SEARCH INPUT
+  // --------------------------------------------------
+
+  const handleSearch = (searchValue) => {
+    console.log("DESTINATION INPUT:", searchValue);
+
+    setSearchText(searchValue);
+
+    debounceSearch(searchValue);
   };
 
-  const { data = [], isLoading } = useDestinationSearch(debouncedSearch);
+  // --------------------------------------------------
+  // API SEARCH
+  // --------------------------------------------------
+
+  const {
+    data = [],
+    isLoading,
+    isFetching,
+    isError,
+  } = useDestinationSearch(debouncedSearch);
+
+  console.log("DESTINATION STATE:", {
+    searchText,
+    debouncedSearch,
+    resultCount: data?.length || 0,
+    isLoading,
+    isFetching,
+    isError,
+  });
+
+  // --------------------------------------------------
+  // SAVE RECENT SEARCH
+  // --------------------------------------------------
 
   const saveRecentSearch = (item) => {
     if (!item || typeof window === "undefined") {
@@ -78,19 +122,32 @@ function DestinationSearchField({
     try {
       const existing =
         JSON.parse(localStorage.getItem("recentHotelSearches") || "[]") || [];
-      const filtered = existing.filter((x) => x.id !== item.id);
+
+      const filtered = existing.filter(
+        (existingItem) => existingItem?.id !== item?.id,
+      );
+
       const updated = [item, ...filtered].slice(0, 4);
+
       localStorage.setItem("recentHotelSearches", JSON.stringify(updated));
+
       setRecentSearches(updated);
-    } catch (error) {
-      if (process.env.NODE_ENV === "development") {
-        console.error(error);
-      }
+    } catch (err) {
+      console.error("SAVE RECENT SEARCH ERROR:", err);
     }
   };
 
+  // --------------------------------------------------
+  // SORT SEARCH RESULTS
+  // --------------------------------------------------
+
   const isEmptySearch = searchText.trim() === "";
+
   const sortedSearchResults = useMemo(() => {
+    if (!Array.isArray(data)) {
+      return [];
+    }
+
     const search = debouncedSearch.toLowerCase();
 
     return [...data].sort((a, b) => {
@@ -101,17 +158,30 @@ function DestinationSearchField({
       const bStarts = bName.startsWith(search);
 
       if (aStarts && !bStarts) return -1;
+
       if (!aStarts && bStarts) return 1;
 
       return 0;
     });
   }, [data, debouncedSearch]);
 
+  // --------------------------------------------------
+  // BUILD OPTIONS
+  // --------------------------------------------------
+
   const buildOptions = (items = []) => {
+    if (!Array.isArray(items)) {
+      return [];
+    }
+
     return items.map((item) => {
       const fullName =
         item?.displayName ||
         [item?.name, item?.state, item?.country].filter(Boolean).join(", ");
+
+      const optionValue = `${
+        item?.type || "destination"
+      }-${item?.id || fullName}`;
 
       return {
         label: (
@@ -124,7 +194,7 @@ function DestinationSearchField({
           </div>
         ),
 
-        value: `${item?.type || "destination"}-${item?.id}`,
+        value: optionValue,
 
         searchLabel: fullName,
 
@@ -133,16 +203,28 @@ function DestinationSearchField({
     });
   };
 
+  // --------------------------------------------------
+  // GROUP OPTIONS
+  // --------------------------------------------------
+
   const groupedOptions = useMemo(() => {
+    // Show recent searches when nothing is typed
     if (isEmptySearch) {
-      return recentSearches.length > 0
-        ? [
-            {
-              label: "Recent Searches",
-              options: buildOptions(recentSearches),
-            },
-          ]
-        : [];
+      if (recentSearches.length === 0) {
+        return [];
+      }
+
+      return [
+        {
+          label: "Recent Searches",
+          options: buildOptions(recentSearches),
+        },
+      ];
+    }
+
+    // Don't show API results for less than 2 characters
+    if (debouncedSearch.length < 2) {
+      return [];
     }
 
     const cities = sortedSearchResults.filter((item) => {
@@ -170,7 +252,6 @@ function DestinationSearchField({
     });
 
     return [
-      // Cities
       ...(cities.length > 0
         ? [
             {
@@ -198,7 +279,11 @@ function DestinationSearchField({
           ]
         : []),
     ];
-  }, [isEmptySearch, recentSearches, sortedSearchResults]);
+  }, [isEmptySearch, recentSearches, sortedSearchResults, debouncedSearch]);
+
+  // --------------------------------------------------
+  // SELECT DESTINATION
+  // --------------------------------------------------
 
   const handleChange = (selectedValue, option) => {
     const item = option?.itemData;
@@ -206,6 +291,8 @@ function DestinationSearchField({
     if (!item) {
       return;
     }
+
+    console.log("DESTINATION SELECTED:", item);
 
     saveRecentSearch(item);
 
@@ -216,19 +303,59 @@ function DestinationSearchField({
 
       cityData: {
         ...item,
+
         id: item?.id || "",
+
         name: item?.name || "",
+
         type: item?.type || "",
+
         city: item?.city || normalizedCity,
+
         state: item?.state || "",
-        stateName: item?.state || item?.stateName || "",
+
+        stateName: item?.stateName || item?.state || "",
+
         country: item?.country || "",
+
         countryCode: item?.countryCode || "",
+
         displayName: item?.displayName || "",
+
         normalizedCity,
       },
     });
+
+    // Clear search after selection
+    setSearchText("");
+    setDebouncedSearch("");
   };
+
+  // --------------------------------------------------
+  // CLEAR
+  // --------------------------------------------------
+
+  const handleClear = () => {
+    debounceSearch.cancel();
+
+    setSearchText("");
+    setDebouncedSearch("");
+
+    onChange({
+      city: "",
+      cityData: null,
+    });
+  };
+
+  // --------------------------------------------------
+  // LOADING STATE
+  // --------------------------------------------------
+
+  const loading = isLoading || isFetching;
+
+  // --------------------------------------------------
+  // UI
+  // --------------------------------------------------
 
   return (
     <>
@@ -279,21 +406,15 @@ function DestinationSearchField({
                         : value.city
                       : undefined
                   }
-                  onClear={() => {
-                    setSearchText("");
-                    setDebouncedSearch("");
-
-                    onChange({
-                      city: "",
-                      cityData: null,
-                    });
-                  }}
+                  onClear={handleClear}
+                  onSearch={handleSearch}
+                  onChange={handleChange}
                   title={value?.city || ""}
                   placeholder="Where do you want to stay?"
                   variant="borderless"
                   popupMatchSelectWidth={compact ? false : true}
                   filterOption={false}
-                  loading={isLoading}
+                  loading={loading}
                   className={`font-jost! w-full min-w-0 overflow-hidden font-medium text-gray-600 min-[700px]:font-semibold! min-[700px]:text-gray-800! ${styles.destinationSelect}`}
                   style={{
                     width: "100%",
@@ -301,18 +422,20 @@ function DestinationSearchField({
                     fontWeight: 400,
                   }}
                   options={groupedOptions}
-                  onSearch={handleSearch}
-                  onChange={handleChange}
                   notFoundContent={
-                    isLoading ? (
+                    loading ? (
                       <div className="flex justify-center py-4">
                         <Spin size="small" />
                       </div>
-                    ) : (
+                    ) : isError ? (
+                      <div className="py-3 text-center text-sm text-red-500">
+                        Failed to load destinations
+                      </div>
+                    ) : searchText.trim().length >= 2 ? (
                       <div className="py-3 text-center text-sm text-gray-500">
                         No destinations found
                       </div>
-                    )
+                    ) : null
                   }
                 />
               </Popover>
