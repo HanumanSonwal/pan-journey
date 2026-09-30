@@ -6,7 +6,7 @@ export const searchDestinationAPI = async (searchInput) => {
      ...getAuthHeader(),
     SearchInput: searchInput,
   };
-
+console.log("payload -", payload)
   const { data } = await supplierAPI.post(
     "/HotelSearchbyName",
     payload
