@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -19,7 +20,10 @@ import { useState } from "react";
 import { navigateToHotels } from "../../utils/hotelNavigation";
 import HotelSearchForm from "./HotelSearchForm";
 
-export default function SearchBar({ onSearch }) {
+export default function SearchBar({
+  onSearch,
+  isDetailsPage = false,
+}) {
   const router = useRouter();
 
   const {
@@ -52,10 +56,29 @@ export default function SearchBar({ onSearch }) {
 
   return (
     <>
-      <div className="navbar-background-color sticky top-0 z-10 hidden md:block">
-        <div className="h-[146px] px-4 !py-[20px]">
-          <div className="mx-auto h-[60px] max-w-[1250px]">
-            <div className="flex h-[83px] w-full items-center gap-[14px] rounded-[5px] bg-[#f5f7f9] px-4 !py-[6px]">
+      {/* DESKTOP */}
+      <div
+        className={`navbar-background-color sticky top-0 z-10 hidden md:block ${
+          isDetailsPage ? "h-[100px]" : "h-[146px]"
+        }`}
+      >
+        <div
+          className={`px-4 ${
+            isDetailsPage
+              ? "h-[100px] !py-[10px]"
+              : "h-[146px] !py-[20px]"
+          }`}
+        >
+          <div
+            className={`mx-auto max-w-[1250px] ${
+              isDetailsPage ? "h-[50px]" : "h-[60px]"
+            }`}
+          >
+            <div
+              className={`flex w-full items-center gap-[14px] rounded-[5px] bg-[#f5f7f9] px-4 !py-[6px] ${
+                isDetailsPage ? "h-[65px]" : "h-[83px]"
+              }`}
+            >
               {/* DESTINATION */}
               <div className="!h-[52px] min-w-0 rounded-[6px] border border-[#8f99a5] bg-white md:flex-[1.25] md:flex-[1.55]">
                 <DestinationSearchField
@@ -136,7 +159,9 @@ export default function SearchBar({ onSearch }) {
               {/* GUESTS */}
               <div className="relative z-[50] min-w-0 rounded-[6px] border border-[#8f99a5] bg-white md:flex-[1.05]">
                 <GuestsField
-                  icon={<TeamOutlined className="text-[17px] text-[#1677ff]" />}
+                  icon={
+                    <TeamOutlined className="text-[17px] text-[#1677ff]" />
+                  }
                   variant="compact"
                   open={guestOpen}
                   setOpen={setGuestOpen}
@@ -152,7 +177,9 @@ export default function SearchBar({ onSearch }) {
                 <button
                   type="button"
                   onClick={handleSearch}
-                  className="buttion-background-color h-[50px] w-full rounded-[22px] border-0 px-2 !text-[18px] font-medium !text-white shadow-none transition-all duration-200 outline-none active:scale-[0.98]"
+                  className={`buttion-background-color w-full rounded-[22px] border-0 px-2 !text-[18px] font-medium !text-white shadow-none transition-all duration-200 outline-none active:scale-[0.98] ${
+                    isDetailsPage ? "h-[45px]" : "h-[50px]"
+                  }`}
                 >
                   Search
                 </button>
@@ -188,11 +215,15 @@ export default function SearchBar({ onSearch }) {
 
                 <span>•</span>
 
-                <span>{appliedSearchData?.adults || 0} Adults</span>
+                <span>
+                  {appliedSearchData?.adults || 0} Adults
+                </span>
 
                 <span>•</span>
 
-                <span>{appliedSearchData?.rooms || 0} Room</span>
+                <span>
+                  {appliedSearchData?.rooms || 0} Room
+                </span>
               </div>
             </div>
 

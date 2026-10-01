@@ -388,21 +388,23 @@ function HotelDetails({ initialPayload = null, cms = null }) {
   }
 
   return (
-    <div className="background-color-bg min-h-screen w-full ">
+    <div className="background-color-bg min-h-screen w-full">
       {/* =====================================================
           SEARCH BAR
       ===================================================== */}
 
-      <SearchBar searchData={supplierData} onSearch={handleSearch} compactDetails
- />
-      
+      <SearchBar
+        searchData={supplierData}
+        onSearch={handleSearch}
+        isDetailsPage={true}
+      />
 
       <div
         className={`relative mx-auto w-full max-w-7xl px-3 sm:px-4 md:px-5 lg:px-6 xl:px-4 ${
           isScrolled ? "z-0" : "z-[820]"
         }`}
       >
-        <div className="-mt-6">
+        <div className="-mt-3">
           {showSkeleton ? (
             <HotelDetailsSkeleton />
           ) : (
@@ -504,7 +506,7 @@ function HotelDetails({ initialPayload = null, cms = null }) {
 
         {!showSkeleton && (
           <>
-            <div className=" mt-3 lg:mt-6">
+            <div className="mt-3 lg:mt-6">
               <HotelSectionsTabs
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
