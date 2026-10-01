@@ -8,11 +8,7 @@ import {
   RangeCalendar,
 } from "react-aria-components";
 
-import {
-  CalendarDate,
-  getLocalTimeZone,
-  today,
-} from "@internationalized/date";
+import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
 
 import dayjs from "dayjs";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -30,8 +26,7 @@ export default function DesktopDateRangeField({
   const start = value?.[0] || dayjs();
   const end = value?.[1] || dayjs().add(1, "day");
 
-  const nights =
-    start && end ? Math.max(0, end.diff(start, "day")) : 0;
+  const nights = start && end ? Math.max(0, end.diff(start, "day")) : 0;
 
   const [activeField, setActiveField] = useState(null);
   const [calendarKey, setCalendarKey] = useState(0);
@@ -72,8 +67,7 @@ export default function DesktopDateRangeField({
     const popupHeight = popupRect.height;
 
     if (popupBottom > viewportHeight - bottomMargin) {
-      const requiredScroll =
-        popupBottom - (viewportHeight - bottomMargin);
+      const requiredScroll = popupBottom - (viewportHeight - bottomMargin);
 
       window.scrollBy({
         top: requiredScroll,
@@ -94,10 +88,7 @@ export default function DesktopDateRangeField({
       return;
     }
 
-    if (
-      popupTop >= topMargin &&
-      popupBottom <= viewportHeight - bottomMargin
-    ) {
+    if (popupTop >= topMargin && popupBottom <= viewportHeight - bottomMargin) {
       return;
     }
 
@@ -134,11 +125,7 @@ export default function DesktopDateRangeField({
 
     return () => {
       window.removeEventListener("resize", handlePositionUpdate);
-      window.removeEventListener(
-        "scroll",
-        handlePositionUpdate,
-        true,
-      );
+      window.removeEventListener("scroll", handlePositionUpdate, true);
     };
   }, [open]);
 
@@ -149,11 +136,7 @@ export default function DesktopDateRangeField({
 
     const d = dayjs(date);
 
-    return new CalendarDate(
-      d.year(),
-      d.month() + 1,
-      d.date(),
-    );
+    return new CalendarDate(d.year(), d.month() + 1, d.date());
   };
 
   const toDayjs = (date) => {
@@ -347,10 +330,7 @@ export default function DesktopDateRangeField({
           )}
         </CalendarGrid>
 
-        <CalendarGrid
-          offset={{ months: 1 }}
-          className="w-full min-w-0"
-        >
+        <CalendarGrid offset={{ months: 1 }} className="w-full min-w-0">
           {(date) => (
             <CalendarCell
               date={date}
@@ -368,10 +348,7 @@ export default function DesktopDateRangeField({
     open &&
     createPortal(
       <>
-        <div
-          className="fixed inset-0 z-[9999999998]"
-          onClick={handleClose}
-        />
+        <div className="fixed inset-0 z-[9999999998]" onClick={handleClose} />
 
         <div
           ref={popupRef}
@@ -421,11 +398,7 @@ export default function DesktopDateRangeField({
             onClick={handleOpen}
           >
             <div className="flex h-full w-full items-center gap-1 sm:gap-2">
-              {icon && (
-                <div className="shrink-0">
-                  {icon}
-                </div>
-              )}
+              {icon && <div className="shrink-0">{icon}</div>}
 
               <div className="flex min-w-0 flex-1 flex-col justify-center">
                 <span
@@ -455,7 +428,7 @@ export default function DesktopDateRangeField({
                 </span>
 
                 {nights > 0 && (
-                  <span className="text-[8px] font-bold leading-none text-[#0077B6]">
+                  <span className="text-[8px] leading-none font-bold text-[#0077B6]">
                     {nights}N
                   </span>
                 )}
@@ -520,11 +493,7 @@ export default function DesktopDateRangeField({
           className="flex h-[60px] w-full cursor-pointer items-center rounded-md border border-[#d9d9d9] bg-white px-2 py-2 transition-all hover:border-[#0077b6] sm:h-[62px] sm:px-2 sm:py-3 lg:h-[65px]"
           onClick={handleOpen}
         >
-          {icon && (
-            <div className="mr-1 shrink-0 sm:mr-2">
-              {icon}
-            </div>
-          )}
+          {icon && <div className="mr-1 shrink-0 sm:mr-2">{icon}</div>}
 
           <div className="flex min-w-0 flex-1 flex-col justify-center">
             <div className="flex items-start gap-1">

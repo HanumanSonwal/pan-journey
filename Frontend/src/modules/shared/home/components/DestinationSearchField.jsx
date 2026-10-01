@@ -22,10 +22,6 @@ function DestinationSearchField({
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [recentSearches, setRecentSearches] = useState([]);
 
-  // --------------------------------------------------
-  // LOAD RECENT SEARCHES
-  // --------------------------------------------------
-
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -44,9 +40,7 @@ function DestinationSearchField({
           cityData: {
             ...recent,
             stateName: recent?.stateName || recent?.state || "",
-
             countryCode: recent?.countryCode || recent?.country || "",
-
             normalizedCity: recent?.city || recent?.name || "",
           },
         });
@@ -56,17 +50,11 @@ function DestinationSearchField({
     }
   }, [autoSelectRecent, onChange, value?.city]);
 
-  // --------------------------------------------------
-  // DEBOUNCE
-  // --------------------------------------------------
-
   const debounceSearch = useMemo(
     () =>
       debounce((searchValue) => {
         const trimmedValue = searchValue.trim();
-
         console.log("DEBOUNCED DESTINATION SEARCH:", trimmedValue);
-
         setDebouncedSearch(trimmedValue);
       }, 300),
     [],
@@ -78,21 +66,11 @@ function DestinationSearchField({
     };
   }, [debounceSearch]);
 
-  // --------------------------------------------------
-  // SEARCH INPUT
-  // --------------------------------------------------
-
   const handleSearch = (searchValue) => {
     console.log("DESTINATION INPUT:", searchValue);
-
     setSearchText(searchValue);
-
     debounceSearch(searchValue);
   };
-
-  // --------------------------------------------------
-  // API SEARCH
-  // --------------------------------------------------
 
   const {
     data = [],
@@ -110,10 +88,6 @@ function DestinationSearchField({
     isError,
   });
 
-  // --------------------------------------------------
-  // SAVE RECENT SEARCH
-  // --------------------------------------------------
-
   const saveRecentSearch = (item) => {
     if (!item || typeof window === "undefined") {
       return;
@@ -126,20 +100,13 @@ function DestinationSearchField({
       const filtered = existing.filter(
         (existingItem) => existingItem?.id !== item?.id,
       );
-
       const updated = [item, ...filtered].slice(0, 4);
-
       localStorage.setItem("recentHotelSearches", JSON.stringify(updated));
-
       setRecentSearches(updated);
     } catch (err) {
       console.error("SAVE RECENT SEARCH ERROR:", err);
     }
   };
-
-  // --------------------------------------------------
-  // SORT SEARCH RESULTS
-  // --------------------------------------------------
 
   const isEmptySearch = searchText.trim() === "";
 
@@ -165,10 +132,6 @@ function DestinationSearchField({
     });
   }, [data, debouncedSearch]);
 
-  // --------------------------------------------------
-  // BUILD OPTIONS
-  // --------------------------------------------------
-
   const buildOptions = (items = []) => {
     if (!Array.isArray(items)) {
       return [];
@@ -193,22 +156,14 @@ function DestinationSearchField({
             </span>
           </div>
         ),
-
         value: optionValue,
-
         searchLabel: fullName,
-
         itemData: item,
       };
     });
   };
 
-  // --------------------------------------------------
-  // GROUP OPTIONS
-  // --------------------------------------------------
-
   const groupedOptions = useMemo(() => {
-    // Show recent searches when nothing is typed
     if (isEmptySearch) {
       if (recentSearches.length === 0) {
         return [];
@@ -221,21 +176,17 @@ function DestinationSearchField({
         },
       ];
     }
-
-    // Don't show API results for less than 2 characters
     if (debouncedSearch.length < 2) {
       return [];
     }
 
     const cities = sortedSearchResults.filter((item) => {
       const type = item?.type?.toLowerCase();
-
       return type === "city" || type === "multicity";
     });
 
     const hotels = sortedSearchResults.filter((item) => {
       const type = item?.type?.toLowerCase();
-
       return type === "hotel";
     });
 
@@ -281,59 +232,37 @@ function DestinationSearchField({
     ];
   }, [isEmptySearch, recentSearches, sortedSearchResults, debouncedSearch]);
 
-  // --------------------------------------------------
-  // SELECT DESTINATION
-  // --------------------------------------------------
-
   const handleChange = (selectedValue, option) => {
     const item = option?.itemData;
 
     if (!item) {
       return;
     }
-
     console.log("DESTINATION SELECTED:", item);
-
     saveRecentSearch(item);
-
     const normalizedCity = item?.city || item?.name || "";
-
     onChange({
       city: item?.displayName || option?.searchLabel || item?.name || "",
 
       cityData: {
         ...item,
-
         id: item?.id || "",
-
         name: item?.name || "",
-
         type: item?.type || "",
-
         city: item?.city || normalizedCity,
-
         state: item?.state || "",
-
         stateName: item?.stateName || item?.state || "",
-
         country: item?.country || "",
-
         countryCode: item?.countryCode || "",
-
         displayName: item?.displayName || "",
-
         normalizedCity,
       },
     });
 
-    // Clear search after selection
     setSearchText("");
     setDebouncedSearch("");
   };
 
-  // --------------------------------------------------
-  // CLEAR
-  // --------------------------------------------------
 
   const handleClear = () => {
     debounceSearch.cancel();
@@ -347,15 +276,9 @@ function DestinationSearchField({
     });
   };
 
-  // --------------------------------------------------
-  // LOADING STATE
-  // --------------------------------------------------
 
   const loading = isLoading || isFetching;
 
-  // --------------------------------------------------
-  // UI
-  // --------------------------------------------------
 
   return (
     <>

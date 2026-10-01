@@ -13,11 +13,6 @@ import { getCmsBySlug } from "@/modules/cms/services/cms.service";
 
 const PAGE_SLUG = "about-us";
 
-/*
-|--------------------------------------------------------------------------
-| SEO Metadata From CMS
-|--------------------------------------------------------------------------
-*/
 export async function generateMetadata() {
   const cms = await getCmsBySlug(PAGE_SLUG);
 
@@ -69,21 +64,11 @@ export async function generateMetadata() {
   };
 }
 
-/*
-|--------------------------------------------------------------------------
-| About Page
-|--------------------------------------------------------------------------
-*/
 export default async function AboutUsPage() {
   const cms = await getCmsBySlug(PAGE_SLUG);
 
   console.log("LIVE FAQ", cms?.data?.blocks?.[0]?.data?.items?.[0]);
 
-  /*
-  |--------------------------------------------------------------------------
-  | FAQ Schema From CMS
-  |--------------------------------------------------------------------------
-  */
   const faqBlock = cms?.data?.blocks?.find((block) => block?.type === "faq");
 
   const faqs = faqBlock?.data?.items || [];
@@ -115,12 +100,10 @@ export default async function AboutUsPage() {
         />
       )}
 
-      {/* Static Sections */}
       <AboutHero />
       <AboutContent />
       <JourneySection />
 
-      {/* CMS Dynamic Blocks (FAQ etc.) */}
       <CMSContentRenderer cms={cms} />
 
       <WhySection />
