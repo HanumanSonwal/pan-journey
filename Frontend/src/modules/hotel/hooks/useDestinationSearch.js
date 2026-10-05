@@ -23,15 +23,13 @@ export const useDestinationSearch = (searchText = "") => {
     // API call only when 2 or more characters
     enabled: trimmedSearch.length >= 2,
 
-    staleTime: 5 * 60 * 1000,
+    staleTime: 0,
 
     gcTime: 10 * 60 * 1000,
 
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    refetchOnMount: false,
-
-    placeholderData: [],
+    refetchOnMount: "always",
 
     retry: 1,
   });

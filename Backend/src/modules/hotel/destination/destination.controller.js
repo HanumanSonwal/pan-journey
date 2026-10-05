@@ -2,9 +2,9 @@ import { searchDestinationService } from "./destination.service.js";
 
 export const searchDestination = async (req, res) => {
   try {
-    const { searchInput } = req.body;
+    const { searchInput } = req.body ?? {};
 
-    if (!searchInput?.trim()) {
+    if (typeof searchInput !== "string" || !searchInput.trim()) {
       return res.status(400).json({
         success: false,
         message: "Search input is required",

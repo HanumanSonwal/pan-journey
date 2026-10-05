@@ -1,5 +1,13 @@
 export const mapDestination = (item) => {
-  const parts = item.Label.split(",");
+  if (
+    !item ||
+    typeof item.Label !== "string" ||
+    typeof item.Key !== "string"
+  ) {
+    throw new Error("Invalid destination item received from supplier");
+  }
+
+  const parts = item.Label.split(",").map((part) => part.trim());
 
   let name = null;
   let city = null;
@@ -40,5 +48,9 @@ export const mapDestination = (item) => {
 };
 
 export const mapDestinationResponse = (response) => {
-  return (response?.DestinationList || []).map(mapDestination);
+  if (!response || !Array.isArray(response.DestinationList)) {
+    throw new Error("Invalid destination response received from supplier");
+  }
+
+  return response.DestinationList.map(mapDestination);
 };

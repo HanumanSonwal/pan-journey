@@ -9,6 +9,13 @@ export const supplierAPI = axios.create({
   },
 });
 
+let lastRequestId = 0;
+
+const createRequestId = () => {
+  lastRequestId = Math.max(Date.now(), lastRequestId + 1);
+  return String(lastRequestId);
+};
+
 //uat
 
 // export const getAuthHeader = () => ({
@@ -25,7 +32,7 @@ export const getAuthHeader = () => ({
   AuthHeader: {
    "UserId": "fspanjourney",
     "Password": "7FFB9FE0ADFCF42D123A1CAD03A14E775934117A",
-    "RequestId": Date.now().toString(),
+    "RequestId": createRequestId(),
     "IPAddress": "192.168.29.157"
   },
 });

@@ -1,16 +1,14 @@
-import { supplierAPI } from "../../../../../config/supplierApi.js";
-import { getAuthHeader } from "../../../../../config/supplierApi.js";
+import {
+  getAuthHeader,
+  supplierAPI,
+} from "../../../../../config/supplierApi.js";
 
 export const searchDestinationAPI = async (searchInput) => {
   const payload = {
-     ...getAuthHeader(),
+    ...getAuthHeader(),
     SearchInput: searchInput,
   };
-console.log("payload -", payload)
-  const { data } = await supplierAPI.post(
-    "/HotelSearchbyName",
-    payload
-  );
+  const { data } = await supplierAPI.post("/HotelSearchbyName", payload);
 
   return data;
 };

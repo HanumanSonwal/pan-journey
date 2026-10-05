@@ -1,6 +1,5 @@
 import { api } from "@/services/axios";
 
-
 export const searchDestinationApi = async (searchText = "") => {
   const trimmedSearch = searchText.trim();
 
@@ -8,23 +7,23 @@ export const searchDestinationApi = async (searchText = "") => {
     return [];
   }
 
-  console.log("DESTINATION REQUEST:", trimmedSearch);
-
   try {
     const response = await api.post("/destination/search", {
       searchInput: trimmedSearch,
     });
 
-    const data = response?.data?.data || [];
+    const payload = response?.data;
+    if (payload?.success !== true || !Array.isArray(payload.data)) {
+      throw new Error("Invalid destination search response");
+    }
 
     console.log("DESTINATION RESPONSE:", {
       searchText: trimmedSearch,
       status: response?.status,
-      count: data.length,
-      data,
+      count: payload.data.length,
     });
 
-    return data;
+    return payload.data;
   } catch (error) {
     console.error("DESTINATION SEARCH ERROR:", {
       searchText: trimmedSearch,

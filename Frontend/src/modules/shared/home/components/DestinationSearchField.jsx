@@ -78,10 +78,12 @@ function DestinationSearchField({
     isFetching,
     isError,
   } = useDestinationSearch(debouncedSearch);
+  const isDebouncing = searchText.trim() !== debouncedSearch;
 
   console.log("DESTINATION STATE:", {
     searchText,
     debouncedSearch,
+    isDebouncing,
     resultCount: data?.length || 0,
     isLoading,
     isFetching,
@@ -164,6 +166,10 @@ function DestinationSearchField({
   };
 
   const groupedOptions = useMemo(() => {
+    if (isDebouncing) {
+      return [];
+    }
+
     if (isEmptySearch) {
       if (recentSearches.length === 0) {
         return [];
@@ -230,7 +236,13 @@ function DestinationSearchField({
           ]
         : []),
     ];
-  }, [isEmptySearch, recentSearches, sortedSearchResults, debouncedSearch]);
+  }, [
+    isDebouncing,
+    isEmptySearch,
+    recentSearches,
+    sortedSearchResults,
+    debouncedSearch,
+  ]);
 
   const handleChange = (selectedValue, option) => {
     const item = option?.itemData;
@@ -238,6 +250,7 @@ function DestinationSearchField({
     if (!item) {
       return;
     }
+    debounceSearch.cancel();
     console.log("DESTINATION SELECTED:", item);
     saveRecentSearch(item);
     const normalizedCity = item?.city || item?.name || "";
@@ -277,7 +290,7 @@ function DestinationSearchField({
   };
 
 
-  const loading = isLoading || isFetching;
+  const loading = isLoading || isFetching || isDebouncing;
 
 
   return (

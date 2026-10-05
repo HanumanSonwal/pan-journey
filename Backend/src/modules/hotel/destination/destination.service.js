@@ -8,6 +8,5 @@ import {
 
 export const searchDestinationService = async (searchInput) => {
   const response = await searchDestinationAPI(searchInput);
-console.log(response)
   return mapDestinationResponse(response);
 };
